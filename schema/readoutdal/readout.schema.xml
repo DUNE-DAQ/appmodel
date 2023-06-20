@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="ASCII"?>
+
+<!-- oks-schema version 2.2 -->
+
+
+<!DOCTYPE oks-schema [
+  <!ELEMENT oks-schema (info, (include)?, (comments)?, (class)+)>
+  <!ELEMENT info EMPTY>
+  <!ATTLIST info
+      name CDATA #IMPLIED
+      type CDATA #IMPLIED
+      num-of-items CDATA #REQUIRED
+      oks-format CDATA #FIXED "schema"
+      oks-version CDATA #REQUIRED
+      created-by CDATA #IMPLIED
+      created-on CDATA #IMPLIED
+      creation-time CDATA #IMPLIED
+      last-modified-by CDATA #IMPLIED
+      last-modified-on CDATA #IMPLIED
+      last-modification-time CDATA #IMPLIED
+  >
+  <!ELEMENT include (file)+>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+      path CDATA #REQUIRED
+  >
+  <!ELEMENT comments (comment)+>
+  <!ELEMENT comment EMPTY>
+  <!ATTLIST comment
+      creation-time CDATA #REQUIRED
+      created-by CDATA #REQUIRED
+      created-on CDATA #REQUIRED
+      author CDATA #REQUIRED
+      text CDATA #REQUIRED
+  >
+  <!ELEMENT class (superclass | attribute | relationship | method)*>
+  <!ATTLIST class
+      name CDATA #REQUIRED
+      description CDATA ""
+      is-abstract (yes|no) "no"
+  >
+  <!ELEMENT superclass EMPTY>
+  <!ATTLIST superclass name CDATA #REQUIRED>
+  <!ELEMENT attribute EMPTY>
+  <!ATTLIST attribute
+      name CDATA #REQUIRED
+      description CDATA ""
+      type (bool|s8|u8|s16|u16|s32|u32|s64|u64|float|double|date|time|string|uid|enum|class) #REQUIRED
+      range CDATA ""
+      format (dec|hex|oct) "dec"
+      is-multi-value (yes|no) "no"
+      init-value CDATA ""
+      is-not-null (yes|no) "no"
+      ordered (yes|no) "no"
+  >
+  <!ELEMENT relationship EMPTY>
+  <!ATTLIST relationship
+      name CDATA #REQUIRED
+      description CDATA ""
+      class-type CDATA #REQUIRED
+      low-cc (zero|one) #REQUIRED
+      high-cc (one|many) #REQUIRED
+      is-composite (yes|no) #REQUIRED
+      is-exclusive (yes|no) #REQUIRED
+      is-dependent (yes|no) #REQUIRED
+      ordered (yes|no) "no"
+  >
+  <!ELEMENT method (method-implementation*)>
+  <!ATTLIST method
+      name CDATA #REQUIRED
+      description CDATA ""
+  >
+  <!ELEMENT method-implementation EMPTY>
+  <!ATTLIST method-implementation
+      language CDATA #REQUIRED
+      prototype CDATA #REQUIRED
+      body CDATA ""
+  >
+]>
+
+<oks-schema>
+
+<info name="" type="" num-of-items="17" oks-format="schema" oks-version="oks-08-03-04-1-gf920aa4 built &quot;May 12 2022&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20230620T113653"/>
+
+<include>
+ <file path="schema/coredal/dunedaq.schema.xml"/>
+</include>
+
+
+ <class name="DLH">
+  <superclass name="DaqModule"/>
+  <attribute name="source_id" type="u32" is-not-null="yes"/>
+  <relationship name="handler_configuration" class-type="LinkHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="DataProcessor">
+  <attribute name="queue_size" type="u32" init-value="10000"/>
+  <attribute name="max_ticks_tot" type="u32" init-value="8000" is-not-null="yes"/>
+  <attribute name="tpg_enabled" type="bool" init-value="true"/>
+  <attribute name="algorithm" description="TP generation algorithm" type="string"/>
+  <attribute name="threshold" description="Hit detection threshold" type="u16"/>
+  <attribute name="channel_mask" description="List of channels to be masked from TP generation" type="u32" is-multi-value="yes"/>
+  <attribute name="channel_map" type="string"/>
+ </class>
+
+ <class name="DataReader" is-abstract="yes">
+  <superclass name="DaqModule"/>
+  <attribute name="emulated" type="bool" init-value="false"/>
+  <relationship name="configuration" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="DataReaderConf" is-abstract="yes">
+  <attribute name="template_for" description="OKS class of the DataReader that this config is a template for" type="class" init-value="DataReader" is-not-null="yes"/>
+ </class>
+
+ <class name="DataStreamDesccriptor">
+  <attribute name="src_ids" type="u32" is-multi-value="yes"/>
+ </class>
+
+ <class name="FlxReader">
+  <superclass name="DataReader"/>
+ </class>
+
+ <class name="LatencyBuffer">
+  <attribute name="size" type="u32" init-value="1000" is-not-null="yes"/>
+  <attribute name="numa_aware" type="bool" init-value="true"/>
+  <attribute name="numa_node" type="s16" init-value="0"/>
+  <attribute name="use_intrinsic_allocator" type="bool" init-value="true"/>
+  <attribute name="alignment_size" type="u32" init-value="1000"/>
+  <attribute name="preallocation" type="bool" init-value="true"/>
+ </class>
+
+ <class name="LinkHandlerConf">
+  <attribute name="handlier_threads" description="Number of threads tohandle this link" type="u16" init-value="1"/>
+  <attribute name="request_timeout" description="Request timeout in milliseconds" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="output_file" type="string"/>
+  <attribute name="streaming_buffer_size" type="u32" init-value="1000" is-not-null="yes"/>
+  <attribute name="use_o_direct" description="Whether to use O_DIRECT flag when opening files" type="bool" init-value="true"/>
+  <attribute name="enable_raw_recording" type="bool" init-value="true"/>
+  <relationship name="latency_buffer" class-type="LatencyBuffer" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="data_processor" class-type="DataProcessor" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="NicReader">
+  <superclass name="DataReader"/>
+ </class>
+
+ <class name="NicReaderConf">
+  <superclass name="DataReaderConf"/>
+  <attribute name="numa_id" type="u16"/>
+  <attribute name="template_for" type="class" init-value="NicReader"/>
+ </class>
+
+ <class name="QueueConnectionRule">
+  <attribute name="destination_class" type="class" init-value="DaqModule"/>
+  <relationship name="descriptor" class-type="QueueDescriptor" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="QueueDescriptor">
+  <attribute name="queue_type" description="Type of queue" type="enum" range="kUnknown,kStdDeQueue,kFollySPSCQueue,kFollyMPMCQueue" init-value="kFollySPSCQueue" is-not-null="yes"/>
+  <attribute name="capacity" type="u32" init-value="100" is-not-null="yes"/>
+  <attribute name="data_type" description="string identifying type of data transferred through this queue" type="string" is-not-null="yes"/>
+ </class>
+
+ <class name="ReadoutApplication">
+  <superclass name="DaqApplication"/>
+  <attribute name="tp_src_id" description="Source ID for TP handler if TPs are being generated" type="u32"/>
+  <relationship name="runs_on" class-type="ReadoutHost" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
+  <relationship name="uses" description="Configuration of the host hardware resources used by this application" class-type="RoHwConfig" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
+  <relationship name="link_handler" class-type="LinkHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="queue_rules" class-type="QueueConnectionRule" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="data_streams" class-type="DataStreamDesccriptor" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="tp_handler" class-type="TPHandlerConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="data_reader" class-type="DataReaderConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <method name="generate_modules" description="Generate DLH dal objects for streams of thie ReadoutApplication on the fly">
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;) const" body=""/>
+  </method>
+ </class>
+
+ <class name="ReadoutHost">
+  <superclass name="VirtualHost"/>
+ </class>
+
+ <class name="RoHwConfig">
+  <relationship name="io_device" description="Device handling input from the fron-end electronics" class-type="NetworkDevice" low-cc="zero" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
+  <relationship name="snb_storage" class-type="StorageDevice" low-cc="zero" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
+  <relationship name="recv_processor" class-type="ProcessingResource" low-cc="zero" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <relationship name="hitFindingProc" class-type="ProcessingResource" low-cc="zero" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
+ </class>
+
+ <class name="TPHandler">
+  <superclass name="DaqModule"/>
+  <attribute name="source_id" type="u32" is-not-null="yes"/>
+  <relationship name="handler_configuration" class-type="TPHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="TPHandlerConf">
+  <attribute name="handler_threads" type="u16" init-value="1" is-not-null="yes"/>
+  <attribute name="request_timeout" type="u32" init-value="1000" is-not-null="yes"/>
+  <attribute name="min_latency_ticks" type="u32" init-value="100" is-not-null="yes"/>
+  <attribute name="max_transmission_rate_hz" type="u32" init-value="1000" is-not-null="yes"/>
+  <relationship name="latency_buffer" class-type="LatencyBuffer" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+</oks-schema>
