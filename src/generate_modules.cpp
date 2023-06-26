@@ -11,12 +11,15 @@
 #include "oksdbinterfaces/Configuration.hpp"
 
 #include "coredal/Connection.hpp"
+#include "coredal/NetworkConnection.hpp"
 
 #include "readoutdal/DataReader.hpp"
 #include "readoutdal/DataReaderConf.hpp"
 #include "readoutdal/DataStreamDesccriptor.hpp"
 #include "readoutdal/DLH.hpp"
 #include "readoutdal/LinkHandlerConf.hpp"
+#include "readoutdal/NetworkConnectionRule.hpp"
+#include "readoutdal/NetworkConnectionDescriptor.hpp"
 #include "readoutdal/QueueConnectionRule.hpp"
 #include "readoutdal/QueueDescriptor.hpp"
 #include "readoutdal/ReadoutApplication.hpp"
@@ -41,6 +44,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   std::vector<const coredal::DaqModule*> modules;
   auto linkHandler = get_link_handler();
   auto lhObj = linkHandler->config_object();
+
   const QueueDescriptor* inputQDesc = nullptr;
   const QueueDescriptor* outputQDesc = nullptr;
   for (auto rule : get_queue_rules()) {
@@ -52,11 +56,26 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     }
   }
 
+  std::vector<const NetworkConnectionDescriptor*> dlhNetDesc;
+  const NetworkConnectionDescriptor* tpNetDesc = nullptr;
+  for (auto rule : get_network_rules()) {
+    if (rule->get_endpoint_class() == "DLH") {
+      dlhNetDesc.push_back(rule->get_descriptor());
+    }
+    else if (rule->get_endpoint_class() == "TPHandler") {
+      tpNetDesc = rule->get_descriptor();
+    }
+  }
+
   oksdbinterfaces::ConfigObject tpQueueObj;
+  oksdbinterfaces::ConfigObject tpNetObj;
   auto tpHandlerConf = get_tp_handler();
   if (tpHandlerConf) {
+    if (tpNetDesc == nullptr) {
+      throw (BadConf(ERS_HERE, "No tpHandler network descriptor given"));
+    }
     if (outputQDesc == nullptr) {
-      throw (BadConf(ERS_HERE, "No output queue descriptor given"));
+      throw (BadConf(ERS_HERE, "No tpHandler input queue descriptor given"));
     }
     auto tpsrc = get_tp_src_id();
     if (tpsrc == 0) {
@@ -68,13 +87,19 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     tpQueueObj.set_by_val<std::string>("queue_type", outputQDesc->get_queue_type());
     tpQueueObj.set_by_val<uint32_t>("capacity", outputQDesc->get_capacity());
 
+    std::string tpNetUid("ReqToTPH-"+std::to_string(tpsrc));
+    confdb->create(dbfile, "NetworkConnection", tpNetUid, tpNetObj);
+    tpNetObj.set_by_val<std::string>("data_type", tpNetDesc->get_data_type());
+    tpNetObj.set_by_val<std::string>("connection_type", tpNetDesc->get_connection_type());
+    tpNetObj.set_by_val<std::string>("uri", tpNetDesc->get_uri());
+    
     auto tphConfObj = tpHandlerConf->config_object();
     oksdbinterfaces::ConfigObject tpObj;
     std::string tpUid("tphandler-"+std::to_string(tpsrc));
     confdb->create(dbfile, "TPHandler", tpUid, tpObj);
     tpObj.set_by_val<uint32_t>("source_id", tpsrc);
     tpObj.set_obj("handler_configuration", &tphConfObj);
-    tpObj.set_objs("inputs", {&tpQueueObj});
+    tpObj.set_objs("inputs", {&tpQueueObj, &tpNetObj});
 
     auto tphDal = const_cast<TPHandler*>(confdb->get<TPHandler>(tpUid));
     modules.push_back(tphDal);
@@ -103,7 +128,19 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
       queueObj.set_by_val<std::string>("data_type", inputQDesc->get_data_type());
       queueObj.set_by_val<std::string>("queue_type", inputQDesc->get_queue_type());
       queueObj.set_by_val<uint32_t>("capacity", inputQDesc->get_capacity());
-      dlhObj.set_objs("inputs", {&queueObj});
+
+      std::vector<const oksdbinterfaces::ConfigObject*> netObjs;
+      for (auto desc : dlhNetDesc) {
+        std::string netUid("ReqToDLH-"+desc->get_data_type()+std::to_string(id));
+        oksdbinterfaces::ConfigObject netObj;
+        confdb->create(dbfile, "NetworkConnection", netUid, netObj);
+        netObj.set_by_val<std::string>("data_type", desc->get_data_type());
+        netObj.set_by_val<std::string>("connection_type", desc->get_connection_type());
+        netObj.set_by_val<std::string>("uri", desc->get_uri());
+        netObjs.push_back(&(confdb->get<coredal::NetworkConnection>(netUid)->config_object()));
+      }
+      dlhObj.set_objs("inputs", netObjs);
+
       // Add the input queue dal pointer to the outputs of the DataReader
       outputQueues.push_back(confdb->get<coredal::Connection>(queueUid));
 

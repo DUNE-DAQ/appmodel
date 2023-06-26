@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="17" oks-format="schema" oks-version="oks-08-03-04-1-gf920aa4 built &quot;May 12 2022&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20230620T113653"/>
+<info name="" type="" num-of-items="20" oks-format="schema" oks-version="oks-08-03-04-1-gf920aa4 built &quot;May 12 2022&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20230622T135209"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -121,6 +121,11 @@
   <superclass name="DataReader"/>
  </class>
 
+ <class name="FlxReaderConf">
+  <superclass name="DataReaderConf"/>
+  <attribute name="template_for" type="class" init-value="FlxReader"/>
+ </class>
+
  <class name="LatencyBuffer">
   <attribute name="size" type="u32" init-value="1000" is-not-null="yes"/>
   <attribute name="numa_aware" type="bool" init-value="true"/>
@@ -139,6 +144,17 @@
   <attribute name="enable_raw_recording" type="bool" init-value="true"/>
   <relationship name="latency_buffer" class-type="LatencyBuffer" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_processor" class-type="DataProcessor" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="NetworkConnectionDescriptor">
+  <attribute name="connection_type" type="enum" range="kSendRecv,kPubSub" init-value="kSendRecv" is-not-null="yes"/>
+  <attribute name="uri" type="string" init-value="tcp://0.0.0.0:*" is-not-null="yes"/>
+  <attribute name="data_type" type="string" is-not-null="yes"/>
+ </class>
+
+ <class name="NetworkConnectionRule">
+  <attribute name="endpoint_class" type="class" init-value="DaqModule"/>
+  <relationship name="descriptor" class-type="NetworkConnectionDescriptor" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="NicReader">
@@ -172,6 +188,7 @@
   <relationship name="data_streams" class-type="DataStreamDesccriptor" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="tp_handler" class-type="TPHandlerConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_reader" class-type="DataReaderConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="network_rules" class-type="NetworkConnectionRule" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DLH dal objects for streams of thie ReadoutApplication on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;) const" body=""/>
   </method>
