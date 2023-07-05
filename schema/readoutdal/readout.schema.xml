@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="22" oks-format="schema" oks-version="oks-08-03-04-1-gf920aa4 built &quot;May 12 2022&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20230627T150753"/>
+<info name="" type="" num-of-items="22" oks-format="schema" oks-version="oks-08-03-04-1-gf920aa4 built &quot;May 12 2022&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20230705T124144"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -166,10 +166,11 @@
  </class>
 
  <class name="NetworkConnectionDescriptor">
-  <attribute name="connection_type" type="enum" range="kSendRecv,kPubSub" init-value="kSendRecv" is-not-null="yes"/>
-  <attribute name="uri" type="string" init-value="tcp://0.0.0.0:*" is-not-null="yes"/>
+  <attribute name="uid_base" description="Base for UID string. To be combined with a source id" type="string" is-not-null="yes"/>
   <attribute name="data_type" type="string" is-not-null="yes"/>
+  <attribute name="connection_type" type="enum" range="kSendRecv,kPubSub" init-value="kSendRecv" is-not-null="yes"/>
   <attribute name="port" type="u16" init-value="0"/>
+  <attribute name="uri" type="string" init-value="tcp://0.0.0.0:*" is-not-null="yes"/>
  </class>
 
  <class name="NetworkConnectionRule">

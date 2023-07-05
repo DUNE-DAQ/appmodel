@@ -1,7 +1,7 @@
 /**
  * @file generate_modules .cpp
  *
- * Implementation of ReadoutApplication's dal method
+ * Implementation of ReadoutApplication's generate_modules dal method
  *
  * This is part of the DUNE DAQ Software Suite, copyright 2023.
  * Licensing/copyright details are in the COPYING file that you should have
@@ -30,6 +30,7 @@
 #include "logging/Logging.hpp"
 
 #include <string>
+#include <vector>
 
 namespace dunedaq {
   ERS_DECLARE_ISSUE(readoutdal, BadConf, what, ((std::string)what))
@@ -142,7 +143,10 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
       std::vector<const oksdbinterfaces::ConfigObject*> netObjs;
       for (auto desc : dlhNetDesc) {
-        std::string netUid("ReqToDLH-"+desc->get_data_type()+std::to_string(id));
+        std::ostringstream uidStream;
+        uidStream.fill('0');
+        uidStream << desc->get_uid_base() << std::hex << std::setw(8) << id;
+        std::string netUid=uidStream.str();
         oksdbinterfaces::ConfigObject netObj;
         confdb->create(dbfile, "NetworkConnection", netUid, netObj);
         netObj.set_by_val<std::string>("data_type", desc->get_data_type());
