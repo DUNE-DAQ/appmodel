@@ -11,6 +11,7 @@
 #include "pybind11/stl.h"
 
 #include "coredal/DaqModule.hpp"
+#include "coredal/Session.hpp"
 
 #include "readoutdal/ReadoutApplication.hpp"
 
@@ -32,12 +33,16 @@ namespace dunedaq::readoutdal::python {
   std::vector<ObjectLocator>
   readout_application_generate(const oksdbinterfaces::Configuration& confdb,
                                const std::string& dbfile,
-                               const std::string& app_id) {
+                               const std::string& app_id,
+                               const std::string& session_id) {
     auto app =
       const_cast<oksdbinterfaces::Configuration&>(confdb).get<ReadoutApplication>(app_id);
+    auto session =
+      const_cast<oksdbinterfaces::Configuration&>(confdb).get<coredal::Session>(session_id);
+
     std::vector<ObjectLocator> mods;
     for (auto mod : app->generate_modules(
-           const_cast<oksdbinterfaces::Configuration*>(&confdb), dbfile)) {
+           const_cast<oksdbinterfaces::Configuration*>(&confdb), dbfile, session)) {
       mods.push_back({mod->UID(),mod->class_name()});
     }
     return mods;

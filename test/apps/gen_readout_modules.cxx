@@ -12,37 +12,40 @@
 
 #include "oksdbinterfaces/Configuration.hpp"
 
+#include "coredal/Session.hpp"
 #include "coredal/Connection.hpp"
+#include "coredal/DaqModule.hpp"
 
-#include "readoutdal/DataReader.hpp"
-#include "readoutdal/DataStreamDesccriptor.hpp"
-#include "readoutdal/DLH.hpp"
-#include "readoutdal/LinkHandlerConf.hpp"
-#include "readoutdal/QueueConnectionRule.hpp"
-#include "readoutdal/QueueDescriptor.hpp"
 #include "readoutdal/ReadoutApplication.hpp"
 
 #include <string>
-
 using namespace dunedaq;
 
 int main(int argc, char* argv[]) {
-  if (argc < 3) {
-    std::cout << "Usage: " << argv[0] << " <readout-app> <database-file>\n";
+  if (argc < 4) {
+    std::cout << "Usage: " << argv[0] << " <session> <readout-app> <database-file>\n";
     return 0;
   }
   logging::Logging::setup();
 
-  std::string dbfile(argv[2]);
+  std::string sessionName(argv[1]);
+  std::string appName(argv[2]);
+  std::string dbfile(argv[3]);
   auto confdb = new oksdbinterfaces::Configuration("oksconfig:" + dbfile);
-  std::string appName(argv[1]);
 
-  std::vector<const readoutdal::DataReader*> dataReaders;
-  std::vector<const readoutdal::DLH*> dataHandlers;
-
+  auto session = confdb->get<coredal::Session>(sessionName);
+  if (session == nullptr) {
+    std::cout << "Failed to get Session " << sessionName
+              << " from database\n";
+    return 0;
+  }
   auto daqapp = confdb->get<readoutdal::ReadoutApplication>(appName);
   if (daqapp) {
-    for (auto module: daqapp->generate_modules(confdb, dbfile)) {
+    if (daqapp->disabled(*session)) {
+      std::cout << "ReadoutApplication " << appName << " is disabled" << std::endl;
+      return 0;
+    }
+    for (auto module: daqapp->generate_modules(confdb, dbfile, session)) {
       std::cout << "module " << module->UID() << std::endl;
       module->config_object().print_ref(std::cout, *confdb, "  ");
       std::cout  << " input objects "  << std::endl;

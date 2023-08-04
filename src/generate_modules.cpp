@@ -12,17 +12,20 @@
 
 #include "coredal/Connection.hpp"
 #include "coredal/NetworkConnection.hpp"
+#include "coredal/ResourceSet.hpp"
+#include "coredal/Session.hpp"
 
 #include "readoutdal/DataReader.hpp"
 #include "readoutdal/DataReaderConf.hpp"
-#include "readoutdal/DataStreamDesccriptor.hpp"
 #include "readoutdal/DLH.hpp"
+#include "readoutdal/DROStreamConf.hpp"
 #include "readoutdal/LinkHandlerConf.hpp"
 #include "readoutdal/NetworkConnectionRule.hpp"
 #include "readoutdal/NetworkConnectionDescriptor.hpp"
 #include "readoutdal/QueueConnectionRule.hpp"
 #include "readoutdal/QueueDescriptor.hpp"
 #include "readoutdal/ReadoutApplication.hpp"
+#include "readoutdal/ReadoutGroup.hpp"
 #include "readoutdal/TPHandler.hpp"
 #include "readoutdal/TPHandlerConf.hpp"
 
@@ -41,7 +44,8 @@ using namespace dunedaq::readoutdal;
 
 std::vector<const coredal::DaqModule*> 
 ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
-                                     const std::string& dbfile) const {
+                                     const std::string& dbfile,
+                                     const coredal::Session* session) const {
   std::vector<const coredal::DaqModule*> modules;
 
   auto dlhConf = get_link_handler();
@@ -119,12 +123,32 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   if (rdrConf == 0) {
     throw (BadConf(ERS_HERE, "No DataReader configuration given"));
   }
+
   int rnum = 0;
   int port_offset = 0;
-  for (auto stream : get_data_streams()) {
-    // Create a Data Link Handler for each stream of this DataReader
+  // Create a DataReader for each (non-disabled) group and a Data Link
+  // Handler for each stream of this DataReader
+  //for (auto roGroup : get_readout_groups()) {
+  for (auto roGroup : get_contains()) {
+    if (roGroup->disabled(*session)) {
+      TLOG_DEBUG(5) << "Ignoring disabled ReadoutGroup " << roGroup->UID();
+      continue;
+    }
+    auto rset = roGroup->cast<ReadoutGroup>();
+    if (rset == nullptr) {
+        throw (BadConf(ERS_HERE, "ReadoutApplication contains something other than ReadoutGroup"));
+    }
     std::vector<const coredal::Connection*> outputQueues;
-    for (auto id : stream->get_src_ids()) {
+    for (auto res : rset->get_contains()) {
+      auto stream = res->cast<DROStreamConf>();
+      if (stream == nullptr) {
+        throw (BadConf(ERS_HERE, "ReadoutGroup contains something other than DROStreamConf"));
+      }
+      if (stream->disabled(*session)) {
+        TLOG_DEBUG(5) << "Ignoring disabled DROStreamConf " << stream->UID();
+        continue;
+      }
+      auto id = stream->get_src_id();
       std::string uid("DLH-"+std::to_string(id));
       oksdbinterfaces::ConfigObject dlhObj;
       TLOG_DEBUG(7) <<  "creating OKS configuration object for Data Link Handler class " << dlhClass;

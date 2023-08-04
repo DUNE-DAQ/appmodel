@@ -20,7 +20,7 @@ daq_oks_codegen(readout.schema.xml NAMESPACE dunedaq::readoutdal DEP_PKGS coreda
 
 daq_add_library(generate_modules.cpp
  LINK_LIBRARIES oksdbinterfaces::oksdbinterfaces okssystem::okssystem
-  logging::logging coredal_oks ers::ers)
+  logging::logging coredal coredal_oks ers::ers)
 
 
 daq_add_python_bindings(*.cpp LINK_LIBRARIES 
