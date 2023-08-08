@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="280" oks-format="data" oks-version="oks-08-03-04-1-gf920aa4 built &quot;May 12 2022&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230804T135642" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20230804T135642"/>
+<info name="" type="" num-of-items="269" oks-format="data" oks-version="oks-08-03-04-1-gf920aa4 built &quot;May 12 2022&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230808T153724" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20230808T153724"/>
 
 <obj class="ALink" id="DLH-2-LinkHandlerConf-via-handler_configuration">
  <attr name="Name" type="string" val="handler_configuration"/>
@@ -388,13 +388,8 @@
 </obj>
 
 <obj class="Class" id="DROStreamConf">
- <attr name="x" type="s16" val="537"/>
- <attr name="y" type="s16" val="127"/>
-</obj>
-
-<obj class="Class" id="DaqApplication">
- <attr name="x" type="s16" val="418"/>
- <attr name="y" type="s16" val="251"/>
+ <attr name="x" type="s16" val="591"/>
+ <attr name="y" type="s16" val="128"/>
 </obj>
 
 <obj class="Class" id="DaqModule">
@@ -478,13 +473,13 @@
 </obj>
 
 <obj class="Class" id="NetworkConnectionDescriptor">
- <attr name="x" type="s16" val="1021"/>
- <attr name="y" type="s16" val="836"/>
+ <attr name="x" type="s16" val="1212"/>
+ <attr name="y" type="s16" val="799"/>
 </obj>
 
 <obj class="Class" id="NetworkConnectionRule">
  <attr name="x" type="s16" val="480"/>
- <attr name="y" type="s16" val="836"/>
+ <attr name="y" type="s16" val="823"/>
 </obj>
 
 <obj class="Class" id="NetworkDevice">
@@ -504,12 +499,12 @@
 
 <obj class="Class" id="QueueConnectionRule">
  <attr name="x" type="s16" val="416"/>
- <attr name="y" type="s16" val="905"/>
+ <attr name="y" type="s16" val="888"/>
 </obj>
 
 <obj class="Class" id="QueueDescriptor">
- <attr name="x" type="s16" val="756"/>
- <attr name="y" type="s16" val="877"/>
+ <attr name="x" type="s16" val="840"/>
+ <attr name="y" type="s16" val="852"/>
 </obj>
 
 <obj class="Class" id="ReadoutApplication">
@@ -518,8 +513,8 @@
 </obj>
 
 <obj class="Class" id="ReadoutGroup">
- <attr name="x" type="s16" val="309"/>
- <attr name="y" type="s16" val="260"/>
+ <attr name="x" type="s16" val="370"/>
+ <attr name="y" type="s16" val="274"/>
 </obj>
 
 <obj class="Class" id="ReadoutHost">
@@ -528,23 +523,23 @@
 </obj>
 
 <obj class="Class" id="ReadoutMap">
- <attr name="x" type="s16" val="154"/>
- <attr name="y" type="s16" val="259"/>
+ <attr name="x" type="s16" val="175"/>
+ <attr name="y" type="s16" val="270"/>
 </obj>
 
 <obj class="Class" id="ResourceBase">
- <attr name="x" type="s16" val="458"/>
- <attr name="y" type="s16" val="30"/>
+ <attr name="x" type="s16" val="516"/>
+ <attr name="y" type="s16" val="32"/>
 </obj>
 
 <obj class="Class" id="ResourceSet">
- <attr name="x" type="s16" val="370"/>
- <attr name="y" type="s16" val="118"/>
+ <attr name="x" type="s16" val="476"/>
+ <attr name="y" type="s16" val="127"/>
 </obj>
 
 <obj class="Class" id="ResourceSetAND">
- <attr name="x" type="s16" val="363"/>
- <attr name="y" type="s16" val="185"/>
+ <attr name="x" type="s16" val="431"/>
+ <attr name="y" type="s16" val="203"/>
 </obj>
 
 <obj class="Class" id="RoHwConfig">
@@ -602,17 +597,6 @@
   <ref class="Point" id="2 DLH-2-FDDataLinkHandler"/>
   <ref class="Point" id="3 DLH-2-FDDataLinkHandler"/>
   <ref class="Point" id="4 DLH-2-FDDataLinkHandler"/>
- </rel>
-</obj>
-
-<obj class="GLink" id="DaqApplication-2-ReadoutApplication">
- <rel name="From" class="Class" id="DaqApplication"/>
- <rel name="To" class="Class" id="ReadoutApplication"/>
- <rel name="Points">
-  <ref class="Point" id="1 DaqApplication-2-ReadoutApplication"/>
-  <ref class="Point" id="2 DaqApplication-2-ReadoutApplication"/>
-  <ref class="Point" id="3 DaqApplication-2-ReadoutApplication"/>
-  <ref class="Point" id="4 DaqApplication-2-ReadoutApplication"/>
  </rel>
 </obj>
 
@@ -737,17 +721,6 @@
  </rel>
 </obj>
 
-<obj class="GLink" id="ResourceBase-2-DaqModule">
- <rel name="From" class="Class" id="ResourceBase"/>
- <rel name="To" class="Class" id="DaqModule"/>
- <rel name="Points">
-  <ref class="Point" id="1 ResourceBase-2-DaqModule"/>
-  <ref class="Point" id="2 ResourceBase-2-DaqModule"/>
-  <ref class="Point" id="3 ResourceBase-2-DaqModule"/>
-  <ref class="Point" id="4 ResourceBase-2-DaqModule"/>
- </rel>
-</obj>
-
 <obj class="GLink" id="ResourceBase-2-ResourceSet">
  <rel name="From" class="Class" id="ResourceBase"/>
  <rel name="To" class="Class" id="ResourceSet"/>
@@ -770,14 +743,14 @@
  </rel>
 </obj>
 
-<obj class="GLink" id="ResourceSetAND-2-DaqApplication">
+<obj class="GLink" id="ResourceSetAND-2-ReadoutApplication">
  <rel name="From" class="Class" id="ResourceSetAND"/>
- <rel name="To" class="Class" id="DaqApplication"/>
+ <rel name="To" class="Class" id="ReadoutApplication"/>
  <rel name="Points">
-  <ref class="Point" id="1 ResourceSetAND-2-DaqApplication"/>
-  <ref class="Point" id="2 ResourceSetAND-2-DaqApplication"/>
-  <ref class="Point" id="3 ResourceSetAND-2-DaqApplication"/>
-  <ref class="Point" id="4 ResourceSetAND-2-DaqApplication"/>
+  <ref class="Point" id="1 ResourceSetAND-2-ReadoutApplication"/>
+  <ref class="Point" id="2 ResourceSetAND-2-ReadoutApplication"/>
+  <ref class="Point" id="3 ResourceSetAND-2-ReadoutApplication"/>
+  <ref class="Point" id="4 ResourceSetAND-2-ReadoutApplication"/>
  </rel>
 </obj>
 
@@ -842,11 +815,6 @@
 <obj class="Point" id="1 DROStreamConf-2-StreamParameters-via-stream_params">
  <attr name="x" type="s16" val="75"/>
  <attr name="y" type="s16" val="38"/>
-</obj>
-
-<obj class="Point" id="1 DaqApplication-2-ReadoutApplication">
- <attr name="x" type="s16" val="95"/>
- <attr name="y" type="s16" val="51"/>
 </obj>
 
 <obj class="Point" id="1 DaqModule-2-Connection-via-inputs">
@@ -940,7 +908,7 @@
 </obj>
 
 <obj class="Point" id="1 ReadoutApplication-2-DataReaderConf-via-data_reader">
- <attr name="x" type="s16" val="3"/>
+ <attr name="x" type="s16" val="6"/>
  <attr name="y" type="s16" val="51"/>
 </obj>
 
@@ -984,13 +952,8 @@
  <attr name="y" type="s16" val="38"/>
 </obj>
 
-<obj class="Point" id="1 ResourceBase-2-DaqModule">
- <attr name="x" type="s16" val="65"/>
- <attr name="y" type="s16" val="38"/>
-</obj>
-
 <obj class="Point" id="1 ResourceBase-2-ResourceSet">
- <attr name="x" type="s16" val="33"/>
+ <attr name="x" type="s16" val="17"/>
  <attr name="y" type="s16" val="38"/>
 </obj>
 
@@ -1004,8 +967,8 @@
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 ResourceSetAND-2-DaqApplication">
- <attr name="x" type="s16" val="91"/>
+<obj class="Point" id="1 ResourceSetAND-2-ReadoutApplication">
+ <attr name="x" type="s16" val="72"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
 
@@ -1082,11 +1045,6 @@
 <obj class="Point" id="2 DROStreamConf-2-StreamParameters-via-stream_params">
  <attr name="x" type="s16" val="75"/>
  <attr name="y" type="s16" val="132"/>
-</obj>
-
-<obj class="Point" id="2 DaqApplication-2-ReadoutApplication">
- <attr name="x" type="s16" val="95"/>
- <attr name="y" type="s16" val="479"/>
 </obj>
 
 <obj class="Point" id="2 DaqModule-2-Connection-via-inputs">
@@ -1171,16 +1129,16 @@
 
 <obj class="Point" id="2 NetworkConnectionRule-2-NetworkConnectionDescriptor-via-descriptor">
  <attr name="x" type="s16" val="162"/>
- <attr name="y" type="s16" val="853"/>
+ <attr name="y" type="s16" val="840"/>
 </obj>
 
 <obj class="Point" id="2 QueueConnectionRule-2-QueueDescriptor-via-descriptor">
  <attr name="x" type="s16" val="171"/>
- <attr name="y" type="s16" val="926"/>
+ <attr name="y" type="s16" val="911"/>
 </obj>
 
 <obj class="Point" id="2 ReadoutApplication-2-DataReaderConf-via-data_reader">
- <attr name="x" type="s16" val="3"/>
+ <attr name="x" type="s16" val="6"/>
  <attr name="y" type="s16" val="593"/>
 </obj>
 
@@ -1216,7 +1174,7 @@
 
 <obj class="Point" id="2 ReadoutMap-2-ReadoutGroup-via-groups">
  <attr name="x" type="s16" val="60"/>
- <attr name="y" type="s16" val="276"/>
+ <attr name="y" type="s16" val="281"/>
 </obj>
 
 <obj class="Point" id="2 ResourceBase-2-DROStreamConf">
@@ -1224,13 +1182,8 @@
  <attr name="y" type="s16" val="110"/>
 </obj>
 
-<obj class="Point" id="2 ResourceBase-2-DaqModule">
- <attr name="x" type="s16" val="65"/>
- <attr name="y" type="s16" val="207"/>
-</obj>
-
 <obj class="Point" id="2 ResourceBase-2-ResourceSet">
- <attr name="x" type="s16" val="33"/>
+ <attr name="x" type="s16" val="17"/>
  <attr name="y" type="s16" val="104"/>
 </obj>
 
@@ -1241,17 +1194,17 @@
 
 <obj class="Point" id="2 ResourceSet-2-ResourceSetAND">
  <attr name="x" type="s16" val="20"/>
- <attr name="y" type="s16" val="177"/>
+ <attr name="y" type="s16" val="185"/>
 </obj>
 
-<obj class="Point" id="2 ResourceSetAND-2-DaqApplication">
- <attr name="x" type="s16" val="91"/>
- <attr name="y" type="s16" val="240"/>
+<obj class="Point" id="2 ResourceSetAND-2-ReadoutApplication">
+ <attr name="x" type="s16" val="72"/>
+ <attr name="y" type="s16" val="310"/>
 </obj>
 
 <obj class="Point" id="2 ResourceSetAND-2-ReadoutGroup">
  <attr name="x" type="s16" val="15"/>
- <attr name="y" type="s16" val="252"/>
+ <attr name="y" type="s16" val="265"/>
 </obj>
 
 <obj class="Point" id="2 RoHwConfig-2-NetworkDevice-via-io_device">
@@ -1322,11 +1275,6 @@
 <obj class="Point" id="3 DROStreamConf-2-StreamParameters-via-stream_params">
  <attr name="x" type="s16" val="27"/>
  <attr name="y" type="s16" val="132"/>
-</obj>
-
-<obj class="Point" id="3 DaqApplication-2-ReadoutApplication">
- <attr name="x" type="s16" val="76"/>
- <attr name="y" type="s16" val="479"/>
 </obj>
 
 <obj class="Point" id="3 DaqModule-2-Connection-via-inputs">
@@ -1411,16 +1359,16 @@
 
 <obj class="Point" id="3 NetworkConnectionRule-2-NetworkConnectionDescriptor-via-descriptor">
  <attr name="x" type="s16" val="56"/>
- <attr name="y" type="s16" val="853"/>
+ <attr name="y" type="s16" val="840"/>
 </obj>
 
 <obj class="Point" id="3 QueueConnectionRule-2-QueueDescriptor-via-descriptor">
  <attr name="x" type="s16" val="49"/>
- <attr name="y" type="s16" val="926"/>
+ <attr name="y" type="s16" val="911"/>
 </obj>
 
 <obj class="Point" id="3 ReadoutApplication-2-DataReaderConf-via-data_reader">
- <attr name="x" type="s16" val="175"/>
+ <attr name="x" type="s16" val="178"/>
  <attr name="y" type="s16" val="593"/>
 </obj>
 
@@ -1456,17 +1404,12 @@
 
 <obj class="Point" id="3 ReadoutMap-2-ReadoutGroup-via-groups">
  <attr name="x" type="s16" val="24"/>
- <attr name="y" type="s16" val="276"/>
+ <attr name="y" type="s16" val="281"/>
 </obj>
 
 <obj class="Point" id="3 ResourceBase-2-DROStreamConf">
- <attr name="x" type="s16" val="5"/>
+ <attr name="x" type="s16" val="9"/>
  <attr name="y" type="s16" val="110"/>
-</obj>
-
-<obj class="Point" id="3 ResourceBase-2-DaqModule">
- <attr name="x" type="s16" val="18"/>
- <attr name="y" type="s16" val="207"/>
 </obj>
 
 <obj class="Point" id="3 ResourceBase-2-ResourceSet">
@@ -1480,18 +1423,18 @@
 </obj>
 
 <obj class="Point" id="3 ResourceSet-2-ResourceSetAND">
- <attr name="x" type="s16" val="27"/>
- <attr name="y" type="s16" val="177"/>
+ <attr name="x" type="s16" val="65"/>
+ <attr name="y" type="s16" val="185"/>
 </obj>
 
-<obj class="Point" id="3 ResourceSetAND-2-DaqApplication">
- <attr name="x" type="s16" val="36"/>
- <attr name="y" type="s16" val="240"/>
+<obj class="Point" id="3 ResourceSetAND-2-ReadoutApplication">
+ <attr name="x" type="s16" val="66"/>
+ <attr name="y" type="s16" val="310"/>
 </obj>
 
 <obj class="Point" id="3 ResourceSetAND-2-ReadoutGroup">
- <attr name="x" type="s16" val="69"/>
- <attr name="y" type="s16" val="252"/>
+ <attr name="x" type="s16" val="76"/>
+ <attr name="y" type="s16" val="265"/>
 </obj>
 
 <obj class="Point" id="3 RoHwConfig-2-NetworkDevice-via-io_device">
@@ -1562,11 +1505,6 @@
 <obj class="Point" id="4 DROStreamConf-2-StreamParameters-via-stream_params">
  <attr name="x" type="s16" val="27"/>
  <attr name="y" type="s16" val="8"/>
-</obj>
-
-<obj class="Point" id="4 DaqApplication-2-ReadoutApplication">
- <attr name="x" type="s16" val="76"/>
- <attr name="y" type="s16" val="17"/>
 </obj>
 
 <obj class="Point" id="4 DaqModule-2-Connection-via-inputs">
@@ -1660,7 +1598,7 @@
 </obj>
 
 <obj class="Point" id="4 ReadoutApplication-2-DataReaderConf-via-data_reader">
- <attr name="x" type="s16" val="175"/>
+ <attr name="x" type="s16" val="178"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
 
@@ -1700,13 +1638,8 @@
 </obj>
 
 <obj class="Point" id="4 ResourceBase-2-DROStreamConf">
- <attr name="x" type="s16" val="5"/>
+ <attr name="x" type="s16" val="9"/>
  <attr name="y" type="s16" val="12"/>
-</obj>
-
-<obj class="Point" id="4 ResourceBase-2-DaqModule">
- <attr name="x" type="s16" val="18"/>
- <attr name="y" type="s16" val="8"/>
 </obj>
 
 <obj class="Point" id="4 ResourceBase-2-ResourceSet">
@@ -1720,17 +1653,17 @@
 </obj>
 
 <obj class="Point" id="4 ResourceSet-2-ResourceSetAND">
- <attr name="x" type="s16" val="27"/>
+ <attr name="x" type="s16" val="65"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
 
-<obj class="Point" id="4 ResourceSetAND-2-DaqApplication">
- <attr name="x" type="s16" val="36"/>
+<obj class="Point" id="4 ResourceSetAND-2-ReadoutApplication">
+ <attr name="x" type="s16" val="66"/>
  <attr name="y" type="s16" val="17"/>
 </obj>
 
 <obj class="Point" id="4 ResourceSetAND-2-ReadoutGroup">
- <attr name="x" type="s16" val="69"/>
+ <attr name="x" type="s16" val="76"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
 

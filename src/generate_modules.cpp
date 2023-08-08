@@ -131,7 +131,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   //for (auto roGroup : get_readout_groups()) {
   for (auto roGroup : get_contains()) {
     if (roGroup->disabled(*session)) {
-      TLOG_DEBUG(5) << "Ignoring disabled ReadoutGroup " << roGroup->UID();
+      TLOG_DEBUG(7) << "Ignoring disabled ReadoutGroup " << roGroup->UID();
       continue;
     }
     auto rset = roGroup->cast<ReadoutGroup>();
@@ -145,7 +145,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
         throw (BadConf(ERS_HERE, "ReadoutGroup contains something other than DROStreamConf"));
       }
       if (stream->disabled(*session)) {
-        TLOG_DEBUG(5) << "Ignoring disabled DROStreamConf " << stream->UID();
+        TLOG_DEBUG(7) << "Ignoring disabled DROStreamConf " << stream->UID();
         continue;
       }
       auto id = stream->get_src_id();

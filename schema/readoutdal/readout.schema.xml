@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="29" oks-format="schema" oks-version="oks-08-03-04-1-gf920aa4 built &quot;May 12 2022&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20230804T132927"/>
+<info name="" type="" num-of-items="29" oks-format="schema" oks-version="oks-08-03-04-1-gf920aa4 built &quot;May 12 2022&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20230808T154345"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -222,8 +222,10 @@
  </class>
 
  <class name="ReadoutApplication">
-  <superclass name="DaqApplication"/>
+  <superclass name="Application"/>
+  <superclass name="ResourceSetAND"/>
   <attribute name="tp_src_id" description="Source ID for TP handler if TPs are being generated" type="u32"/>
+  <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
   <relationship name="runs_on" class-type="ReadoutHost" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
   <relationship name="uses" description="Configuration of the host hardware resources used by this application" class-type="RoHwConfig" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
   <relationship name="link_handler" class-type="LinkHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
