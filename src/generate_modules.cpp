@@ -65,12 +65,12 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   }
 
   // Process the network rules looking for the DL/TP handler data reuest inputs
-  std::vector<const NetworkConnectionDescriptor*> dlhNetDesc;
+  const NetworkConnectionDescriptor* dlhNetDesc = nullptr;
   const NetworkConnectionDescriptor* tpNetDesc = nullptr;
   for (auto rule : get_network_rules()) {
     auto endpoint_class = rule->get_endpoint_class();
     if (endpoint_class == "DLH" || endpoint_class == dlhClass) {
-      dlhNetDesc.push_back(rule->get_descriptor());
+      dlhNetDesc = rule->get_descriptor();
     }
     else if (endpoint_class == "TPHandler") {
       tpNetDesc = rule->get_descriptor();
@@ -165,24 +165,25 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
       queueObj.set_by_val<std::string>("queue_type", dlhInputQDesc->get_queue_type());
       queueObj.set_by_val<uint32_t>("capacity", dlhInputQDesc->get_capacity());
 
-      std::vector<const oksdbinterfaces::ConfigObject*> netObjs;
-      for (auto desc : dlhNetDesc) {
-        std::ostringstream uidStream;
-        uidStream.fill('0');
-        uidStream << desc->get_uid_base() << std::hex << std::setw(8) << id;
-        std::string netUid=uidStream.str();
-        oksdbinterfaces::ConfigObject netObj;
-        confdb->create(dbfile, "NetworkConnection", netUid, netObj);
-        netObj.set_by_val<std::string>("data_type", desc->get_data_type());
-        netObj.set_by_val<std::string>("connection_type", desc->get_connection_type());
-        netObj.set_by_val<std::string>("uri", desc->get_uri());
-        uint16_t port = desc->get_port();
-        port = port ? port+port_offset : port;
-        netObj.set_by_val<uint16_t>("port", port);
-        netObjs.push_back(&(confdb->get<coredal::NetworkConnection>(netUid)->config_object()));
-      }
+      std::ostringstream uidStream;
+      uidStream.fill('0');
+      uidStream << dlhNetDesc->get_uid_base() << std::hex << std::setw(8) << id;
+      std::string netUid=uidStream.str();
+      oksdbinterfaces::ConfigObject netObj;
+      confdb->create(dbfile, "NetworkConnection", netUid, netObj);
+      netObj.set_by_val<std::string>("data_type", dlhNetDesc->get_data_type());
+      netObj.set_by_val<std::string>("connection_type", dlhNetDesc->get_connection_type());
+      netObj.set_by_val<std::string>("uri", dlhNetDesc->get_uri());
+      uint16_t port = dlhNetDesc->get_port();
+      port = port ? port+port_offset : port;
+      netObj.set_by_val<uint16_t>("port", port);
+
       port_offset++;
-      dlhObj.set_objs("inputs", netObjs);
+      std::vector<const oksdbinterfaces::ConfigObject*> inputObjs{
+        &(confdb->get<coredal::Connection>(queueUid)->config_object()),
+        &(confdb->get<coredal::Connection>(netUid)->config_object())
+      };
+      dlhObj.set_objs("inputs", inputObjs);
 
       // Add the input queue dal pointer to the outputs of the DataReader
       outputQueues.push_back(confdb->get<coredal::Connection>(queueUid));
