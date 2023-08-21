@@ -1,5 +1,5 @@
 /**
- * @file generate_modules .cpp
+ * @file generate_modules.cpp
  *
  * Implementation of ReadoutApplication's generate_modules dal method
  *
@@ -9,6 +9,7 @@
  */
 
 #include "oksdbinterfaces/Configuration.hpp"
+#include "oks/kernel.hpp"
 
 #include "coredal/Connection.hpp"
 #include "coredal/NetworkConnection.hpp"
@@ -29,15 +30,12 @@
 #include "readoutdal/TPHandler.hpp"
 #include "readoutdal/TPHandlerConf.hpp"
 
-#include "ers/Issue.hpp"
+#include "readoutdalIssues.hpp"
+
 #include "logging/Logging.hpp"
 
 #include <string>
 #include <vector>
-
-namespace dunedaq {
-  ERS_DECLARE_ISSUE(readoutdal, BadConf, what, ((std::string)what))
-}
 
 using namespace dunedaq;
 using namespace dunedaq::readoutdal;
@@ -46,6 +44,8 @@ std::vector<const coredal::DaqModule*>
 ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
                                      const std::string& dbfile,
                                      const coredal::Session* session) const {
+  //oks::OksFile::set_nolock_mode(true);
+
   std::vector<const coredal::DaqModule*> modules;
 
   auto dlhConf = get_link_handler();
@@ -206,5 +206,6 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
     modules.push_back(confdb->get<DataReader>(readerUid));
   }
+  //oks::OksFile::set_nolock_mode(false);
   return modules;
 }

@@ -1,0 +1,1050 @@
+<?xml version="1.0" encoding="ASCII"?>
+
+<!-- oks-data version 2.2 -->
+
+
+<!DOCTYPE oks-data [
+  <!ELEMENT oks-data (info, (include)?, (comments)?, (obj)+)>
+  <!ELEMENT info EMPTY>
+  <!ATTLIST info
+      name CDATA #IMPLIED
+      type CDATA #IMPLIED
+      num-of-items CDATA #REQUIRED
+      oks-format CDATA #FIXED "data"
+      oks-version CDATA #REQUIRED
+      created-by CDATA #IMPLIED
+      created-on CDATA #IMPLIED
+      creation-time CDATA #IMPLIED
+      last-modified-by CDATA #IMPLIED
+      last-modified-on CDATA #IMPLIED
+      last-modification-time CDATA #IMPLIED
+  >
+  <!ELEMENT include (file)*>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+      path CDATA #REQUIRED
+  >
+  <!ELEMENT comments (comment)*>
+  <!ELEMENT comment EMPTY>
+  <!ATTLIST comment
+      creation-time CDATA #REQUIRED
+      created-by CDATA #REQUIRED
+      created-on CDATA #REQUIRED
+      author CDATA #REQUIRED
+      text CDATA #REQUIRED
+  >
+  <!ELEMENT obj (attr | rel)*>
+  <!ATTLIST obj
+      class CDATA #REQUIRED
+      id CDATA #REQUIRED
+  >
+  <!ELEMENT attr (data)*>
+  <!ATTLIST attr
+      name CDATA #REQUIRED
+      type (bool|s8|u8|s16|u16|s32|u32|s64|u64|float|double|date|time|string|uid|enum|class|-) "-"
+      val CDATA ""
+  >
+  <!ELEMENT data EMPTY>
+  <!ATTLIST data
+      val CDATA #REQUIRED
+  >
+  <!ELEMENT rel (ref)*>
+  <!ATTLIST rel
+      name CDATA #REQUIRED
+      class CDATA ""
+      id CDATA ""
+  >
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref
+      class CDATA #REQUIRED
+      id CDATA #REQUIRED
+  >
+]>
+
+<oks-data>
+
+<info name="" type="" num-of-items="159" oks-format="data" oks-version="oks-08-03-04-1-gf920aa4 built &quot;May 12 2022&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230821T090136" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20230821T090136"/>
+
+<obj class="ALink" id="DFApplication-2-DFHWConf-via-uses">
+ <attr name="Name" type="string" val="uses"/>
+ <rel name="From" class="Class" id="DFApplication"/>
+ <rel name="To" class="Class" id="DFHWConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DFApplication-2-DFHWConf-via-uses"/>
+  <ref class="Point" id="2 DFApplication-2-DFHWConf-via-uses"/>
+  <ref class="Point" id="3 DFApplication-2-DFHWConf-via-uses"/>
+  <ref class="Point" id="4 DFApplication-2-DFHWConf-via-uses"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="DFApplication-2-DataWriterConf-via-data_writer">
+ <attr name="Name" type="string" val="data_writer"/>
+ <rel name="From" class="Class" id="DFApplication"/>
+ <rel name="To" class="Class" id="DataWriterConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DFApplication-2-DataWriterConf-via-data_writer"/>
+  <ref class="Point" id="2 DFApplication-2-DataWriterConf-via-data_writer"/>
+  <ref class="Point" id="3 DFApplication-2-DataWriterConf-via-data_writer"/>
+  <ref class="Point" id="4 DFApplication-2-DataWriterConf-via-data_writer"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="DFApplication-2-TRBConf-via-trb">
+ <attr name="Name" type="string" val="trb"/>
+ <rel name="From" class="Class" id="DFApplication"/>
+ <rel name="To" class="Class" id="TRBConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DFApplication-2-TRBConf-via-trb"/>
+  <ref class="Point" id="2 DFApplication-2-TRBConf-via-trb"/>
+  <ref class="Point" id="3 DFApplication-2-TRBConf-via-trb"/>
+  <ref class="Point" id="4 DFApplication-2-TRBConf-via-trb"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="DFHWConf-2-StorageDevice-via-uses">
+ <attr name="Name" type="string" val="uses"/>
+ <rel name="From" class="Class" id="DFHWConf"/>
+ <rel name="To" class="Class" id="StorageDevice"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DFHWConf-2-StorageDevice-via-uses"/>
+  <ref class="Point" id="2 DFHWConf-2-StorageDevice-via-uses"/>
+  <ref class="Point" id="3 DFHWConf-2-StorageDevice-via-uses"/>
+  <ref class="Point" id="4 DFHWConf-2-StorageDevice-via-uses"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="DFOApplication-2-DFOConf-via-dfo">
+ <attr name="Name" type="string" val="dfo"/>
+ <rel name="From" class="Class" id="DFOApplication"/>
+ <rel name="To" class="Class" id="DFOConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DFOApplication-2-DFOConf-via-dfo"/>
+  <ref class="Point" id="2 DFOApplication-2-DFOConf-via-dfo"/>
+  <ref class="Point" id="3 DFOApplication-2-DFOConf-via-dfo"/>
+  <ref class="Point" id="4 DFOApplication-2-DFOConf-via-dfo"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="DFOModule-2-DFOConf-via-configuration">
+ <attr name="Name" type="string" val="configuration"/>
+ <rel name="From" class="Class" id="DFOModule"/>
+ <rel name="To" class="Class" id="DFOConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DFOModule-2-DFOConf-via-configuration"/>
+  <ref class="Point" id="2 DFOModule-2-DFOConf-via-configuration"/>
+  <ref class="Point" id="3 DFOModule-2-DFOConf-via-configuration"/>
+  <ref class="Point" id="4 DFOModule-2-DFOConf-via-configuration"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="DaqModule-2-Connection-via-inputs">
+ <attr name="Name" type="string" val="inputs"/>
+ <rel name="From" class="Class" id="DaqModule"/>
+ <rel name="To" class="Class" id="Connection"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DaqModule-2-Connection-via-inputs"/>
+  <ref class="Point" id="2 DaqModule-2-Connection-via-inputs"/>
+  <ref class="Point" id="3 DaqModule-2-Connection-via-inputs"/>
+  <ref class="Point" id="4 DaqModule-2-Connection-via-inputs"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="DaqModule-2-Connection-via-outputs">
+ <attr name="Name" type="string" val="outputs"/>
+ <rel name="From" class="Class" id="DaqModule"/>
+ <rel name="To" class="Class" id="Connection"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DaqModule-2-Connection-via-outputs"/>
+  <ref class="Point" id="2 DaqModule-2-Connection-via-outputs"/>
+  <ref class="Point" id="3 DaqModule-2-Connection-via-outputs"/>
+  <ref class="Point" id="4 DaqModule-2-Connection-via-outputs"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="DataStoreConf-2-HDF5FileLayoutParams-via-file_layout_params">
+ <attr name="Name" type="string" val="file_layout_params"/>
+ <rel name="From" class="Class" id="DataStoreConf"/>
+ <rel name="To" class="Class" id="HDF5FileLayoutParams"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DataStoreConf-2-HDF5FileLayoutParams-via-file_layout_params"/>
+  <ref class="Point" id="2 DataStoreConf-2-HDF5FileLayoutParams-via-file_layout_params"/>
+  <ref class="Point" id="3 DataStoreConf-2-HDF5FileLayoutParams-via-file_layout_params"/>
+  <ref class="Point" id="4 DataStoreConf-2-HDF5FileLayoutParams-via-file_layout_params"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="DataWriter-2-DataWriterConf-via-configuration">
+ <attr name="Name" type="string" val="configuration"/>
+ <rel name="From" class="Class" id="DataWriter"/>
+ <rel name="To" class="Class" id="DataWriterConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DataWriter-2-DataWriterConf-via-configuration"/>
+  <ref class="Point" id="2 DataWriter-2-DataWriterConf-via-configuration"/>
+  <ref class="Point" id="3 DataWriter-2-DataWriterConf-via-configuration"/>
+  <ref class="Point" id="4 DataWriter-2-DataWriterConf-via-configuration"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="DataWriterConf-2-DataStoreConf-via-data_store_params">
+ <attr name="Name" type="string" val="data_store_params"/>
+ <rel name="From" class="Class" id="DataWriterConf"/>
+ <rel name="To" class="Class" id="DataStoreConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DataWriterConf-2-DataStoreConf-via-data_store_params"/>
+  <ref class="Point" id="2 DataWriterConf-2-DataStoreConf-via-data_store_params"/>
+  <ref class="Point" id="3 DataWriterConf-2-DataStoreConf-via-data_store_params"/>
+  <ref class="Point" id="4 DataWriterConf-2-DataStoreConf-via-data_store_params"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="HDF5FileLayoutParams-2-HDF5PathParams-via-path_params_list">
+ <attr name="Name" type="string" val="path_params_list"/>
+ <rel name="From" class="Class" id="HDF5FileLayoutParams"/>
+ <rel name="To" class="Class" id="HDF5PathParams"/>
+ <rel name="Points">
+  <ref class="Point" id="1 HDF5FileLayoutParams-2-HDF5PathParams-via-path_params_list"/>
+  <ref class="Point" id="2 HDF5FileLayoutParams-2-HDF5PathParams-via-path_params_list"/>
+  <ref class="Point" id="3 HDF5FileLayoutParams-2-HDF5PathParams-via-path_params_list"/>
+  <ref class="Point" id="4 HDF5FileLayoutParams-2-HDF5PathParams-via-path_params_list"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="NetworkConnectionRule-2-NetworkConnectionDescriptor-via-descriptor">
+ <attr name="Name" type="string" val="descriptor"/>
+ <rel name="From" class="Class" id="NetworkConnectionRule"/>
+ <rel name="To" class="Class" id="NetworkConnectionDescriptor"/>
+ <rel name="Points">
+  <ref class="Point" id="1 NetworkConnectionRule-2-NetworkConnectionDescriptor-via-descriptor"/>
+  <ref class="Point" id="2 NetworkConnectionRule-2-NetworkConnectionDescriptor-via-descriptor"/>
+  <ref class="Point" id="3 NetworkConnectionRule-2-NetworkConnectionDescriptor-via-descriptor"/>
+  <ref class="Point" id="4 NetworkConnectionRule-2-NetworkConnectionDescriptor-via-descriptor"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="QueueConnectionRule-2-QueueDescriptor-via-descriptor">
+ <attr name="Name" type="string" val="descriptor"/>
+ <rel name="From" class="Class" id="QueueConnectionRule"/>
+ <rel name="To" class="Class" id="QueueDescriptor"/>
+ <rel name="Points">
+  <ref class="Point" id="1 QueueConnectionRule-2-QueueDescriptor-via-descriptor"/>
+  <ref class="Point" id="2 QueueConnectionRule-2-QueueDescriptor-via-descriptor"/>
+  <ref class="Point" id="3 QueueConnectionRule-2-QueueDescriptor-via-descriptor"/>
+  <ref class="Point" id="4 QueueConnectionRule-2-QueueDescriptor-via-descriptor"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="SmartDaqApplication-2-NetworkConnectionRule-via-network_rules">
+ <attr name="Name" type="string" val="network_rules"/>
+ <rel name="From" class="Class" id="SmartDaqApplication"/>
+ <rel name="To" class="Class" id="NetworkConnectionRule"/>
+ <rel name="Points">
+  <ref class="Point" id="1 SmartDaqApplication-2-NetworkConnectionRule-via-network_rules"/>
+  <ref class="Point" id="2 SmartDaqApplication-2-NetworkConnectionRule-via-network_rules"/>
+  <ref class="Point" id="3 SmartDaqApplication-2-NetworkConnectionRule-via-network_rules"/>
+  <ref class="Point" id="4 SmartDaqApplication-2-NetworkConnectionRule-via-network_rules"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="SmartDaqApplication-2-QueueConnectionRule-via-queue_rules">
+ <attr name="Name" type="string" val="queue_rules"/>
+ <rel name="From" class="Class" id="SmartDaqApplication"/>
+ <rel name="To" class="Class" id="QueueConnectionRule"/>
+ <rel name="Points">
+  <ref class="Point" id="1 SmartDaqApplication-2-QueueConnectionRule-via-queue_rules"/>
+  <ref class="Point" id="2 SmartDaqApplication-2-QueueConnectionRule-via-queue_rules"/>
+  <ref class="Point" id="3 SmartDaqApplication-2-QueueConnectionRule-via-queue_rules"/>
+  <ref class="Point" id="4 SmartDaqApplication-2-QueueConnectionRule-via-queue_rules"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="TPWriter-2-TPWriterConf-via-configuration">
+ <attr name="Name" type="string" val="configuration"/>
+ <rel name="From" class="Class" id="TPWriter"/>
+ <rel name="To" class="Class" id="TPWriterConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 TPWriter-2-TPWriterConf-via-configuration"/>
+  <ref class="Point" id="2 TPWriter-2-TPWriterConf-via-configuration"/>
+  <ref class="Point" id="3 TPWriter-2-TPWriterConf-via-configuration"/>
+  <ref class="Point" id="4 TPWriter-2-TPWriterConf-via-configuration"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="TPWriterApplication-2-TPWriterConf-via-tp_writer">
+ <attr name="Name" type="string" val="tp_writer"/>
+ <rel name="From" class="Class" id="TPWriterApplication"/>
+ <rel name="To" class="Class" id="TPWriterConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 TPWriterApplication-2-TPWriterConf-via-tp_writer"/>
+  <ref class="Point" id="2 TPWriterApplication-2-TPWriterConf-via-tp_writer"/>
+  <ref class="Point" id="3 TPWriterApplication-2-TPWriterConf-via-tp_writer"/>
+  <ref class="Point" id="4 TPWriterApplication-2-TPWriterConf-via-tp_writer"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="TPWriterConf-2-DataWriterConf-via-data_store_params">
+ <attr name="Name" type="string" val="data_store_params"/>
+ <rel name="From" class="Class" id="TPWriterConf"/>
+ <rel name="To" class="Class" id="DataWriterConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 TPWriterConf-2-DataWriterConf-via-data_store_params"/>
+  <ref class="Point" id="2 TPWriterConf-2-DataWriterConf-via-data_store_params"/>
+  <ref class="Point" id="3 TPWriterConf-2-DataWriterConf-via-data_store_params"/>
+  <ref class="Point" id="4 TPWriterConf-2-DataWriterConf-via-data_store_params"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="TRBuilder-2-TRBConf-via-configuration">
+ <attr name="Name" type="string" val="configuration"/>
+ <rel name="From" class="Class" id="TRBuilder"/>
+ <rel name="To" class="Class" id="TRBConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 TRBuilder-2-TRBConf-via-configuration"/>
+  <ref class="Point" id="2 TRBuilder-2-TRBConf-via-configuration"/>
+  <ref class="Point" id="3 TRBuilder-2-TRBConf-via-configuration"/>
+  <ref class="Point" id="4 TRBuilder-2-TRBConf-via-configuration"/>
+ </rel>
+</obj>
+
+<obj class="Class" id="Connection">
+ <attr name="x" type="s16" val="947"/>
+ <attr name="y" type="s16" val="40"/>
+</obj>
+
+<obj class="Class" id="DFApplication">
+ <attr name="x" type="s16" val="88"/>
+ <attr name="y" type="s16" val="258"/>
+</obj>
+
+<obj class="Class" id="DFHWConf">
+ <attr name="x" type="s16" val="118"/>
+ <attr name="y" type="s16" val="385"/>
+</obj>
+
+<obj class="Class" id="DFOApplication">
+ <attr name="x" type="s16" val="11"/>
+ <attr name="y" type="s16" val="689"/>
+</obj>
+
+<obj class="Class" id="DFOConf">
+ <attr name="x" type="s16" val="297"/>
+ <attr name="y" type="s16" val="694"/>
+</obj>
+
+<obj class="Class" id="DFOModule">
+ <attr name="x" type="s16" val="1189"/>
+ <attr name="y" type="s16" val="740"/>
+</obj>
+
+<obj class="Class" id="DaqModule">
+ <attr name="x" type="s16" val="1171"/>
+ <attr name="y" type="s16" val="46"/>
+</obj>
+
+<obj class="Class" id="DataStoreConf">
+ <attr name="x" type="s16" val="542"/>
+ <attr name="y" type="s16" val="356"/>
+</obj>
+
+<obj class="Class" id="DataWriter">
+ <attr name="x" type="s16" val="1148"/>
+ <attr name="y" type="s16" val="290"/>
+</obj>
+
+<obj class="Class" id="DataWriterConf">
+ <attr name="x" type="s16" val="279"/>
+ <attr name="y" type="s16" val="297"/>
+</obj>
+
+<obj class="Class" id="HDF5FileLayoutParams">
+ <attr name="x" type="s16" val="839"/>
+ <attr name="y" type="s16" val="402"/>
+</obj>
+
+<obj class="Class" id="HDF5PathParams">
+ <attr name="x" type="s16" val="565"/>
+ <attr name="y" type="s16" val="530"/>
+</obj>
+
+<obj class="Class" id="NetworkConnectionDescriptor">
+ <attr name="x" type="s16" val="658"/>
+ <attr name="y" type="s16" val="115"/>
+</obj>
+
+<obj class="Class" id="NetworkConnectionRule">
+ <attr name="x" type="s16" val="332"/>
+ <attr name="y" type="s16" val="124"/>
+</obj>
+
+<obj class="Class" id="QueueConnectionRule">
+ <attr name="x" type="s16" val="330"/>
+ <attr name="y" type="s16" val="53"/>
+</obj>
+
+<obj class="Class" id="QueueDescriptor">
+ <attr name="x" type="s16" val="653"/>
+ <attr name="y" type="s16" val="20"/>
+</obj>
+
+<obj class="Class" id="SmartDaqApplication">
+ <attr name="x" type="s16" val="11"/>
+ <attr name="y" type="s16" val="84"/>
+</obj>
+
+<obj class="Class" id="StorageDevice">
+ <attr name="x" type="s16" val="119"/>
+ <attr name="y" type="s16" val="490"/>
+</obj>
+
+<obj class="Class" id="TPWriter">
+ <attr name="x" type="s16" val="1175"/>
+ <attr name="y" type="s16" val="656"/>
+</obj>
+
+<obj class="Class" id="TPWriterApplication">
+ <attr name="x" type="s16" val="69"/>
+ <attr name="y" type="s16" val="628"/>
+</obj>
+
+<obj class="Class" id="TPWriterConf">
+ <attr name="x" type="s16" val="297"/>
+ <attr name="y" type="s16" val="626"/>
+</obj>
+
+<obj class="Class" id="TRBConf">
+ <attr name="x" type="s16" val="272"/>
+ <attr name="y" type="s16" val="194"/>
+</obj>
+
+<obj class="Class" id="TRBuilder">
+ <attr name="x" type="s16" val="1128"/>
+ <attr name="y" type="s16" val="237"/>
+</obj>
+
+<obj class="GLink" id="DaqModule-2-DFOModule">
+ <rel name="From" class="Class" id="DaqModule"/>
+ <rel name="To" class="Class" id="DFOModule"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DaqModule-2-DFOModule"/>
+  <ref class="Point" id="2 DaqModule-2-DFOModule"/>
+  <ref class="Point" id="3 DaqModule-2-DFOModule"/>
+  <ref class="Point" id="4 DaqModule-2-DFOModule"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="DaqModule-2-DataWriter">
+ <rel name="From" class="Class" id="DaqModule"/>
+ <rel name="To" class="Class" id="DataWriter"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DaqModule-2-DataWriter"/>
+  <ref class="Point" id="2 DaqModule-2-DataWriter"/>
+  <ref class="Point" id="3 DaqModule-2-DataWriter"/>
+  <ref class="Point" id="4 DaqModule-2-DataWriter"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="DaqModule-2-TPWriter">
+ <rel name="From" class="Class" id="DaqModule"/>
+ <rel name="To" class="Class" id="TPWriter"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DaqModule-2-TPWriter"/>
+  <ref class="Point" id="2 DaqModule-2-TPWriter"/>
+  <ref class="Point" id="3 DaqModule-2-TPWriter"/>
+  <ref class="Point" id="4 DaqModule-2-TPWriter"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="DaqModule-2-TRBuilder">
+ <rel name="From" class="Class" id="DaqModule"/>
+ <rel name="To" class="Class" id="TRBuilder"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DaqModule-2-TRBuilder"/>
+  <ref class="Point" id="2 DaqModule-2-TRBuilder"/>
+  <ref class="Point" id="3 DaqModule-2-TRBuilder"/>
+  <ref class="Point" id="4 DaqModule-2-TRBuilder"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="SmartDaqApplication-2-DFApplication">
+ <rel name="From" class="Class" id="SmartDaqApplication"/>
+ <rel name="To" class="Class" id="DFApplication"/>
+ <rel name="Points">
+  <ref class="Point" id="1 SmartDaqApplication-2-DFApplication"/>
+  <ref class="Point" id="2 SmartDaqApplication-2-DFApplication"/>
+  <ref class="Point" id="3 SmartDaqApplication-2-DFApplication"/>
+  <ref class="Point" id="4 SmartDaqApplication-2-DFApplication"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="SmartDaqApplication-2-DFOApplication">
+ <rel name="From" class="Class" id="SmartDaqApplication"/>
+ <rel name="To" class="Class" id="DFOApplication"/>
+ <rel name="Points">
+  <ref class="Point" id="1 SmartDaqApplication-2-DFOApplication"/>
+  <ref class="Point" id="2 SmartDaqApplication-2-DFOApplication"/>
+  <ref class="Point" id="3 SmartDaqApplication-2-DFOApplication"/>
+  <ref class="Point" id="4 SmartDaqApplication-2-DFOApplication"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="SmartDaqApplication-2-TPWriterApplication">
+ <rel name="From" class="Class" id="SmartDaqApplication"/>
+ <rel name="To" class="Class" id="TPWriterApplication"/>
+ <rel name="Points">
+  <ref class="Point" id="1 SmartDaqApplication-2-TPWriterApplication"/>
+  <ref class="Point" id="2 SmartDaqApplication-2-TPWriterApplication"/>
+  <ref class="Point" id="3 SmartDaqApplication-2-TPWriterApplication"/>
+  <ref class="Point" id="4 SmartDaqApplication-2-TPWriterApplication"/>
+ </rel>
+</obj>
+
+<obj class="Point" id="1 DFApplication-2-DFHWConf-via-uses">
+ <attr name="x" type="s16" val="75"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 DFApplication-2-DataWriterConf-via-data_writer">
+ <attr name="x" type="s16" val="75"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 DFApplication-2-TRBConf-via-trb">
+ <attr name="x" type="s16" val="75"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 DFHWConf-2-StorageDevice-via-uses">
+ <attr name="x" type="s16" val="54"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 DFOApplication-2-DFOConf-via-dfo">
+ <attr name="x" type="s16" val="75"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 DFOModule-2-DFOConf-via-configuration">
+ <attr name="x" type="s16" val="59"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 DaqModule-2-Connection-via-inputs">
+ <attr name="x" type="s16" val="56"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 DaqModule-2-Connection-via-outputs">
+ <attr name="x" type="s16" val="56"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 DaqModule-2-DFOModule">
+ <attr name="x" type="s16" val="72"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 DaqModule-2-DataWriter">
+ <attr name="x" type="s16" val="28"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 DaqModule-2-TPWriter">
+ <attr name="x" type="s16" val="54"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 DaqModule-2-TRBuilder">
+ <attr name="x" type="s16" val="4"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 DataStoreConf-2-HDF5FileLayoutParams-via-file_layout_params">
+ <attr name="x" type="s16" val="19"/>
+ <attr name="y" type="s16" val="105"/>
+</obj>
+
+<obj class="Point" id="1 DataWriter-2-DataWriterConf-via-configuration">
+ <attr name="x" type="s16" val="51"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 DataWriterConf-2-DataStoreConf-via-data_store_params">
+ <attr name="x" type="s16" val="150"/>
+ <attr name="y" type="s16" val="51"/>
+</obj>
+
+<obj class="Point" id="1 HDF5FileLayoutParams-2-HDF5PathParams-via-path_params_list">
+ <attr name="x" type="s16" val="107"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 NetworkConnectionRule-2-NetworkConnectionDescriptor-via-descriptor">
+ <attr name="x" type="s16" val="162"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 QueueConnectionRule-2-QueueDescriptor-via-descriptor">
+ <attr name="x" type="s16" val="171"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 SmartDaqApplication-2-DFApplication">
+ <attr name="x" type="s16" val="101"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 SmartDaqApplication-2-DFOApplication">
+ <attr name="x" type="s16" val="34"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 SmartDaqApplication-2-NetworkConnectionRule-via-network_rules">
+ <attr name="x" type="s16" val="95"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 SmartDaqApplication-2-QueueConnectionRule-via-queue_rules">
+ <attr name="x" type="s16" val="95"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 SmartDaqApplication-2-TPWriterApplication">
+ <attr name="x" type="s16" val="66"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 TPWriter-2-TPWriterConf-via-configuration">
+ <attr name="x" type="s16" val="42"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 TPWriterApplication-2-TPWriterConf-via-tp_writer">
+ <attr name="x" type="s16" val="90"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 TPWriterConf-2-DataWriterConf-via-data_store_params">
+ <attr name="x" type="s16" val="87"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 TRBuilder-2-TRBConf-via-configuration">
+ <attr name="x" type="s16" val="48"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="2 DFApplication-2-DFHWConf-via-uses">
+ <attr name="x" type="s16" val="75"/>
+ <attr name="y" type="s16" val="334"/>
+</obj>
+
+<obj class="Point" id="2 DFApplication-2-DataWriterConf-via-data_writer">
+ <attr name="x" type="s16" val="75"/>
+ <attr name="y" type="s16" val="301"/>
+</obj>
+
+<obj class="Point" id="2 DFApplication-2-TRBConf-via-trb">
+ <attr name="x" type="s16" val="75"/>
+ <attr name="y" type="s16" val="262"/>
+</obj>
+
+<obj class="Point" id="2 DFHWConf-2-StorageDevice-via-uses">
+ <attr name="x" type="s16" val="54"/>
+ <attr name="y" type="s16" val="445"/>
+</obj>
+
+<obj class="Point" id="2 DFOApplication-2-DFOConf-via-dfo">
+ <attr name="x" type="s16" val="75"/>
+ <attr name="y" type="s16" val="713"/>
+</obj>
+
+<obj class="Point" id="2 DFOModule-2-DFOConf-via-configuration">
+ <attr name="x" type="s16" val="59"/>
+ <attr name="y" type="s16" val="752"/>
+</obj>
+
+<obj class="Point" id="2 DaqModule-2-Connection-via-inputs">
+ <attr name="x" type="s16" val="56"/>
+ <attr name="y" type="s16" val="50"/>
+</obj>
+
+<obj class="Point" id="2 DaqModule-2-Connection-via-outputs">
+ <attr name="x" type="s16" val="56"/>
+ <attr name="y" type="s16" val="74"/>
+</obj>
+
+<obj class="Point" id="2 DaqModule-2-DFOModule">
+ <attr name="x" type="s16" val="72"/>
+ <attr name="y" type="s16" val="334"/>
+</obj>
+
+<obj class="Point" id="2 DaqModule-2-DataWriter">
+ <attr name="x" type="s16" val="28"/>
+ <attr name="y" type="s16" val="177"/>
+</obj>
+
+<obj class="Point" id="2 DaqModule-2-TPWriter">
+ <attr name="x" type="s16" val="54"/>
+ <attr name="y" type="s16" val="301"/>
+</obj>
+
+<obj class="Point" id="2 DaqModule-2-TRBuilder">
+ <attr name="x" type="s16" val="4"/>
+ <attr name="y" type="s16" val="145"/>
+</obj>
+
+<obj class="Point" id="2 DataStoreConf-2-HDF5FileLayoutParams-via-file_layout_params">
+ <attr name="x" type="s16" val="19"/>
+ <attr name="y" type="s16" val="370"/>
+</obj>
+
+<obj class="Point" id="2 DataWriter-2-DataWriterConf-via-configuration">
+ <attr name="x" type="s16" val="51"/>
+ <attr name="y" type="s16" val="304"/>
+</obj>
+
+<obj class="Point" id="2 DataWriterConf-2-DataStoreConf-via-data_store_params">
+ <attr name="x" type="s16" val="150"/>
+ <attr name="y" type="s16" val="333"/>
+</obj>
+
+<obj class="Point" id="2 HDF5FileLayoutParams-2-HDF5PathParams-via-path_params_list">
+ <attr name="x" type="s16" val="107"/>
+ <attr name="y" type="s16" val="510"/>
+</obj>
+
+<obj class="Point" id="2 NetworkConnectionRule-2-NetworkConnectionDescriptor-via-descriptor">
+ <attr name="x" type="s16" val="162"/>
+ <attr name="y" type="s16" val="145"/>
+</obj>
+
+<obj class="Point" id="2 QueueConnectionRule-2-QueueDescriptor-via-descriptor">
+ <attr name="x" type="s16" val="171"/>
+ <attr name="y" type="s16" val="72"/>
+</obj>
+
+<obj class="Point" id="2 SmartDaqApplication-2-DFApplication">
+ <attr name="x" type="s16" val="101"/>
+ <attr name="y" type="s16" val="195"/>
+</obj>
+
+<obj class="Point" id="2 SmartDaqApplication-2-DFOApplication">
+ <attr name="x" type="s16" val="34"/>
+ <attr name="y" type="s16" val="306"/>
+</obj>
+
+<obj class="Point" id="2 SmartDaqApplication-2-NetworkConnectionRule-via-network_rules">
+ <attr name="x" type="s16" val="95"/>
+ <attr name="y" type="s16" val="130"/>
+</obj>
+
+<obj class="Point" id="2 SmartDaqApplication-2-QueueConnectionRule-via-queue_rules">
+ <attr name="x" type="s16" val="95"/>
+ <attr name="y" type="s16" val="93"/>
+</obj>
+
+<obj class="Point" id="2 SmartDaqApplication-2-TPWriterApplication">
+ <attr name="x" type="s16" val="66"/>
+ <attr name="y" type="s16" val="270"/>
+</obj>
+
+<obj class="Point" id="2 TPWriter-2-TPWriterConf-via-configuration">
+ <attr name="x" type="s16" val="42"/>
+ <attr name="y" type="s16" val="662"/>
+</obj>
+
+<obj class="Point" id="2 TPWriterApplication-2-TPWriterConf-via-tp_writer">
+ <attr name="x" type="s16" val="90"/>
+ <attr name="y" type="s16" val="649"/>
+</obj>
+
+<obj class="Point" id="2 TPWriterConf-2-DataWriterConf-via-data_store_params">
+ <attr name="x" type="s16" val="87"/>
+ <attr name="y" type="s16" val="374"/>
+</obj>
+
+<obj class="Point" id="2 TRBuilder-2-TRBConf-via-configuration">
+ <attr name="x" type="s16" val="48"/>
+ <attr name="y" type="s16" val="257"/>
+</obj>
+
+<obj class="Point" id="3 DFApplication-2-DFHWConf-via-uses">
+ <attr name="x" type="s16" val="45"/>
+ <attr name="y" type="s16" val="334"/>
+</obj>
+
+<obj class="Point" id="3 DFApplication-2-DataWriterConf-via-data_writer">
+ <attr name="x" type="s16" val="23"/>
+ <attr name="y" type="s16" val="301"/>
+</obj>
+
+<obj class="Point" id="3 DFApplication-2-TRBConf-via-trb">
+ <attr name="x" type="s16" val="14"/>
+ <attr name="y" type="s16" val="262"/>
+</obj>
+
+<obj class="Point" id="3 DFHWConf-2-StorageDevice-via-uses">
+ <attr name="x" type="s16" val="53"/>
+ <attr name="y" type="s16" val="445"/>
+</obj>
+
+<obj class="Point" id="3 DFOApplication-2-DFOConf-via-dfo">
+ <attr name="x" type="s16" val="15"/>
+ <attr name="y" type="s16" val="713"/>
+</obj>
+
+<obj class="Point" id="3 DFOModule-2-DFOConf-via-configuration">
+ <attr name="x" type="s16" val="15"/>
+ <attr name="y" type="s16" val="752"/>
+</obj>
+
+<obj class="Point" id="3 DaqModule-2-Connection-via-inputs">
+ <attr name="x" type="s16" val="25"/>
+ <attr name="y" type="s16" val="50"/>
+</obj>
+
+<obj class="Point" id="3 DaqModule-2-Connection-via-outputs">
+ <attr name="x" type="s16" val="25"/>
+ <attr name="y" type="s16" val="74"/>
+</obj>
+
+<obj class="Point" id="3 DaqModule-2-DFOModule">
+ <attr name="x" type="s16" val="54"/>
+ <attr name="y" type="s16" val="334"/>
+</obj>
+
+<obj class="Point" id="3 DaqModule-2-DataWriter">
+ <attr name="x" type="s16" val="51"/>
+ <attr name="y" type="s16" val="177"/>
+</obj>
+
+<obj class="Point" id="3 DaqModule-2-TPWriter">
+ <attr name="x" type="s16" val="50"/>
+ <attr name="y" type="s16" val="301"/>
+</obj>
+
+<obj class="Point" id="3 DaqModule-2-TRBuilder">
+ <attr name="x" type="s16" val="48"/>
+ <attr name="y" type="s16" val="145"/>
+</obj>
+
+<obj class="Point" id="3 DataStoreConf-2-HDF5FileLayoutParams-via-file_layout_params">
+ <attr name="x" type="s16" val="47"/>
+ <attr name="y" type="s16" val="370"/>
+</obj>
+
+<obj class="Point" id="3 DataWriter-2-DataWriterConf-via-configuration">
+ <attr name="x" type="s16" val="61"/>
+ <attr name="y" type="s16" val="304"/>
+</obj>
+
+<obj class="Point" id="3 DataWriterConf-2-DataStoreConf-via-data_store_params">
+ <attr name="x" type="s16" val="22"/>
+ <attr name="y" type="s16" val="333"/>
+</obj>
+
+<obj class="Point" id="3 HDF5FileLayoutParams-2-HDF5PathParams-via-path_params_list">
+ <attr name="x" type="s16" val="123"/>
+ <attr name="y" type="s16" val="510"/>
+</obj>
+
+<obj class="Point" id="3 NetworkConnectionRule-2-NetworkConnectionDescriptor-via-descriptor">
+ <attr name="x" type="s16" val="56"/>
+ <attr name="y" type="s16" val="145"/>
+</obj>
+
+<obj class="Point" id="3 QueueConnectionRule-2-QueueDescriptor-via-descriptor">
+ <attr name="x" type="s16" val="59"/>
+ <attr name="y" type="s16" val="72"/>
+</obj>
+
+<obj class="Point" id="3 SmartDaqApplication-2-DFApplication">
+ <attr name="x" type="s16" val="24"/>
+ <attr name="y" type="s16" val="195"/>
+</obj>
+
+<obj class="Point" id="3 SmartDaqApplication-2-DFOApplication">
+ <attr name="x" type="s16" val="34"/>
+ <attr name="y" type="s16" val="306"/>
+</obj>
+
+<obj class="Point" id="3 SmartDaqApplication-2-NetworkConnectionRule-via-network_rules">
+ <attr name="x" type="s16" val="54"/>
+ <attr name="y" type="s16" val="130"/>
+</obj>
+
+<obj class="Point" id="3 SmartDaqApplication-2-QueueConnectionRule-via-queue_rules">
+ <attr name="x" type="s16" val="57"/>
+ <attr name="y" type="s16" val="93"/>
+</obj>
+
+<obj class="Point" id="3 SmartDaqApplication-2-TPWriterApplication">
+ <attr name="x" type="s16" val="8"/>
+ <attr name="y" type="s16" val="270"/>
+</obj>
+
+<obj class="Point" id="3 TPWriter-2-TPWriterConf-via-configuration">
+ <attr name="x" type="s16" val="146"/>
+ <attr name="y" type="s16" val="662"/>
+</obj>
+
+<obj class="Point" id="3 TPWriterApplication-2-TPWriterConf-via-tp_writer">
+ <attr name="x" type="s16" val="20"/>
+ <attr name="y" type="s16" val="649"/>
+</obj>
+
+<obj class="Point" id="3 TPWriterConf-2-DataWriterConf-via-data_store_params">
+ <attr name="x" type="s16" val="61"/>
+ <attr name="y" type="s16" val="374"/>
+</obj>
+
+<obj class="Point" id="3 TRBuilder-2-TRBConf-via-configuration">
+ <attr name="x" type="s16" val="53"/>
+ <attr name="y" type="s16" val="257"/>
+</obj>
+
+<obj class="Point" id="4 DFApplication-2-DFHWConf-via-uses">
+ <attr name="x" type="s16" val="45"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 DFApplication-2-DataWriterConf-via-data_writer">
+ <attr name="x" type="s16" val="23"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 DFApplication-2-TRBConf-via-trb">
+ <attr name="x" type="s16" val="14"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 DFHWConf-2-StorageDevice-via-uses">
+ <attr name="x" type="s16" val="53"/>
+ <attr name="y" type="s16" val="12"/>
+</obj>
+
+<obj class="Point" id="4 DFOApplication-2-DFOConf-via-dfo">
+ <attr name="x" type="s16" val="15"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 DFOModule-2-DFOConf-via-configuration">
+ <attr name="x" type="s16" val="15"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 DaqModule-2-Connection-via-inputs">
+ <attr name="x" type="s16" val="25"/>
+ <attr name="y" type="s16" val="12"/>
+</obj>
+
+<obj class="Point" id="4 DaqModule-2-Connection-via-outputs">
+ <attr name="x" type="s16" val="25"/>
+ <attr name="y" type="s16" val="12"/>
+</obj>
+
+<obj class="Point" id="4 DaqModule-2-DFOModule">
+ <attr name="x" type="s16" val="54"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 DaqModule-2-DataWriter">
+ <attr name="x" type="s16" val="51"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 DaqModule-2-TPWriter">
+ <attr name="x" type="s16" val="50"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 DaqModule-2-TRBuilder">
+ <attr name="x" type="s16" val="48"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 DataStoreConf-2-HDF5FileLayoutParams-via-file_layout_params">
+ <attr name="x" type="s16" val="47"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 DataWriter-2-DataWriterConf-via-configuration">
+ <attr name="x" type="s16" val="61"/>
+ <attr name="y" type="s16" val="26"/>
+</obj>
+
+<obj class="Point" id="4 DataWriterConf-2-DataStoreConf-via-data_store_params">
+ <attr name="x" type="s16" val="22"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 HDF5FileLayoutParams-2-HDF5PathParams-via-path_params_list">
+ <attr name="x" type="s16" val="123"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 NetworkConnectionRule-2-NetworkConnectionDescriptor-via-descriptor">
+ <attr name="x" type="s16" val="56"/>
+ <attr name="y" type="s16" val="30"/>
+</obj>
+
+<obj class="Point" id="4 QueueConnectionRule-2-QueueDescriptor-via-descriptor">
+ <attr name="x" type="s16" val="59"/>
+ <attr name="y" type="s16" val="21"/>
+</obj>
+
+<obj class="Point" id="4 SmartDaqApplication-2-DFApplication">
+ <attr name="x" type="s16" val="24"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 SmartDaqApplication-2-DFOApplication">
+ <attr name="x" type="s16" val="34"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 SmartDaqApplication-2-NetworkConnectionRule-via-network_rules">
+ <attr name="x" type="s16" val="54"/>
+ <attr name="y" type="s16" val="12"/>
+</obj>
+
+<obj class="Point" id="4 SmartDaqApplication-2-QueueConnectionRule-via-queue_rules">
+ <attr name="x" type="s16" val="57"/>
+ <attr name="y" type="s16" val="12"/>
+</obj>
+
+<obj class="Point" id="4 SmartDaqApplication-2-TPWriterApplication">
+ <attr name="x" type="s16" val="8"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 TPWriter-2-TPWriterConf-via-configuration">
+ <attr name="x" type="s16" val="146"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 TPWriterApplication-2-TPWriterConf-via-tp_writer">
+ <attr name="x" type="s16" val="20"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 TPWriterConf-2-DataWriterConf-via-data_store_params">
+ <attr name="x" type="s16" val="61"/>
+ <attr name="y" type="s16" val="26"/>
+</obj>
+
+<obj class="Point" id="4 TRBuilder-2-TRBConf-via-configuration">
+ <attr name="x" type="s16" val="53"/>
+ <attr name="y" type="s16" val="21"/>
+</obj>
+
+<obj class="View" id="DFApplication">
+ <attr name="drawing area x margin" type="u16" val="6"/>
+ <attr name="drawing area y margin" type="u16" val="4"/>
+ <attr name="font x margin" type="u16" val="3"/>
+ <attr name="font y margin" type="u16" val="2"/>
+ <attr name="font name" type="string" val="-adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1"/>
+ <attr name="aggregation sign size" type="u16" val="18"/>
+ <attr name="generalization sign size" type="u16" val="16"/>
+</obj>
+
+</oks-data>

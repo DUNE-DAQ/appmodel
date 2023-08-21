@@ -80,12 +80,42 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="29" oks-format="schema" oks-version="oks-08-03-04-1-gf920aa4 built &quot;May 12 2022&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20230808T154345"/>
+<info name="" type="" num-of-items="46" oks-format="schema" oks-version="oks-08-03-04-1-gf920aa4 built &quot;May 12 2022&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20230821T090129"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
 </include>
 
+
+ <class name="DFApplication">
+  <superclass name="SmartDaqApplication"/>
+  <attribute name="src_id" type="u32" init-value="0" is-not-null="yes"/>
+  <relationship name="trb" description="Configuration of the TRB to be generated my get_modules()" class-type="TRBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="data_writer" class-type="DataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="uses" class-type="DFHWConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="DFHWConf">
+  <relationship name="uses" class-type="StorageDevice" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="DFOApplication">
+  <superclass name="SmartDaqApplication"/>
+  <relationship name="dfo" class-type="DFOConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="DFOConf">
+  <attribute name="general_queue_timeout_ms" type="u32" is-not-null="yes"/>
+  <attribute name="stop_timeout_ms" type="u32" is-not-null="yes"/>
+  <attribute name="td_send_retries" type="s32" init-value="5"/>
+  <attribute name="busy_threshold" type="s32" init-value="10"/>
+  <attribute name="free_threshold" type="s32" init-value="5"/>
+ </class>
+
+ <class name="DFOModule">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="DFOConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
 
  <class name="DLH" is-abstract="yes">
   <superclass name="DaqModule"/>
@@ -118,6 +148,29 @@
 
  <class name="DataReaderConf" is-abstract="yes">
   <attribute name="template_for" description="OKS class of the DataReader that this config is a template for" type="class" init-value="DataReader" is-not-null="yes"/>
+ </class>
+
+ <class name="DataStoreConf">
+  <attribute name="type" type="string"/>
+  <attribute name="operational_environment" type="string"/>
+  <attribute name="mode" type="string"/>
+  <attribute name="max_file_size" type="u64" init-value="0" is-not-null="yes"/>
+  <attribute name="disable_unique_filename_suffix" type="bool" init-value="false"/>
+  <attribute name="free_space_safety_factor" type="s32" init-value="0" is-not-null="yes"/>
+  <relationship name="file_layout_params" class-type="HDF5FileLayoutParams" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="DataWriter">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="DataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="DataWriterConf">
+  <attribute name="data_storage_prescale" type="s32" init-value="1" is-not-null="yes"/>
+  <attribute name="min_write_retry_time_ms" type="s32" init-value="0" is-not-null="yes"/>
+  <attribute name="max_write_retry_time_ms" type="s32" init-value="0" is-not-null="yes"/>
+  <attribute name="write_retry_time_increase_factor" type="s32" init-value="0" is-not-null="yes"/>
+  <relationship name="data_store_params" class-type="DataStoreConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="EthStreamParameters">
@@ -157,6 +210,7 @@
   <attribute name="card" description="Card ID in readout host" type="u8" range="0..1" init-value="0" is-not-null="yes"/>
   <attribute name="slr" description="Super logic region of readout card" type="u16" range="0..1" init-value="0" is-not-null="yes"/>
   <attribute name="link" description="Link within SLR" type="u8" range="0..5" init-value="0" is-not-null="yes"/>
+  <attribute name="host" type="string" init-value="localhost" is-not-null="yes"/>
  </class>
 
  <class name="GeoId">
@@ -164,6 +218,23 @@
   <attribute name="crate_id" type="u32" is-not-null="yes"/>
   <attribute name="slot_id" type="u32" is-not-null="yes"/>
   <attribute name="stream_id" type="u32" is-not-null="yes"/>
+ </class>
+
+ <class name="HDF5FileLayoutParams">
+  <attribute name="record_name_prefix" type="string" init-value="TriggerRecord" is-not-null="yes"/>
+  <attribute name="digits_for_record_number" type="s32" init-value="6"/>
+  <attribute name="digits_for_sequence_number" type="s32" init-value="4"/>
+  <attribute name="record_header_dataset_name" type="string" init-value="TriggerRecordHeader" is-not-null="yes"/>
+  <attribute name="raw_data_group_name" type="string" init-value="RawData" is-not-null="yes"/>
+  <attribute name="view_group_name" type="string" init-value="Views" is-not-null="yes"/>
+  <relationship name="path_params_list" class-type="HDF5PathParams" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="HDF5PathParams">
+  <attribute name="detector_group_type" type="string" init-value="unspecified" is-not-null="yes"/>
+  <attribute name="detector_group_name" type="string" init-value="unspecified" is-not-null="yes"/>
+  <attribute name="element_name_prefix" type="string" init-value="Element" is-not-null="yes"/>
+  <attribute name="digits_for_element_number" type="s32" init-value="5"/>
  </class>
 
  <class name="LatencyBuffer">
@@ -189,12 +260,35 @@
 
  <class name="NICReceiver">
   <superclass name="DataReader"/>
+  <relationship name="streams" class-type="DROStreamConf" low-cc="zero" high-cc="many" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <method name="get_ipadress" description="">
+   <method-implementation language="c++" prototype=" std::string get_ipaddress()" body=""/>
+  </method>
+  <method name="get_macaddress" description="">
+   <method-implementation language="c++" prototype=" std::string get_macaddress()" body=""/>
+  </method>
  </class>
 
  <class name="NICReceiverConf">
   <superclass name="DataReaderConf"/>
-  <attribute name="numa_id" type="u16"/>
   <attribute name="template_for" type="class" init-value="NICReceiver"/>
+  <attribute name="mbuf_cache_size" type="u32" init-value="256" is-not-null="yes"/>
+  <attribute name="lcore_sleep_us" type="u32" init-value="10" is-not-null="yes"/>
+  <attribute name="mtu" type="u32" init-value="9000" is-not-null="yes"/>
+  <attribute name="num_mbufs" type="u32" init-value="8191" is-not-null="yes"/>
+  <attribute name="promiscuous_mode" type="bool" init-value="false"/>
+  <attribute name="rx_ring_size" type="s32" init-value="1024" is-not-null="yes"/>
+  <attribute name="tx_ring_size" type="u32" init-value="1024" is-not-null="yes"/>
+  <attribute name="fkow_control" type="bool" init-value="true"/>
+  <attribute name="eal_args" type="string" init-value="-l 0-1 -n 3 -- -m [0:1].0 -j" is-not-null="yes"/>
+  <relationship name="stats_conf" class-type="NICStatsConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="NICStatsConf">
+  <attribute name="analyze_nth_packet" type="s32" init-value="1" is-not-null="yes"/>
+  <attribute name="expected_packet_size" type="u32" init-value="7243" is-not-null="yes"/>
+  <attribute name="expected_seq_id_step" type="u32" init-value="1"/>
+  <attribute name="expected_timestamp_step" type="s32" init-value="-999" is-not-null="yes"/>
  </class>
 
  <class name="NetworkConnectionDescriptor">
@@ -222,17 +316,15 @@
  </class>
 
  <class name="ReadoutApplication">
-  <superclass name="Application"/>
   <superclass name="ResourceSetAND"/>
+  <superclass name="SmartDaqApplication"/>
   <attribute name="tp_src_id" description="Source ID for TP handler if TPs are being generated" type="u32"/>
   <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
   <relationship name="runs_on" class-type="ReadoutHost" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
   <relationship name="uses" description="Configuration of the host hardware resources used by this application" class-type="RoHwConfig" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
   <relationship name="link_handler" class-type="LinkHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="queue_rules" class-type="QueueConnectionRule" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="tp_handler" class-type="TPHandlerConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_reader" class-type="DataReaderConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="network_rules" class-type="NetworkConnectionRule" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DLH dal objects for streams of thie ReadoutApplication on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const" body=""/>
   </method>
@@ -257,6 +349,15 @@
   <relationship name="hitFindingProc" class-type="ProcessingResource" low-cc="zero" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
  </class>
 
+ <class name="SmartDaqApplication" is-abstract="yes">
+  <superclass name="Application"/>
+  <relationship name="queue_rules" class-type="QueueConnectionRule" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="network_rules" class-type="NetworkConnectionRule" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <method name="generate_modules" description="">
+   <method-implementation language="c++" prototype="virtual std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const" body=""/>
+  </method>
+ </class>
+
  <class name="StreamParameters">
  </class>
 
@@ -272,6 +373,32 @@
   <attribute name="min_latency_ticks" type="u32" init-value="100" is-not-null="yes"/>
   <attribute name="max_transmission_rate_hz" type="u32" init-value="1000" is-not-null="yes"/>
   <relationship name="latency_buffer" class-type="LatencyBuffer" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="TPWriter">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="TPWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="TPWriterApplication">
+  <superclass name="SmartDaqApplication"/>
+  <relationship name="tp_writer" class-type="TPWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="TPWriterConf">
+  <attribute name="tp_accumulation_interval" type="u64" init-value="0" is-not-null="yes"/>
+  <relationship name="data_store_params" class-type="DataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="TRBConf">
+  <attribute name="queues_timeout" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="trigger_record_timeout_ms" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="mac_time_window" type="s64" init-value="0" is-not-null="yes"/>
+ </class>
+
+ <class name="TRBuilder">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="TRBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="geo_id">
