@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="274" oks-format="data" oks-version="oks-08-03-04-1-gf920aa4 built &quot;May 12 2022&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230816T130453" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20230816T130453"/>
+<info name="" type="" num-of-items="280" oks-format="data" oks-version="oks-08-03-04-1-gf920aa4 built &quot;May 12 2022&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230823T095844" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20230823T095844"/>
 
 <obj class="ALink" id="DLH-2-LinkHandlerConf-via-handler_configuration">
  <attr name="Name" type="string" val="handler_configuration"/>
@@ -233,30 +233,6 @@
  </rel>
 </obj>
 
-<obj class="ALink" id="ReadoutApplication-2-NetworkConnectionRule-via-network_rules">
- <attr name="Name" type="string" val="network_rules"/>
- <rel name="From" class="Class" id="ReadoutApplication"/>
- <rel name="To" class="Class" id="NetworkConnectionRule"/>
- <rel name="Points">
-  <ref class="Point" id="1 ReadoutApplication-2-NetworkConnectionRule-via-network_rules"/>
-  <ref class="Point" id="2 ReadoutApplication-2-NetworkConnectionRule-via-network_rules"/>
-  <ref class="Point" id="3 ReadoutApplication-2-NetworkConnectionRule-via-network_rules"/>
-  <ref class="Point" id="4 ReadoutApplication-2-NetworkConnectionRule-via-network_rules"/>
- </rel>
-</obj>
-
-<obj class="ALink" id="ReadoutApplication-2-QueueConnectionRule-via-queue_rules">
- <attr name="Name" type="string" val="queue_rules"/>
- <rel name="From" class="Class" id="ReadoutApplication"/>
- <rel name="To" class="Class" id="QueueConnectionRule"/>
- <rel name="Points">
-  <ref class="Point" id="1 ReadoutApplication-2-QueueConnectionRule-via-queue_rules"/>
-  <ref class="Point" id="2 ReadoutApplication-2-QueueConnectionRule-via-queue_rules"/>
-  <ref class="Point" id="3 ReadoutApplication-2-QueueConnectionRule-via-queue_rules"/>
-  <ref class="Point" id="4 ReadoutApplication-2-QueueConnectionRule-via-queue_rules"/>
- </rel>
-</obj>
-
 <obj class="ALink" id="ReadoutApplication-2-ReadoutHost-via-runs_on">
  <attr name="Name" type="string" val="runs_on"/>
  <rel name="From" class="Class" id="ReadoutApplication"/>
@@ -365,6 +341,30 @@
  </rel>
 </obj>
 
+<obj class="ALink" id="SmartDaqApplication-2-NetworkConnectionRule-via-network_rules">
+ <attr name="Name" type="string" val="network_rules"/>
+ <rel name="From" class="Class" id="SmartDaqApplication"/>
+ <rel name="To" class="Class" id="NetworkConnectionRule"/>
+ <rel name="Points">
+  <ref class="Point" id="1 SmartDaqApplication-2-NetworkConnectionRule-via-network_rules"/>
+  <ref class="Point" id="2 SmartDaqApplication-2-NetworkConnectionRule-via-network_rules"/>
+  <ref class="Point" id="3 SmartDaqApplication-2-NetworkConnectionRule-via-network_rules"/>
+  <ref class="Point" id="4 SmartDaqApplication-2-NetworkConnectionRule-via-network_rules"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="SmartDaqApplication-2-QueueConnectionRule-via-queue_rules">
+ <attr name="Name" type="string" val="queue_rules"/>
+ <rel name="From" class="Class" id="SmartDaqApplication"/>
+ <rel name="To" class="Class" id="QueueConnectionRule"/>
+ <rel name="Points">
+  <ref class="Point" id="1 SmartDaqApplication-2-QueueConnectionRule-via-queue_rules"/>
+  <ref class="Point" id="2 SmartDaqApplication-2-QueueConnectionRule-via-queue_rules"/>
+  <ref class="Point" id="3 SmartDaqApplication-2-QueueConnectionRule-via-queue_rules"/>
+  <ref class="Point" id="4 SmartDaqApplication-2-QueueConnectionRule-via-queue_rules"/>
+ </rel>
+</obj>
+
 <obj class="ALink" id="TPHandler-2-TPHandlerConf-via-handler_configuration">
  <attr name="Name" type="string" val="handler_configuration"/>
  <rel name="From" class="Class" id="TPHandler"/>
@@ -436,17 +436,17 @@
 
 <obj class="Class" id="FelixCardReader">
  <attr name="x" type="s16" val="730"/>
- <attr name="y" type="s16" val="530"/>
+ <attr name="y" type="s16" val="485"/>
 </obj>
 
 <obj class="Class" id="FelixCardReaderConf">
- <attr name="x" type="s16" val="335"/>
- <attr name="y" type="s16" val="593"/>
+ <attr name="x" type="s16" val="300"/>
+ <attr name="y" type="s16" val="596"/>
 </obj>
 
 <obj class="Class" id="FlxStreamParameters">
  <attr name="x" type="s16" val="90"/>
- <attr name="y" type="s16" val="167"/>
+ <attr name="y" type="s16" val="181"/>
 </obj>
 
 <obj class="Class" id="GeoId">
@@ -471,7 +471,7 @@
 
 <obj class="Class" id="NICReceiver">
  <attr name="x" type="s16" val="659"/>
- <attr name="y" type="s16" val="442"/>
+ <attr name="y" type="s16" val="411"/>
 </obj>
 
 <obj class="Class" id="NICReceiverConf">
@@ -485,13 +485,13 @@
 </obj>
 
 <obj class="Class" id="NetworkConnectionDescriptor">
- <attr name="x" type="s16" val="1183"/>
- <attr name="y" type="s16" val="787"/>
+ <attr name="x" type="s16" val="845"/>
+ <attr name="y" type="s16" val="736"/>
 </obj>
 
 <obj class="Class" id="NetworkConnectionRule">
- <attr name="x" type="s16" val="651"/>
- <attr name="y" type="s16" val="768"/>
+ <attr name="x" type="s16" val="554"/>
+ <attr name="y" type="s16" val="769"/>
 </obj>
 
 <obj class="Class" id="NetworkDevice">
@@ -510,13 +510,13 @@
 </obj>
 
 <obj class="Class" id="QueueConnectionRule">
- <attr name="x" type="s16" val="493"/>
- <attr name="y" type="s16" val="836"/>
+ <attr name="x" type="s16" val="463"/>
+ <attr name="y" type="s16" val="841"/>
 </obj>
 
 <obj class="Class" id="QueueDescriptor">
- <attr name="x" type="s16" val="899"/>
- <attr name="y" type="s16" val="813"/>
+ <attr name="x" type="s16" val="1098"/>
+ <attr name="y" type="s16" val="805"/>
 </obj>
 
 <obj class="Class" id="ReadoutApplication">
@@ -557,6 +557,11 @@
 <obj class="Class" id="RoHwConfig">
  <attr name="x" type="s16" val="366"/>
  <attr name="y" type="s16" val="700"/>
+</obj>
+
+<obj class="Class" id="SmartDaqApplication">
+ <attr name="x" type="s16" val="660"/>
+ <attr name="y" type="s16" val="538"/>
 </obj>
 
 <obj class="Class" id="StorageDevice">
@@ -777,6 +782,17 @@
  </rel>
 </obj>
 
+<obj class="GLink" id="SmartDaqApplication-2-ReadoutApplication">
+ <rel name="From" class="Class" id="SmartDaqApplication"/>
+ <rel name="To" class="Class" id="ReadoutApplication"/>
+ <rel name="Points">
+  <ref class="Point" id="1 SmartDaqApplication-2-ReadoutApplication"/>
+  <ref class="Point" id="2 SmartDaqApplication-2-ReadoutApplication"/>
+  <ref class="Point" id="3 SmartDaqApplication-2-ReadoutApplication"/>
+  <ref class="Point" id="4 SmartDaqApplication-2-ReadoutApplication"/>
+ </rel>
+</obj>
+
 <obj class="GLink" id="StreamParameters-2-EthStreamParameters">
  <rel name="From" class="Class" id="StreamParameters"/>
  <rel name="To" class="Class" id="EthStreamParameters"/>
@@ -934,16 +950,6 @@
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 ReadoutApplication-2-NetworkConnectionRule-via-network_rules">
- <attr name="x" type="s16" val="122"/>
- <attr name="y" type="s16" val="51"/>
-</obj>
-
-<obj class="Point" id="1 ReadoutApplication-2-QueueConnectionRule-via-queue_rules">
- <attr name="x" type="s16" val="55"/>
- <attr name="y" type="s16" val="38"/>
-</obj>
-
 <obj class="Point" id="1 ReadoutApplication-2-ReadoutHost-via-runs_on">
  <attr name="x" type="s16" val="89"/>
  <attr name="y" type="s16" val="51"/>
@@ -1012,6 +1018,21 @@
 <obj class="Point" id="1 RoHwConfig-2-StorageDevice-via-snb_storage">
  <attr name="x" type="s16" val="73"/>
  <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 SmartDaqApplication-2-NetworkConnectionRule-via-network_rules">
+ <attr name="x" type="s16" val="50"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 SmartDaqApplication-2-QueueConnectionRule-via-queue_rules">
+ <attr name="x" type="s16" val="5"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 SmartDaqApplication-2-ReadoutApplication">
+ <attr name="x" type="s16" val="95"/>
+ <attr name="y" type="s16" val="38"/>
 </obj>
 
 <obj class="Point" id="1 StreamParameters-2-EthStreamParameters">
@@ -1156,7 +1177,7 @@
 
 <obj class="Point" id="2 QueueConnectionRule-2-QueueDescriptor-via-descriptor">
  <attr name="x" type="s16" val="171"/>
- <attr name="y" type="s16" val="865"/>
+ <attr name="y" type="s16" val="879"/>
 </obj>
 
 <obj class="Point" id="2 ReadoutApplication-2-DataReaderConf-via-data_reader">
@@ -1167,16 +1188,6 @@
 <obj class="Point" id="2 ReadoutApplication-2-LinkHandlerConf-via-link_handler">
  <attr name="x" type="s16" val="89"/>
  <attr name="y" type="s16" val="637"/>
-</obj>
-
-<obj class="Point" id="2 ReadoutApplication-2-NetworkConnectionRule-via-network_rules">
- <attr name="x" type="s16" val="122"/>
- <attr name="y" type="s16" val="722"/>
-</obj>
-
-<obj class="Point" id="2 ReadoutApplication-2-QueueConnectionRule-via-queue_rules">
- <attr name="x" type="s16" val="55"/>
- <attr name="y" type="s16" val="748"/>
 </obj>
 
 <obj class="Point" id="2 ReadoutApplication-2-ReadoutHost-via-runs_on">
@@ -1249,6 +1260,21 @@
  <attr name="y" type="s16" val="863"/>
 </obj>
 
+<obj class="Point" id="2 SmartDaqApplication-2-NetworkConnectionRule-via-network_rules">
+ <attr name="x" type="s16" val="50"/>
+ <attr name="y" type="s16" val="577"/>
+</obj>
+
+<obj class="Point" id="2 SmartDaqApplication-2-QueueConnectionRule-via-queue_rules">
+ <attr name="x" type="s16" val="5"/>
+ <attr name="y" type="s16" val="553"/>
+</obj>
+
+<obj class="Point" id="2 SmartDaqApplication-2-ReadoutApplication">
+ <attr name="x" type="s16" val="95"/>
+ <attr name="y" type="s16" val="704"/>
+</obj>
+
 <obj class="Point" id="2 StreamParameters-2-EthStreamParameters">
  <attr name="x" type="s16" val="10"/>
  <attr name="y" type="s16" val="162"/>
@@ -1256,7 +1282,7 @@
 
 <obj class="Point" id="2 StreamParameters-2-FlxStreamParameters">
  <attr name="x" type="s16" val="83"/>
- <attr name="y" type="s16" val="151"/>
+ <attr name="y" type="s16" val="166"/>
 </obj>
 
 <obj class="Point" id="2 TPHandler-2-TPHandlerConf-via-handler_configuration">
@@ -1320,7 +1346,7 @@
 </obj>
 
 <obj class="Point" id="3 DaqModule-2-HostComponent-via-used_resources">
- <attr name="x" type="s16" val="83"/>
+ <attr name="x" type="s16" val="79"/>
  <attr name="y" type="s16" val="268"/>
 </obj>
 
@@ -1345,7 +1371,7 @@
 </obj>
 
 <obj class="Point" id="3 DataReaderConf-2-FelixCardReaderConf">
- <attr name="x" type="s16" val="187"/>
+ <attr name="x" type="s16" val="222"/>
  <attr name="y" type="s16" val="408"/>
 </obj>
 
@@ -1391,7 +1417,7 @@
 
 <obj class="Point" id="3 QueueConnectionRule-2-QueueDescriptor-via-descriptor">
  <attr name="x" type="s16" val="49"/>
- <attr name="y" type="s16" val="865"/>
+ <attr name="y" type="s16" val="879"/>
 </obj>
 
 <obj class="Point" id="3 ReadoutApplication-2-DataReaderConf-via-data_reader">
@@ -1402,16 +1428,6 @@
 <obj class="Point" id="3 ReadoutApplication-2-LinkHandlerConf-via-link_handler">
  <attr name="x" type="s16" val="37"/>
  <attr name="y" type="s16" val="637"/>
-</obj>
-
-<obj class="Point" id="3 ReadoutApplication-2-NetworkConnectionRule-via-network_rules">
- <attr name="x" type="s16" val="87"/>
- <attr name="y" type="s16" val="722"/>
-</obj>
-
-<obj class="Point" id="3 ReadoutApplication-2-QueueConnectionRule-via-queue_rules">
- <attr name="x" type="s16" val="131"/>
- <attr name="y" type="s16" val="748"/>
 </obj>
 
 <obj class="Point" id="3 ReadoutApplication-2-ReadoutHost-via-runs_on">
@@ -1484,6 +1500,21 @@
  <attr name="y" type="s16" val="863"/>
 </obj>
 
+<obj class="Point" id="3 SmartDaqApplication-2-NetworkConnectionRule-via-network_rules">
+ <attr name="x" type="s16" val="5"/>
+ <attr name="y" type="s16" val="577"/>
+</obj>
+
+<obj class="Point" id="3 SmartDaqApplication-2-QueueConnectionRule-via-queue_rules">
+ <attr name="x" type="s16" val="74"/>
+ <attr name="y" type="s16" val="553"/>
+</obj>
+
+<obj class="Point" id="3 SmartDaqApplication-2-ReadoutApplication">
+ <attr name="x" type="s16" val="63"/>
+ <attr name="y" type="s16" val="704"/>
+</obj>
+
 <obj class="Point" id="3 StreamParameters-2-EthStreamParameters">
  <attr name="x" type="s16" val="48"/>
  <attr name="y" type="s16" val="162"/>
@@ -1491,7 +1522,7 @@
 
 <obj class="Point" id="3 StreamParameters-2-FlxStreamParameters">
  <attr name="x" type="s16" val="55"/>
- <attr name="y" type="s16" val="151"/>
+ <attr name="y" type="s16" val="166"/>
 </obj>
 
 <obj class="Point" id="3 TPHandler-2-TPHandlerConf-via-handler_configuration">
@@ -1555,7 +1586,7 @@
 </obj>
 
 <obj class="Point" id="4 DaqModule-2-HostComponent-via-used_resources">
- <attr name="x" type="s16" val="83"/>
+ <attr name="x" type="s16" val="79"/>
  <attr name="y" type="s16" val="12"/>
 </obj>
 
@@ -1580,7 +1611,7 @@
 </obj>
 
 <obj class="Point" id="4 DataReaderConf-2-FelixCardReaderConf">
- <attr name="x" type="s16" val="187"/>
+ <attr name="x" type="s16" val="222"/>
  <attr name="y" type="s16" val="12"/>
 </obj>
 
@@ -1636,16 +1667,6 @@
 
 <obj class="Point" id="4 ReadoutApplication-2-LinkHandlerConf-via-link_handler">
  <attr name="x" type="s16" val="37"/>
- <attr name="y" type="s16" val="17"/>
-</obj>
-
-<obj class="Point" id="4 ReadoutApplication-2-NetworkConnectionRule-via-network_rules">
- <attr name="x" type="s16" val="87"/>
- <attr name="y" type="s16" val="17"/>
-</obj>
-
-<obj class="Point" id="4 ReadoutApplication-2-QueueConnectionRule-via-queue_rules">
- <attr name="x" type="s16" val="131"/>
  <attr name="y" type="s16" val="17"/>
 </obj>
 
@@ -1717,6 +1738,21 @@
 <obj class="Point" id="4 RoHwConfig-2-StorageDevice-via-snb_storage">
  <attr name="x" type="s16" val="107"/>
  <attr name="y" type="s16" val="12"/>
+</obj>
+
+<obj class="Point" id="4 SmartDaqApplication-2-NetworkConnectionRule-via-network_rules">
+ <attr name="x" type="s16" val="5"/>
+ <attr name="y" type="s16" val="12"/>
+</obj>
+
+<obj class="Point" id="4 SmartDaqApplication-2-QueueConnectionRule-via-queue_rules">
+ <attr name="x" type="s16" val="74"/>
+ <attr name="y" type="s16" val="12"/>
+</obj>
+
+<obj class="Point" id="4 SmartDaqApplication-2-ReadoutApplication">
+ <attr name="x" type="s16" val="63"/>
+ <attr name="y" type="s16" val="21"/>
 </obj>
 
 <obj class="Point" id="4 StreamParameters-2-EthStreamParameters">
