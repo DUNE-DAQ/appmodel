@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="46" oks-format="schema" oks-version="oks-08-03-04-1-gf920aa4 built &quot;May 12 2022&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20230823T105753"/>
+<info name="" type="" num-of-items="47" oks-format="schema" oks-version="oks-08-03-04-1-gf920aa4 built &quot;May 12 2022&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20230824T101330"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -158,6 +158,7 @@
   <attribute name="disable_unique_filename_suffix" type="bool" init-value="false"/>
   <attribute name="free_space_safety_factor" type="s32" init-value="0" is-not-null="yes"/>
   <relationship name="file_layout_params" class-type="HDF5FileLayoutParams" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="filename_params" class-type="FilenameParams" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="DataWriter">
@@ -200,6 +201,17 @@
  <class name="FelixCardReaderConf">
   <superclass name="DataReaderConf"/>
   <attribute name="template_for" type="class" init-value="FelixCardReader"/>
+ </class>
+
+ <class name="FilenameParams">
+  <attribute name="overall_prefix" type="string" init-value="minidaq" is-not-null="yes"/>
+  <attribute name="run_number_prefix" type="string" init-value="run" is-not-null="yes"/>
+  <attribute name="digits_for_run_number" type="s32" init-value="6" is-not-null="yes"/>
+  <attribute name="file_index_prefix" type="string"/>
+  <attribute name="digits_for_file_index" type="s32" init-value="4" is-not-null="yes"/>
+  <attribute name="writer_identifier" type="string"/>
+  <attribute name="trigger_number_prefix" type="string"/>
+  <attribute name="digits_for_trigger_number" type="s32" init-value="8" is-not-null="yes"/>
  </class>
 
  <class name="FlxStreamParameters">

@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="159" oks-format="data" oks-version="oks-08-03-04-1-gf920aa4 built &quot;May 12 2022&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230821T090136" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20230821T090136"/>
+<info name="" type="" num-of-items="165" oks-format="data" oks-version="oks-08-03-04-1-gf920aa4 built &quot;May 12 2022&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230824T101323" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20230824T101323"/>
 
 <obj class="ALink" id="DFApplication-2-DFHWConf-via-uses">
  <attr name="Name" type="string" val="uses"/>
@@ -158,6 +158,18 @@
   <ref class="Point" id="2 DaqModule-2-Connection-via-outputs"/>
   <ref class="Point" id="3 DaqModule-2-Connection-via-outputs"/>
   <ref class="Point" id="4 DaqModule-2-Connection-via-outputs"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="DataStoreConf-2-FilenameParams-via-filename_params">
+ <attr name="Name" type="string" val="filename_params"/>
+ <rel name="From" class="Class" id="DataStoreConf"/>
+ <rel name="To" class="Class" id="FilenameParams"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DataStoreConf-2-FilenameParams-via-filename_params"/>
+  <ref class="Point" id="2 DataStoreConf-2-FilenameParams-via-filename_params"/>
+  <ref class="Point" id="3 DataStoreConf-2-FilenameParams-via-filename_params"/>
+  <ref class="Point" id="4 DataStoreConf-2-FilenameParams-via-filename_params"/>
  </rel>
 </obj>
 
@@ -322,12 +334,12 @@
 
 <obj class="Class" id="DFOApplication">
  <attr name="x" type="s16" val="11"/>
- <attr name="y" type="s16" val="689"/>
+ <attr name="y" type="s16" val="715"/>
 </obj>
 
 <obj class="Class" id="DFOConf">
- <attr name="x" type="s16" val="297"/>
- <attr name="y" type="s16" val="694"/>
+ <attr name="x" type="s16" val="546"/>
+ <attr name="y" type="s16" val="678"/>
 </obj>
 
 <obj class="Class" id="DFOModule">
@@ -341,8 +353,8 @@
 </obj>
 
 <obj class="Class" id="DataStoreConf">
- <attr name="x" type="s16" val="542"/>
- <attr name="y" type="s16" val="356"/>
+ <attr name="x" type="s16" val="633"/>
+ <attr name="y" type="s16" val="325"/>
 </obj>
 
 <obj class="Class" id="DataWriter">
@@ -351,18 +363,23 @@
 </obj>
 
 <obj class="Class" id="DataWriterConf">
- <attr name="x" type="s16" val="279"/>
+ <attr name="x" type="s16" val="267"/>
  <attr name="y" type="s16" val="297"/>
 </obj>
 
+<obj class="Class" id="FilenameParams">
+ <attr name="x" type="s16" val="997"/>
+ <attr name="y" type="s16" val="336"/>
+</obj>
+
 <obj class="Class" id="HDF5FileLayoutParams">
- <attr name="x" type="s16" val="839"/>
- <attr name="y" type="s16" val="402"/>
+ <attr name="x" type="s16" val="433"/>
+ <attr name="y" type="s16" val="477"/>
 </obj>
 
 <obj class="Class" id="HDF5PathParams">
- <attr name="x" type="s16" val="565"/>
- <attr name="y" type="s16" val="530"/>
+ <attr name="x" type="s16" val="933"/>
+ <attr name="y" type="s16" val="532"/>
 </obj>
 
 <obj class="Class" id="NetworkConnectionDescriptor">
@@ -406,8 +423,8 @@
 </obj>
 
 <obj class="Class" id="TPWriterConf">
- <attr name="x" type="s16" val="297"/>
- <attr name="y" type="s16" val="626"/>
+ <attr name="x" type="s16" val="298"/>
+ <attr name="y" type="s16" val="634"/>
 </obj>
 
 <obj class="Class" id="TRBConf">
@@ -416,7 +433,7 @@
 </obj>
 
 <obj class="Class" id="TRBuilder">
- <attr name="x" type="s16" val="1128"/>
+ <attr name="x" type="s16" val="1127"/>
  <attr name="y" type="s16" val="237"/>
 </obj>
 
@@ -557,6 +574,11 @@
  <attr name="y" type="s16" val="24"/>
 </obj>
 
+<obj class="Point" id="1 DataStoreConf-2-FilenameParams-via-filename_params">
+ <attr name="x" type="s16" val="195"/>
+ <attr name="y" type="s16" val="105"/>
+</obj>
+
 <obj class="Point" id="1 DataStoreConf-2-HDF5FileLayoutParams-via-file_layout_params">
  <attr name="x" type="s16" val="19"/>
  <attr name="y" type="s16" val="105"/>
@@ -654,7 +676,7 @@
 
 <obj class="Point" id="2 DFOApplication-2-DFOConf-via-dfo">
  <attr name="x" type="s16" val="75"/>
- <attr name="y" type="s16" val="713"/>
+ <attr name="y" type="s16" val="733"/>
 </obj>
 
 <obj class="Point" id="2 DFOModule-2-DFOConf-via-configuration">
@@ -692,9 +714,14 @@
  <attr name="y" type="s16" val="145"/>
 </obj>
 
+<obj class="Point" id="2 DataStoreConf-2-FilenameParams-via-filename_params">
+ <attr name="x" type="s16" val="195"/>
+ <attr name="y" type="s16" val="398"/>
+</obj>
+
 <obj class="Point" id="2 DataStoreConf-2-HDF5FileLayoutParams-via-file_layout_params">
  <attr name="x" type="s16" val="19"/>
- <attr name="y" type="s16" val="370"/>
+ <attr name="y" type="s16" val="412"/>
 </obj>
 
 <obj class="Point" id="2 DataWriter-2-DataWriterConf-via-configuration">
@@ -704,12 +731,12 @@
 
 <obj class="Point" id="2 DataWriterConf-2-DataStoreConf-via-data_store_params">
  <attr name="x" type="s16" val="150"/>
- <attr name="y" type="s16" val="333"/>
+ <attr name="y" type="s16" val="360"/>
 </obj>
 
 <obj class="Point" id="2 HDF5FileLayoutParams-2-HDF5PathParams-via-path_params_list">
  <attr name="x" type="s16" val="107"/>
- <attr name="y" type="s16" val="510"/>
+ <attr name="y" type="s16" val="558"/>
 </obj>
 
 <obj class="Point" id="2 NetworkConnectionRule-2-NetworkConnectionDescriptor-via-descriptor">
@@ -789,7 +816,7 @@
 
 <obj class="Point" id="3 DFOApplication-2-DFOConf-via-dfo">
  <attr name="x" type="s16" val="15"/>
- <attr name="y" type="s16" val="713"/>
+ <attr name="y" type="s16" val="733"/>
 </obj>
 
 <obj class="Point" id="3 DFOModule-2-DFOConf-via-configuration">
@@ -827,9 +854,14 @@
  <attr name="y" type="s16" val="145"/>
 </obj>
 
+<obj class="Point" id="3 DataStoreConf-2-FilenameParams-via-filename_params">
+ <attr name="x" type="s16" val="25"/>
+ <attr name="y" type="s16" val="398"/>
+</obj>
+
 <obj class="Point" id="3 DataStoreConf-2-HDF5FileLayoutParams-via-file_layout_params">
- <attr name="x" type="s16" val="47"/>
- <attr name="y" type="s16" val="370"/>
+ <attr name="x" type="s16" val="83"/>
+ <attr name="y" type="s16" val="412"/>
 </obj>
 
 <obj class="Point" id="3 DataWriter-2-DataWriterConf-via-configuration">
@@ -839,12 +871,12 @@
 
 <obj class="Point" id="3 DataWriterConf-2-DataStoreConf-via-data_store_params">
  <attr name="x" type="s16" val="22"/>
- <attr name="y" type="s16" val="333"/>
+ <attr name="y" type="s16" val="360"/>
 </obj>
 
 <obj class="Point" id="3 HDF5FileLayoutParams-2-HDF5PathParams-via-path_params_list">
  <attr name="x" type="s16" val="123"/>
- <attr name="y" type="s16" val="510"/>
+ <attr name="y" type="s16" val="558"/>
 </obj>
 
 <obj class="Point" id="3 NetworkConnectionRule-2-NetworkConnectionDescriptor-via-descriptor">
@@ -962,8 +994,13 @@
  <attr name="y" type="s16" val="8"/>
 </obj>
 
+<obj class="Point" id="4 DataStoreConf-2-FilenameParams-via-filename_params">
+ <attr name="x" type="s16" val="25"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
 <obj class="Point" id="4 DataStoreConf-2-HDF5FileLayoutParams-via-file_layout_params">
- <attr name="x" type="s16" val="47"/>
+ <attr name="x" type="s16" val="83"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
 
