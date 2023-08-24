@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="47" oks-format="schema" oks-version="oks-08-03-04-1-gf920aa4 built &quot;May 12 2022&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20230824T101330"/>
+<info name="" type="" num-of-items="47" oks-format="schema" oks-version="oks-08-03-04-1-gf920aa4 built &quot;May 12 2022&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20230824T113025"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -153,7 +153,7 @@
  <class name="DataStoreConf">
   <attribute name="type" type="string"/>
   <attribute name="operational_environment" type="string"/>
-  <attribute name="mode" type="string"/>
+  <attribute name="mode" description="The operation mode that the DataStore should use when organizing the data into files" type="enum" range="all-per-file,one-event-per-file" init-value="all-per-file" is-not-null="yes"/>
   <attribute name="max_file_size" type="u64" init-value="0" is-not-null="yes"/>
   <attribute name="disable_unique_filename_suffix" type="bool" init-value="false"/>
   <attribute name="free_space_safety_factor" type="s32" init-value="0" is-not-null="yes"/>
@@ -397,7 +397,7 @@
 
  <class name="TPWriterConf">
   <attribute name="tp_accumulation_interval" type="u64" init-value="0" is-not-null="yes"/>
-  <relationship name="data_store_params" class-type="DataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="data_store_params" class-type="DataStoreConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="TRBConf">
