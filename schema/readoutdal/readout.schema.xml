@@ -93,6 +93,9 @@
   <relationship name="trb" description="Configuration of the TRB to be generated my get_modules()" class-type="TRBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_writer" class-type="DataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="uses" class-type="DFHWConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <method name="generate_modules" description="Generate DLH dal objects for streams of thie ReadoutApplication on the fly">
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
+  </method>
  </class>
 
  <class name="DFHWConf">
@@ -102,6 +105,9 @@
  <class name="DFOApplication">
   <superclass name="SmartDaqApplication"/>
   <relationship name="dfo" class-type="DFOConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <method name="generate_modules" description="Generate DLH dal objects for streams of thie ReadoutApplication on the fly">
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
+  </method>
  </class>
 
  <class name="DFOConf">
@@ -335,7 +341,7 @@
   <relationship name="tp_handler" class-type="TPHandlerConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_reader" class-type="DataReaderConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DLH dal objects for streams of thie ReadoutApplication on the fly">
-   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const" body=""/>
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
   </method>
  </class>
 
@@ -393,6 +399,9 @@
  <class name="TPWriterApplication">
   <superclass name="SmartDaqApplication"/>
   <relationship name="tp_writer" class-type="TPWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <method name="generate_modules" description="Generate DLH dal objects for streams of thie ReadoutApplication on the fly">
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
+  </method>
  </class>
 
  <class name="TPWriterConf">

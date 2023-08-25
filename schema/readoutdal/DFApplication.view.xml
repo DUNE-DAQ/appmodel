@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="165" oks-format="data" oks-version="oks-08-03-04-1-gf920aa4 built &quot;May 12 2022&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230824T112938" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20230824T112938"/>
+<info name="" type="" num-of-items="165" oks-format="data" oks-version="oks-08-03-04-1-gf920aa4 built &quot;May 12 2022&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230825T143532" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20230825T143532"/>
 
 <obj class="ALink" id="DFApplication-2-DFHWConf-via-uses">
  <attr name="Name" type="string" val="uses"/>
@@ -318,123 +318,123 @@
 </obj>
 
 <obj class="Class" id="Connection">
- <attr name="x" type="s16" val="947"/>
- <attr name="y" type="s16" val="40"/>
+ <attr name="x" type="s16" val="933"/>
+ <attr name="y" type="s16" val="16"/>
 </obj>
 
 <obj class="Class" id="DFApplication">
- <attr name="x" type="s16" val="88"/>
- <attr name="y" type="s16" val="258"/>
+ <attr name="x" type="s16" val="73"/>
+ <attr name="y" type="s16" val="222"/>
 </obj>
 
 <obj class="Class" id="DFHWConf">
- <attr name="x" type="s16" val="118"/>
- <attr name="y" type="s16" val="385"/>
+ <attr name="x" type="s16" val="103"/>
+ <attr name="y" type="s16" val="349"/>
 </obj>
 
 <obj class="Class" id="DFOApplication">
- <attr name="x" type="s16" val="11"/>
- <attr name="y" type="s16" val="715"/>
+ <attr name="x" type="s16" val="9"/>
+ <attr name="y" type="s16" val="686"/>
 </obj>
 
 <obj class="Class" id="DFOConf">
- <attr name="x" type="s16" val="546"/>
- <attr name="y" type="s16" val="678"/>
+ <attr name="x" type="s16" val="532"/>
+ <attr name="y" type="s16" val="648"/>
 </obj>
 
 <obj class="Class" id="DFOModule">
- <attr name="x" type="s16" val="1189"/>
- <attr name="y" type="s16" val="740"/>
+ <attr name="x" type="s16" val="1163"/>
+ <attr name="y" type="s16" val="697"/>
 </obj>
 
 <obj class="Class" id="DaqModule">
- <attr name="x" type="s16" val="1171"/>
- <attr name="y" type="s16" val="46"/>
-</obj>
-
-<obj class="Class" id="DataStoreConf">
- <attr name="x" type="s16" val="325"/>
- <attr name="y" type="s16" val="446"/>
-</obj>
-
-<obj class="Class" id="DataWriter">
- <attr name="x" type="s16" val="1148"/>
- <attr name="y" type="s16" val="290"/>
-</obj>
-
-<obj class="Class" id="DataWriterConf">
- <attr name="x" type="s16" val="267"/>
- <attr name="y" type="s16" val="297"/>
-</obj>
-
-<obj class="Class" id="FilenameParams">
- <attr name="x" type="s16" val="699"/>
- <attr name="y" type="s16" val="475"/>
-</obj>
-
-<obj class="Class" id="HDF5FileLayoutParams">
- <attr name="x" type="s16" val="684"/>
- <attr name="y" type="s16" val="324"/>
-</obj>
-
-<obj class="Class" id="HDF5PathParams">
- <attr name="x" type="s16" val="951"/>
- <attr name="y" type="s16" val="496"/>
-</obj>
-
-<obj class="Class" id="NetworkConnectionDescriptor">
- <attr name="x" type="s16" val="658"/>
- <attr name="y" type="s16" val="115"/>
-</obj>
-
-<obj class="Class" id="NetworkConnectionRule">
- <attr name="x" type="s16" val="332"/>
- <attr name="y" type="s16" val="124"/>
-</obj>
-
-<obj class="Class" id="QueueConnectionRule">
- <attr name="x" type="s16" val="330"/>
- <attr name="y" type="s16" val="53"/>
-</obj>
-
-<obj class="Class" id="QueueDescriptor">
- <attr name="x" type="s16" val="653"/>
+ <attr name="x" type="s16" val="1156"/>
  <attr name="y" type="s16" val="20"/>
 </obj>
 
+<obj class="Class" id="DataStoreConf">
+ <attr name="x" type="s16" val="310"/>
+ <attr name="y" type="s16" val="428"/>
+</obj>
+
+<obj class="Class" id="DataWriter">
+ <attr name="x" type="s16" val="1130"/>
+ <attr name="y" type="s16" val="248"/>
+</obj>
+
+<obj class="Class" id="DataWriterConf">
+ <attr name="x" type="s16" val="271"/>
+ <attr name="y" type="s16" val="259"/>
+</obj>
+
+<obj class="Class" id="FilenameParams">
+ <attr name="x" type="s16" val="686"/>
+ <attr name="y" type="s16" val="445"/>
+</obj>
+
+<obj class="Class" id="HDF5FileLayoutParams">
+ <attr name="x" type="s16" val="669"/>
+ <attr name="y" type="s16" val="295"/>
+</obj>
+
+<obj class="Class" id="HDF5PathParams">
+ <attr name="x" type="s16" val="936"/>
+ <attr name="y" type="s16" val="460"/>
+</obj>
+
+<obj class="Class" id="NetworkConnectionDescriptor">
+ <attr name="x" type="s16" val="862"/>
+ <attr name="y" type="s16" val="83"/>
+</obj>
+
+<obj class="Class" id="NetworkConnectionRule">
+ <attr name="x" type="s16" val="344"/>
+ <attr name="y" type="s16" val="88"/>
+</obj>
+
+<obj class="Class" id="QueueConnectionRule">
+ <attr name="x" type="s16" val="293"/>
+ <attr name="y" type="s16" val="28"/>
+</obj>
+
+<obj class="Class" id="QueueDescriptor">
+ <attr name="x" type="s16" val="605"/>
+ <attr name="y" type="s16" val="13"/>
+</obj>
+
 <obj class="Class" id="SmartDaqApplication">
- <attr name="x" type="s16" val="11"/>
- <attr name="y" type="s16" val="84"/>
+ <attr name="x" type="s16" val="15"/>
+ <attr name="y" type="s16" val="49"/>
 </obj>
 
 <obj class="Class" id="StorageDevice">
- <attr name="x" type="s16" val="119"/>
- <attr name="y" type="s16" val="490"/>
+ <attr name="x" type="s16" val="104"/>
+ <attr name="y" type="s16" val="454"/>
 </obj>
 
 <obj class="Class" id="TPWriter">
- <attr name="x" type="s16" val="1175"/>
- <attr name="y" type="s16" val="656"/>
+ <attr name="x" type="s16" val="1160"/>
+ <attr name="y" type="s16" val="620"/>
 </obj>
 
 <obj class="Class" id="TPWriterApplication">
- <attr name="x" type="s16" val="69"/>
- <attr name="y" type="s16" val="628"/>
+ <attr name="x" type="s16" val="53"/>
+ <attr name="y" type="s16" val="604"/>
 </obj>
 
 <obj class="Class" id="TPWriterConf">
- <attr name="x" type="s16" val="298"/>
- <attr name="y" type="s16" val="634"/>
+ <attr name="x" type="s16" val="284"/>
+ <attr name="y" type="s16" val="615"/>
 </obj>
 
 <obj class="Class" id="TRBConf">
- <attr name="x" type="s16" val="272"/>
- <attr name="y" type="s16" val="194"/>
+ <attr name="x" type="s16" val="257"/>
+ <attr name="y" type="s16" val="158"/>
 </obj>
 
 <obj class="Class" id="TRBuilder">
- <attr name="x" type="s16" val="1127"/>
- <attr name="y" type="s16" val="237"/>
+ <attr name="x" type="s16" val="1112"/>
+ <attr name="y" type="s16" val="197"/>
 </obj>
 
 <obj class="GLink" id="DaqModule-2-DFOModule">
@@ -565,7 +565,7 @@
 </obj>
 
 <obj class="Point" id="1 DaqModule-2-TPWriter">
- <attr name="x" type="s16" val="54"/>
+ <attr name="x" type="s16" val="49"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
 
@@ -610,12 +610,12 @@
 </obj>
 
 <obj class="Point" id="1 SmartDaqApplication-2-DFApplication">
- <attr name="x" type="s16" val="101"/>
+ <attr name="x" type="s16" val="82"/>
  <attr name="y" type="s16" val="38"/>
 </obj>
 
 <obj class="Point" id="1 SmartDaqApplication-2-DFOApplication">
- <attr name="x" type="s16" val="34"/>
+ <attr name="x" type="s16" val="19"/>
  <attr name="y" type="s16" val="38"/>
 </obj>
 
@@ -630,7 +630,7 @@
 </obj>
 
 <obj class="Point" id="1 SmartDaqApplication-2-TPWriterApplication">
- <attr name="x" type="s16" val="66"/>
+ <attr name="x" type="s16" val="46"/>
  <attr name="y" type="s16" val="38"/>
 </obj>
 
@@ -656,282 +656,282 @@
 
 <obj class="Point" id="2 DFApplication-2-DFHWConf-via-uses">
  <attr name="x" type="s16" val="75"/>
- <attr name="y" type="s16" val="334"/>
+ <attr name="y" type="s16" val="298"/>
 </obj>
 
 <obj class="Point" id="2 DFApplication-2-DataWriterConf-via-data_writer">
  <attr name="x" type="s16" val="75"/>
- <attr name="y" type="s16" val="301"/>
+ <attr name="y" type="s16" val="277"/>
 </obj>
 
 <obj class="Point" id="2 DFApplication-2-TRBConf-via-trb">
  <attr name="x" type="s16" val="75"/>
- <attr name="y" type="s16" val="262"/>
+ <attr name="y" type="s16" val="226"/>
 </obj>
 
 <obj class="Point" id="2 DFHWConf-2-StorageDevice-via-uses">
  <attr name="x" type="s16" val="54"/>
- <attr name="y" type="s16" val="445"/>
+ <attr name="y" type="s16" val="409"/>
 </obj>
 
 <obj class="Point" id="2 DFOApplication-2-DFOConf-via-dfo">
  <attr name="x" type="s16" val="75"/>
- <attr name="y" type="s16" val="733"/>
+ <attr name="y" type="s16" val="713"/>
 </obj>
 
 <obj class="Point" id="2 DFOModule-2-DFOConf-via-configuration">
  <attr name="x" type="s16" val="59"/>
- <attr name="y" type="s16" val="752"/>
+ <attr name="y" type="s16" val="716"/>
 </obj>
 
 <obj class="Point" id="2 DaqModule-2-Connection-via-inputs">
  <attr name="x" type="s16" val="56"/>
- <attr name="y" type="s16" val="50"/>
+ <attr name="y" type="s16" val="25"/>
 </obj>
 
 <obj class="Point" id="2 DaqModule-2-Connection-via-outputs">
  <attr name="x" type="s16" val="56"/>
- <attr name="y" type="s16" val="74"/>
+ <attr name="y" type="s16" val="50"/>
 </obj>
 
 <obj class="Point" id="2 DaqModule-2-DFOModule">
  <attr name="x" type="s16" val="72"/>
- <attr name="y" type="s16" val="334"/>
+ <attr name="y" type="s16" val="298"/>
 </obj>
 
 <obj class="Point" id="2 DaqModule-2-DataWriter">
  <attr name="x" type="s16" val="28"/>
- <attr name="y" type="s16" val="177"/>
+ <attr name="y" type="s16" val="141"/>
 </obj>
 
 <obj class="Point" id="2 DaqModule-2-TPWriter">
- <attr name="x" type="s16" val="54"/>
- <attr name="y" type="s16" val="301"/>
+ <attr name="x" type="s16" val="49"/>
+ <attr name="y" type="s16" val="265"/>
 </obj>
 
 <obj class="Point" id="2 DaqModule-2-TRBuilder">
  <attr name="x" type="s16" val="4"/>
- <attr name="y" type="s16" val="145"/>
+ <attr name="y" type="s16" val="109"/>
 </obj>
 
 <obj class="Point" id="2 DataStoreConf-2-FilenameParams-via-filename_params">
  <attr name="x" type="s16" val="195"/>
- <attr name="y" type="s16" val="550"/>
+ <attr name="y" type="s16" val="514"/>
 </obj>
 
 <obj class="Point" id="2 DataStoreConf-2-HDF5FileLayoutParams-via-file_layout_params">
  <attr name="x" type="s16" val="248"/>
- <attr name="y" type="s16" val="384"/>
+ <attr name="y" type="s16" val="348"/>
 </obj>
 
 <obj class="Point" id="2 DataWriter-2-DataWriterConf-via-configuration">
  <attr name="x" type="s16" val="51"/>
- <attr name="y" type="s16" val="304"/>
+ <attr name="y" type="s16" val="269"/>
 </obj>
 
 <obj class="Point" id="2 DataWriterConf-2-DataStoreConf-via-data_store_params">
  <attr name="x" type="s16" val="150"/>
- <attr name="y" type="s16" val="360"/>
+ <attr name="y" type="s16" val="324"/>
 </obj>
 
 <obj class="Point" id="2 HDF5FileLayoutParams-2-HDF5PathParams-via-path_params_list">
  <attr name="x" type="s16" val="354"/>
- <attr name="y" type="s16" val="392"/>
+ <attr name="y" type="s16" val="356"/>
 </obj>
 
 <obj class="Point" id="2 NetworkConnectionRule-2-NetworkConnectionDescriptor-via-descriptor">
  <attr name="x" type="s16" val="162"/>
- <attr name="y" type="s16" val="145"/>
+ <attr name="y" type="s16" val="129"/>
 </obj>
 
 <obj class="Point" id="2 QueueConnectionRule-2-QueueDescriptor-via-descriptor">
  <attr name="x" type="s16" val="171"/>
- <attr name="y" type="s16" val="72"/>
+ <attr name="y" type="s16" val="49"/>
 </obj>
 
 <obj class="Point" id="2 SmartDaqApplication-2-DFApplication">
- <attr name="x" type="s16" val="101"/>
- <attr name="y" type="s16" val="195"/>
+ <attr name="x" type="s16" val="82"/>
+ <attr name="y" type="s16" val="159"/>
 </obj>
 
 <obj class="Point" id="2 SmartDaqApplication-2-DFOApplication">
- <attr name="x" type="s16" val="34"/>
- <attr name="y" type="s16" val="306"/>
+ <attr name="x" type="s16" val="19"/>
+ <attr name="y" type="s16" val="270"/>
 </obj>
 
 <obj class="Point" id="2 SmartDaqApplication-2-NetworkConnectionRule-via-network_rules">
  <attr name="x" type="s16" val="95"/>
- <attr name="y" type="s16" val="130"/>
+ <attr name="y" type="s16" val="94"/>
 </obj>
 
 <obj class="Point" id="2 SmartDaqApplication-2-QueueConnectionRule-via-queue_rules">
  <attr name="x" type="s16" val="95"/>
- <attr name="y" type="s16" val="93"/>
+ <attr name="y" type="s16" val="57"/>
 </obj>
 
 <obj class="Point" id="2 SmartDaqApplication-2-TPWriterApplication">
- <attr name="x" type="s16" val="66"/>
- <attr name="y" type="s16" val="270"/>
+ <attr name="x" type="s16" val="46"/>
+ <attr name="y" type="s16" val="234"/>
 </obj>
 
 <obj class="Point" id="2 TPWriter-2-TPWriterConf-via-configuration">
  <attr name="x" type="s16" val="42"/>
- <attr name="y" type="s16" val="662"/>
+ <attr name="y" type="s16" val="633"/>
 </obj>
 
 <obj class="Point" id="2 TPWriterApplication-2-TPWriterConf-via-tp_writer">
  <attr name="x" type="s16" val="90"/>
- <attr name="y" type="s16" val="649"/>
+ <attr name="y" type="s16" val="635"/>
 </obj>
 
 <obj class="Point" id="2 TPWriterConf-2-DataStoreConf-via-data_store_params">
  <attr name="x" type="s16" val="67"/>
- <attr name="y" type="s16" val="479"/>
+ <attr name="y" type="s16" val="443"/>
 </obj>
 
 <obj class="Point" id="2 TRBuilder-2-TRBConf-via-configuration">
  <attr name="x" type="s16" val="48"/>
- <attr name="y" type="s16" val="257"/>
+ <attr name="y" type="s16" val="221"/>
 </obj>
 
 <obj class="Point" id="3 DFApplication-2-DFHWConf-via-uses">
  <attr name="x" type="s16" val="45"/>
- <attr name="y" type="s16" val="334"/>
+ <attr name="y" type="s16" val="298"/>
 </obj>
 
 <obj class="Point" id="3 DFApplication-2-DataWriterConf-via-data_writer">
  <attr name="x" type="s16" val="23"/>
- <attr name="y" type="s16" val="301"/>
+ <attr name="y" type="s16" val="277"/>
 </obj>
 
 <obj class="Point" id="3 DFApplication-2-TRBConf-via-trb">
  <attr name="x" type="s16" val="14"/>
- <attr name="y" type="s16" val="262"/>
+ <attr name="y" type="s16" val="226"/>
 </obj>
 
 <obj class="Point" id="3 DFHWConf-2-StorageDevice-via-uses">
  <attr name="x" type="s16" val="53"/>
- <attr name="y" type="s16" val="445"/>
+ <attr name="y" type="s16" val="409"/>
 </obj>
 
 <obj class="Point" id="3 DFOApplication-2-DFOConf-via-dfo">
  <attr name="x" type="s16" val="15"/>
- <attr name="y" type="s16" val="733"/>
+ <attr name="y" type="s16" val="713"/>
 </obj>
 
 <obj class="Point" id="3 DFOModule-2-DFOConf-via-configuration">
  <attr name="x" type="s16" val="15"/>
- <attr name="y" type="s16" val="752"/>
+ <attr name="y" type="s16" val="716"/>
 </obj>
 
 <obj class="Point" id="3 DaqModule-2-Connection-via-inputs">
  <attr name="x" type="s16" val="25"/>
- <attr name="y" type="s16" val="50"/>
+ <attr name="y" type="s16" val="25"/>
 </obj>
 
 <obj class="Point" id="3 DaqModule-2-Connection-via-outputs">
  <attr name="x" type="s16" val="25"/>
- <attr name="y" type="s16" val="74"/>
+ <attr name="y" type="s16" val="50"/>
 </obj>
 
 <obj class="Point" id="3 DaqModule-2-DFOModule">
- <attr name="x" type="s16" val="54"/>
- <attr name="y" type="s16" val="334"/>
+ <attr name="x" type="s16" val="65"/>
+ <attr name="y" type="s16" val="298"/>
 </obj>
 
 <obj class="Point" id="3 DaqModule-2-DataWriter">
- <attr name="x" type="s16" val="51"/>
- <attr name="y" type="s16" val="177"/>
+ <attr name="x" type="s16" val="54"/>
+ <attr name="y" type="s16" val="141"/>
 </obj>
 
 <obj class="Point" id="3 DaqModule-2-TPWriter">
- <attr name="x" type="s16" val="50"/>
- <attr name="y" type="s16" val="301"/>
+ <attr name="x" type="s16" val="45"/>
+ <attr name="y" type="s16" val="265"/>
 </obj>
 
 <obj class="Point" id="3 DaqModule-2-TRBuilder">
  <attr name="x" type="s16" val="48"/>
- <attr name="y" type="s16" val="145"/>
+ <attr name="y" type="s16" val="109"/>
 </obj>
 
 <obj class="Point" id="3 DataStoreConf-2-FilenameParams-via-filename_params">
  <attr name="x" type="s16" val="25"/>
- <attr name="y" type="s16" val="550"/>
+ <attr name="y" type="s16" val="514"/>
 </obj>
 
 <obj class="Point" id="3 DataStoreConf-2-HDF5FileLayoutParams-via-file_layout_params">
  <attr name="x" type="s16" val="83"/>
- <attr name="y" type="s16" val="384"/>
+ <attr name="y" type="s16" val="348"/>
 </obj>
 
 <obj class="Point" id="3 DataWriter-2-DataWriterConf-via-configuration">
- <attr name="x" type="s16" val="61"/>
- <attr name="y" type="s16" val="304"/>
+ <attr name="x" type="s16" val="222"/>
+ <attr name="y" type="s16" val="269"/>
 </obj>
 
 <obj class="Point" id="3 DataWriterConf-2-DataStoreConf-via-data_store_params">
  <attr name="x" type="s16" val="21"/>
- <attr name="y" type="s16" val="360"/>
+ <attr name="y" type="s16" val="324"/>
 </obj>
 
 <obj class="Point" id="3 HDF5FileLayoutParams-2-HDF5PathParams-via-path_params_list">
  <attr name="x" type="s16" val="155"/>
- <attr name="y" type="s16" val="392"/>
+ <attr name="y" type="s16" val="356"/>
 </obj>
 
 <obj class="Point" id="3 NetworkConnectionRule-2-NetworkConnectionDescriptor-via-descriptor">
  <attr name="x" type="s16" val="56"/>
- <attr name="y" type="s16" val="145"/>
+ <attr name="y" type="s16" val="129"/>
 </obj>
 
 <obj class="Point" id="3 QueueConnectionRule-2-QueueDescriptor-via-descriptor">
  <attr name="x" type="s16" val="59"/>
- <attr name="y" type="s16" val="72"/>
+ <attr name="y" type="s16" val="49"/>
 </obj>
 
 <obj class="Point" id="3 SmartDaqApplication-2-DFApplication">
  <attr name="x" type="s16" val="24"/>
- <attr name="y" type="s16" val="195"/>
+ <attr name="y" type="s16" val="159"/>
 </obj>
 
 <obj class="Point" id="3 SmartDaqApplication-2-DFOApplication">
- <attr name="x" type="s16" val="34"/>
- <attr name="y" type="s16" val="306"/>
+ <attr name="x" type="s16" val="25"/>
+ <attr name="y" type="s16" val="270"/>
 </obj>
 
 <obj class="Point" id="3 SmartDaqApplication-2-NetworkConnectionRule-via-network_rules">
  <attr name="x" type="s16" val="54"/>
- <attr name="y" type="s16" val="130"/>
+ <attr name="y" type="s16" val="94"/>
 </obj>
 
 <obj class="Point" id="3 SmartDaqApplication-2-QueueConnectionRule-via-queue_rules">
  <attr name="x" type="s16" val="57"/>
- <attr name="y" type="s16" val="93"/>
+ <attr name="y" type="s16" val="57"/>
 </obj>
 
 <obj class="Point" id="3 SmartDaqApplication-2-TPWriterApplication">
  <attr name="x" type="s16" val="8"/>
- <attr name="y" type="s16" val="270"/>
+ <attr name="y" type="s16" val="234"/>
 </obj>
 
 <obj class="Point" id="3 TPWriter-2-TPWriterConf-via-configuration">
  <attr name="x" type="s16" val="146"/>
- <attr name="y" type="s16" val="662"/>
+ <attr name="y" type="s16" val="633"/>
 </obj>
 
 <obj class="Point" id="3 TPWriterApplication-2-TPWriterConf-via-tp_writer">
  <attr name="x" type="s16" val="20"/>
- <attr name="y" type="s16" val="649"/>
+ <attr name="y" type="s16" val="635"/>
 </obj>
 
 <obj class="Point" id="3 TPWriterConf-2-DataStoreConf-via-data_store_params">
  <attr name="x" type="s16" val="65"/>
- <attr name="y" type="s16" val="479"/>
+ <attr name="y" type="s16" val="443"/>
 </obj>
 
 <obj class="Point" id="3 TRBuilder-2-TRBConf-via-configuration">
  <attr name="x" type="s16" val="53"/>
- <attr name="y" type="s16" val="257"/>
+ <attr name="y" type="s16" val="221"/>
 </obj>
 
 <obj class="Point" id="4 DFApplication-2-DFHWConf-via-uses">
@@ -975,17 +975,17 @@
 </obj>
 
 <obj class="Point" id="4 DaqModule-2-DFOModule">
- <attr name="x" type="s16" val="54"/>
+ <attr name="x" type="s16" val="65"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
 
 <obj class="Point" id="4 DaqModule-2-DataWriter">
- <attr name="x" type="s16" val="51"/>
+ <attr name="x" type="s16" val="54"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
 
 <obj class="Point" id="4 DaqModule-2-TPWriter">
- <attr name="x" type="s16" val="50"/>
+ <attr name="x" type="s16" val="45"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
 
@@ -1005,7 +1005,7 @@
 </obj>
 
 <obj class="Point" id="4 DataWriter-2-DataWriterConf-via-configuration">
- <attr name="x" type="s16" val="61"/>
+ <attr name="x" type="s16" val="222"/>
  <attr name="y" type="s16" val="26"/>
 </obj>
 
@@ -1035,7 +1035,7 @@
 </obj>
 
 <obj class="Point" id="4 SmartDaqApplication-2-DFOApplication">
- <attr name="x" type="s16" val="34"/>
+ <attr name="x" type="s16" val="25"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
 
