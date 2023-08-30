@@ -6,6 +6,7 @@ find_package(daq-cmake REQUIRED)
 daq_setup_environment()
 
 find_package(okssystem REQUIRED)
+find_package(oks REQUIRED)
 find_package(genconfig REQUIRED)
 find_package(ers REQUIRED)
 find_package(logging REQUIRED)
@@ -18,12 +19,13 @@ find_package(coredal REQUIRED)
 
 daq_oks_codegen(readout.schema.xml NAMESPACE dunedaq::readoutdal DEP_PKGS coredal)
 
-daq_add_library(generate_modules.cpp NICReceiver.cpp SmartDaqApplication.cpp
+daq_add_library(ReadoutApplication.cpp NICReceiver.cpp SmartDaqApplication.cpp
+  DFApplication.cpp DFOApplication.cpp TPWriterApplication.cpp
  LINK_LIBRARIES oksdbinterfaces::oksdbinterfaces okssystem::okssystem
-  logging::logging coredal coredal_oks oks ers::ers)
+  logging::logging coredal coredal_oks oks::oks ers::ers)
 
 
-daq_add_python_bindings(*.cpp LINK_LIBRARIES 
+daq_add_python_bindings(dal_methods.cpp module.cpp LINK_LIBRARIES 
   readoutdal readoutdal_oks coredal coredal_oks)
 
 
