@@ -1,3 +1,6 @@
+#ifndef READOUTDALISSUES_HPP
+#define READOUTDALISSUES_HPP
+
 #include "ers/Issue.hpp"
 
 namespace dunedaq {
@@ -8,3 +11,4 @@ namespace dunedaq {
 }
 
 
+#endif // READOUTDALISSUES_HPP

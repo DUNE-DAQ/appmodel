@@ -16,7 +16,11 @@
 #include "coredal/Connection.hpp"
 #include "coredal/DaqModule.hpp"
 
+#include "readoutdal/DFApplication.hpp"
+#include "readoutdal/DFOApplication.hpp"
 #include "readoutdal/ReadoutApplication.hpp"
+#include "readoutdal/SmartDaqApplication.hpp"
+#include "readoutdal/TPWriterApplication.hpp"
 
 #include <string>
 using namespace dunedaq;
@@ -39,13 +43,27 @@ int main(int argc, char* argv[]) {
               << " from database\n";
     return 0;
   }
-  auto daqapp = confdb->get<readoutdal::ReadoutApplication>(appName);
+  auto daqapp = confdb->get<coredal::Application>(appName);
   if (daqapp) {
-    if (daqapp->disabled(*session)) {
-      std::cout << "ReadoutApplication " << appName << " is disabled" << std::endl;
+    std::cout << appName << " is of class " << daqapp->class_name() << std::endl;
+
+    auto res = daqapp->cast<coredal::ResourceBase>();
+    if (res && res->disabled(*session)) {
+      std::cout << "Application " << appName << " is disabled" << std::endl;
       return 0;
     }
-    for (auto module: daqapp->generate_modules(confdb, dbfile, session)) {
+    std::vector<const coredal::DaqModule*> modules;
+    auto smart = daqapp->cast<readoutdal::SmartDaqApplication>();
+    if (smart) {
+      modules = smart->generate_modules(confdb, dbfile, session);
+    }
+    else {
+      std::cout << appName << " failed to cast to SmartDaqApplication\n";
+      return 0;
+    }
+
+    std::cout << "Generated " << modules.size() << " modules" << std::endl;
+    for (auto module: modules) {
       std::cout << "module " << module->UID() << std::endl;
       module->config_object().print_ref(std::cout, *confdb, "  ");
       std::cout  << " input objects "  << std::endl;

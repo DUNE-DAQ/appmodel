@@ -8,6 +8,8 @@
  * received with this code.
  */
 
+#include "ModuleFactory.hpp"
+
 #include "oksdbinterfaces/Configuration.hpp"
 #include "oks/kernel.hpp"
 #include "coredal/Connection.hpp"
@@ -26,6 +28,17 @@
 using namespace dunedaq;
 using namespace dunedaq::readoutdal;
 
+static ModuleFactory::Registrator
+__reg__("TPWriterApplication", [] (const SmartDaqApplication* smartApp,
+                             oksdbinterfaces::Configuration* confdb,
+                             const std::string& dbfile,
+                             const coredal::Session* session) -> ModuleFactory::ReturnType
+  {
+    auto app = smartApp->cast<TPWriterApplication>();
+    return app->generate_modules(confdb, dbfile, session);
+  }
+  );
+
 std::vector<const coredal::DaqModule*> 
 TPWriterApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
                                      const std::string& dbfile,
@@ -34,6 +47,7 @@ TPWriterApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   std::vector<const coredal::DaqModule*> modules;
 
   // Code to actually generate modules should go here
+  std::cout << __FUNCTION__ << " -- Unimplemented function\n";
 
   return modules;
 }

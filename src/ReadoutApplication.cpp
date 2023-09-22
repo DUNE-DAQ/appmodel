@@ -8,6 +8,8 @@
  * received with this code.
  */
 
+#include "ModuleFactory.hpp"
+
 #include "oksdbinterfaces/Configuration.hpp"
 #include "oks/kernel.hpp"
 
@@ -39,6 +41,16 @@
 
 using namespace dunedaq;
 using namespace dunedaq::readoutdal;
+
+static ModuleFactory::Registrator
+__reg__("ReadoutApplication", [] (const SmartDaqApplication* smartApp,
+                                  oksdbinterfaces::Configuration* confdb,
+                                  const std::string& dbfile,
+                                  const coredal::Session* session) -> ModuleFactory::ReturnType
+  {
+    auto app = smartApp->cast<ReadoutApplication>();
+    return app->generate_modules(confdb, dbfile, session);
+  });
 
 std::vector<const coredal::DaqModule*> 
 ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
