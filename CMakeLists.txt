@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(readoutdal VERSION 0.0.0)
+project(appdal VERSION 0.0.0)
 
 find_package(daq-cmake REQUIRED)
 
@@ -17,7 +17,7 @@ find_package(coredal REQUIRED)
 #find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 
 
-daq_oks_codegen(readout.schema.xml NAMESPACE dunedaq::readoutdal DEP_PKGS coredal)
+daq_oks_codegen(readout.schema.xml NAMESPACE dunedaq::appdal DEP_PKGS coredal)
 
 daq_add_library(ReadoutApplication.cpp NICReceiver.cpp SmartDaqApplication.cpp
   DFApplication.cpp DFOApplication.cpp TPWriterApplication.cpp
@@ -26,11 +26,11 @@ daq_add_library(ReadoutApplication.cpp NICReceiver.cpp SmartDaqApplication.cpp
 
 
 daq_add_python_bindings(dal_methods.cpp module.cpp LINK_LIBRARIES 
-  readoutdal readoutdal_oks coredal coredal_oks)
+  appdal appdal_oks coredal coredal_oks)
 
 
 daq_add_application(gen_readout_modules gen_readout_modules.cxx TEST LINK_LIBRARIES
- readoutdal readoutdal_oks coredal coredal_oks
+ appdal appdal_oks coredal coredal_oks
  oksdbinterfaces::oksdbinterfaces logging::logging)
 
 ##############################################################################

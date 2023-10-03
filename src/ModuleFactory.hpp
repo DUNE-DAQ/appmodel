@@ -2,7 +2,7 @@
 #define MODULEFACTORY_HPP
 
 #include "logging/Logging.hpp"
-#include "readoutdalIssues.hpp"
+#include "appdalIssues.hpp"
 
 #include <functional>
 #include <map>
@@ -12,7 +12,7 @@
 
 #include "coredal/DaqModule.hpp"
 #include "coredal/Session.hpp"
-#include "readoutdal/SmartDaqApplication.hpp"
+#include "appdal/SmartDaqApplication.hpp"
 #include "oksdbinterfaces/Configuration.hpp"
 
 namespace dunedaq::coredal {
@@ -22,7 +22,7 @@ namespace dunedaq::coredal {
 namespace dunedaq::oksdbinterfaces {
   class Configuration;
 }
-namespace dunedaq::readoutdal {
+namespace dunedaq::appdal {
   class SmartDaqApplication;
 
   class ModuleFactory {
@@ -104,5 +104,5 @@ namespace dunedaq::readoutdal {
 
   }; // ModuleFactory
 
-} // namespace dunedaq::readoutdal
+} // namespace dunedaq::appdal
 #endif // MODULEFACTORY

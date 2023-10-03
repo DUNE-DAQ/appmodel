@@ -18,21 +18,21 @@
 #include "coredal/ResourceSet.hpp"
 #include "coredal/Session.hpp"
 
-#include "readoutdal/DataReader.hpp"
-#include "readoutdal/DataReaderConf.hpp"
-#include "readoutdal/DLH.hpp"
-#include "readoutdal/DROStreamConf.hpp"
-#include "readoutdal/LinkHandlerConf.hpp"
-#include "readoutdal/NetworkConnectionRule.hpp"
-#include "readoutdal/NetworkConnectionDescriptor.hpp"
-#include "readoutdal/QueueConnectionRule.hpp"
-#include "readoutdal/QueueDescriptor.hpp"
-#include "readoutdal/ReadoutApplication.hpp"
-#include "readoutdal/ReadoutGroup.hpp"
-#include "readoutdal/TPHandler.hpp"
-#include "readoutdal/TPHandlerConf.hpp"
+#include "appdal/DataReader.hpp"
+#include "appdal/DataReaderConf.hpp"
+#include "appdal/DLH.hpp"
+#include "appdal/DROStreamConf.hpp"
+#include "appdal/LinkHandlerConf.hpp"
+#include "appdal/NetworkConnectionRule.hpp"
+#include "appdal/NetworkConnectionDescriptor.hpp"
+#include "appdal/QueueConnectionRule.hpp"
+#include "appdal/QueueDescriptor.hpp"
+#include "appdal/ReadoutApplication.hpp"
+#include "appdal/ReadoutGroup.hpp"
+#include "appdal/TPHandler.hpp"
+#include "appdal/TPHandlerConf.hpp"
 
-#include "readoutdalIssues.hpp"
+#include "appdalIssues.hpp"
 
 #include "logging/Logging.hpp"
 
@@ -40,7 +40,7 @@
 #include <vector>
 
 using namespace dunedaq;
-using namespace dunedaq::readoutdal;
+using namespace dunedaq::appdal;
 
 static ModuleFactory::Registrator
 __reg__("ReadoutApplication", [] (const SmartDaqApplication* smartApp,

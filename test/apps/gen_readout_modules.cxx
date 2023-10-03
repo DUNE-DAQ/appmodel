@@ -16,11 +16,11 @@
 #include "coredal/Connection.hpp"
 #include "coredal/DaqModule.hpp"
 
-#include "readoutdal/DFApplication.hpp"
-#include "readoutdal/DFOApplication.hpp"
-#include "readoutdal/ReadoutApplication.hpp"
-#include "readoutdal/SmartDaqApplication.hpp"
-#include "readoutdal/TPWriterApplication.hpp"
+#include "appdal/DFApplication.hpp"
+#include "appdal/DFOApplication.hpp"
+#include "appdal/ReadoutApplication.hpp"
+#include "appdal/SmartDaqApplication.hpp"
+#include "appdal/TPWriterApplication.hpp"
 
 #include <string>
 using namespace dunedaq;
@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
       return 0;
     }
     std::vector<const coredal::DaqModule*> modules;
-    auto smart = daqapp->cast<readoutdal::SmartDaqApplication>();
+    auto smart = daqapp->cast<appdal::SmartDaqApplication>();
     if (smart) {
       modules = smart->generate_modules(confdb, dbfile, session);
     }

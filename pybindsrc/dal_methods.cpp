@@ -13,16 +13,16 @@
 #include "coredal/DaqModule.hpp"
 #include "coredal/Session.hpp"
 
-#include "readoutdal/DFApplication.hpp"
-#include "readoutdal/DFOApplication.hpp"
-#include "readoutdal/ReadoutApplication.hpp"
-#include "readoutdal/TPWriterApplication.hpp"
+#include "appdal/DFApplication.hpp"
+#include "appdal/DFOApplication.hpp"
+#include "appdal/ReadoutApplication.hpp"
+#include "appdal/TPWriterApplication.hpp"
 
 #include <sstream>
 
 namespace py = pybind11;
 
-namespace dunedaq::readoutdal::python {
+namespace dunedaq::appdal::python {
 
   struct ObjectLocator {
     ObjectLocator(const std::string& id_arg, const std::string& class_name_arg) :
@@ -121,4 +121,4 @@ register_dal_methods(py::module& m)
   m.def("tpwriter_application_generate", &tpwriter_application_generate, "Generate DaqModules required by TPWriterApplication");
 }
 
-} // namespace dunedaq::readoutdal::python
+} // namespace dunedaq::appdal::python

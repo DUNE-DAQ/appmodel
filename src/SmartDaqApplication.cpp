@@ -1,8 +1,8 @@
 #include "ModuleFactory.hpp"
-#include "readoutdal/SmartDaqApplication.hpp"
-#include "readoutdalIssues.hpp"
+#include "appdal/SmartDaqApplication.hpp"
+#include "appdalIssues.hpp"
 
-using namespace dunedaq::readoutdal;
+using namespace dunedaq::appdal;
 
 std::vector<const dunedaq::coredal::DaqModule*>
 SmartDaqApplication::generate_modules(oksdbinterfaces::Configuration* confdb,

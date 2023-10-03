@@ -14,19 +14,19 @@
 #include "oks/kernel.hpp"
 #include "coredal/Connection.hpp"
 #include "coredal/NetworkConnection.hpp"
-#include "readoutdal/TPWriterApplication.hpp"
-#include "readoutdal/NetworkConnectionRule.hpp"
-#include "readoutdal/NetworkConnectionDescriptor.hpp"
-#include "readoutdal/QueueConnectionRule.hpp"
-#include "readoutdal/QueueDescriptor.hpp"
-#include "readoutdalIssues.hpp"
+#include "appdal/TPWriterApplication.hpp"
+#include "appdal/NetworkConnectionRule.hpp"
+#include "appdal/NetworkConnectionDescriptor.hpp"
+#include "appdal/QueueConnectionRule.hpp"
+#include "appdal/QueueDescriptor.hpp"
+#include "appdalIssues.hpp"
 #include "logging/Logging.hpp"
 
 #include <string>
 #include <vector>
 
 using namespace dunedaq;
-using namespace dunedaq::readoutdal;
+using namespace dunedaq::appdal;
 
 static ModuleFactory::Registrator
 __reg__("TPWriterApplication", [] (const SmartDaqApplication* smartApp,

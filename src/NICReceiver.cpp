@@ -8,13 +8,13 @@
  * received with this code.
  */
 
-#include "readoutdal/DROStreamConf.hpp"
-#include "readoutdal/EthStreamParameters.hpp"
-#include "readoutdal/NICReceiver.hpp"
+#include "appdal/DROStreamConf.hpp"
+#include "appdal/EthStreamParameters.hpp"
+#include "appdal/NICReceiver.hpp"
 
-#include "readoutdalIssues.hpp"
+#include "appdalIssues.hpp"
 
-using namespace dunedaq::readoutdal;
+using namespace dunedaq::appdal;
 
 std::string NICReceiver::get_ipaddress() {
   auto streams = get_streams();
