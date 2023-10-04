@@ -1,24 +1,10 @@
-# Readoutdal
+# Appdal 
 
  This package extends the schema from the coredal package
-to describe readout applications.
+to describe readout, dataflow and trigger  applications.
 
   ![schema](schema.png)
 
-## ReadoutMap
-
- The **ReadoutMap** included here is currently a direct translation
-from the jsonnet schema in the `daqconf` package with the addition of
-a grouping class **ReadoutGroup**.
-
- The **DROStreamConf** class inherits from **ResourceBase** allowing
-individual streams to be disabled.  **DROStreamConfs** are grouped
-into **ReadoutGroups** which inherit from **ResourceSetAND** so if all
-streams in a group are disabled the group itselg is disabled.
-
-The **EthStreamParameters** and the **FlxStreamParameters** classes
-both contain host addresses. It is not clear how these relate to the
-**VirtualHost**/**PhysicalHost** classes from the core schema.
 
 ## SmartDaqApplication
 
@@ -59,6 +45,13 @@ inherited from **SmartDaqApplication**.
 the **ReadoutApplication** and maybe for all the
 **ReadoutApplications** in the **Session**. Its only distinguishing
 configuration item is the relationship it has to a **DROStreamConf**.
+
+## Notes/Queries
+
+The **EthStreamParameters** and the **FlxStreamParameters** classes
+both contain host addresses. It is not clear how these relate to the
+**VirtualHost**/**PhysicalHost** classes from the core schema.
+
 
 ## DataFlow applications
 

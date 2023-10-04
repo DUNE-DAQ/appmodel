@@ -22,16 +22,16 @@ daq_oks_codegen(readout.schema.xml NAMESPACE dunedaq::appdal DEP_PKGS coredal)
 daq_add_library(ReadoutApplication.cpp NICReceiver.cpp SmartDaqApplication.cpp
   DFApplication.cpp DFOApplication.cpp TPWriterApplication.cpp
  LINK_LIBRARIES oksdbinterfaces::oksdbinterfaces okssystem::okssystem
-  logging::logging coredal coredal_oks oks::oks ers::ers)
+  logging::logging coredal oks::oks ers::ers)
 
 
 daq_add_python_bindings(dal_methods.cpp module.cpp LINK_LIBRARIES 
-  appdal appdal_oks coredal coredal_oks)
+  appdal coredal)
 
 
-daq_add_application(gen_readout_modules gen_readout_modules.cxx TEST LINK_LIBRARIES
- appdal appdal_oks coredal coredal_oks
- oksdbinterfaces::oksdbinterfaces logging::logging)
+daq_add_application(gen_readout_modules gen_readout_modules.cxx
+ TEST LINK_LIBRARIES appdal coredal oksdbinterfaces::oksdbinterfaces
+ logging::logging)
 
 ##############################################################################
 
