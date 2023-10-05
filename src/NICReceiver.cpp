@@ -8,11 +8,11 @@
  * received with this code.
  */
 
-#include "appdal/DROStreamConf.hpp"
 #include "appdal/EthStreamParameters.hpp"
+#include "appdalIssues.hpp"
 #include "appdal/NICReceiver.hpp"
 
-#include "appdalIssues.hpp"
+#include "coredal/DROStreamConf.hpp"
 
 using namespace dunedaq::appdal;
 
