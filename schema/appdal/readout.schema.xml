@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="47" oks-format="schema" oks-version="oks-08-03-04-1-gf920aa4 built &quot;May 12 2022&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20230824T113025"/>
+<info name="" type="" num-of-items="42" oks-format="schema" oks-version="oks-08-03-04-1-gf920aa4 built &quot;May 12 2022&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20231004T095944"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -127,13 +127,6 @@
   <superclass name="DaqModule"/>
   <attribute name="source_id" type="u32" is-not-null="yes"/>
   <relationship name="handler_configuration" class-type="LinkHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="DROStreamConf">
-  <superclass name="ResourceBase"/>
-  <attribute name="src_id" type="u32" is-not-null="yes"/>
-  <relationship name="geo_id" class-type="GeoId" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="stream_params" class-type="StreamParameters" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="DataProcessor">
@@ -227,13 +220,6 @@
   <attribute name="slr" description="Super logic region of readout card" type="u16" range="0..1" init-value="0" is-not-null="yes"/>
   <attribute name="link" description="Link within SLR" type="u8" range="0..5" init-value="0" is-not-null="yes"/>
   <attribute name="host" type="string" init-value="localhost" is-not-null="yes"/>
- </class>
-
- <class name="GeoId">
-  <attribute name="detector_id" type="u32" is-not-null="yes"/>
-  <attribute name="crate_id" type="u32" is-not-null="yes"/>
-  <attribute name="slot_id" type="u32" is-not-null="yes"/>
-  <attribute name="stream_id" type="u32" is-not-null="yes"/>
  </class>
 
  <class name="HDF5FileLayoutParams">
@@ -345,16 +331,8 @@
   </method>
  </class>
 
- <class name="ReadoutGroup" description="The ReadoutGroup class should contain a set of DROStreamConf objects that describe the readout streams of the detector modul">
-  <superclass name="ResourceSetAND"/>
- </class>
-
  <class name="ReadoutHost">
   <superclass name="VirtualHost"/>
- </class>
-
- <class name="ReadoutMap">
-  <relationship name="groups" class-type="ReadoutGroup" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="RoHwConfig">
@@ -371,10 +349,6 @@
   <method name="generate_modules" description="">
    <method-implementation language="c++" prototype="virtual std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const" body=""/>
   </method>
- </class>
-
- <class name="StreamParameters">
-  <attribute name="mode" type="enum" range="fix_rate,var_rate" init-value="fix_rate" is-not-null="yes"/>
  </class>
 
  <class name="TPHandler">

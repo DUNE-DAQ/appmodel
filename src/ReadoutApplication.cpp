@@ -14,21 +14,21 @@
 #include "oks/kernel.hpp"
 
 #include "coredal/Connection.hpp"
+#include "coredal/DROStreamConf.hpp"
 #include "coredal/NetworkConnection.hpp"
+#include "coredal/ReadoutGroup.hpp"
 #include "coredal/ResourceSet.hpp"
 #include "coredal/Session.hpp"
 
 #include "appdal/DataReader.hpp"
 #include "appdal/DataReaderConf.hpp"
 #include "appdal/DLH.hpp"
-#include "appdal/DROStreamConf.hpp"
 #include "appdal/LinkHandlerConf.hpp"
 #include "appdal/NetworkConnectionRule.hpp"
 #include "appdal/NetworkConnectionDescriptor.hpp"
 #include "appdal/QueueConnectionRule.hpp"
 #include "appdal/QueueDescriptor.hpp"
 #include "appdal/ReadoutApplication.hpp"
-#include "appdal/ReadoutGroup.hpp"
 #include "appdal/TPHandler.hpp"
 #include "appdal/TPHandlerConf.hpp"
 
@@ -146,13 +146,13 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
       TLOG_DEBUG(7) << "Ignoring disabled ReadoutGroup " << roGroup->UID();
       continue;
     }
-    auto rset = roGroup->cast<ReadoutGroup>();
+    auto rset = roGroup->cast<coredal::ReadoutGroup>();
     if (rset == nullptr) {
         throw (BadConf(ERS_HERE, "ReadoutApplication contains something other than ReadoutGroup"));
     }
     std::vector<const coredal::Connection*> outputQueues;
     for (auto res : rset->get_contains()) {
-      auto stream = res->cast<DROStreamConf>();
+      auto stream = res->cast<coredal::DROStreamConf>();
       if (stream == nullptr) {
         throw (BadConf(ERS_HERE, "ReadoutGroup contains something other than DROStreamConf"));
       }
