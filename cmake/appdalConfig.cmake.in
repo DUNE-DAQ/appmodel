@@ -8,6 +8,7 @@ find_dependency(genconfig)
 find_dependency(ers)
 find_dependency(logging)
 find_dependency(oksdbinterfaces)
+find_dependency(oks)
 find_dependency(coredal)
 
 # Figure out whether or not this dependency is an installed package or
