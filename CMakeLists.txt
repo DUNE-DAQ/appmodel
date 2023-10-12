@@ -26,7 +26,7 @@ daq_add_library(ReadoutApplication.cpp NICReceiver.cpp SmartDaqApplication.cpp
 
 
 daq_add_python_bindings(dal_methods.cpp module.cpp LINK_LIBRARIES 
-  appdal coredal)
+  appdal coredal::coredal)
 
 
 daq_add_application(gen_readout_modules gen_readout_modules.cxx
