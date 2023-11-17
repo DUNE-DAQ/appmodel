@@ -18,8 +18,9 @@ know how to connect the modules internally and to network endpoints.
 
 *NB:* The declaration of the `generate_modules()` method must be
  repeated in each subclass and an implementation provided. The
- declaration in **SmartDaqApplication** is not pur virtual but its
- implemetation just throws a 'not implemented' exception.
+ declaration in **SmartDaqApplication** is not pure virtual but its
+ implemetation calls the generate_modules() implementation of the
+ specific subclass using a 'magic' map of class names to generate functions.
 
 ## ReadoutApplication
 
@@ -32,7 +33,7 @@ can contain any class inheriting from **RsourceBase** but should only
 contain **ReadoutGroups**. The `generate_modules()` method will
 generate a **DataReader** and set of **DataLinkHandlers** for each
 **ReadoutGroup** plus a single **TPHandler**. The modules are created
-accoriding to the configuration given by the data_reader, link_handler
+according to the configuration given by the data_reader, link_handler
 and tp_handler relationships respectively. Connections between pairs
 of modules are configured according to the queue_rules relationship
 inherited from **SmartDaqApplication**.
