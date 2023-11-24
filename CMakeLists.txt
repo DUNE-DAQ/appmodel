@@ -33,6 +33,16 @@ daq_add_application(gen_readout_modules gen_readout_modules.cxx
  TEST LINK_LIBRARIES appdal coredal::coredal oksdbinterfaces::oksdbinterfaces
  logging::logging)
 
+daq_add_application(gen_tp_writer_modules gen_tp_writer_modules.cxx
+ TEST LINK_LIBRARIES appdal coredal::coredal oksdbinterfaces::oksdbinterfaces
+ logging::logging)
+
+daq_add_application(gen_dataflow_modules gen_dataflow_modules.cxx
+ TEST LINK_LIBRARIES appdal coredal::coredal oksdbinterfaces::oksdbinterfaces
+ logging::logging)
+
+
+
 ##############################################################################
 
 
