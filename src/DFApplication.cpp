@@ -72,6 +72,8 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     TLOG() << "app in session: " << app;
   }
 
+  // -- First, we process expected Queue and Network connections and create their objects.
+
   // Process the queue rules looking for the TriggerRecord queue between TRB and DataWriter
   const QueueDescriptor* trQDesc = nullptr;
   for (auto rule : get_queue_rules()) {
@@ -89,8 +91,9 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   confdb->create(dbfile, "Queue", trQueueUid, trQueueObj);
   fill_queue_object_from_desc(trQDesc, trQueueObj);
 
-  // Process the network rules looking for the Fragments input for TRB
+  // Process the network rules looking for the Fragments and TriggerDecision inputs for TRB
   const NetworkConnectionDescriptor* fragNetDesc = nullptr;
+  const NetworkConnectionDescriptor* trigdecNetDesc = nullptr; 
   for (auto rule : get_network_rules()) {
     auto endpoint_class = rule->get_endpoint_class();
     auto descriptor = rule->get_descriptor();
@@ -98,15 +101,29 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     if (endpoint_class == "TRBuilder" && data_type == "Fragment") {
       fragNetDesc = rule->get_descriptor();
     }
+    else if (endpoint_class == "TRBuilder" && data_type == "TriggerDecision") {
+      trigdecNetDesc = rule->get_descriptor();
+    }
   }
   if (fragNetDesc == nullptr) { // BadConf if no descriptor for Fragments into TRB
-    throw (BadConf(ERS_HERE, "Could not find queue descriptor rule for input Fragments!"));
+    throw (BadConf(ERS_HERE, "Could not find network descriptor rule for input Fragments!"));
+  }
+  if (trigdecNetDesc == nullptr) { // BadCond if no descriptor for TriggerDecisions into TRB
+    throw (BadConf(ERS_HERE, "Could not find network descriptor rule for input TriggerDecisions!"));
   }
   // Create network connection config object
   oksdbinterfaces::ConfigObject fragNetObj;
+  oksdbinterfaces::ConfigObject trigdecNetObj;
   std::string fragNetUid("fragments-to-dataflow-"+std::to_string(1));
+  std::string trigdecNetUid("tigger-decisions-"+std::to_string(1));
   confdb->create(dbfile, "NetworkConnection", fragNetUid, fragNetObj);
+  confdb->create(dbfile, "NetworkConnection", trigdecNetUid, trigdecNetObj);
   fill_netconn_object_from_desc(fragNetDesc, fragNetObj);
+  fill_netconn_object_from_desc(trigdecNetDesc, trigdecNetObj);
+
+
+  // -- Second, we create the Module objects and assign their configs, with the precreated 
+  // -- connection config objects above.
 
   // Get TRB Config Object
   auto trbConf = get_trb();
@@ -119,7 +136,7 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   std::string trbUid("trbuilder-"+std::to_string(1));
   confdb->create(dbfile, "TRBuilder", trbUid, trbObj);
   trbObj.set_obj("configuration", &trbConfObj);
-  trbObj.set_objs("inputs", {&fragNetObj});
+  trbObj.set_objs("inputs", {&trigdecNetObj, &fragNetObj});
   trbObj.set_objs("outputs", {&trQueueObj});
   // Push TRB Module Object from confdb
   modules.push_back(confdb->get<TRBuilder>(trbUid));
