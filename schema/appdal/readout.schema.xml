@@ -222,6 +222,10 @@
   <attribute name="host" type="string" init-value="localhost" is-not-null="yes"/>
  </class>
 
+ <class name="FragmentAggregator">
+  <superclass name="DaqModule"/>
+ </class>
+
  <class name="HDF5FileLayoutParams">
   <attribute name="record_name_prefix" type="string" init-value="TriggerRecord" is-not-null="yes"/>
   <attribute name="digits_for_record_number" type="s32" init-value="6"/>
@@ -295,11 +299,9 @@
 
  <class name="NetworkConnectionDescriptor">
   <attribute name="uid_base" description="Base for UID string. To be combined with a source id" type="string" is-not-null="yes"/>
-  <attribute name="data_type" type="string" is-not-null="yes"/>
   <attribute name="connection_type" type="enum" range="kSendRecv,kPubSub" init-value="kSendRecv" is-not-null="yes"/>
-  <attribute name="port" type="u16" init-value="0"/>
-  <attribute name="uri" type="string" init-value="tcp://0.0.0.0:*" is-not-null="yes"/>
- </class>
+  <relationship name="associated_service" description="Service provided by this connection" class-type="Service" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
+</class>
 
  <class name="NetworkConnectionRule">
   <attribute name="endpoint_class" type="class" init-value="DaqModule"/>

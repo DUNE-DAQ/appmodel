@@ -18,11 +18,13 @@
 #include "coredal/NetworkConnection.hpp"
 #include "coredal/ReadoutGroup.hpp"
 #include "coredal/ResourceSet.hpp"
+#include "coredal/Service.hpp"
 #include "coredal/Session.hpp"
 
 #include "appdal/DataReader.hpp"
 #include "appdal/DataReaderConf.hpp"
 #include "appdal/DLH.hpp"
+#include "appdal/FragmentAggregator.hpp"
 #include "appdal/LinkHandlerConf.hpp"
 #include "appdal/NetworkConnectionRule.hpp"
 #include "appdal/NetworkConnectionDescriptor.hpp"
@@ -65,32 +67,62 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
   // Process the queue rules looking for inputs to our DL/TP handler modules
   const QueueDescriptor* dlhInputQDesc = nullptr;
+  const QueueDescriptor* dlhReqInputQDesc = nullptr;
   const QueueDescriptor* tpInputQDesc = nullptr;
+  const QueueDescriptor* tpReqInputQDesc = nullptr;
+  const QueueDescriptor* faOutputQDesc = nullptr;
+
   for (auto rule : get_queue_rules()) {
     auto destination_class = rule->get_destination_class();
+    auto data_type = rule->get_descriptor()->get_data_type();
     if (destination_class == "DLH" || destination_class == dlhClass) {
-      dlhInputQDesc = rule->get_descriptor();
+      if (data_type == "DataRequest") {
+	      dlhReqInputQDesc = rule->get_descriptor();
+      }
+      else {
+	      dlhInputQDesc = rule->get_descriptor();
+      }
     }
     else if (destination_class == "TPHandler") {
-      tpInputQDesc = rule->get_descriptor();
+      if (data_type == "DataRequest") {
+	      tpReqInputQDesc = rule->get_descriptor();
+      }
+      else {
+	      tpInputQDesc = rule->get_descriptor();
+      }
+    }
+    else if (destination_class == "FragmentAggregator") {
+      faOutputQDesc = rule->get_descriptor();
     }
   }
-
-  // Process the network rules looking for the DL/TP handler data reuest inputs
-  const NetworkConnectionDescriptor* dlhNetDesc = nullptr;
+  // Process the network rules looking for the Fragment Aggregator and TP handler data reuest inputs
+  const NetworkConnectionDescriptor* faNetDesc = nullptr;
   const NetworkConnectionDescriptor* tpNetDesc = nullptr;
   for (auto rule : get_network_rules()) {
     auto endpoint_class = rule->get_endpoint_class();
-    if (endpoint_class == "DLH" || endpoint_class == dlhClass) {
-      dlhNetDesc = rule->get_descriptor();
+    if (endpoint_class == "FragmentAggregator" ) {
+      faNetDesc = rule->get_descriptor();
     }
     else if (endpoint_class == "TPHandler") {
-      tpNetDesc = rule->get_descriptor();
+      tpNetDesc = rule->get_descriptor(); // this is the connection publishing TPSets!
     }
   }
 
+  // Create here the Queue on which all data fragments are forwarded to the fragment aggregator
+  // and a container for the queues of data request to TP handler and DLH
+  oksdbinterfaces::ConfigObject faQueueObj;
+  std::vector<const coredal::Connection*> faOutputQueues;
+
+
+  std::string taFragQueueUid("reqToFA-"+UID());
+  confdb->create(dbfile, "Queue", taFragQueueUid, faQueueObj);
+  faQueueObj.set_by_val<std::string>("data_type", faOutputQDesc->get_data_type());
+  faQueueObj.set_by_val<std::string>("queue_type", faOutputQDesc->get_queue_type());
+  faQueueObj.set_by_val<uint32_t>("capacity", faOutputQDesc->get_capacity());
+
   // Now create the TP Handler and its associated queue and network
   // connections if we have a TP handler config
+  oksdbinterfaces::ConfigObject tpReqQueueObj;
   oksdbinterfaces::ConfigObject tpQueueObj;
   oksdbinterfaces::ConfigObject tpNetObj;
   auto tpHandlerConf = get_tp_handler();
@@ -99,8 +131,15 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
       throw (BadConf(ERS_HERE, "No tpHandler network descriptor given"));
     }
     if (tpInputQDesc == nullptr) {
-      throw (BadConf(ERS_HERE, "No tpHandler input queue descriptor given"));
+      throw (BadConf(ERS_HERE, "No tpHandler data input queue descriptor given"));
     }
+    if (tpReqInputQDesc == nullptr) {
+      throw (BadConf(ERS_HERE, "No tpHandler data request queue descriptor given"));
+    }
+    if (faOutputQDesc == nullptr) {
+      throw (BadConf(ERS_HERE, "No tpHandler fragment output queue descriptor given"));
+    }
+    
     auto tpsrc = get_tp_src_id();
     if (tpsrc == 0) {
       throw (BadConf(ERS_HERE, "No TPHandler src_id given"));
@@ -111,12 +150,18 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     tpQueueObj.set_by_val<std::string>("queue_type", tpInputQDesc->get_queue_type());
     tpQueueObj.set_by_val<uint32_t>("capacity", tpInputQDesc->get_capacity());
 
-    std::string tpNetUid("ReqToTPH-"+std::to_string(tpsrc));
-    confdb->create(dbfile, "NetworkConnection", tpNetUid, tpNetObj);
-    tpNetObj.set_by_val<std::string>("data_type", tpNetDesc->get_data_type());
+    std::string tpReqQueueUid("ReqToTPH-"+std::to_string(tpsrc));
+    confdb->create(dbfile, "Queue", tpReqQueueUid, tpReqQueueObj);
+    tpReqQueueObj.set_by_val<std::string>("data_type", tpReqInputQDesc->get_data_type());
+    tpReqQueueObj.set_by_val<std::string>("queue_type", tpReqInputQDesc->get_queue_type());
+    tpReqQueueObj.set_by_val<uint32_t>("capacity", tpReqInputQDesc->get_capacity());
+    faOutputQueues.push_back(confdb->get<coredal::Connection>(tpReqQueueUid));
+
+    auto tpServiceObj = tpNetDesc->get_associated_service()->config_object();
+    std::string tpStreamUid("tpstream-"+UID());
+    confdb->create(dbfile, "NetworkConnection", tpStreamUid, tpNetObj);
     tpNetObj.set_by_val<std::string>("connection_type", tpNetDesc->get_connection_type());
-    tpNetObj.set_by_val<std::string>("uri", tpNetDesc->get_uri());
-    tpNetObj.set_by_val<uint16_t>("port", tpNetDesc->get_port());
+    tpNetObj.set_obj("associated_service", &tpServiceObj);
     
     auto tphConfObj = tpHandlerConf->config_object();
     oksdbinterfaces::ConfigObject tpObj;
@@ -124,7 +169,8 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     confdb->create(dbfile, "TPHandler", tpUid, tpObj);
     tpObj.set_by_val<uint32_t>("source_id", tpsrc);
     tpObj.set_obj("handler_configuration", &tphConfObj);
-    tpObj.set_objs("inputs", {&tpQueueObj, &tpNetObj});
+    tpObj.set_objs("inputs", {&tpQueueObj, &tpReqQueueObj});
+    tpObj.set_objs("outputs", {&tpNetObj, &faQueueObj});
 
     // Add to our list of modules to return
     modules.push_back(confdb->get<TPHandler>(tpUid));
@@ -137,7 +183,6 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   }
 
   int rnum = 0;
-  int port_offset = 0;
   // Create a DataReader for each (non-disabled) group and a Data Link
   // Handler for each stream of this DataReader
   //for (auto roGroup : get_readout_groups()) {
@@ -168,37 +213,32 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
       dlhObj.set_by_val<uint32_t>("source_id", id);
       dlhObj.set_obj("handler_configuration", &dlhConf->config_object());
       if (tpHandlerConf) {
-        dlhObj.set_objs("outputs", {&tpQueueObj});
+        dlhObj.set_objs("outputs", {&tpQueueObj, &faQueueObj});
       }
-      std::string queueUid("inputToDLH-"+std::to_string(id));
+      else {
+	dlhObj.set_objs("outputs", {&faQueueObj});
+      }
+
+      std::string dataQueueUid("inputToDLH-"+std::to_string(id));
       oksdbinterfaces::ConfigObject queueObj;
-      confdb->create(dbfile, "Queue", queueUid, queueObj);
+      confdb->create(dbfile, "Queue", dataQueueUid, queueObj);
       queueObj.set_by_val<std::string>("data_type", dlhInputQDesc->get_data_type());
       queueObj.set_by_val<std::string>("queue_type", dlhInputQDesc->get_queue_type());
       queueObj.set_by_val<uint32_t>("capacity", dlhInputQDesc->get_capacity());
 
-      std::ostringstream uidStream;
-      uidStream.fill('0');
-      uidStream << dlhNetDesc->get_uid_base() << std::hex << std::setw(8) << id;
-      std::string netUid=uidStream.str();
-      oksdbinterfaces::ConfigObject netObj;
-      confdb->create(dbfile, "NetworkConnection", netUid, netObj);
-      netObj.set_by_val<std::string>("data_type", dlhNetDesc->get_data_type());
-      netObj.set_by_val<std::string>("connection_type", dlhNetDesc->get_connection_type());
-      netObj.set_by_val<std::string>("uri", dlhNetDesc->get_uri());
-      uint16_t port = dlhNetDesc->get_port();
-      port = port ? port+port_offset : port;
-      netObj.set_by_val<uint16_t>("port", port);
+      std::string reqQueueUid("inputReqToDLH-"+std::to_string(id));
+      oksdbinterfaces::ConfigObject reqQueueObj;
+      confdb->create(dbfile, "Queue", reqQueueUid, reqQueueObj);
+      reqQueueObj.set_by_val<std::string>("data_type", dlhReqInputQDesc->get_data_type());
+      reqQueueObj.set_by_val<std::string>("queue_type", dlhReqInputQDesc->get_queue_type());
+      reqQueueObj.set_by_val<uint32_t>("capacity", dlhReqInputQDesc->get_capacity());
+      // Add the requessts queue dal pointer to the outputs of the FragmentAggregator
+      faOutputQueues.push_back(confdb->get<coredal::Connection>(reqQueueUid));
 
-      port_offset++;
-      std::vector<const oksdbinterfaces::ConfigObject*> inputObjs{
-        &(confdb->get<coredal::Connection>(queueUid)->config_object()),
-        &(confdb->get<coredal::Connection>(netUid)->config_object())
-      };
-      dlhObj.set_objs("inputs", inputObjs);
+      dlhObj.set_objs("inputs", {&queueObj, &reqQueueObj});
 
       // Add the input queue dal pointer to the outputs of the DataReader
-      outputQueues.push_back(confdb->get<coredal::Connection>(queueUid));
+      outputQueues.push_back(confdb->get<coredal::Connection>(dataQueueUid));
 
       modules.push_back(confdb->get<DLH>(uid));
     }
@@ -218,6 +258,31 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
     modules.push_back(confdb->get<DataReader>(readerUid));
   }
+
+  // Finally create Fragment Aggregator
+  std::string faUid("fragmentaggregator-"+UID());
+  oksdbinterfaces::ConfigObject faObj;
+  TLOG_DEBUG(7) <<  "creating OKS configuration object for Fragment Aggregator class ";
+  confdb->create(dbfile, "FragmentAggregator", faUid, faObj);
+
+  //Add network connection to TRBs
+  auto faServiceObj = faNetDesc->get_associated_service()->config_object();
+  std::string faNetUid("fragmentrequests-"+UID());;
+  oksdbinterfaces::ConfigObject faNetObj;
+  confdb->create(dbfile, "NetworkConnection", faNetUid, faNetObj);
+  tpNetObj.set_by_val<std::string>("connection_type", faNetDesc->get_connection_type());
+  tpNetObj.set_obj("associated_service", &faServiceObj);
+
+  //Add output queueus of data requests
+  std::vector<const oksdbinterfaces::ConfigObject*> qObjs;
+  for (auto q : faOutputQueues) {
+    qObjs.push_back(&q->config_object());
+  }
+  faObj.set_objs("inputs", {&faNetObj, &faQueueObj});
+  faObj.set_objs("outputs", qObjs);
+
+  modules.push_back(confdb->get<FragmentAggregator>(faUid));
+
   //oks::OksFile::set_nolock_mode(false);
   return modules;
 }
