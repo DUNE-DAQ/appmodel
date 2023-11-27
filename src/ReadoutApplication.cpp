@@ -98,6 +98,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   // Process the network rules looking for the Fragment Aggregator and TP handler data reuest inputs
   const NetworkConnectionDescriptor* faNetDesc = nullptr;
   const NetworkConnectionDescriptor* tpNetDesc = nullptr;
+  const NetworkConnectionDescriptor* tsNetDesc = nullptr;
   for (auto rule : get_network_rules()) {
     auto endpoint_class = rule->get_endpoint_class();
     if (endpoint_class == "FragmentAggregator" ) {
@@ -105,6 +106,9 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     }
     else if (endpoint_class == "TPHandler") {
       tpNetDesc = rule->get_descriptor(); // this is the connection publishing TPSets!
+    }
+    else if (endpoint_class == "DLH" || endpoint_class == dlhClass) {
+	tsNetDesc = rule->get_descriptor();
     }
   }
 
@@ -138,6 +142,9 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     }
     if (faOutputQDesc == nullptr) {
       throw (BadConf(ERS_HERE, "No tpHandler fragment output queue descriptor given"));
+    }
+    if (tsNetDesc == nullptr) {
+      throw (BadConf(ERS_HERE, "No timesync output network descriptor given"));
     }
     
     auto tpsrc = get_tp_src_id();
@@ -212,11 +219,20 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
       confdb->create(dbfile, dlhClass, uid, dlhObj);
       dlhObj.set_by_val<uint32_t>("source_id", id);
       dlhObj.set_obj("handler_configuration", &dlhConf->config_object());
+
+      // Time Sync network connection
+      std::string tsStreamUid("timesync"+std::to_string(id));
+      auto tsServiceObj = tsNetDesc->get_associated_service()->config_object();
+      oksdbinterfaces::ConfigObject tsNetObj;
+      confdb->create(dbfile, "NetworkConnection", tsStreamUid, tsNetObj);
+      tsNetObj.set_by_val<std::string>("connection_type", tsNetDesc->get_connection_type());
+      tsNetObj.set_obj("associated_service", &tsServiceObj);
+
       if (tpHandlerConf) {
-        dlhObj.set_objs("outputs", {&tpQueueObj, &faQueueObj});
+        dlhObj.set_objs("outputs", {&tpQueueObj, &faQueueObj, &tsNetObj});
       }
       else {
-	dlhObj.set_objs("outputs", {&faQueueObj});
+	dlhObj.set_objs("outputs", {&faQueueObj, &tsNetObj});
       }
 
       std::string dataQueueUid("inputToDLH-"+std::to_string(id));
