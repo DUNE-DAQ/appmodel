@@ -114,6 +114,9 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
   // Create here the Queue on which all data fragments are forwarded to the fragment aggregator
   // and a container for the queues of data request to TP handler and DLH
+  if (faOutputQDesc == nullptr) {
+    throw (BadConf(ERS_HERE, "No fragment output queue descriptor given"));
+  }
   oksdbinterfaces::ConfigObject faQueueObj;
   std::vector<const coredal::Connection*> faOutputQueues;
 
@@ -139,9 +142,6 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     }
     if (tpReqInputQDesc == nullptr) {
       throw (BadConf(ERS_HERE, "No tpHandler data request queue descriptor given"));
-    }
-    if (faOutputQDesc == nullptr) {
-      throw (BadConf(ERS_HERE, "No tpHandler fragment output queue descriptor given"));
     }
     if (tsNetDesc == nullptr) {
       throw (BadConf(ERS_HERE, "No timesync output network descriptor given"));
@@ -187,6 +187,12 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   auto rdrConf = get_data_reader();
   if (rdrConf == 0) {
     throw (BadConf(ERS_HERE, "No DataReader configuration given"));
+  }
+  if (dlhInputQDesc == nullptr) {
+    throw (BadConf(ERS_HERE, "No DLH data input queue descriptor given"));
+  }
+  if (dlhReqInputQDesc == nullptr) {
+    throw (BadConf(ERS_HERE, "No DLH request input queue descriptor given"));
   }
 
   int rnum = 0;
