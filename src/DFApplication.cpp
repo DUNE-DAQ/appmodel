@@ -87,7 +87,7 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   }
   // Create queue connection config object
   oksdbinterfaces::ConfigObject trQueueObj;
-  std::string trQueueUid("trigger-records-"+std::to_string(1));
+  std::string trQueueUid("trigger-records-"+UID());
   confdb->create(dbfile, "Queue", trQueueUid, trQueueObj);
   fill_queue_object_from_desc(trQDesc, trQueueObj);
 
@@ -114,8 +114,8 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   // Create network connection config object
   oksdbinterfaces::ConfigObject fragNetObj;
   oksdbinterfaces::ConfigObject trigdecNetObj;
-  std::string fragNetUid("fragments-to-dataflow-"+std::to_string(1));
-  std::string trigdecNetUid("tigger-decisions-"+std::to_string(1));
+  std::string fragNetUid("fragments-to-dataflow-"+UID());
+  std::string trigdecNetUid("tigger-decisions-"+UID());
   confdb->create(dbfile, "NetworkConnection", fragNetUid, fragNetObj);
   confdb->create(dbfile, "NetworkConnection", trigdecNetUid, trigdecNetObj);
   fill_netconn_object_from_desc(fragNetDesc, fragNetObj);
@@ -133,7 +133,7 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   auto trbConfObj = trbConf->config_object();
   // Prepare TRB Module Object and assign its Config Object.
   oksdbinterfaces::ConfigObject trbObj;
-  std::string trbUid("trbuilder-"+std::to_string(1));
+  std::string trbUid("trbuilder-"+UID());
   confdb->create(dbfile, "TRBuilder", trbUid, trbObj);
   trbObj.set_obj("configuration", &trbConfObj);
   trbObj.set_objs("inputs", {&trigdecNetObj, &fragNetObj});
@@ -150,7 +150,7 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   auto dwrConfObj = dwrConf->config_object();
   // Prepare DataWriter Module Object and assign its Config Object.
   oksdbinterfaces::ConfigObject dwrObj;
-  std::string dwrUid("datawriter-"+std::to_string(1));
+  std::string dwrUid("datawriter-"+UID());
   confdb->create(dbfile, "DataWriter", dwrUid, dwrObj);
   dwrObj.set_obj("configuration", &dwrConfObj);
   dwrObj.set_objs("inputs", {&trQueueObj});
