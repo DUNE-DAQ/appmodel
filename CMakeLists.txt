@@ -16,6 +16,7 @@ find_package(coredal REQUIRED)
 
 #find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 
+include_directories(${CMAKE_BINARY_DIR}/coredal ${CMAKE_BINARY_DIR}/appdal)
 
 daq_oks_codegen(readout.schema.xml NAMESPACE dunedaq::appdal DEP_PKGS coredal)
 
