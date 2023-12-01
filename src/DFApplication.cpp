@@ -127,12 +127,11 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   // Looking for DataRequest rules from ReadoutAppplications in current Session
   auto sessionApps = session->get_all_applications();
   for (auto app : sessionApps) {
-    TLOG() << "app in session: " << app;
     auto smartapp = app->cast<appdal::SmartDaqApplication>();
     if (smartapp != nullptr) {
       auto roapp = smartapp->cast<appdal::ReadoutApplication>();
       if (roapp != nullptr) {
-        TLOG() << "Readout app in session: " << roapp;
+        TLOG_DEBUG(7) << "Readout app in session: " << roapp;
 	auto roQRules = smartapp->get_network_rules();
         for (auto rule : roQRules) {
           auto descriptor = rule->get_descriptor(); 
