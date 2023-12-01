@@ -19,6 +19,7 @@
 #include "appdal/DataWriter.hpp"
 #include "appdal/DataWriterConf.hpp"
 #include "appdal/DFApplication.hpp"
+#include "appdal/ReadoutApplication.hpp"
 #include "appdal/NetworkConnectionRule.hpp"
 #include "appdal/NetworkConnectionDescriptor.hpp"
 #include "appdal/QueueConnectionRule.hpp"
@@ -67,10 +68,9 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 {
   std::vector<const coredal::DaqModule*> modules;
 
-  auto sessionApps = session->get_all_applications();
-  for (auto app : sessionApps) {
-    TLOG() << "app in session: " << app;
-  }
+  // Containers for module specific config objects for output/input
+  // Prepare TRB output objects 
+  std::vector<const oksdbinterfaces::ConfigObject*> trbOutputObjs;
 
   // -- First, we process expected Queue and Network connections and create their objects.
 
@@ -90,6 +90,8 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   std::string trQueueUid("trigger-records-"+UID());
   confdb->create(dbfile, "Queue", trQueueUid, trQueueObj);
   fill_queue_object_from_desc(trQDesc, trQueueObj);
+  // Place trigger record queue object into vector of output objs of TRB module
+  trbOutputObjs.push_back(&trQueueObj); 
 
   // Process the network rules looking for the Fragments and TriggerDecision inputs for TRB
   const NetworkConnectionDescriptor* fragNetDesc = nullptr;
@@ -121,6 +123,31 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   fill_netconn_object_from_desc(fragNetDesc, fragNetObj);
   fill_netconn_object_from_desc(trigdecNetDesc, trigdecNetObj);
 
+  // Process special Network rules! 
+  // Looking for DataRequest rules from ReadoutAppplications in current Session
+  auto sessionApps = session->get_all_applications();
+  for (auto app : sessionApps) {
+    TLOG() << "app in session: " << app;
+    auto smartapp = app->cast<appdal::SmartDaqApplication>();
+    if (smartapp != nullptr) {
+      auto roapp = smartapp->cast<appdal::ReadoutApplication>();
+      if (roapp != nullptr) {
+        TLOG() << "Readout app in session: " << roapp;
+	auto roQRules = smartapp->get_network_rules();
+        for (auto rule : roQRules) {
+          auto descriptor = rule->get_descriptor(); 
+          auto data_type = descriptor->get_data_type();
+	  if (data_type == "DataRequest") {
+            oksdbinterfaces::ConfigObject dreqNetObj;
+	    std::string dreqNetUid("data-request-to-"+roapp->UID()+"-"+UID());
+	    confdb->create(dbfile, "NetworkConnection", dreqNetUid, dreqNetObj);
+	    fill_netconn_object_from_desc(descriptor, dreqNetObj);
+            trbOutputObjs.push_back(&dreqNetObj);
+	  } // If network rule has DataRequest type of data
+	} // Loop over ReadoutApps network rules 
+      } // if smartapp is ReadoutApplication
+    } // if smartapp cast success
+  } // loop over Session specific Apps
 
   // -- Second, we create the Module objects and assign their configs, with the precreated 
   // -- connection config objects above.
@@ -137,7 +164,7 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   confdb->create(dbfile, "TRBuilder", trbUid, trbObj);
   trbObj.set_obj("configuration", &trbConfObj);
   trbObj.set_objs("inputs", {&trigdecNetObj, &fragNetObj});
-  trbObj.set_objs("outputs", {&trQueueObj});
+  trbObj.set_objs("outputs", trbOutputObjs);
   // Push TRB Module Object from confdb
   modules.push_back(confdb->get<TRBuilder>(trbUid));
 
