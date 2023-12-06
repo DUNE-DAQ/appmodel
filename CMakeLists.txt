@@ -16,9 +16,8 @@ find_package(coredal REQUIRED)
 
 #find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 
-include_directories(${CMAKE_BINARY_DIR}/coredal ${CMAKE_BINARY_DIR}/appdal)
-
-daq_oks_codegen(readout.schema.xml NAMESPACE dunedaq::appdal DEP_PKGS coredal)
+daq_oks_codegen(application.schema.xml fdmodules.schema.xml
+  NAMESPACE dunedaq::appdal DEP_PKGS coredal)
 
 daq_add_library(ReadoutApplication.cpp NICReceiver.cpp SmartDaqApplication.cpp
   DFApplication.cpp DFOApplication.cpp TPWriterApplication.cpp
@@ -30,7 +29,7 @@ daq_add_python_bindings(dal_methods.cpp module.cpp LINK_LIBRARIES
   appdal coredal::coredal)
 
 
-daq_add_application(gen_readout_modules gen_readout_modules.cxx
+daq_add_application(generate_modules_test generate_modules_test.cxx
  TEST LINK_LIBRARIES appdal coredal::coredal oksdbinterfaces::oksdbinterfaces
  logging::logging)
 
