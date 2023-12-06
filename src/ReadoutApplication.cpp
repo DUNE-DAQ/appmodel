@@ -23,15 +23,16 @@
 
 #include "appdal/DataReader.hpp"
 #include "appdal/DataReaderConf.hpp"
+#include "appdal/ReadoutModule.hpp"
 #include "appdal/DLH.hpp"
+#include "appdal/TPHandler.hpp"
 #include "appdal/FragmentAggregator.hpp"
-#include "appdal/LinkHandlerConf.hpp"
+#include "appdal/ReadoutModelConf.hpp"
 #include "appdal/NetworkConnectionRule.hpp"
 #include "appdal/NetworkConnectionDescriptor.hpp"
 #include "appdal/QueueConnectionRule.hpp"
 #include "appdal/QueueDescriptor.hpp"
 #include "appdal/ReadoutApplication.hpp"
-#include "appdal/TPHandler.hpp"
 #include "appdal/TPHandlerConf.hpp"
 
 #include "appdalIssues.hpp"
