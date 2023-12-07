@@ -35,7 +35,7 @@
 #include "appdal/ReadoutApplication.hpp"
 #include "appdal/TPHandlerConf.hpp"
 
-#include "appdalIssues.hpp"
+#include "appdal/appdalIssues.hpp"
 
 #include "logging/Logging.hpp"
 
@@ -176,7 +176,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     std::string tpUid("tphandler-"+std::to_string(tpsrc));
     confdb->create(dbfile, "TPHandler", tpUid, tpObj);
     tpObj.set_by_val<uint32_t>("source_id", tpsrc);
-    tpObj.set_obj("handler_configuration", &tphConfObj);
+    tpObj.set_obj("module_configuration", &tphConfObj);
     tpObj.set_objs("inputs", {&tpQueueObj, &tpReqQueueObj});
     tpObj.set_objs("outputs", {&tpNetObj, &faQueueObj});
 
@@ -225,7 +225,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
       TLOG_DEBUG(7) <<  "creating OKS configuration object for Data Link Handler class " << dlhClass;
       confdb->create(dbfile, dlhClass, uid, dlhObj);
       dlhObj.set_by_val<uint32_t>("source_id", id);
-      dlhObj.set_obj("handler_configuration", &dlhConf->config_object());
+      dlhObj.set_obj("module_configuration", &dlhConf->config_object());
 
       // Time Sync network connection
       std::string tsStreamUid("timesync"+std::to_string(id));

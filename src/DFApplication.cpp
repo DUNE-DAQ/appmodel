@@ -19,7 +19,7 @@
 #include "appdal/NetworkConnectionDescriptor.hpp"
 #include "appdal/QueueConnectionRule.hpp"
 #include "appdal/QueueDescriptor.hpp"
-#include "appdalIssues.hpp"
+#include "appdal/appdalIssues.hpp"
 #include "logging/Logging.hpp"
 
 #include <string>
