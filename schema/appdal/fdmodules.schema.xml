@@ -99,6 +99,10 @@
   <attribute name="tx_ip" description="Transmitter IP address" type="string" init-value="0.0.0.0" is-not-null="yes"/>
  </class>
 
+ <class name="FDDataLinkHandler">
+  <superclass name="DLH"/>
+ </class>
+
  <class name="FlxStreamParameters">
   <superclass name="StreamParameters"/>
   <attribute name="protocol" type="enum" range="full,half"/>
