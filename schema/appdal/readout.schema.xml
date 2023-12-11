@@ -202,6 +202,10 @@
   <attribute name="template_for" type="class" init-value="FelixCardReader"/>
  </class>
 
+  <class name="FakeDataProd">
+    <superclass name="DaqModule"/>    
+  </class>
+
  <class name="FilenameParams">
   <attribute name="overall_prefix" type="string" init-value="minidaq" is-not-null="yes"/>
   <attribute name="run_number_prefix" type="string" init-value="run" is-not-null="yes"/>
