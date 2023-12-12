@@ -1,6 +1,6 @@
 #include "ModuleFactory.hpp"
 #include "appdal/SmartDaqApplication.hpp"
-#include "appdalIssues.hpp"
+#include "appdal/appdalIssues.hpp"
 
 using namespace dunedaq::appdal;
 

@@ -22,6 +22,8 @@
 #include "appdal/SmartDaqApplication.hpp"
 #include "appdal/TPWriterApplication.hpp"
 
+#include "appdal/appdalIssues.hpp"
+
 #include <string>
 using namespace dunedaq;
 
@@ -55,7 +57,13 @@ int main(int argc, char* argv[]) {
     std::vector<const coredal::DaqModule*> modules;
     auto smart = daqapp->cast<appdal::SmartDaqApplication>();
     if (smart) {
-      modules = smart->generate_modules(confdb, dbfile, session);
+      try {
+        modules = smart->generate_modules(confdb, dbfile, session);
+      }
+      catch (appdal::BadConf& exc) {
+        std::cout << "Caught BadConf exception: " << exc << std::endl;
+        exit(-1);
+      }
     }
     else {
       std::cout << appName << " failed to cast to SmartDaqApplication\n";

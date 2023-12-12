@@ -123,13 +123,26 @@
   <relationship name="configuration" class-type="DFOConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="DLH" is-abstract="yes">
+ <class name="ReadoutModule" is-abstract="yes">
   <superclass name="DaqModule"/>
   <attribute name="source_id" type="u32" is-not-null="yes"/>
-  <relationship name="handler_configuration" class-type="LinkHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="module_configuration" class-type="ReadoutModelConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="DataProcessor">
+ <class name="DLH" is-abstract="yes">
+  <superclass name="ReadoutModule"/>
+ </class>
+
+ <class name="TPHandler" is-abstract="no">
+  <superclass name="ReadoutModule"/>
+ </class>
+
+
+  <class name="DataProcessor"> 
+  </class>
+
+ <class name="TPDataProcessor">
+  <superclass name="DataProcessor"/>     
   <attribute name="queue_size" type="u32" init-value="10000"/>
   <attribute name="max_ticks_tot" type="u32" init-value="8000" is-not-null="yes"/>
   <attribute name="tpg_enabled" type="bool" init-value="true"/>
@@ -173,33 +186,10 @@
   <relationship name="data_store_params" class-type="DataStoreConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="EthStreamParameters">
-  <superclass name="StreamParameters"/>
-  <attribute name="protocol" type="enum" range="udp,zmq" init-value="udp" is-not-null="yes"/>
-  <attribute name="rx_iface" type="s16" init-value="0" is-not-null="yes"/>
-  <attribute name="rx_host" type="string"/>
-  <attribute name="rx_mac" description="Destination MAC address on readout host" type="string" init-value="00:00:00:00:00:00" is-not-null="yes"/>
-  <attribute name="rx_ip" description="Destination IP address on readout host" type="string" init-value="0,0,0,0" is-not-null="yes"/>
-  <attribute name="tx_host" description="Transmitter control host" type="string" init-value="localhost" is-not-null="yes"/>
-  <attribute name="tx_mac" description="Transmitter MAC address" type="string" init-value="00:00:00:00:00:00" is-not-null="yes"/>
-  <attribute name="tx_ip" description="Transmitter IP address" type="string" init-value="0.0.0.0" is-not-null="yes"/>
- </class>
 
- <class name="FDDataLinkHandler">
-  <superclass name="DLH"/>
- </class>
 
  <class name="FakeCardReader">
   <superclass name="DataReader"/>
- </class>
-
- <class name="FelixCardReader">
-  <superclass name="DataReader"/>
- </class>
-
- <class name="FelixCardReaderConf">
-  <superclass name="DataReaderConf"/>
-  <attribute name="template_for" type="class" init-value="FelixCardReader"/>
  </class>
 
   <class name="FakeDataProd">
@@ -215,15 +205,6 @@
   <attribute name="writer_identifier" type="string"/>
   <attribute name="trigger_number_prefix" type="string"/>
   <attribute name="digits_for_trigger_number" type="s32" init-value="8" is-not-null="yes"/>
- </class>
-
- <class name="FlxStreamParameters">
-  <superclass name="StreamParameters"/>
-  <attribute name="protocol" type="enum" range="full,half"/>
-  <attribute name="card" description="Card ID in readout host" type="u8" range="0..1" init-value="0" is-not-null="yes"/>
-  <attribute name="slr" description="Super logic region of readout card" type="u16" range="0..1" init-value="0" is-not-null="yes"/>
-  <attribute name="link" description="Link within SLR" type="u8" range="0..5" init-value="0" is-not-null="yes"/>
-  <attribute name="host" type="string" init-value="localhost" is-not-null="yes"/>
  </class>
 
  <class name="FragmentAggregator">
@@ -256,54 +237,27 @@
   <attribute name="preallocation" type="bool" init-value="true"/>
  </class>
 
- <class name="LinkHandlerConf">
+ <class name="ReadoutModelConf">
+  <attribute name="template_for" type="class" init-value="DLH" is-not-null="yes"/>
+  <attribute name="input_data_type" description="Type of data received by this readout module" type="string" init-value="WIBEthFrame"/>
+  <relationship name="request_handler" class-type="RequestHandler" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="latency_buffer" class-type="LatencyBuffer" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="data_processor" class-type="DataProcessor" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="RequestHandler">
   <attribute name="handlier_threads" description="Number of threads tohandle this link" type="u16" init-value="1"/>
   <attribute name="request_timeout" description="Request timeout in milliseconds" type="u32" init-value="10000" is-not-null="yes"/>
   <attribute name="output_file" type="string"/>
   <attribute name="streaming_buffer_size" type="u32" init-value="1000" is-not-null="yes"/>
   <attribute name="use_o_direct" description="Whether to use O_DIRECT flag when opening files" type="bool" init-value="true"/>
   <attribute name="enable_raw_recording" type="bool" init-value="true"/>
-  <attribute name="template_for" type="class" init-value="FDDataLinkHandler" is-not-null="yes"/>
-  <relationship name="latency_buffer" class-type="LatencyBuffer" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="data_processor" class-type="DataProcessor" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="NICReceiver">
-  <superclass name="DataReader"/>
-  <relationship name="streams" class-type="DROStreamConf" low-cc="zero" high-cc="many" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
-  <method name="get_ipadress" description="">
-   <method-implementation language="c++" prototype=" std::string get_ipaddress()" body=""/>
-  </method>
-  <method name="get_macaddress" description="">
-   <method-implementation language="c++" prototype=" std::string get_macaddress()" body=""/>
-  </method>
- </class>
-
- <class name="NICReceiverConf">
-  <superclass name="DataReaderConf"/>
-  <attribute name="template_for" type="class" init-value="NICReceiver"/>
-  <attribute name="mbuf_cache_size" type="u32" init-value="256" is-not-null="yes"/>
-  <attribute name="lcore_sleep_us" type="u32" init-value="10" is-not-null="yes"/>
-  <attribute name="mtu" type="u32" init-value="9000" is-not-null="yes"/>
-  <attribute name="num_mbufs" type="u32" init-value="8191" is-not-null="yes"/>
-  <attribute name="promiscuous_mode" type="bool" init-value="false"/>
-  <attribute name="rx_ring_size" type="s32" init-value="1024" is-not-null="yes"/>
-  <attribute name="tx_ring_size" type="u32" init-value="1024" is-not-null="yes"/>
-  <attribute name="fkow_control" type="bool" init-value="true"/>
-  <attribute name="eal_args" type="string" init-value="-l 0-1 -n 3 -- -m [0:1].0 -j" is-not-null="yes"/>
-  <relationship name="stats_conf" class-type="NICStatsConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="NICStatsConf">
-  <attribute name="analyze_nth_packet" type="s32" init-value="1" is-not-null="yes"/>
-  <attribute name="expected_packet_size" type="u32" init-value="7243" is-not-null="yes"/>
-  <attribute name="expected_seq_id_step" type="u32" init-value="1"/>
-  <attribute name="expected_timestamp_step" type="s32" init-value="-999" is-not-null="yes"/>
  </class>
 
  <class name="NetworkConnectionDescriptor">
   <attribute name="uid_base" description="Base for UID string. To be combined with a source id" type="string" is-not-null="yes"/>
   <attribute name="connection_type" type="enum" range="kSendRecv,kPubSub" init-value="kSendRecv" is-not-null="yes"/>
+  <attribute name="data_type" description="string identifying type of data transferred through this connection" type="string" is-not-null="yes"/>
   <relationship name="associated_service" description="Service provided by this connection" class-type="Service" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
 </class>
 
@@ -329,10 +283,10 @@
   <attribute name="tp_src_id" description="Source ID for TP handler if TPs are being generated" type="u32"/>
   <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
   <relationship name="uses" description="Configuration of the host hardware resources used by this application" class-type="RoHwConfig" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
-  <relationship name="link_handler" class-type="LinkHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="tp_handler" class-type="TPHandlerConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="link_handler" class-type="ReadoutModelConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="tp_handler" class-type="ReadoutModelConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_reader" class-type="DataReaderConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <method name="generate_modules" description="Generate DLH dal objects for streams of thie ReadoutApplication on the fly">
+  <method name="generate_modules" description="Generate daq module dal objects for streams of thie ReadoutApplication on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
   </method>
  </class>
@@ -357,18 +311,10 @@
   </method>
  </class>
 
- <class name="TPHandler">
-  <superclass name="DaqModule"/>
-  <attribute name="source_id" type="u32" is-not-null="yes"/>
-  <relationship name="handler_configuration" class-type="TPHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
  <class name="TPHandlerConf">
-  <attribute name="handler_threads" type="u16" init-value="1" is-not-null="yes"/>
-  <attribute name="request_timeout" type="u32" init-value="1000" is-not-null="yes"/>
+  <superclass name="RequestHandler"/>     
   <attribute name="min_latency_ticks" type="u32" init-value="100" is-not-null="yes"/>
   <attribute name="max_transmission_rate_hz" type="u32" init-value="1000" is-not-null="yes"/>
-  <relationship name="latency_buffer" class-type="LatencyBuffer" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="TPWriter">

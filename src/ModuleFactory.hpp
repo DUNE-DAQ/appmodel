@@ -2,7 +2,7 @@
 #define MODULEFACTORY_HPP
 
 #include "logging/Logging.hpp"
-#include "appdalIssues.hpp"
+#include "appdal/appdalIssues.hpp"
 
 #include <functional>
 #include <map>
