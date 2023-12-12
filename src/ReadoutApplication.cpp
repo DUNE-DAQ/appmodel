@@ -122,8 +122,8 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   std::vector<const coredal::Connection*> faOutputQueues;
 
 
-  std::string taFragQueueUid("reqToFA-"+UID());
-  confdb->create(dbfile, "Queue", taFragQueueUid, faQueueObj);
+  std::string faFragQueueUid("reqToFA-"+UID());
+  confdb->create(dbfile, "Queue", faFragQueueUid, faQueueObj);
   faQueueObj.set_by_val<std::string>("data_type", faOutputQDesc->get_data_type());
   faQueueObj.set_by_val<std::string>("queue_type", faOutputQDesc->get_queue_type());
   faQueueObj.set_by_val<uint32_t>("capacity", faOutputQDesc->get_capacity());
@@ -196,11 +196,14 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     throw (BadConf(ERS_HERE, "No DLH request input queue descriptor given"));
   }
 
+  auto resources = get_contains();
+  if (resources.size() == 0) {
+    throw (BadConf(ERS_HERE, "No ReadoutGroups contained in application"));
+  }
   int rnum = 0;
   // Create a DataReader for each (non-disabled) group and a Data Link
   // Handler for each stream of this DataReader
-  //for (auto roGroup : get_readout_groups()) {
-  for (auto roGroup : get_contains()) {
+  for (auto roGroup : resources) {
     if (roGroup->disabled(*session)) {
       TLOG_DEBUG(7) << "Ignoring disabled ReadoutGroup " << roGroup->UID();
       continue;
@@ -239,7 +242,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
         dlhObj.set_objs("outputs", {&tpQueueObj, &faQueueObj, &tsNetObj});
       }
       else {
-	dlhObj.set_objs("outputs", {&faQueueObj, &tsNetObj});
+        dlhObj.set_objs("outputs", {&faQueueObj, &tsNetObj});
       }
 
       std::string dataQueueUid("inputToDLH-"+std::to_string(id));
@@ -293,8 +296,8 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   std::string faNetUid("fragmentrequests-"+UID());;
   oksdbinterfaces::ConfigObject faNetObj;
   confdb->create(dbfile, "NetworkConnection", faNetUid, faNetObj);
-  tpNetObj.set_by_val<std::string>("connection_type", faNetDesc->get_connection_type());
-  tpNetObj.set_obj("associated_service", &faServiceObj);
+  faNetObj.set_by_val<std::string>("connection_type", faNetDesc->get_connection_type());
+  faNetObj.set_obj("associated_service", &faServiceObj);
 
   //Add output queueus of data requests
   std::vector<const oksdbinterfaces::ConfigObject*> qObjs;

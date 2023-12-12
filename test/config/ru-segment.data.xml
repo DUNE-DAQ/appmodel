@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="ASCII"?>
+
+<!-- oks-data version 2.2 -->
+
+
+<!DOCTYPE oks-data [
+  <!ELEMENT oks-data (info, (include)?, (comments)?, (obj)+)>
+  <!ELEMENT info EMPTY>
+  <!ATTLIST info
+      name CDATA #IMPLIED
+      type CDATA #IMPLIED
+      num-of-items CDATA #REQUIRED
+      oks-format CDATA #FIXED "data"
+      oks-version CDATA #REQUIRED
+      created-by CDATA #IMPLIED
+      created-on CDATA #IMPLIED
+      creation-time CDATA #IMPLIED
+      last-modified-by CDATA #IMPLIED
+      last-modified-on CDATA #IMPLIED
+      last-modification-time CDATA #IMPLIED
+  >
+  <!ELEMENT include (file)*>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+      path CDATA #REQUIRED
+  >
+  <!ELEMENT comments (comment)*>
+  <!ELEMENT comment EMPTY>
+  <!ATTLIST comment
+      creation-time CDATA #REQUIRED
+      created-by CDATA #REQUIRED
+      created-on CDATA #REQUIRED
+      author CDATA #REQUIRED
+      text CDATA #REQUIRED
+  >
+  <!ELEMENT obj (attr | rel)*>
+  <!ATTLIST obj
+      class CDATA #REQUIRED
+      id CDATA #REQUIRED
+  >
+  <!ELEMENT attr (data)*>
+  <!ATTLIST attr
+      name CDATA #REQUIRED
+      type (bool|s8|u8|s16|u16|s32|u32|s64|u64|float|double|date|time|string|uid|enum|class|-) "-"
+      val CDATA ""
+  >
+  <!ELEMENT data EMPTY>
+  <!ATTLIST data
+      val CDATA #REQUIRED
+  >
+  <!ELEMENT rel (ref)*>
+  <!ATTLIST rel
+      name CDATA #REQUIRED
+      class CDATA ""
+      id CDATA ""
+  >
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref
+      class CDATA #REQUIRED
+      id CDATA #REQUIRED
+  >
+]>
+
+<oks-data>
+
+<info name="" type="" num-of-items="27" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105615" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20231212T112146"/>
+
+<include>
+ <file path="schema/coredal/dunedaq.schema.xml"/>
+ <file path="schema/appdal/application.schema.xml"/>
+ <file path="schema/appdal/fdmodules.schema.xml"/>
+</include>
+
+<comments>
+ <comment creation-time="20231207T111607" created-by="gjc" created-on="thinkpad" author="gjc" text="u"/>
+ <comment creation-time="20231207T111909" created-by="gjc" created-on="thinkpad" author="gjc" text="h"/>
+ <comment creation-time="20231207T155830" created-by="gjc" created-on="thinkpad" author="gjc" text="k"/>
+ <comment creation-time="20231207T155918" created-by="gjc" created-on="thinkpad" author="gjc" text="k"/>
+ <comment creation-time="20231207T160041" created-by="gjc" created-on="thinkpad" author="gjc" text="k"/>
+ <comment creation-time="20231212T101321" created-by="gjc" created-on="thinkpad" author="gjc" text="k"/>
+ <comment creation-time="20231212T105959" created-by="gjc" created-on="thinkpad" author="gjc" text="h"/>
+ <comment creation-time="20231212T110529" created-by="gjc" created-on="thinkpad" author="gjc" text="h"/>
+ <comment creation-time="20231212T110630" created-by="gjc" created-on="thinkpad" author="gjc" text="o"/>
+ <comment creation-time="20231212T112146" created-by="gjc" created-on="thinkpad" author="gjc" text="#"/>
+</comments>
+
+
+<obj class="LatencyBuffer" id="latencyBuf-1">
+ <attr name="size" type="u32" val="1000"/>
+ <attr name="numa_aware" type="bool" val="1"/>
+ <attr name="intrinsic_allocator" type="bool" val="1"/>
+ <attr name="alignment_size" type="u32" val="1000"/>
+ <attr name="preallocation" type="bool" val="1"/>
+</obj>
+
+<obj class="NICReceiverConf" id="ReceiverConf-1">
+ <attr name="template_for" type="class" val="NICReceiver"/>
+ <attr name="mbuf_cache_size" type="u32" val="256"/>
+ <attr name="lcore_sleep_us" type="u32" val="10"/>
+ <attr name="mtu" type="u32" val="9000"/>
+ <attr name="num_mbufs" type="u32" val="8191"/>
+ <attr name="promiscuous_mode" type="bool" val="1"/>
+ <attr name="rx_ring_size" type="s32" val="1024"/>
+ <attr name="tx_ring_size" type="u32" val="1024"/>
+ <attr name="fkow_control" type="bool" val="1"/>
+ <attr name="eal_args" type="string" val="-l 0-1 -n 3 -- -m [0:1].0 -j"/>
+ <rel name="stats_conf" class="NICStatsConf" id="NICStats-1"/>
+</obj>
+
+<obj class="NICStatsConf" id="NICStats-1">
+ <attr name="analyze_nth_packet" type="s32" val="1"/>
+ <attr name="expected_packet_size" type="u32" val="7243"/>
+ <attr name="expected_seq_id_step" type="u32" val="1"/>
+ <attr name="expected_timestamp_step" type="s32" val="1000"/>
+</obj>
+
+<obj class="NetworkConnectionDescriptor" id="dlh-net-desc-1">
+ <attr name="uid_base" type="string" val="data_requests_for_Detector_Readout_0x"/>
+ <attr name="connection_type" type="enum" val="kPubSub"/>
+ <rel name="associated_service" class="Service" id="dataFragments"/>
+</obj>
+
+<obj class="NetworkConnectionDescriptor" id="faConnection">
+ <attr name="uid_base" type="string" val="inputReqToDLH"/>
+ <attr name="connection_type" type="enum" val="kPubSub"/>
+ <rel name="associated_service" class="Service" id="dataFragments"/>
+</obj>
+
+<obj class="NetworkConnectionDescriptor" id="tpdlh-net-desc-1">
+ <attr name="uid_base" type="string" val="triggerPrimitivedatarequest"/>
+ <attr name="connection_type" type="enum" val="kPubSub"/>
+ <rel name="associated_service" class="Service" id="triggerPrimitives"/>
+</obj>
+
+<obj class="NetworkConnectionRule" id="dlh-net-rule">
+ <attr name="endpoint_class" type="class" val="DLH"/>
+ <rel name="descriptor" class="NetworkConnectionDescriptor" id="dlh-net-desc-1"/>
+</obj>
+
+<obj class="NetworkConnectionRule" id="fa-net-rule">
+ <attr name="endpoint_class" type="class" val="FragmentAggregator"/>
+ <rel name="descriptor" class="NetworkConnectionDescriptor" id="faConnection"/>
+</obj>
+
+<obj class="NetworkConnectionRule" id="tpdlh-rule-1">
+ <attr name="endpoint_class" type="class" val="TPHandler"/>
+ <rel name="descriptor" class="NetworkConnectionDescriptor" id="tpdlh-net-desc-1"/>
+</obj>
+
+<obj class="QueueConnectionRule" id="agregatorInputRule">
+ <attr name="destination_class" type="class" val="FragmentAggregator"/>
+ <rel name="descriptor" class="QueueDescriptor" id="aggregatorInput"/>
+</obj>
+
+<obj class="QueueConnectionRule" id="dataRequestRule">
+ <attr name="destination_class" type="class" val="DLH"/>
+ <rel name="descriptor" class="QueueDescriptor" id="DataRequestQueueDescriptor"/>
+</obj>
+
+<obj class="QueueConnectionRule" id="processingData-1">
+ <attr name="destination_class" type="class" val="TPHandler"/>
+ <rel name="descriptor" class="QueueDescriptor" id="processingInput-1"/>
+</obj>
+
+<obj class="QueueConnectionRule" id="rawData-1">
+ <attr name="destination_class" type="class" val="DLH"/>
+ <rel name="descriptor" class="QueueDescriptor" id="rawInput-1"/>
+</obj>
+
+<obj class="QueueConnectionRule" id="tpRequestRule">
+ <attr name="destination_class" type="class" val="TPHandler"/>
+ <rel name="descriptor" class="QueueDescriptor" id="tpRequestQueueDescriptor"/>
+</obj>
+
+<obj class="QueueDescriptor" id="DataRequestQueueDescriptor">
+ <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
+ <attr name="capacity" type="u32" val="100"/>
+ <attr name="data_type" type="string" val="DataRequest"/>
+</obj>
+
+<obj class="QueueDescriptor" id="aggregatorInput">
+ <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>
+ <attr name="capacity" type="u32" val="100"/>
+ <attr name="data_type" type="string" val="raw_data"/>
+</obj>
+
+<obj class="QueueDescriptor" id="processingInput-1">
+ <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>
+ <attr name="capacity" type="u32" val="100"/>
+ <attr name="data_type" type="string" val="processing_data"/>
+</obj>
+
+<obj class="QueueDescriptor" id="rawInput-1">
+ <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
+ <attr name="capacity" type="u32" val="1000"/>
+ <attr name="data_type" type="string" val="raw_data"/>
+</obj>
+
+<obj class="QueueDescriptor" id="tpRequestQueueDescriptor">
+ <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>
+ <attr name="capacity" type="u32" val="100"/>
+ <attr name="data_type" type="string" val="DataRequest"/>
+</obj>
+
+<obj class="RCApplication" id="ru-controller">
+ <attr name="application_name" type="string" val="controller"/>
+ <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="fsm" class="FSMconfiguration" id="fsmConf-1"/>
+</obj>
+
+<obj class="ReadoutApplication" id="ru-1">
+ <attr name="tp_src_id" type="u32" val="100"/>
+ <attr name="application_name" type="string" val="daq_application"/>
+ <rel name="contains">
+  <ref class="ReadoutGroup" id="dummyRog"/>
+ </rel>
+ <rel name="runs_on" class="VirtualHost" id="vlocalhost-1"/>
+ <rel name="queue_rules">
+  <ref class="QueueConnectionRule" id="agregatorInputRule"/>
+  <ref class="QueueConnectionRule" id="dataRequestRule"/>
+  <ref class="QueueConnectionRule" id="processingData-1"/>
+  <ref class="QueueConnectionRule" id="rawData-1"/>
+  <ref class="QueueConnectionRule" id="tpRequestRule"/>
+ </rel>
+ <rel name="network_rules">
+  <ref class="NetworkConnectionRule" id="dlh-net-rule"/>
+  <ref class="NetworkConnectionRule" id="fa-net-rule"/>
+  <ref class="NetworkConnectionRule" id="tpdlh-rule-1"/>
+ </rel>
+ <rel name="uses" class="RoHwConfig" id="rohw-1"/>
+ <rel name="link_handler" class="ReadoutModelConf" id="linkHandler-1"/>
+ <rel name="tp_handler" class="ReadoutModelConf" id="tpHandler-1"/>
+ <rel name="data_reader" class="NICReceiverConf" id="ReceiverConf-1"/>
+</obj>
+
+<obj class="ReadoutModelConf" id="linkHandler-1">
+ <attr name="template_for" type="class" val="FDDataLinkHandler"/>
+ <attr name="input_data_type" type="string" val="WIBEthFrame"/>
+ <rel name="request_handler" class="RequestHandler" id="requestHandler-1"/>
+ <rel name="latency_buffer" class="LatencyBuffer" id="latencyBuf-1"/>
+</obj>
+
+<obj class="ReadoutModelConf" id="tpHandler-1">
+ <attr name="template_for" type="class" val="TPHandler"/>
+ <attr name="input_data_type" type="string" val="TPSet"/>
+ <rel name="request_handler" class="TPHandlerConf" id="TPHandlerConf-1"/>
+ <rel name="latency_buffer" class="LatencyBuffer" id="latencyBuf-1"/>
+</obj>
+
+<obj class="RequestHandler" id="requestHandler-1">
+ <attr name="handlier_threads" type="u16" val="1"/>
+ <attr name="request_timeout" type="u32" val="10000"/>
+ <attr name="streaming_buffer_size" type="u32" val="1000"/>
+ <attr name="use_o_direct" type="bool" val="1"/>
+ <attr name="enable_raw_recording" type="bool" val="1"/>
+</obj>
+
+<obj class="RoHwConfig" id="rohw-1">
+</obj>
+
+<obj class="Segment" id="ru-segment">
+ <rel name="controller" class="RCApplication" id="ru-controller"/>
+</obj>
+
+<obj class="TPHandlerConf" id="TPHandlerConf-1">
+ <attr name="handlier_threads" type="u16" val="1"/>
+ <attr name="request_timeout" type="u32" val="10000"/>
+ <attr name="streaming_buffer_size" type="u32" val="1000"/>
+ <attr name="use_o_direct" type="bool" val="1"/>
+ <attr name="enable_raw_recording" type="bool" val="1"/>
+ <attr name="min_latency_ticks" type="u32" val="100"/>
+ <attr name="max_transmission_rate_hz" type="u32" val="1000"/>
+</obj>
+
+</oks-data>
