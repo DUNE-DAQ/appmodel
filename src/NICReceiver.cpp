@@ -9,7 +9,7 @@
  */
 
 #include "appdal/EthStreamParameters.hpp"
-#include "appdalIssues.hpp"
+#include "appdal/appdalIssues.hpp"
 #include "appdal/NICReceiver.hpp"
 
 #include "coredal/DROStreamConf.hpp"
