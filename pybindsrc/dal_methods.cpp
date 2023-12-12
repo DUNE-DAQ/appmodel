@@ -17,6 +17,7 @@
 #include "appdal/DFOApplication.hpp"
 #include "appdal/ReadoutApplication.hpp"
 #include "appdal/TPWriterApplication.hpp"
+#include "appdal/TriggerApplication.hpp"
 
 #include <sstream>
 
@@ -106,6 +107,24 @@ namespace dunedaq::appdal::python {
     return mods;
   }
 
+  std::vector<ObjectLocator>
+  trigger_application_generate(const oksdbinterfaces::Configuration& confdb,
+                                const std::string& dbfile,
+                                const std::string& app_id,
+                                const std::string& session_id) {
+    auto app =
+      const_cast<oksdbinterfaces::Configuration&>(confdb).get<TriggerApplication>(app_id);
+    auto session =
+      const_cast<oksdbinterfaces::Configuration&>(confdb).get<coredal::Session>(session_id);
+
+    std::vector<ObjectLocator> mods;
+    for (auto mod : app->generate_modules(
+           const_cast<oksdbinterfaces::Configuration*>(&confdb), dbfile, session)) {
+      mods.push_back({mod->UID(),mod->class_name()});
+    }
+    return mods;
+  }
+
 void
 register_dal_methods(py::module& m)
 {
@@ -119,6 +138,7 @@ register_dal_methods(py::module& m)
   m.def("df_application_generate", &df_application_generate, "Generate DaqModules required by DFApplication");
   m.def("dfo_application_generate", &dfo_application_generate, "Generate DaqModules required by DFOApplication");
   m.def("tpwriter_application_generate", &tpwriter_application_generate, "Generate DaqModules required by TPWriterApplication");
+  m.def("trigger_application_generate", &trigger_application_generate, "Generate DaqModules required by TriggerApplication");
 }
 
 } // namespace dunedaq::appdal::python

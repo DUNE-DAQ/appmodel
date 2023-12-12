@@ -21,6 +21,7 @@
 #include "appdal/ReadoutApplication.hpp"
 #include "appdal/SmartDaqApplication.hpp"
 #include "appdal/TPWriterApplication.hpp"
+#include "appdal/TriggerApplication.hpp"
 
 #include "appdal/appdalIssues.hpp"
 
