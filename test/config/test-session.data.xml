@@ -72,6 +72,7 @@
  <file path="config/dummy-readoutmap.data.xml"/>
  <file path="config/ru-segment.data.xml"/>
  <file path="config/df-segment.data.xml"/>
+ <file path="config/trigger.data.xml"/>
 </include>
 
 <comments>
