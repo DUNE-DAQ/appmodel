@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="42" oks-format="schema" oks-version="oks-08-03-04-1-gf920aa4 built &quot;May 12 2022&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20231004T095944"/>
+<info name="" type="" num-of-items="40" oks-format="schema" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="glehmann" last-modified-on="lxplus940.cern.ch" last-modification-time="20231212T160924"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -123,33 +123,11 @@
   <relationship name="configuration" class-type="DFOConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="ReadoutModule" is-abstract="yes">
-  <superclass name="DaqModule"/>
-  <attribute name="source_id" type="u32" is-not-null="yes"/>
-  <relationship name="module_configuration" class-type="ReadoutModelConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
  <class name="DLH" is-abstract="yes">
   <superclass name="ReadoutModule"/>
  </class>
 
- <class name="TPHandler" is-abstract="no">
-  <superclass name="ReadoutModule"/>
- </class>
-
-
-  <class name="DataProcessor"> 
-  </class>
-
- <class name="TPDataProcessor">
-  <superclass name="DataProcessor"/>     
-  <attribute name="queue_size" type="u32" init-value="10000"/>
-  <attribute name="max_ticks_tot" type="u32" init-value="8000" is-not-null="yes"/>
-  <attribute name="tpg_enabled" type="bool" init-value="true"/>
-  <attribute name="algorithm" description="TP generation algorithm" type="string"/>
-  <attribute name="threshold" description="Hit detection threshold" type="u16"/>
-  <attribute name="channel_mask" description="List of channels to be masked from TP generation" type="u32" is-multi-value="yes"/>
-  <attribute name="channel_map" type="string"/>
+ <class name="DataProcessor">
  </class>
 
  <class name="DataReader" is-abstract="yes">
@@ -185,8 +163,6 @@
   <attribute name="write_retry_time_increase_factor" type="s32" init-value="0" is-not-null="yes"/>
   <relationship name="data_store_params" class-type="DataStoreConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
-
-
 
  <class name="FakeCardReader">
   <superclass name="DataReader"/>
@@ -233,29 +209,13 @@
   <attribute name="preallocation" type="bool" init-value="true"/>
  </class>
 
- <class name="ReadoutModelConf">
-  <attribute name="template_for" type="class" init-value="DLH" is-not-null="yes"/>
-  <attribute name="input_data_type" description="Type of data received by this readout module" type="string" init-value="WIBEthFrame"/>
-  <relationship name="request_handler" class-type="RequestHandler" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="latency_buffer" class-type="LatencyBuffer" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="data_processor" class-type="DataProcessor" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="RequestHandler">
-  <attribute name="handlier_threads" description="Number of threads tohandle this link" type="u16" init-value="1"/>
-  <attribute name="request_timeout" description="Request timeout in milliseconds" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="output_file" type="string"/>
-  <attribute name="streaming_buffer_size" type="u32" init-value="1000" is-not-null="yes"/>
-  <attribute name="use_o_direct" description="Whether to use O_DIRECT flag when opening files" type="bool" init-value="true"/>
-  <attribute name="enable_raw_recording" type="bool" init-value="true"/>
- </class>
 
  <class name="NetworkConnectionDescriptor">
   <attribute name="uid_base" description="Base for UID string. To be combined with a source id" type="string" is-not-null="yes"/>
   <attribute name="connection_type" type="enum" range="kSendRecv,kPubSub" init-value="kSendRecv" is-not-null="yes"/>
   <attribute name="data_type" description="string identifying type of data transferred through this connection" type="string" is-not-null="yes"/>
   <relationship name="associated_service" description="Service provided by this connection" class-type="Service" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
-</class>
+ </class>
 
  <class name="NetworkConnectionRule">
   <attribute name="endpoint_class" type="class" init-value="DaqModule"/>
@@ -291,6 +251,29 @@
   <superclass name="VirtualHost"/>
  </class>
 
+ <class name="ReadoutModelConf">
+  <attribute name="template_for" type="class" init-value="DLH" is-not-null="yes"/>
+  <attribute name="input_data_type" description="Type of data received by this readout module" type="string" init-value="WIBEthFrame"/>
+  <relationship name="request_handler" class-type="RequestHandler" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="latency_buffer" class-type="LatencyBuffer" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="data_processor" class-type="DataProcessor" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="ReadoutModule" is-abstract="yes">
+  <superclass name="DaqModule"/>
+  <attribute name="source_id" type="u32" is-not-null="yes"/>
+  <relationship name="module_configuration" class-type="ReadoutModelConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="RequestHandler">
+  <attribute name="handlier_threads" description="Number of threads tohandle this link" type="u16" init-value="1"/>
+  <attribute name="request_timeout" description="Request timeout in milliseconds" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="output_file" type="string"/>
+  <attribute name="streaming_buffer_size" type="u32" init-value="1000" is-not-null="yes"/>
+  <attribute name="use_o_direct" description="Whether to use O_DIRECT flag when opening files" type="bool" init-value="true"/>
+  <attribute name="enable_raw_recording" type="bool" init-value="true"/>
+ </class>
+
  <class name="RoHwConfig">
   <relationship name="io_device" description="Device handling input from the fron-end electronics" class-type="NetworkDevice" low-cc="zero" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
   <relationship name="snb_storage" class-type="StorageDevice" low-cc="zero" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
@@ -307,8 +290,23 @@
   </method>
  </class>
 
+ <class name="TPDataProcessor">
+  <superclass name="DataProcessor"/>
+  <attribute name="queue_size" type="u32" init-value="10000"/>
+  <attribute name="max_ticks_tot" type="u32" init-value="8000" is-not-null="yes"/>
+  <attribute name="tpg_enabled" type="bool" init-value="true"/>
+  <attribute name="algorithm" description="TP generation algorithm" type="string"/>
+  <attribute name="threshold" description="Hit detection threshold" type="u16"/>
+  <attribute name="channel_mask" description="List of channels to be masked from TP generation" type="u32" is-multi-value="yes"/>
+  <attribute name="channel_map" type="string"/>
+ </class>
+
+ <class name="TPHandler">
+  <superclass name="ReadoutModule"/>
+ </class>
+
  <class name="TPHandlerConf">
-  <superclass name="RequestHandler"/>     
+  <superclass name="RequestHandler"/>
   <attribute name="min_latency_ticks" type="u32" init-value="100" is-not-null="yes"/>
   <attribute name="max_transmission_rate_hz" type="u32" init-value="1000" is-not-null="yes"/>
  </class>

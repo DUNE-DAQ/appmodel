@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="235" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="glehmann" created-on="lxplus924.cern.ch" creation-time="20231207T133052" last-modified-by="glehmann" last-modified-on="lxplus924.cern.ch" last-modification-time="20231207T133052"/>
+<info name="" type="" num-of-items="265" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="glehmann" created-on="lxplus940.cern.ch" creation-time="20231212T161311" last-modified-by="glehmann" last-modified-on="lxplus940.cern.ch" last-modification-time="20231212T161311"/>
 
 <obj class="ALink" id="DROStreamConf-2-GeoId-via-geo_id">
  <attr name="Name" type="string" val="geo_id"/>
@@ -388,6 +388,21 @@
  <attr name="y" type="s16" val="537"/>
 </obj>
 
+<obj class="Class" id="EthStreamParameters">
+ <attr name="x" type="s16" val="9"/>
+ <attr name="y" type="s16" val="155"/>
+</obj>
+
+<obj class="Class" id="FelixInterface">
+ <attr name="x" type="s16" val="1024"/>
+ <attr name="y" type="s16" val="146"/>
+</obj>
+
+<obj class="Class" id="FelixStreamParameters">
+ <attr name="x" type="s16" val="230"/>
+ <attr name="y" type="s16" val="180"/>
+</obj>
+
 <obj class="Class" id="GeoId">
  <attr name="x" type="s16" val="469"/>
  <attr name="y" type="s16" val="94"/>
@@ -401,6 +416,11 @@
 <obj class="Class" id="LatencyBuffer">
  <attr name="x" type="s16" val="1523"/>
  <attr name="y" type="s16" val="504"/>
+</obj>
+
+<obj class="Class" id="NICInterface">
+ <attr name="x" type="s16" val="988"/>
+ <attr name="y" type="s16" val="5"/>
 </obj>
 
 <obj class="Class" id="NetworkConnection">
@@ -456,6 +476,11 @@
 <obj class="Class" id="ReadoutHost">
  <attr name="x" type="s16" val="536"/>
  <attr name="y" type="s16" val="895"/>
+</obj>
+
+<obj class="Class" id="ReadoutInterface">
+ <attr name="x" type="s16" val="822"/>
+ <attr name="y" type="s16" val="161"/>
 </obj>
 
 <obj class="Class" id="ReadoutMap">
@@ -600,6 +625,28 @@
  </rel>
 </obj>
 
+<obj class="GLink" id="ReadoutInterface-2-FelixInterface">
+ <rel name="From" class="Class" id="ReadoutInterface"/>
+ <rel name="To" class="Class" id="FelixInterface"/>
+ <rel name="Points">
+  <ref class="Point" id="1 ReadoutInterface-2-FelixInterface"/>
+  <ref class="Point" id="2 ReadoutInterface-2-FelixInterface"/>
+  <ref class="Point" id="3 ReadoutInterface-2-FelixInterface"/>
+  <ref class="Point" id="4 ReadoutInterface-2-FelixInterface"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="ReadoutInterface-2-NICInterface">
+ <rel name="From" class="Class" id="ReadoutInterface"/>
+ <rel name="To" class="Class" id="NICInterface"/>
+ <rel name="Points">
+  <ref class="Point" id="1 ReadoutInterface-2-NICInterface"/>
+  <ref class="Point" id="2 ReadoutInterface-2-NICInterface"/>
+  <ref class="Point" id="3 ReadoutInterface-2-NICInterface"/>
+  <ref class="Point" id="4 ReadoutInterface-2-NICInterface"/>
+ </rel>
+</obj>
+
 <obj class="GLink" id="ReadoutModule-2-DLH">
  <rel name="From" class="Class" id="ReadoutModule"/>
  <rel name="To" class="Class" id="DLH"/>
@@ -688,6 +735,17 @@
  </rel>
 </obj>
 
+<obj class="GLink" id="ResourceSetAND-2-ReadoutInterface">
+ <rel name="From" class="Class" id="ResourceSetAND"/>
+ <rel name="To" class="Class" id="ReadoutInterface"/>
+ <rel name="Points">
+  <ref class="Point" id="1 ResourceSetAND-2-ReadoutInterface"/>
+  <ref class="Point" id="2 ResourceSetAND-2-ReadoutInterface"/>
+  <ref class="Point" id="3 ResourceSetAND-2-ReadoutInterface"/>
+  <ref class="Point" id="4 ResourceSetAND-2-ReadoutInterface"/>
+ </rel>
+</obj>
+
 <obj class="GLink" id="SmartDaqApplication-2-ReadoutApplication">
  <rel name="From" class="Class" id="SmartDaqApplication"/>
  <rel name="To" class="Class" id="ReadoutApplication"/>
@@ -696,6 +754,28 @@
   <ref class="Point" id="2 SmartDaqApplication-2-ReadoutApplication"/>
   <ref class="Point" id="3 SmartDaqApplication-2-ReadoutApplication"/>
   <ref class="Point" id="4 SmartDaqApplication-2-ReadoutApplication"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="StreamParameters-2-EthStreamParameters">
+ <rel name="From" class="Class" id="StreamParameters"/>
+ <rel name="To" class="Class" id="EthStreamParameters"/>
+ <rel name="Points">
+  <ref class="Point" id="1 StreamParameters-2-EthStreamParameters"/>
+  <ref class="Point" id="2 StreamParameters-2-EthStreamParameters"/>
+  <ref class="Point" id="3 StreamParameters-2-EthStreamParameters"/>
+  <ref class="Point" id="4 StreamParameters-2-EthStreamParameters"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="StreamParameters-2-FelixStreamParameters">
+ <rel name="From" class="Class" id="StreamParameters"/>
+ <rel name="To" class="Class" id="FelixStreamParameters"/>
+ <rel name="Points">
+  <ref class="Point" id="1 StreamParameters-2-FelixStreamParameters"/>
+  <ref class="Point" id="2 StreamParameters-2-FelixStreamParameters"/>
+  <ref class="Point" id="3 StreamParameters-2-FelixStreamParameters"/>
+  <ref class="Point" id="4 StreamParameters-2-FelixStreamParameters"/>
  </rel>
 </obj>
 
@@ -794,6 +874,16 @@
  <attr name="y" type="s16" val="51"/>
 </obj>
 
+<obj class="Point" id="1 ReadoutInterface-2-FelixInterface">
+ <attr name="x" type="s16" val="78"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 ReadoutInterface-2-NICInterface">
+ <attr name="x" type="s16" val="78"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
 <obj class="Point" id="1 ReadoutMap-2-ReadoutGroup-via-groups">
  <attr name="x" type="s16" val="60"/>
  <attr name="y" type="s16" val="24"/>
@@ -864,6 +954,11 @@
  <attr name="y" type="s16" val="24"/>
 </obj>
 
+<obj class="Point" id="1 ResourceSetAND-2-ReadoutInterface">
+ <attr name="x" type="s16" val="81"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
 <obj class="Point" id="1 RoHwConfig-2-NetworkDevice-via-io_device">
  <attr name="x" type="s16" val="5"/>
  <attr name="y" type="s16" val="24"/>
@@ -896,6 +991,16 @@
 
 <obj class="Point" id="1 SmartDaqApplication-2-ReadoutApplication">
  <attr name="x" type="s16" val="98"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 StreamParameters-2-EthStreamParameters">
+ <attr name="x" type="s16" val="103"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 StreamParameters-2-FelixStreamParameters">
+ <attr name="x" type="s16" val="103"/>
  <attr name="y" type="s16" val="38"/>
 </obj>
 
@@ -994,6 +1099,16 @@
  <attr name="y" type="s16" val="712"/>
 </obj>
 
+<obj class="Point" id="2 ReadoutInterface-2-FelixInterface">
+ <attr name="x" type="s16" val="78"/>
+ <attr name="y" type="s16" val="176"/>
+</obj>
+
+<obj class="Point" id="2 ReadoutInterface-2-NICInterface">
+ <attr name="x" type="s16" val="78"/>
+ <attr name="y" type="s16" val="103"/>
+</obj>
+
 <obj class="Point" id="2 ReadoutMap-2-ReadoutGroup-via-groups">
  <attr name="x" type="s16" val="60"/>
  <attr name="y" type="s16" val="229"/>
@@ -1064,6 +1179,11 @@
  <attr name="y" type="s16" val="235"/>
 </obj>
 
+<obj class="Point" id="2 ResourceSetAND-2-ReadoutInterface">
+ <attr name="x" type="s16" val="81"/>
+ <attr name="y" type="s16" val="169"/>
+</obj>
+
 <obj class="Point" id="2 RoHwConfig-2-NetworkDevice-via-io_device">
  <attr name="x" type="s16" val="5"/>
  <attr name="y" type="s16" val="720"/>
@@ -1097,6 +1217,16 @@
 <obj class="Point" id="2 SmartDaqApplication-2-ReadoutApplication">
  <attr name="x" type="s16" val="98"/>
  <attr name="y" type="s16" val="704"/>
+</obj>
+
+<obj class="Point" id="2 StreamParameters-2-EthStreamParameters">
+ <attr name="x" type="s16" val="103"/>
+ <attr name="y" type="s16" val="136"/>
+</obj>
+
+<obj class="Point" id="2 StreamParameters-2-FelixStreamParameters">
+ <attr name="x" type="s16" val="103"/>
+ <attr name="y" type="s16" val="134"/>
 </obj>
 
 <obj class="Point" id="3 Connection-2-NetworkConnection">
@@ -1193,6 +1323,16 @@
  <attr name="y" type="s16" val="712"/>
 </obj>
 
+<obj class="Point" id="3 ReadoutInterface-2-FelixInterface">
+ <attr name="x" type="s16" val="42"/>
+ <attr name="y" type="s16" val="176"/>
+</obj>
+
+<obj class="Point" id="3 ReadoutInterface-2-NICInterface">
+ <attr name="x" type="s16" val="51"/>
+ <attr name="y" type="s16" val="103"/>
+</obj>
+
 <obj class="Point" id="3 ReadoutMap-2-ReadoutGroup-via-groups">
  <attr name="x" type="s16" val="24"/>
  <attr name="y" type="s16" val="229"/>
@@ -1263,6 +1403,11 @@
  <attr name="y" type="s16" val="235"/>
 </obj>
 
+<obj class="Point" id="3 ResourceSetAND-2-ReadoutInterface">
+ <attr name="x" type="s16" val="26"/>
+ <attr name="y" type="s16" val="169"/>
+</obj>
+
 <obj class="Point" id="3 RoHwConfig-2-NetworkDevice-via-io_device">
  <attr name="x" type="s16" val="68"/>
  <attr name="y" type="s16" val="720"/>
@@ -1296,6 +1441,16 @@
 <obj class="Point" id="3 SmartDaqApplication-2-ReadoutApplication">
  <attr name="x" type="s16" val="63"/>
  <attr name="y" type="s16" val="704"/>
+</obj>
+
+<obj class="Point" id="3 StreamParameters-2-EthStreamParameters">
+ <attr name="x" type="s16" val="11"/>
+ <attr name="y" type="s16" val="136"/>
+</obj>
+
+<obj class="Point" id="3 StreamParameters-2-FelixStreamParameters">
+ <attr name="x" type="s16" val="34"/>
+ <attr name="y" type="s16" val="134"/>
 </obj>
 
 <obj class="Point" id="4 Connection-2-NetworkConnection">
@@ -1392,6 +1547,16 @@
  <attr name="y" type="s16" val="8"/>
 </obj>
 
+<obj class="Point" id="4 ReadoutInterface-2-FelixInterface">
+ <attr name="x" type="s16" val="42"/>
+ <attr name="y" type="s16" val="21"/>
+</obj>
+
+<obj class="Point" id="4 ReadoutInterface-2-NICInterface">
+ <attr name="x" type="s16" val="51"/>
+ <attr name="y" type="s16" val="26"/>
+</obj>
+
 <obj class="Point" id="4 ReadoutMap-2-ReadoutGroup-via-groups">
  <attr name="x" type="s16" val="24"/>
  <attr name="y" type="s16" val="8"/>
@@ -1462,6 +1627,11 @@
  <attr name="y" type="s16" val="8"/>
 </obj>
 
+<obj class="Point" id="4 ResourceSetAND-2-ReadoutInterface">
+ <attr name="x" type="s16" val="26"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
 <obj class="Point" id="4 RoHwConfig-2-NetworkDevice-via-io_device">
  <attr name="x" type="s16" val="68"/>
  <attr name="y" type="s16" val="8"/>
@@ -1495,6 +1665,16 @@
 <obj class="Point" id="4 SmartDaqApplication-2-ReadoutApplication">
  <attr name="x" type="s16" val="63"/>
  <attr name="y" type="s16" val="21"/>
+</obj>
+
+<obj class="Point" id="4 StreamParameters-2-EthStreamParameters">
+ <attr name="x" type="s16" val="11"/>
+ <attr name="y" type="s16" val="26"/>
+</obj>
+
+<obj class="Point" id="4 StreamParameters-2-FelixStreamParameters">
+ <attr name="x" type="s16" val="34"/>
+ <attr name="y" type="s16" val="17"/>
 </obj>
 
 <obj class="View" id="ReadoutApplication">
