@@ -90,9 +90,32 @@
  <class name="TriggerApplication">
   <superclass name="SmartDaqApplication"/>
   <superclass name="ResourceSetAND"/>
+  <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
+
+  <relationship name="tam_modules" class-type="TriggerTAMakers" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="tcm_modules" class-type="TriggerTCMakers" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="mlt" class-type="ModuleLevelTrigger" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+
   <method name="generate_modules" description="Generate daq module dal objects for streams of the TriggerApplication on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
   </method>
+ </class>
+
+ <class name="TriggerTAMakers">
+  <relationship name="tpchannelfilter" class-type="TPChannelFilter" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="tpbuffer"        class-type="TPBuffer" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="tamaker"         class-type="TriggerActivityMaker" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="tabuffer"        class-type="TABuffer" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="TriggerTCMakers">
+  <relationship name="tazipper" class-type="TAZipper" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="tcmaker"  class-type="TriggerCandidateMaker" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="tcbuffer" class-type="TCBuffer" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="ModuleLevelTrigger">
+  <superclass name="DaqModule"/>
  </class>
 
  <class name="TPChannelFilter">
@@ -112,5 +135,32 @@
   <attribute name="sent_count" type="bool" description="Number of results added to queue." is-not-null="yes"/>
  </class>
 
+ <class name="TPBuffer">
+  <superclass name="DaqModule"/>
+ </class>
+ <class name="TABuffer">
+  <superclass name="DaqModule"/>
+ </class>
+ <class name="TCBuffer">
+  <superclass name="DaqModule"/>
+ </class>
+
+ <class name="TriggerActivityMaker">
+  <superclass name="DaqModule"/>
+ </class>
+
+ <class name="TriggerCandidateMaker">
+  <superclass name="DaqModule"/>
+ </class>
+
+ <class name="TPZipper">
+  <superclass name="DaqModule"/>
+ </class>
+ <class name="TAZipper">
+  <superclass name="DaqModule"/>
+ </class>
+ <class name="TCZipper">
+  <superclass name="DaqModule"/>
+ </class>
 
 </oks-schema>
