@@ -205,65 +205,81 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
       TLOG_DEBUG(7) << "Ignoring disabled ReadoutGroup " << roGroup->UID();
       continue;
     }
+    // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader module
     auto rset = roGroup->cast<coredal::ReadoutGroup>();
     if (rset == nullptr) {
         throw (BadConf(ERS_HERE, "ReadoutApplication contains something other than ReadoutGroup"));
     }
     std::vector<const coredal::Connection*> outputQueues;
-    for (auto res : rset->get_contains()) {
-      auto stream = res->cast<coredal::DROStreamConf>();
-      if (stream == nullptr) {
-        throw (BadConf(ERS_HERE, "ReadoutGroup contains something other than DROStreamConf"));
-      }
-      if (stream->disabled(*session)) {
-        TLOG_DEBUG(7) << "Ignoring disabled DROStreamConf " << stream->UID();
+    if (sret.get_contains().empty() {
+        throw (BadConf(ERS_HERE, "ReadoutGroup does not contain interfaces"));
+    }
+    auto interfaces = rset->get_contains();
+    for (auto res_set : interfaces) {
+      if (res_set->disabled(*session)) {
+        TLOG_DEBUG(7) << "Ignoring disabled ReadoutInterface " << res_set->UID();
         continue;
       }
-      auto id = stream->get_src_id();
-      std::string uid("DLH-"+std::to_string(id));
-      oksdbinterfaces::ConfigObject dlhObj;
-      TLOG_DEBUG(7) <<  "creating OKS configuration object for Data Link Handler class " << dlhClass;
-      confdb->create(dbfile, dlhClass, uid, dlhObj);
-      dlhObj.set_by_val<uint32_t>("source_id", id);
-      dlhObj.set_obj("module_configuration", &dlhConf->config_object());
-
-      // Time Sync network connection
-      std::string tsStreamUid("timesync"+std::to_string(id));
-      auto tsServiceObj = tsNetDesc->get_associated_service()->config_object();
-      oksdbinterfaces::ConfigObject tsNetObj;
-      confdb->create(dbfile, "NetworkConnection", tsStreamUid, tsNetObj);
-      tsNetObj.set_by_val<std::string>("connection_type", tsNetDesc->get_connection_type());
-      tsNetObj.set_obj("associated_service", &tsServiceObj);
-
-      if (tpHandlerConf) {
-        dlhObj.set_objs("outputs", {&tpQueueObj, &faQueueObj, &tsNetObj});
+      auto interface = res_set->cast<coredal::ReadoutInterface>;
+      if (interface == nullptr) {
+        throw (BadConf(ERS_HERE, "ReadoutGroup contains something othen than ReadoutInterface"));
       }
-      else {
-	dlhObj.set_objs("outputs", {&faQueueObj, &tsNetObj});
-      }
+      for (res : interface->get_contains()) {
+         auto stream = res->cast<coredal::DROStreamConf>();
+         if (stream == nullptr) {
+           throw (BadConf(ERS_HERE, "ReadoutInterface contains something other than DROStreamConf"));
+         }
+         if (stream->disabled(*session)) {
+           TLOG_DEBUG(7) << "Ignoring disabled DROStreamConf " << stream->UID();
+           continue;
+         }
+         auto id = stream->get_src_id();
+         std::string uid("DLH-"+std::to_string(id));
+         oksdbinterfaces::ConfigObject dlhObj;
+         TLOG_DEBUG(7) <<  "creating OKS configuration object for Data Link Handler class " << dlhClass;
+         confdb->create(dbfile, dlhClass, uid, dlhObj);
+         dlhObj.set_by_val<uint32_t>("source_id", id);
+         dlhObj.set_obj("module_configuration", &dlhConf->config_object());
 
-      std::string dataQueueUid("inputToDLH-"+std::to_string(id));
-      oksdbinterfaces::ConfigObject queueObj;
-      confdb->create(dbfile, "Queue", dataQueueUid, queueObj);
-      queueObj.set_by_val<std::string>("data_type", dlhInputQDesc->get_data_type());
-      queueObj.set_by_val<std::string>("queue_type", dlhInputQDesc->get_queue_type());
-      queueObj.set_by_val<uint32_t>("capacity", dlhInputQDesc->get_capacity());
+         // Time Sync network connection
+         std::string tsStreamUid("timesync"+std::to_string(id));
+         auto tsServiceObj = tsNetDesc->get_associated_service()->config_object();
+         oksdbinterfaces::ConfigObject tsNetObj;
+         confdb->create(dbfile, "NetworkConnection", tsStreamUid, tsNetObj);
+         tsNetObj.set_by_val<std::string>("connection_type", tsNetDesc->get_connection_type());
+         tsNetObj.set_obj("associated_service", &tsServiceObj);
 
-      std::string reqQueueUid("inputReqToDLH-"+std::to_string(id));
-      oksdbinterfaces::ConfigObject reqQueueObj;
-      confdb->create(dbfile, "Queue", reqQueueUid, reqQueueObj);
-      reqQueueObj.set_by_val<std::string>("data_type", dlhReqInputQDesc->get_data_type());
-      reqQueueObj.set_by_val<std::string>("queue_type", dlhReqInputQDesc->get_queue_type());
-      reqQueueObj.set_by_val<uint32_t>("capacity", dlhReqInputQDesc->get_capacity());
-      // Add the requessts queue dal pointer to the outputs of the FragmentAggregator
-      faOutputQueues.push_back(confdb->get<coredal::Connection>(reqQueueUid));
+         if (tpHandlerConf) {
+           dlhObj.set_objs("outputs", {&tpQueueObj, &faQueueObj, &tsNetObj});
+         }
+         else {
+	   dlhObj.set_objs("outputs", {&faQueueObj, &tsNetObj});
+         }
 
-      dlhObj.set_objs("inputs", {&queueObj, &reqQueueObj});
+         std::string dataQueueUid("inputToDLH-"+std::to_string(id));
+         oksdbinterfaces::ConfigObject queueObj;
+         confdb->create(dbfile, "QueueWithGeoId", dataQueueUid, queueObj);
+         queueObj.set_by_val<std::string>("data_type", dlhInputQDesc->get_data_type());
+         queueObj.set_by_val<std::string>("queue_type", dlhInputQDesc->get_queue_type());
+         queueObj.set_by_val<uint32_t>("capacity", dlhInputQDesc->get_capacity());
+         queueObj.set_obj("geo_id", &(stream->get_geo_id()));
 
-      // Add the input queue dal pointer to the outputs of the DataReader
-      outputQueues.push_back(confdb->get<coredal::Connection>(dataQueueUid));
+         std::string reqQueueUid("inputReqToDLH-"+std::to_string(id));
+         oksdbinterfaces::ConfigObject reqQueueObj;
+         confdb->create(dbfile, "Queue", reqQueueUid, reqQueueObj);
+         reqQueueObj.set_by_val<std::string>("data_type", dlhReqInputQDesc->get_data_type());
+         reqQueueObj.set_by_val<std::string>("queue_type", dlhReqInputQDesc->get_queue_type());
+         reqQueueObj.set_by_val<uint32_t>("capacity", dlhReqInputQDesc->get_capacity());
+         // Add the requessts queue dal pointer to the outputs of the FragmentAggregator
+         faOutputQueues.push_back(confdb->get<coredal::Connection>(reqQueueUid));
 
-      modules.push_back(confdb->get<DLH>(uid));
+         dlhObj.set_objs("inputs", {&queueObj, &reqQueueObj});
+
+         // Add the input queue dal pointer to the outputs of the DataReader
+         outputQueues.push_back(confdb->get<coredal::Connection>(dataQueueUid));
+
+         modules.push_back(confdb->get<DLH>(uid));
+       }
     }
 
     std::string readerUid("datareader-"+UID()+"-"+std::to_string(rnum++));
@@ -278,6 +294,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     }
     readerObj.set_objs("outputs", qObjs);
     readerObj.set_obj("configuration", &rdrConf->config_object());
+    readerObj.set_obj("readout_group", &rset);
 
     modules.push_back(confdb->get<DataReader>(readerUid));
   }

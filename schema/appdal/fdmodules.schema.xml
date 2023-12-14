@@ -91,9 +91,11 @@
  <class name="EthStreamParameters">
   <superclass name="StreamParameters"/>
   <attribute name="protocol" type="enum" range="udp,zmq" init-value="udp" is-not-null="yes"/>
-  <attribute name="tx_host" description="Transmitter control host" type="string" init-value="localhost" is-not-null="yes"/>
   <attribute name="tx_mac" description="Transmitter MAC address" type="string" init-value="00:00:00:00:00:00" is-not-null="yes"/>
   <attribute name="tx_ip" description="Transmitter IP address" type="string" init-value="0.0.0.0" is-not-null="yes"/>
+  <attribute name="tx_hostname" description="Transmitter IP name" type="string" init-value="localhost" is-not-null="yes"/>
+  <attribute name="lcore" description="Assigned CPU lcore" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="rx_queue" description="Assigned RX queue of interface" type="u32" init-value="0" is-not-null="yes"/>
  </class>
 
  <class name="FDDataLinkHandler">
@@ -128,32 +130,38 @@
   <attribute name="rx_mac" description="Destination MAC address on readout host" type="string" init-value="00:00:00:00:00:00" is-not-null="yes"/>
   <attribute name="rx_ip" type="string" init-value="192.168.1.1" is-not-null="yes"/>
   <attribute name="rx_hostname" type="string" init-value="localhost"/>
+  <relationship name="configuration" class-type="NICInterfaceConfiguration" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
- 
+
+  <class name="NICInterfaceConfiguration">
+  <attribute name="flow_control" type="bool" init-value="1"/>
+  <attribute name="promiscuous_mode" type="bool" init-value="0"/>
+  <attribute name="mtu" type="u32" init-value="9000" is-not-null="yes"/>
+  <attribute name="rx_ring_size" type="u32" init-value="1024" is-not-null="yes"/>
+  <attribute name="tx_ring_size" type="u32" init-value="1024" is-not-null="yes"/>
+  <attribute name="num_bufs" type="u32" init-value="8191" is-not-null="yes"/>
+  <attribute name="mbuf_cache_size" type="u32" init-value="256" is-not-null="yes"/>
+  <attribute name="burst_size" type="u32" init-value="256" is-not-null="yes"/>
+  <attribute name="lcore_sleep_us" type="u32" init-value="10" is-not-null="yes"/>
+  <relationship name="stats_conf" class-type="NICStatsConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
  <class name="NICReceiver">
   <superclass name="DataReader"/>
-  <relationship name="streams" class-type="DROStreamConf" low-cc="zero" high-cc="many" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <!--  <relationship name="streams" class-type="DROStreamConf" low-cc="zero" high-cc="many" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
   <method name="get_ipadress" description="">
    <method-implementation language="c++" prototype=" std::string get_ipaddress()" body=""/>
   </method>
   <method name="get_macaddress" description="">
    <method-implementation language="c++" prototype=" std::string get_macaddress()" body=""/>
-  </method>
+	  </method>
+  -->
  </class>
 
  <class name="NICReceiverConf">
   <superclass name="DataReaderConf"/>
   <attribute name="template_for" type="class" init-value="NICReceiver"/>
-  <attribute name="mbuf_cache_size" type="u32" init-value="256" is-not-null="yes"/>
-  <attribute name="lcore_sleep_us" type="u32" init-value="10" is-not-null="yes"/>
-  <attribute name="mtu" type="u32" init-value="9000" is-not-null="yes"/>
-  <attribute name="num_mbufs" type="u32" init-value="8191" is-not-null="yes"/>
-  <attribute name="promiscuous_mode" type="bool" init-value="false"/>
-  <attribute name="rx_ring_size" type="s32" init-value="1024" is-not-null="yes"/>
-  <attribute name="tx_ring_size" type="u32" init-value="1024" is-not-null="yes"/>
-  <attribute name="fkow_control" type="bool" init-value="true"/>
   <attribute name="eal_args" type="string" init-value="-l 0-1 -n 3 -- -m [0:1].0 -j" is-not-null="yes"/>
-  <relationship name="stats_conf" class-type="NICStatsConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="NICStatsConf">

@@ -134,6 +134,7 @@
   <superclass name="DaqModule"/>
   <attribute name="emulated" type="bool" init-value="false"/>
   <relationship name="configuration" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="interfaces" class-type="ReadoutInterface" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="DataReaderConf" is-abstract="yes">
