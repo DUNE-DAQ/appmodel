@@ -258,11 +258,11 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
          std::string dataQueueUid("inputToDLH-"+std::to_string(id));
          oksdbinterfaces::ConfigObject queueObj;
-         confdb->create(dbfile, "QueueWithGeoId", dataQueueUid, queueObj);
+         confdb->create(dbfile, "QueueWithId", dataQueueUid, queueObj);
          queueObj.set_by_val<std::string>("data_type", dlhInputQDesc->get_data_type());
          queueObj.set_by_val<std::string>("queue_type", dlhInputQDesc->get_queue_type());
          queueObj.set_by_val<uint32_t>("capacity", dlhInputQDesc->get_capacity());
-         queueObj.set_obj("geo_id", &(stream->get_geo_id()));
+         queueObj.set_by_val<uint32_t>("id", stream->get_src_id());
 
          std::string reqQueueUid("inputReqToDLH-"+std::to_string(id));
          oksdbinterfaces::ConfigObject reqQueueObj;
