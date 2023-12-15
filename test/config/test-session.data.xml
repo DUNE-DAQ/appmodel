@@ -113,6 +113,11 @@
  <attr name="port" type="u16" val="5000"/>
 </obj>
 
+<obj class="Service" id="triggerInhibits">
+ <attr name="protocol" type="string" val="tcp"/>
+ <attr name="port" type="u16" val="5000"/>
+</obj>
+
 <obj class="Session" id="test-session">
  <attr name="use_connectivity_server" type="bool" val="1"/>
  <attr name="connectivity_service_interval_ms" type="u32" val="2000"/>

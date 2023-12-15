@@ -21,18 +21,14 @@
 #include "coredal/Service.hpp"
 #include "coredal/Session.hpp"
 
-//#include "appdal/DataReader.hpp"
-//#include "appdal/DataReaderConf.hpp"
-#include "appdal/ReadoutModule.hpp"
-//#include "appdal/DLH.hpp"
-//#include "appdal/TPHandler.hpp"
-//#include "appdal/FragmentAggregator.hpp"
-//#include "appdal/ReadoutModelConf.hpp"
 #include "appdal/NetworkConnectionRule.hpp"
 #include "appdal/NetworkConnectionDescriptor.hpp"
 #include "appdal/QueueConnectionRule.hpp"
 #include "appdal/QueueDescriptor.hpp"
-//#include "appdal/TPHandlerConf.hpp"
+#include "appdal/ModuleLevelTriggerConf.hpp"
+#include "appdal/ModuleLevelTrigger.hpp"
+#include "appdal/TPChannelFilterConf.hpp"
+#include "appdal/TriggeringAlgorithms.hpp"
 
 #include "appdal/TriggerApplication.hpp"
 
@@ -63,36 +59,89 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 {
   std::vector<const coredal::DaqModule*> modules;
 
-  // TPSet stream input from the readout
-  std::vector<const NetworkConnectionDescriptor*> tpNetDescs;
+  const NetworkConnectionDescriptor* tiMLTNetDesc = nullptr;
+  const NetworkConnectionDescriptor* tdMLTNetDesc = nullptr;
 
-  // Get all the network connections
+  // TC queue descriptor for link to the MLT
+  const QueueDescriptor* tcMLTQueueDesc;
+
+  /**************************************************************
+   * Get all the queue connection descriptions
+   **************************************************************/
+  for (auto rule : get_queue_rules()) {
+    std::string destination_class = rule->get_destination_class();
+    std::string data_type = rule->get_descriptor()->get_data_type();
+    if((destination_class == "ModuleLevelTrigger") && (data_type == "TriggerCandidate"))
+      tcMLTQueueDesc = rule->get_descriptor();
+  }
+
+  /**************************************************************
+   * Get all the network connections
+   **************************************************************/
   size_t nReadoutLinks = 0;
   for(auto rule : get_network_rules()){
     std::string endpoint_class = rule->get_endpoint_class();
-
-    // Connection for tpstream input
-    if(endpoint_class == "TPHandler"){
-      tpNetDescs.push_back(rule->get_descriptor());
-      std::cout << "Eureka, found a TP stream connection!" << std::endl;
-    }
-    std::cout << "Connection endpoint class: " << endpoint_class << std::endl;
+    if(endpoint_class == "ModuleLevelTrigger")
+      tiMLTNetDesc = rule->get_descriptor();
+    if(endpoint_class == "DFO")
+      tdMLTNetDesc = rule->get_descriptor();
   }
-  nReadoutLinks = tpNetDescs.size();
 
-  std::cout << "In total, we have " << nReadoutLinks << " TPSet inputs from the readout" << std::endl;
+  /**************************************************************
+   * Get the MLT
+   **************************************************************/
+  auto mlt_conf = get_mlt_conf();
+  // Don't build the rest if we have no MLT
+  if(!mlt_conf)
+    return modules;
 
+  // Vector of MLT inputs and output connections
+  std::vector<const oksdbinterfaces::ConfigObject*> mlt_inputs;
+  std::vector<const oksdbinterfaces::ConfigObject*> mlt_outputs;
 
+  // Create MLT config object
+  auto mlt_conf_obj = mlt_conf->config_object();
+  oksdbinterfaces::ConfigObject mltObj;
+  std::string mltUid("mlt");
+  confdb->create(dbfile, "ModuleLevelTrigger", mltUid, mltObj);
+  mltObj.set_obj("configuration", &mlt_conf_obj);
+
+  // Add network connections to MLT
+  auto tiMLTServiceObj = tiMLTNetDesc->get_associated_service()->config_object();
+  std::string tiMLTNetUid("df_busy_signal-" + UID());
+  oksdbinterfaces::ConfigObject tiMLTNetObj;
+  confdb->create(dbfile, "NetworkConnection", tiMLTNetUid, tiMLTNetObj);
+  tiMLTNetObj.set_by_val<std::string>("connection_type", tiMLTNetDesc->get_connection_type());
+  tiMLTNetObj.set_obj("associated_service", &tiMLTServiceObj);
+  mlt_inputs.push_back(&tiMLTNetObj);
+
+  // Warning! Not finished yet, remove and move down.
+
+  mltObj.set_objs("inputs", mlt_inputs);
+  mltObj.set_objs("outputs", mlt_outputs);
+
+  modules.push_back(confdb->get<ModuleLevelTrigger>(mltUid));
+
+  /**************************************************************
+   * Get the trigger graph
+   **************************************************************/
   // Don't bother building the entire trigger graph if we have no tpstreams in.
-  //if(nReadoutLinks == 0)
-  //  return modules;
+  if(!nReadoutLinks)
+    return modules;
 
-  //for(int idReadoutLink = 0; idReadoutLink < nReadoutLinks; ++idReadoutLink){
-  //  auto tpServiceObj = tpBetDescs[i]->get_associated_service()->config_object();
+  // Get the triggering algos handler
+  auto trigger_algs = get_trigger_algs();
+  // Don't build the rest if we don't have triggering algs
+  if(trigger_algs.size() == 0)
+    return modules;
 
-  //  confdb->create(dbfile, "NetworkConnection", ____ID____, tpServiceObj);
+  // Make the TPChannelFilters
+  auto tpChannelFilterConf = get_tpchannelfilter_conf();
+  for(size_t tpLinkId = 0; tpLinkId < nReadoutLinks; ++tpLinkId){
+    auto tpChannelFilterConfObj = tpChannelFilterConf->config_object();
+  }
 
-  //}
+  // <Trigger algorithms code goes here>
 
   return modules;
 }

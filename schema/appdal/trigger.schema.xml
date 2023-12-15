@@ -91,8 +91,8 @@
   <superclass name="SmartDaqApplication"/>
   <superclass name="ResourceSetAND"/>
   <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
-  <relationship name="trigger_algs" class-type="TriggeringAlgorithms" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="mlt_conf" class-type="ModuleLevelTriggerConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="trigger_algs"         class-type="TriggeringAlgorithms" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="mlt_conf"             class-type="ModuleLevelTriggerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="tpchannelfilter_conf" class-type="TPChannelFilterConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
 
   <method name="generate_modules" description="Generate daq module dal objects for streams of the TriggerApplication on the fly">
@@ -122,10 +122,10 @@
   <attribute name="trigger_bitwords"              type="string"  is-multi-value="yes"/>
 
   <attribute name="use_roi_readout"               type="bool" init-value="false" is-not-null="yes"/>
-  <relationship name="roi_group_conf"             class-type="ROIGroupConf" low-cc="0" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="roi_group_conf"             class-type="ROIGroupConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
 
   <attribute name="use_readout_map"               type="bool" init-value="false" is-not-null="yes"/>
-  <relationship name="tc_readout_map"             class-type="TCReadoutMap" low-cc="0" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="tc_readout_map"             class-type="TCReadoutMap" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="ROIGroupConf">
