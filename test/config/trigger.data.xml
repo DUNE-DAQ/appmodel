@@ -72,15 +72,29 @@
 </include>
 
 <!-- Network connections -->
+
 <obj class="NetworkConnectionDescriptor" id="ti-mlt-desc-1">
  <attr name="uid_base" type="string" val="triggerInhibit"/>
  <attr name="connection_type" type="enum" val="kSendRecv"/>
+ <attr name="data_type" type="string" val="TriggerInhibit"/>
  <rel name="associated_service" class="Service" id="triggerInhibits"/>
 </obj>
 
 <obj class="NetworkConnectionRule" id="ti-mlt-rule-1">
  <attr name="endpoint_class" type="class" val="ModuleLevelTrigger"/>
  <rel name="descriptor" class="NetworkConnectionDescriptor" id="ti-mlt-desc-1"/>
+</obj>
+
+<obj class="NetworkConnectionDescriptor" id="td-mlt-desc-1">
+ <attr name="uid_base" type="string" val="triggerDecision"/>
+ <attr name="connection_type" type="enum" val="kSendRecv"/>
+ <attr name="data_type" type="string" val="TriggerDecision"/>
+ <rel name="associated_service" class="Service" id="triggerDecisions"/>
+</obj>
+
+<obj class="NetworkConnectionRule" id="td-mlt-rule-1">
+ <attr name="endpoint_class" type="class" val="ModuleLevelTrigger"/>
+ <rel name="descriptor" class="NetworkConnectionDescriptor" id="td-mlt-desc-1"/>
 </obj>
 
 <!-- Queue connections -->
@@ -105,6 +119,7 @@
  <rel name="network_rules">
   <ref class="NetworkConnectionRule" id="tpdlh-rule-1"/>
   <ref class="NetworkConnectionRule" id="ti-mlt-rule-1"/>
+  <ref class="NetworkConnectionRule" id="td-mlt-rule-1"/>
  </rel>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="tcMLTInputQueueRule"/>

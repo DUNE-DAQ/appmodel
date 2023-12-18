@@ -52,6 +52,32 @@ __reg__("TriggerApplication", [] (const SmartDaqApplication* smartApp,
     return app->generate_modules(confdb, dbfile, session);
   });
 
+/**
+ * \brief Helper function that gets a network connection config
+ *
+ * \param idname Unique ID name of the config object
+ * \param ntDesc Network connection descriptor object
+ * \param confdb Global database configuration
+ * \param dbfile Database file location
+ *
+ * \ret OKS configuration object for the network connection
+ */
+oksdbinterfaces::ConfigObject 
+create_network_connection(const std::string& idname,
+                          const NetworkConnectionDescriptor* ntDesc,
+                          oksdbinterfaces::Configuration* confdb,
+                          const std::string& dbfile)
+{
+  auto ntServiceObj = ntDesc->get_associated_service()->config_object();
+  std::string ntUid(idname);
+  oksdbinterfaces::ConfigObject ntObj;
+  confdb->create(dbfile, "NetworkConnection", ntUid, ntObj);
+  ntObj.set_by_val<std::string>("connection_type", ntDesc->get_connection_type());
+  ntObj.set_obj("associated_service", &ntServiceObj);
+
+  return ntObj;
+}
+
 std::vector<const coredal::DaqModule*> 
 TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
                                      const std::string& dbfile,
@@ -81,11 +107,19 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   size_t nReadoutLinks = 0;
   for(auto rule : get_network_rules()){
     std::string endpoint_class = rule->get_endpoint_class();
-    if(endpoint_class == "ModuleLevelTrigger")
+    std::string data_type = rule->get_descriptor()->get_data_type();
+
+    // Network connections for the MLT
+    if(endpoint_class == "ModuleLevelTrigger" && data_type == "TriggerInhibit")
       tiMLTNetDesc = rule->get_descriptor();
-    if(endpoint_class == "DFO")
+    if(endpoint_class == "ModuleLevelTrigger" && data_type == "TriggerDecision")
       tdMLTNetDesc = rule->get_descriptor();
+
+    std::cout << "Endpoint class: " << endpoint_class << " data_type: " << data_type << std::endl;
   }
+
+  //if(!tdMLTNetDesc)
+  //  throw (BadConf(ERS_HERE, "No MLT network connection for the output TriggerDecision given"));
 
   /**************************************************************
    * Get the MLT
@@ -106,14 +140,12 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   confdb->create(dbfile, "ModuleLevelTrigger", mltUid, mltObj);
   mltObj.set_obj("configuration", &mlt_conf_obj);
 
-  // Add network connections to MLT
-  auto tiMLTServiceObj = tiMLTNetDesc->get_associated_service()->config_object();
-  std::string tiMLTNetUid("df_busy_signal-" + UID());
-  oksdbinterfaces::ConfigObject tiMLTNetObj;
-  confdb->create(dbfile, "NetworkConnection", tiMLTNetUid, tiMLTNetObj);
-  tiMLTNetObj.set_by_val<std::string>("connection_type", tiMLTNetDesc->get_connection_type());
-  tiMLTNetObj.set_obj("associated_service", &tiMLTServiceObj);
+  // Network connection for the MLT: input TriggerInhibit
+  oksdbinterfaces::ConfigObject tiMLTNetObj = create_network_connection(std::string("df_busy_signal-") + UID(), tiMLTNetDesc, confdb, dbfile);
   mlt_inputs.push_back(&tiMLTNetObj);
+  // Network connection for the MLT: output TriggerDecision
+  oksdbinterfaces::ConfigObject tdMLTNetObj = create_network_connection(std::string("td_to_dfo-") + UID(), tdMLTNetDesc, confdb, dbfile);
+  mlt_outputs.push_back(&tdMLTNetObj);
 
   // Warning! Not finished yet, remove and move down.
 
