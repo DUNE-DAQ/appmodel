@@ -25,8 +25,16 @@
 #include "appdal/NetworkConnectionDescriptor.hpp"
 #include "appdal/QueueConnectionRule.hpp"
 #include "appdal/QueueDescriptor.hpp"
+
+#include "appdal/LatencyBuffer.hpp"
+#include "appdal/RequestHandler.hpp"
+
 #include "appdal/ModuleLevelTriggerConf.hpp"
 #include "appdal/ModuleLevelTrigger.hpp"
+
+#include "appdal/TCSetTee.hpp"
+#include "appdal/TCBuffer.hpp"
+
 #include "appdal/RandomTriggerCandidateMakerConf.hpp"
 #include "appdal/RandomTriggerCandidateMaker.hpp"
 #include "appdal/TPChannelFilterConf.hpp"
@@ -135,6 +143,7 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     return modules;
 
   // Vector of MLT inputs and output connections
+  std::vector<oksdbinterfaces::ConfigObject> mlt_inputs_copies;
   std::vector<const oksdbinterfaces::ConfigObject*> mlt_inputs;
   std::vector<const oksdbinterfaces::ConfigObject*> mlt_outputs;
 
@@ -151,13 +160,6 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   // Network connection for the MLT: output TriggerDecision
   oksdbinterfaces::ConfigObject tdMLTNetObj = create_network_connection(std::string("td_to_dfo-") + UID(), tdMLTNetDesc, confdb, dbfile);
   mlt_outputs.push_back(&tdMLTNetObj);
-
-  // Warning! Not finished yet, remove and move down.
-
-  mltObj.set_objs("inputs", mlt_inputs);
-  mltObj.set_objs("outputs", mlt_outputs);
-
-  modules.push_back(confdb->get<ModuleLevelTrigger>(mltUid));
 
   /**************************************************************
    * Get the random trigger candidate makers
@@ -184,10 +186,53 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     queueRTCMTeeObj.set_by_val<uint32_t>("capacity", tcQueueDesc->get_capacity());
     rndTCMakerObj.set_objs("outputs", {&queueRTCMTeeObj});
 
-    // Push the RTCM algorithm
+    // Create the tee itself
+    std::string rtcmTCTeeUid("rtcm-TCSetTee-");
+    oksdbinterfaces::ConfigObject tcTeeRTCMObj;
+    confdb->create(dbfile, "TCSetTee", rtcmTCTeeUid + UID(), tcTeeRTCMObj);
+    tcTeeRTCMObj.set_objs("inputs", {&queueRTCMTeeObj});
+
+    // Queue to the buffer
+    std::string rtcmTeeToBufferQueueUid("rtcm-tctee-to-buffer-");
+    oksdbinterfaces::ConfigObject queueRTCMTeeToBufferObj;
+    confdb->create(dbfile, "Queue", rtcmTeeToBufferQueueUid + UID(), queueRTCMTeeToBufferObj);
+    queueRTCMTeeToBufferObj.set_by_val<std::string>("data_type", tcQueueDesc->get_data_type());
+    queueRTCMTeeToBufferObj.set_by_val<std::string>("queue_type", tcQueueDesc->get_queue_type());
+    queueRTCMTeeToBufferObj.set_by_val<uint32_t>("capacity", tcQueueDesc->get_capacity());
+
+    // Queue to the MLT
+    std::string rtcmTeeToMLTQueueUid("rtcm-tctee-to-mlt-");
+    oksdbinterfaces::ConfigObject queueRTCMTeeToMLTObj;
+    confdb->create(dbfile, "Queue", rtcmTeeToMLTQueueUid + UID(), queueRTCMTeeToMLTObj);
+    queueRTCMTeeToMLTObj.set_by_val<std::string>("data_type", tcQueueDesc->get_data_type());
+    queueRTCMTeeToMLTObj.set_by_val<std::string>("queue_type", tcQueueDesc->get_queue_type());
+    queueRTCMTeeToMLTObj.set_by_val<uint32_t>("capacity", tcQueueDesc->get_capacity());
+
+    // The TCBuffer
+    std::string rtcmBufferUid("rtcm-tcbuffer");
+    oksdbinterfaces::ConfigObject tcBufferRTCMObj;
+    confdb->create(dbfile, "TCBuffer", rtcmBufferUid + UID(), tcBufferRTCMObj);
+    auto tcBufferConf = rndTCMakerConf->get_tcbuffer();
+    auto tcBufferLatency = tcBufferConf->get_latencybuffer();
+    auto tcBufferReqHandler = tcBufferConf->get_requesthandler();
+    tcBufferRTCMObj.set_obj("latencybuffer", &tcBufferLatency->config_object());
+    tcBufferRTCMObj.set_obj("requesthandler", &tcBufferReqHandler->config_object());
+    tcBufferRTCMObj.set_objs("inputs", {&queueRTCMTeeToBufferObj});
+    modules.push_back(confdb->get<TCBuffer>(rtcmBufferUid + UID()));
+
+    tcTeeRTCMObj.set_objs("outputs", {&queueRTCMTeeToBufferObj, &queueRTCMTeeToMLTObj});
+    mlt_inputs.push_back(std::move(&queueRTCMTeeToMLTObj));
+
+    // Push all the modules related with the RTCM 
     modules.push_back(confdb->get<RandomTriggerCandidateMaker>(rndTCMakerUid + UID()));
+    modules.push_back(confdb->get<TCSetTee>(rtcmTCTeeUid + UID()));
   }
 
+  // Warning! Not finished yet, remove and move down.
+  mltObj.set_objs("inputs", mlt_inputs);
+  mltObj.set_objs("outputs", mlt_outputs);
+
+  modules.push_back(confdb->get<ModuleLevelTrigger>(mltUid));
 
   /**************************************************************
    * Get the trigger graph

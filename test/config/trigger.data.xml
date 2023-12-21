@@ -71,8 +71,8 @@
  <file path="schema/appdal/trigger.schema.xml"/>
 </include>
 
-<!-- Network connections -->
 
+<!-- Network connections -->
 <obj class="NetworkConnectionDescriptor" id="ti-mlt-desc-1">
  <attr name="uid_base" type="string" val="triggerInhibit"/>
  <attr name="connection_type" type="enum" val="kSendRecv"/>
@@ -108,12 +108,34 @@
  <attr name="data_type" type="string" val="TriggerCandidate"/>
 </obj>
 
+
+<!-- Buffers -->
+<obj class="LatencyBuffer" id="tclatencybuffer-generic">
+ <attr name="size" type="u32" val="100000"/>
+ <attr name="numa_aware" type="bool" val="1"/>
+ <attr name="intrinsic_allocator" type="bool" val="1"/>
+ <attr name="alignment_size" type="u32" val="1000"/>
+ <attr name="preallocation" type="bool" val="1"/>
+</obj>
+
+<obj class="RequestHandler" id="requesthandler-generic">
+ <attr name="request_timeout" type="u32" val="1000"/>
+ <attr name="streaming_buffer_size" type="u32" val="8388608"/>
+ <attr name="enable_raw_recording" type="bool" val="0"/>
+</obj>
+
+<obj class="TCBuffer" id="tc-buffer">
+ <rel name="latencybuffer" class="LatencyBuffer" id="tclatencybuffer-generic"/>
+ <rel name="requesthandler" class="RequestHandler" id="requesthandler-generic"/>
+</obj>
+
 <!-- ModuleLevelTrigger -->
 <obj class="ModuleLevelTriggerConf" id="mlt-conf-1">
 </obj>
 
 <!-- RandomTriggerCandidateMaker-->
 <obj class="RandomTriggerCandidateMakerConf" id="rtcm-conf-1">
+ <rel name="tcbuffer" class="TCBuffer" id="tc-buffer"/>
 </obj>
 
 <!-- Application -->

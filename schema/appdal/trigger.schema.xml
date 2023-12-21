@@ -95,6 +95,8 @@
   <relationship name="mlt_conf"             class-type="ModuleLevelTriggerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="tpchannelfilter_conf" class-type="TPChannelFilterConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
 
+  <relationship name="tctee"                class-type="TCSetTee" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+
   <relationship name="random_candidate_maker_conf" class-type="RandomTriggerCandidateMakerConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
 
   <method name="generate_modules" description="Generate daq module dal objects for streams of the TriggerApplication on the fly">
@@ -155,6 +157,7 @@
   <attribute name="clock_frequency_hz" type="u32" init-value="62500000" is-not-null="yes"/>
   <attribute name="timestamp_method" type="enum" range="kTimeSync,kSystemClock" init-value="kTimeSync" is-not-null="yes"/>
   <attribute name="time_distributon" type="enum" range="kUniform,kPoisson" init-value="kUniform" is-not-null="yes"/>
+  <relationship name="tcbuffer" class-type="TCBuffer" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <!-- Trigger algorithms configurations, for when we run with TPG on -->
@@ -223,6 +226,17 @@
   <attribute name="channel_map_name"  type="string" description="Name of the channel map." is-not-null="yes"/>
  </class>
 
+ <!-- Tees -->
+ <class name="TPSetTee">
+  <superclass name="DaqModule"/>
+ </class>
+ <class name="TASetTee">
+  <superclass name="DaqModule"/>
+ </class>
+ <class name="TCSetTee">
+  <superclass name="DaqModule"/>
+ </class>
+
  <!-- Buffer, zipper configurations -->
  <class name="TPBuffer">
   <superclass name="DaqModule"/>
@@ -232,6 +246,8 @@
  </class>
  <class name="TCBuffer">
   <superclass name="DaqModule"/>
+  <relationship name="latencybuffer"  class-type="LatencyBuffer" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="requesthandler" class-type="RequestHandler" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="TPZipper">
