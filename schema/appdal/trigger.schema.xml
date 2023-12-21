@@ -95,6 +95,8 @@
   <relationship name="mlt_conf"             class-type="ModuleLevelTriggerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="tpchannelfilter_conf" class-type="TPChannelFilterConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
 
+  <relationship name="random_candidate_maker_conf" class-type="RandomTriggerCandidateMakerConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+
   <method name="generate_modules" description="Generate daq module dal objects for streams of the TriggerApplication on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
   </method>
@@ -141,6 +143,19 @@
   <attribute name="time_after"                   type="u32"   init-value="1001" is-not-null="yes"/>
  </class>
 
+ <!-- Random Trigger Candidate Maker configuration --> 
+ <class name="RandomTriggerCandidateMaker">
+  <superclass name="DaqModule"/>
+  <attribute name="trigger_candidate_sink" type="string" is-not-null="yes"/>
+  <relationship name="configuration"  class-type="RandomTriggerCandidateMakerConf"  low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="RandomTriggerCandidateMakerConf">
+  <attribute name="trigger_interval_ticks" type="u32" init-value="64000000" is-not-null="yes"/>
+  <attribute name="clock_frequency_hz" type="u32" init-value="62500000" is-not-null="yes"/>
+  <attribute name="timestamp_method" type="enum" range="kTimeSync,kSystemClock" init-value="kTimeSync" is-not-null="yes"/>
+  <attribute name="time_distributon" type="enum" range="kUniform,kPoisson" init-value="kUniform" is-not-null="yes"/>
+ </class>
 
  <!-- Trigger algorithms configurations, for when we run with TPG on -->
  <class name="TriggeringAlgorithms">

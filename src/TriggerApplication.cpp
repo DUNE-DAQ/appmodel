@@ -27,6 +27,8 @@
 #include "appdal/QueueDescriptor.hpp"
 #include "appdal/ModuleLevelTriggerConf.hpp"
 #include "appdal/ModuleLevelTrigger.hpp"
+#include "appdal/RandomTriggerCandidateMakerConf.hpp"
+#include "appdal/RandomTriggerCandidateMaker.hpp"
 #include "appdal/TPChannelFilterConf.hpp"
 #include "appdal/TriggeringAlgorithms.hpp"
 
@@ -89,7 +91,9 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   const NetworkConnectionDescriptor* tdMLTNetDesc = nullptr;
 
   // TC queue descriptor for link to the MLT
-  const QueueDescriptor* tcMLTQueueDesc;
+  //const QueueDescriptor* tcMLTQueueDesc;
+  //const QueueDescriptor* rtcmQueueDesc;
+  const QueueDescriptor* tcQueueDesc;
 
   /**************************************************************
    * Get all the queue connection descriptions
@@ -98,8 +102,9 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     std::string destination_class = rule->get_destination_class();
     std::string data_type = rule->get_descriptor()->get_data_type();
     if((destination_class == "ModuleLevelTrigger") && (data_type == "TriggerCandidate"))
-      tcMLTQueueDesc = rule->get_descriptor();
+      tcQueueDesc = rule->get_descriptor();
   }
+
 
   /**************************************************************
    * Get all the network connections
@@ -118,8 +123,8 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     std::cout << "Endpoint class: " << endpoint_class << " data_type: " << data_type << std::endl;
   }
 
-  //if(!tdMLTNetDesc)
-  //  throw (BadConf(ERS_HERE, "No MLT network connection for the output TriggerDecision given"));
+  if(!tdMLTNetDesc)
+    throw (BadConf(ERS_HERE, "No MLT network connection for the output TriggerDecision given"));
 
   /**************************************************************
    * Get the MLT
@@ -153,6 +158,36 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   mltObj.set_objs("outputs", mlt_outputs);
 
   modules.push_back(confdb->get<ModuleLevelTrigger>(mltUid));
+
+  /**************************************************************
+   * Get the random trigger candidate makers
+   **************************************************************/
+  auto rndTCMakerConf  = get_random_candidate_maker_conf();
+  if(rndTCMakerConf){
+    if(!tcQueueDesc)
+      throw (BadConf(ERS_HERE, "No RTCM queue description given"));
+
+    std::cout << "Making the RTCM!" << std::endl;
+    // Make RTCM object
+    auto rndTCMakerConfObj = rndTCMakerConf->config_object();
+    oksdbinterfaces::ConfigObject rndTCMakerObj;
+    std::string rndTCMakerUid("rtcm-");
+    confdb->create(dbfile, "RandomTriggerCandidateMaker", rndTCMakerUid + UID(), rndTCMakerObj);
+    rndTCMakerObj.set_obj("configuration", &rndTCMakerConfObj);
+
+    // Create the queue to the tee
+    std::string rtcmToTeeQueueUid("rtcm-to-tee-");
+    oksdbinterfaces::ConfigObject queueRTCMTeeObj;
+    confdb->create(dbfile, "Queue", rtcmToTeeQueueUid + UID(), queueRTCMTeeObj);
+    queueRTCMTeeObj.set_by_val<std::string>("data_type", tcQueueDesc->get_data_type());
+    queueRTCMTeeObj.set_by_val<std::string>("queue_type", tcQueueDesc->get_queue_type());
+    queueRTCMTeeObj.set_by_val<uint32_t>("capacity", tcQueueDesc->get_capacity());
+    rndTCMakerObj.set_objs("outputs", {&queueRTCMTeeObj});
+
+    // Push the RTCM algorithm
+    modules.push_back(confdb->get<RandomTriggerCandidateMaker>(rndTCMakerUid + UID()));
+  }
+
 
   /**************************************************************
    * Get the trigger graph

@@ -98,11 +98,11 @@
 </obj>
 
 <!-- Queue connections -->
-<obj class="QueueConnectionRule" id="tcMLTInputQueueRule">
+<obj class="QueueConnectionRule" id="tcQueueRule">
  <attr name="destination_class" type="class" val="ModuleLevelTrigger"/>
- <rel name="descriptor" class="QueueDescriptor" id="tcMLTInputQueueRuleDescriptor"/>
+ <rel name="descriptor" class="QueueDescriptor" id="tcQueueRuleDescriptor"/>
 </obj>
-<obj class="QueueDescriptor" id="tcMLTInputQueueRuleDescriptor">
+<obj class="QueueDescriptor" id="tcQueueRuleDescriptor">
  <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>
  <attr name="capacity" type="u32" val="1000"/>
  <attr name="data_type" type="string" val="TriggerCandidate"/>
@@ -110,6 +110,10 @@
 
 <!-- ModuleLevelTrigger -->
 <obj class="ModuleLevelTriggerConf" id="mlt-conf-1">
+</obj>
+
+<!-- RandomTriggerCandidateMaker-->
+<obj class="RandomTriggerCandidateMakerConf" id="rtcm-conf-1">
 </obj>
 
 <!-- Application -->
@@ -122,9 +126,10 @@
   <ref class="NetworkConnectionRule" id="td-mlt-rule-1"/>
  </rel>
  <rel name="queue_rules">
-  <ref class="QueueConnectionRule" id="tcMLTInputQueueRule"/>
+  <ref class="QueueConnectionRule" id="tcQueueRule"/>
  </rel>
  <rel name="mlt_conf" class="ModuleLevelTriggerConf" id="mlt-conf-1"/>
+ <rel name="random_candidate_maker_conf" class="RandomTriggerCandidateMakerConf" id="rtcm-conf-1">
 </obj>
 
 </oks-data>
