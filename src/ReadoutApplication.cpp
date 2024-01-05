@@ -30,7 +30,7 @@
 
 #include "appdal/ReadoutModule.hpp"
 #include "appdal/DLH.hpp"
-#include "appdal/TPHandler.hpp"
+#include "appdal/TPHandlerModule.hpp"
 #include "appdal/FragmentAggregator.hpp"
 #include "appdal/ReadoutModuleConf.hpp"
 #include "appdal/NetworkConnectionRule.hpp"
@@ -38,7 +38,7 @@
 #include "appdal/QueueConnectionRule.hpp"
 #include "appdal/QueueDescriptor.hpp"
 #include "appdal/ReadoutApplication.hpp"
-#include "appdal/TPHandlerConf.hpp"
+#include "appdal/TPRequestHandler.hpp"
 
 #include "appdal/appdalIssues.hpp"
 
@@ -89,7 +89,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 	      dlhInputQDesc = rule->get_descriptor();
       }
     }
-    else if (destination_class == "TPHandler") {
+    else if (destination_class == "TPHandlerModule") {
       if (data_type == "DataRequest") {
 	      tpReqInputQDesc = rule->get_descriptor();
       }
@@ -110,7 +110,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     if (endpoint_class == "FragmentAggregator" ) {
       faNetDesc = rule->get_descriptor();
     }
-    else if (endpoint_class == "TPHandler") {
+    else if (endpoint_class == "TPHandlerModule") {
       tpNetDesc = rule->get_descriptor(); // this is the connection publishing TPSets!
     }
     else if (endpoint_class == "DLH" || endpoint_class == dlhClass) {
@@ -179,14 +179,14 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     auto tphConfObj = tpHandlerConf->config_object();
     oksdbinterfaces::ConfigObject tpObj;
     std::string tpUid("tphandler-"+std::to_string(tpsrc));
-    confdb->create(dbfile, "TPHandler", tpUid, tpObj);
+    confdb->create(dbfile, "TPHandlerModule", tpUid, tpObj);
     tpObj.set_by_val<uint32_t>("source_id", tpsrc);
     tpObj.set_obj("module_configuration", &tphConfObj);
     tpObj.set_objs("inputs", {&tpQueueObj, &tpReqQueueObj});
     tpObj.set_objs("outputs", {&tpNetObj, &faQueueObj});
 
     // Add to our list of modules to return
-    modules.push_back(confdb->get<TPHandler>(tpUid));
+    modules.push_back(confdb->get<TPHandlerModule>(tpUid));
   }
 
   // Now create the DataReader objects, one per group of data streams

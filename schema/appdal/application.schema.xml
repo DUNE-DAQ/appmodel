@@ -311,7 +311,7 @@
 
  <class name="TPDataProcessor">
   <superclass name="DataProcessor"/>
-  <attribute name="max_ticks_tot" type="u32" init-value="8000" is-not-null="yes"/>
+  <attribute name="max_ticks_tot" description="Max ToT after which ongoing TPs are discarded, default is 8000" type="u32" init-value="8000" is-not-null="yes"/>
   <attribute name="tpg_enabled" type="bool" init-value="true"/>
   <attribute name="algorithm" description="TP generation algorithm" type="string"/>
   <attribute name="threshold" description="Hit detection threshold" type="u16"/>
@@ -319,11 +319,12 @@
   <attribute name="channel_map" type="string"/>
  </class>
 
- <class name="TPHandler">
+ <class name="TPHandlerModule">
   <superclass name="ReadoutModule"/>
+
  </class>
 
- <class name="TPHandlerConf">
+ <class name="TPRequestHandler">
   <superclass name="RequestHandler"/>
   <attribute name="min_latency_ticks" type="u32" init-value="100" is-not-null="yes"/>
   <attribute name="max_transmission_rate_hz" type="u32" init-value="1000" is-not-null="yes"/>
