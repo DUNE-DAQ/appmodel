@@ -101,16 +101,7 @@
  <class name="FDDataLinkHandler">
   <superclass name="DLH"/>
  </class>
-
- <class name="FelixCardReader">
-  <superclass name="DataReader"/>
- </class>
-
- <class name="FelixCardReaderConf">
-  <superclass name="DataReaderConf"/>
-  <attribute name="template_for" type="class" init-value="FelixCardReader"/>
- </class>
-
+ 
  <class name="FelixInterface" description="Specialization of ReadoutInterface for the FLX card. ">
   <superclass name="ReadoutInterface"/>
   <attribute name="card" description="Card ID in readout host." type="u8" range="0..1" init-value="0" is-not-null="yes"/>
@@ -146,21 +137,8 @@
   <relationship name="stats_conf" class-type="NICStatsConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="NICReceiver">
-  <superclass name="DataReader"/>
-  <!--  <relationship name="streams" class-type="DROStreamConf" low-cc="zero" high-cc="many" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
-  <method name="get_ipadress" description="">
-   <method-implementation language="c++" prototype=" std::string get_ipaddress()" body=""/>
-  </method>
-  <method name="get_macaddress" description="">
-   <method-implementation language="c++" prototype=" std::string get_macaddress()" body=""/>
-	  </method>
-  -->
- </class>
-
  <class name="NICReceiverConf">
   <superclass name="DataReaderConf"/>
-  <attribute name="template_for" type="class" init-value="NICReceiver"/>
   <attribute name="eal_args" type="string" init-value="-l 0-1 -n 3 -- -m [0:1].0 -j" is-not-null="yes"/>
  </class>
 

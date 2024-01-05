@@ -15,6 +15,7 @@
 
 #include "coredal/Connection.hpp"
 #include "coredal/DROStreamConf.hpp"
+#include "coredal/GeoId.hpp"
 #include "coredal/NetworkConnection.hpp"
 #include "coredal/ReadoutGroup.hpp"
 #include "coredal/ReadoutInterface.hpp"
@@ -31,7 +32,7 @@
 #include "appdal/DLH.hpp"
 #include "appdal/TPHandler.hpp"
 #include "appdal/FragmentAggregator.hpp"
-#include "appdal/ReadoutModelConf.hpp"
+#include "appdal/ReadoutModuleConf.hpp"
 #include "appdal/NetworkConnectionRule.hpp"
 #include "appdal/NetworkConnectionDescriptor.hpp"
 #include "appdal/QueueConnectionRule.hpp"
@@ -215,7 +216,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
         throw (BadConf(ERS_HERE, "ReadoutApplication contains something other than ReadoutGroup"));
     }
     std::vector<const coredal::Connection*> outputQueues;
-    if (sret.get_contains().empty() {
+    if (rset->get_contains().empty()) {
         throw (BadConf(ERS_HERE, "ReadoutGroup does not contain interfaces"));
     }
     auto interfaces = rset->get_contains();
@@ -224,11 +225,11 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
         TLOG_DEBUG(7) << "Ignoring disabled ReadoutInterface " << res_set->UID();
         continue;
       }
-      auto interface = res_set->cast<coredal::ReadoutInterface>;
+      auto interface = res_set->cast<coredal::ReadoutInterface>();
       if (interface == nullptr) {
         throw (BadConf(ERS_HERE, "ReadoutGroup contains something othen than ReadoutInterface"));
       }
-      for (res : interface->get_contains()) {
+      for (auto res : interface->get_contains()) {
          auto stream = res->cast<coredal::DROStreamConf>();
          if (stream == nullptr) {
            throw (BadConf(ERS_HERE, "ReadoutInterface contains something other than DROStreamConf"));
@@ -309,7 +310,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     }
     readerObj.set_objs("outputs", qObjs);
     readerObj.set_obj("configuration", &rdrConf->config_object());
-    readerObj.set_obj("readout_group", &rset);
+    readerObj.set_obj("readout_group", &rset->config_object());
 
     modules.push_back(confdb->get<DataReader>(readerUid));
   }

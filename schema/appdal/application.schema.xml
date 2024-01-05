@@ -270,7 +270,7 @@
  <class name="ReadoutModuleConf">
   <attribute name="template_for" type="class" init-value="DLH" is-not-null="yes"/>
   <attribute name="input_data_type" description="Type of data received by this readout module" type="string" init-value="WIBEthFrame"/>
-  <attribute name="generate_timesync" type="bool" init-value="true" is-not-null="yes">
+  <attribute name="generate_timesync" type="bool" init-value="true" is-not-null="yes"/>
   <relationship name="request_handler" class-type="RequestHandler" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="latency_buffer" class-type="LatencyBuffer" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_processor" class-type="DataProcessor" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -288,8 +288,8 @@
   <attribute name="request_timeout" description="Request timeout in milliseconds" type="u32" init-value="10000" is-not-null="yes"/>
   <attribute name="pop_limit_pct" description="Latency buffer occupancy percentage to issue an auto-pop" type="float" init-value="0.5" is-not-null="yes"/>
   <attribute name="pop_size_pct" description="Percentage of current occupancy to pop from the latency buffer" type="float" init-value="0.8" is-not-null="yes"/>
-  <attribute name="warn_on_timeout" type="bool" init-value="true" is-not-null="yes">
-  <attribute name="warn_on_empty_buffer" type="bool" init-value="true" is-not-null="yes">
+  <attribute name="warn_on_timeout" type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="warn_on_empty_buffer" type="bool" init-value="true" is-not-null="yes"/>
   <relationship name="data_recorder" class-type="DataRecorderConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
