@@ -132,13 +132,17 @@
 
  <class name="DataReader" is-abstract="yes">
   <superclass name="DaqModule"/>
-  <attribute name="emulated" type="bool" init-value="false"/>
   <relationship name="configuration" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="interfaces" class-type="ReadoutInterface" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="no" is-dependent="no"/>
  </class>
+<class name="DataRecorder" is-abstract="yes">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="DataRecorderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+</class>
 
  <class name="DataReaderConf" is-abstract="yes">
   <attribute name="template_for" description="OKS class of the DataReader that this config is a template for" type="class" init-value="DataReader" is-not-null="yes"/>
+  <attribute name="emulation_mode" type="bool" init-value="false"/>
  </class>
 
  <class name="DataStoreConf">
@@ -254,6 +258,7 @@
 
  <class name="ReadoutModuleConf">
   <attribute name="template_for" type="class" init-value="DLH" is-not-null="yes"/>
+  <attribute name="generate_timesync" type="bool" init-value="true" is-not-null="yes">
   <attribute name="input_data_type" description="Type of data received by this readout module" type="string" init-value="WIBEthFrame"/>
   <relationship name="request_handler" class-type="RequestHandler" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="latency_buffer" class-type="LatencyBuffer" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -269,15 +274,19 @@
  <class name="RequestHandler">
   <attribute name="handlier_threads" description="Number of threads tohandle this link" type="u16" init-value="1"/>
   <attribute name="request_timeout" description="Request timeout in milliseconds" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="pop_limit_pct" description="Latency buffer occupancy percentage to issue an auto-pop" type="float" init-value="0.5" is-not-null="yes"/>
+  <attribute name="pop_size_pct" description="Percentage of current occupancy to pop from the latency buffer" type="float" init-value="0.8" is-not-null="yes"/>
+  <attribute name="warn_on_timeout" type="bool" init-value="true" is-not-null="yes">
+  <attribute name="warn_on_empty_buffer" type="bool" init-value="true" is-not-null="yes">
   <relationship name="data_recorder" class-type="RecorderConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
-<class name="RecorderConf"
+ <class name="RecorderConf">
   <attribute name="output_file" type="string"/>
   <attribute name="streaming_buffer_size" type="u32" init-value="1000" is-not-null="yes"/>
+  <attribute name="compression_algorithm" type="string" init-value="None" is-not-null="yes"/>
   <attribute name="use_o_direct" description="Whether to use O_DIRECT flag when opening files" type="bool" init-value="true"/>
->
-
+ </class>
 
  <class name="RoHwConfig">
   <relationship name="io_device" description="Device handling input from the fron-end electronics" class-type="NetworkDevice" low-cc="zero" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
