@@ -128,19 +128,29 @@
  </class>
 
  <class name="DataProcessor">
+  <attribute name="queue_sizes" type="u32" init-value="10000"/>
+  <attribute name="thread_names_prefix" type="string" init-value="postproc-"/>
  </class>
 
- <class name="DataReader" is-abstract="yes">
-  <superclass name="DaqModule"/>
-  <relationship name="configuration" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="interfaces" class-type="ReadoutInterface" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="no" is-dependent="no"/>
- </class>
 <class name="DataRecorder" is-abstract="yes">
   <superclass name="DaqModule"/>
   <relationship name="configuration" class-type="DataRecorderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
 </class>
 
- <class name="DataReaderConf" is-abstract="yes">
+ <class name="DataRecorderConf">
+  <attribute name="output_file" type="string"/>
+  <attribute name="streaming_buffer_size" type="u32" init-value="1000" is-not-null="yes"/>
+  <attribute name="compression_algorithm" type="string" init-value="None" is-not-null="yes"/>
+  <attribute name="use_o_direct" description="Whether to use O_DIRECT flag when opening files" type="bool" init-value="true"/>
+ </class>
+
+<class name="DataReader" is-abstract="yes">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="interfaces" class-type="ReadoutInterface" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="DataReaderConf">
   <attribute name="template_for" description="OKS class of the DataReader that this config is a template for" type="class" init-value="DataReader" is-not-null="yes"/>
   <attribute name="emulation_mode" type="bool" init-value="false"/>
  </class>
@@ -246,7 +256,8 @@
   <relationship name="uses" description="Configuration of the host hardware resources used by this application" class-type="RoHwConfig" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
   <relationship name="link_handler" class-type="ReadoutModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="tp_handler" class-type="ReadoutModuleConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="data_reader" class-type="DataReaderConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="data_reader" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="data_recorder" class-type="DataRecorderConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate daq module dal objects for streams of thie ReadoutApplication on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
   </method>
@@ -258,8 +269,8 @@
 
  <class name="ReadoutModuleConf">
   <attribute name="template_for" type="class" init-value="DLH" is-not-null="yes"/>
-  <attribute name="generate_timesync" type="bool" init-value="true" is-not-null="yes">
   <attribute name="input_data_type" description="Type of data received by this readout module" type="string" init-value="WIBEthFrame"/>
+  <attribute name="generate_timesync" type="bool" init-value="true" is-not-null="yes">
   <relationship name="request_handler" class-type="RequestHandler" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="latency_buffer" class-type="LatencyBuffer" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_processor" class-type="DataProcessor" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -268,6 +279,7 @@
  <class name="ReadoutModule" is-abstract="yes">
   <superclass name="DaqModule"/>
   <attribute name="source_id" type="u32" is-not-null="yes"/>
+  <attribute name="detector_id" type="u32" is-not-null="yes"/>
   <relationship name="module_configuration" class-type="ReadoutModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
@@ -278,14 +290,7 @@
   <attribute name="pop_size_pct" description="Percentage of current occupancy to pop from the latency buffer" type="float" init-value="0.8" is-not-null="yes"/>
   <attribute name="warn_on_timeout" type="bool" init-value="true" is-not-null="yes">
   <attribute name="warn_on_empty_buffer" type="bool" init-value="true" is-not-null="yes">
-  <relationship name="data_recorder" class-type="RecorderConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="RecorderConf">
-  <attribute name="output_file" type="string"/>
-  <attribute name="streaming_buffer_size" type="u32" init-value="1000" is-not-null="yes"/>
-  <attribute name="compression_algorithm" type="string" init-value="None" is-not-null="yes"/>
-  <attribute name="use_o_direct" description="Whether to use O_DIRECT flag when opening files" type="bool" init-value="true"/>
+  <relationship name="data_recorder" class-type="DataRecorderConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="RoHwConfig">
@@ -306,7 +311,6 @@
 
  <class name="TPDataProcessor">
   <superclass name="DataProcessor"/>
-  <attribute name="queue_size" type="u32" init-value="10000"/>
   <attribute name="max_ticks_tot" type="u32" init-value="8000" is-not-null="yes"/>
   <attribute name="tpg_enabled" type="bool" init-value="true"/>
   <attribute name="algorithm" description="TP generation algorithm" type="string"/>

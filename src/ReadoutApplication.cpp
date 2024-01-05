@@ -17,12 +17,16 @@
 #include "coredal/DROStreamConf.hpp"
 #include "coredal/NetworkConnection.hpp"
 #include "coredal/ReadoutGroup.hpp"
+#include "coredal/ReadoutInterface.hpp"
 #include "coredal/ResourceSet.hpp"
 #include "coredal/Service.hpp"
 #include "coredal/Session.hpp"
 
 #include "appdal/DataReader.hpp"
 #include "appdal/DataReaderConf.hpp"
+#include "appdal/DataRecorder.hpp"
+#include "appdal/DataRecorderConf.hpp"
+
 #include "appdal/ReadoutModule.hpp"
 #include "appdal/DLH.hpp"
 #include "appdal/TPHandler.hpp"
@@ -234,28 +238,39 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
            continue;
          }
          auto id = stream->get_src_id();
+         auto det_id = stream->get_geo_id()->get_detector_id();
          std::string uid("DLH-"+std::to_string(id));
          oksdbinterfaces::ConfigObject dlhObj;
          TLOG_DEBUG(7) <<  "creating OKS configuration object for Data Link Handler class " << dlhClass;
          confdb->create(dbfile, dlhClass, uid, dlhObj);
          dlhObj.set_by_val<uint32_t>("source_id", id);
+         dlhObj.set_by_val<uint32_t>("detector_id", det_id);
          dlhObj.set_obj("module_configuration", &dlhConf->config_object());
 
          // Time Sync network connection
-         std::string tsStreamUid("timesync"+std::to_string(id));
-         auto tsServiceObj = tsNetDesc->get_associated_service()->config_object();
-         oksdbinterfaces::ConfigObject tsNetObj;
-         confdb->create(dbfile, "NetworkConnection", tsStreamUid, tsNetObj);
-         tsNetObj.set_by_val<std::string>("connection_type", tsNetDesc->get_connection_type());
-         tsNetObj.set_obj("associated_service", &tsServiceObj);
+         if (dlhConf->get_generate_timesync()) {
+          std::string tsStreamUid("timesync"+std::to_string(id));
+          auto tsServiceObj = tsNetDesc->get_associated_service()->config_object();
+          oksdbinterfaces::ConfigObject tsNetObj;
+          confdb->create(dbfile, "NetworkConnection", tsStreamUid, tsNetObj);
+          tsNetObj.set_by_val<std::string>("connection_type", tsNetDesc->get_connection_type());
+          tsNetObj.set_obj("associated_service", &tsServiceObj);
 
-         if (tpHandlerConf) {
-           dlhObj.set_objs("outputs", {&tpQueueObj, &faQueueObj, &tsNetObj});
+          if (tpHandlerConf) {
+            dlhObj.set_objs("outputs", {&tpQueueObj, &faQueueObj, &tsNetObj});
+          }
+          else {
+            dlhObj.set_objs("outputs", {&faQueueObj, &tsNetObj});
+          }
          }
          else {
-	   dlhObj.set_objs("outputs", {&faQueueObj, &tsNetObj});
+          if (tpHandlerConf) {
+           dlhObj.set_objs("outputs", {&tpQueueObj, &faQueueObj});
+          }
+          else {
+	          dlhObj.set_objs("outputs", {&faQueueObj});
+          }
          }
-
          std::string dataQueueUid("inputToDLH-"+std::to_string(id));
          oksdbinterfaces::ConfigObject queueObj;
          confdb->create(dbfile, "QueueWithId", dataQueueUid, queueObj);
