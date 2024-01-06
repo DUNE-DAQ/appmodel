@@ -105,7 +105,17 @@
  <class name="FelixInterface" description="Specialization of ReadoutInterface for the FLX card. ">
   <superclass name="ReadoutInterface"/>
   <attribute name="card" description="Card ID in readout host." type="u8" range="0..1" init-value="0" is-not-null="yes"/>
-  <attribute name="slr" description="Super logic region of a FLS card" type="u16" init-value="0" is-not-null="yes"/>
+  <attribute name="slr" description="Super logic region of a FLX card" type="u16" init-value="0" is-not-null="yes"/>
+  <attribute name="dma_id" description="DMA descriptor to use" type="u8" init-value="0" is-not-null="yes"/>
+  <attribute name="chunk_trailer_size" description="Are chunks with 32b trailer." type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="dma_block_size" description="FELIX DMA Block size in kB." type="u32" init-value="4" is-not-null="yes"/>
+  <attribute name="dma_memory_size_gb" description="CMEM_RCC memory to allocate in GBs." type="u32" init-value="1" is-not-null="yes"/>
+  <attribute name="dma_margin_blocks" description="DMA parser safe margin block count." type="u32" init-value="4" is-not-null="yes"/>
+  <attribute name="dma_block_threshold" description="DMA parser activates at number of available new blocks." type="u32" init-value="10" is-not-null="yes"/>
+  <attribute name="interrupt_mode" description="Use device interrupts or polling for DMA parsing." type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="poll_time" description="Poll time in us. Ignored if interrupt mode is on." type="u32" init-value="5000" is-not-null="yes"/>
+  <attribute name="numa_id" description="CMEM_RCC NUMA region selector" type="u8" init-value="0" is-not-null="yes"/>
+  <attribute name="links_enabled" description="Number of elinks configured." type="u8" is-multi-value="yes" init-value="{0,1,2,3,4}" is-not-null="yes"/>
   <attribute name="hostname" type="string" init-value="localhost" is-not-null="yes"/>
  </class>
 
