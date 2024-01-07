@@ -3,10 +3,9 @@
  This package extends the schema from the coredal package
 to describe readout, dataflow and trigger  applications.
 
-  ![schema](schema.png)
-
-
 ## SmartDaqApplication
+
+![SmartDaqApplication schema class wiht inherited apps](apps.png)
 
  **SmartDaqApplication** is an abstract class that has no direct
 relationships with **DaqModules**. The **DaqModules** themselves must
@@ -39,7 +38,10 @@ and tp_handler relationships respectively. Connections between pairs
 of modules are configured according to the queue_rules relationship
 inherited from **SmartDaqApplication**.
 
-### Far Detector schema extensions(fd_customizations.png)
+### Far Detector schema extensions
+
+![Class extensions for far detector](fd_customizations.png)
+
 Several OKS classes have far detector specific customisations, as shown in the diagram.
 
 ## DataFlow applications
