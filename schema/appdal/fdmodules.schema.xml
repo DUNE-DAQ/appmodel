@@ -115,7 +115,7 @@
   <attribute name="interrupt_mode" description="Use device interrupts or polling for DMA parsing." type="bool" init-value="false" is-not-null="yes"/>
   <attribute name="poll_time" description="Poll time in us. Ignored if interrupt mode is on." type="u32" init-value="5000" is-not-null="yes"/>
   <attribute name="numa_id" description="CMEM_RCC NUMA region selector" type="u8" init-value="0" is-not-null="yes"/>
-  <attribute name="links_enabled" description="Number of elinks configured." type="u8" is-multi-value="yes" init-value="{0,1,2,3,4}" is-not-null="yes"/>
+  <attribute name="links_enabled" description="Number of elinks configured." type="u32" is-multi-value="yes" init-value="{0,1,2,3,4}" is-not-null="yes"/>
   <attribute name="hostname" type="string" init-value="localhost" is-not-null="yes"/>
  </class>
 
