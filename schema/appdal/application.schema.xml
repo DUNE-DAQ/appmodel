@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="40" oks-format="schema" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="glehmann" last-modified-on="lxplus940.cern.ch" last-modification-time="20231212T160924"/>
+<info name="" type="" num-of-items="40" oks-format="schema" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="glehmann" last-modified-on="lxplus928.cern.ch" last-modification-time="20240107T173725"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -132,19 +132,7 @@
   <attribute name="thread_names_prefix" type="string" init-value="postproc-"/>
  </class>
 
-<class name="DataRecorder" is-abstract="yes">
-  <superclass name="DaqModule"/>
-  <relationship name="configuration" class-type="DataRecorderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-</class>
-
- <class name="DataRecorderConf">
-  <attribute name="output_file" type="string"/>
-  <attribute name="streaming_buffer_size" type="u32" init-value="1000" is-not-null="yes"/>
-  <attribute name="compression_algorithm" type="string" init-value="None" is-not-null="yes"/>
-  <attribute name="use_o_direct" description="Whether to use O_DIRECT flag when opening files" type="bool" init-value="true"/>
- </class>
-
-<class name="DataReader" is-abstract="yes">
+ <class name="DataReader" is-abstract="yes">
   <superclass name="DaqModule"/>
   <relationship name="configuration" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="interfaces" class-type="ReadoutInterface" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="no" is-dependent="no"/>
@@ -153,6 +141,18 @@
  <class name="DataReaderConf">
   <attribute name="template_for" description="OKS class of the DataReader that this config is a template for" type="class" init-value="DataReader" is-not-null="yes"/>
   <attribute name="emulation_mode" type="bool" init-value="false"/>
+ </class>
+
+ <class name="DataRecorder" is-abstract="yes">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="DataRecorderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="DataRecorderConf">
+  <attribute name="output_file" type="string"/>
+  <attribute name="streaming_buffer_size" type="u32" init-value="1000" is-not-null="yes"/>
+  <attribute name="compression_algorithm" type="string" init-value="None" is-not-null="yes"/>
+  <attribute name="use_o_direct" description="Whether to use O_DIRECT flag when opening files" type="bool" init-value="true"/>
  </class>
 
  <class name="DataStoreConf">
@@ -224,7 +224,6 @@
   <attribute name="preallocation" type="bool" init-value="true"/>
  </class>
 
-
  <class name="NetworkConnectionDescriptor">
   <attribute name="uid_base" description="Base for UID string. To be combined with a source id" type="string" is-not-null="yes"/>
   <attribute name="connection_type" type="enum" range="kSendRecv,kPubSub" init-value="kSendRecv" is-not-null="yes"/>
@@ -267,6 +266,13 @@
   <superclass name="VirtualHost"/>
  </class>
 
+ <class name="ReadoutModule" is-abstract="yes">
+  <superclass name="DaqModule"/>
+  <attribute name="source_id" type="u32" is-not-null="yes"/>
+  <attribute name="detector_id" type="u32" is-not-null="yes"/>
+  <relationship name="module_configuration" class-type="ReadoutModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
  <class name="ReadoutModuleConf">
   <attribute name="template_for" type="class" init-value="DLH" is-not-null="yes"/>
   <attribute name="input_data_type" description="Type of data received by this readout module" type="string" init-value="WIBEthFrame"/>
@@ -274,13 +280,6 @@
   <relationship name="request_handler" class-type="RequestHandler" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="latency_buffer" class-type="LatencyBuffer" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_processor" class-type="DataProcessor" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="ReadoutModule" is-abstract="yes">
-  <superclass name="DaqModule"/>
-  <attribute name="source_id" type="u32" is-not-null="yes"/>
-  <attribute name="detector_id" type="u32" is-not-null="yes"/>
-  <relationship name="module_configuration" class-type="ReadoutModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="RequestHandler">
@@ -321,7 +320,6 @@
 
  <class name="TPHandlerModule">
   <superclass name="ReadoutModule"/>
-
  </class>
 
  <class name="TPRequestHandler">

@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="8" oks-format="schema" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="glehmann" last-modified-on="lxplus940.cern.ch" last-modification-time="20231212T160920"/>
+<info name="" type="" num-of-items="7" oks-format="schema" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="glehmann" last-modified-on="lxplus928.cern.ch" last-modification-time="20240107T173733"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -98,10 +98,6 @@
   <attribute name="rx_queue" description="Assigned RX queue of interface" type="u32" init-value="0" is-not-null="yes"/>
  </class>
 
- <class name="FDDataLinkHandler">
-  <superclass name="DLH"/>
- </class>
- 
  <class name="FelixInterface" description="Specialization of ReadoutInterface for the FLX card. ">
   <superclass name="ReadoutInterface"/>
   <attribute name="card" description="Card ID in readout host." type="u8" range="0..1" init-value="0" is-not-null="yes"/>
@@ -116,7 +112,6 @@
   <attribute name="poll_time" description="Poll time in us. Ignored if interrupt mode is on." type="u32" init-value="5000" is-not-null="yes"/>
   <attribute name="numa_id" description="CMEM_RCC NUMA region selector" type="u8" init-value="0" is-not-null="yes"/>
   <attribute name="links_enabled" description="Number of elinks configured." type="u32" is-multi-value="yes" init-value="{0,1,2,3,4}" is-not-null="yes"/>
-  <attribute name="hostname" type="string" init-value="localhost" is-not-null="yes"/>
  </class>
 
  <class name="FelixStreamParameters">
@@ -134,7 +129,7 @@
   <relationship name="configuration" class-type="NICInterfaceConfiguration" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
-  <class name="NICInterfaceConfiguration">
+ <class name="NICInterfaceConfiguration">
   <attribute name="flow_control" type="bool" init-value="1"/>
   <attribute name="promiscuous_mode" type="bool" init-value="0"/>
   <attribute name="mtu" type="u32" init-value="9000" is-not-null="yes"/>
