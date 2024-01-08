@@ -114,7 +114,8 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
       tpNetDesc = rule->get_descriptor(); // this is the connection publishing TPSets!
     }
     else if (endpoint_class == "DLH" || endpoint_class == dlhClass) {
-	tsNetDesc = rule->get_descriptor();
+      // FIXME: we should not get here
+      tsNetDesc = rule->get_descriptor();
     }
   }
 
@@ -154,9 +155,9 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     }
     
     auto tpsrc = get_tp_src_id();
-    if (tpsrc == 0) {
-      throw (BadConf(ERS_HERE, "No TPHandler src_id given"));
-    }
+    //if (tpsrc == 0) {
+    //  throw (BadConf(ERS_HERE, "No TPHandler src_id given"));
+    //}
     std::string tpQueueUid("inputToTPH-"+std::to_string(tpsrc));
     confdb->create(dbfile, "Queue", tpQueueUid, tpQueueObj);
     tpQueueObj.set_by_val<std::string>("data_type", tpInputQDesc->get_data_type());
@@ -212,6 +213,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     }
     // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader module
     auto rset = roGroup->cast<coredal::ReadoutGroup>();
+
     if (rset == nullptr) {
         throw (BadConf(ERS_HERE, "ReadoutApplication contains something other than ReadoutGroup"));
     }
@@ -219,6 +221,8 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     if (rset->get_contains().empty()) {
         throw (BadConf(ERS_HERE, "ReadoutGroup does not contain interfaces"));
     }
+
+    std::vector<const oksdbinterfaces::ConfigObject*> ifObjs;
     auto interfaces = rset->get_contains();
     for (auto res_set : interfaces) {
       if (res_set->disabled(*session)) {
@@ -229,6 +233,8 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
       if (interface == nullptr) {
         throw (BadConf(ERS_HERE, "ReadoutGroup contains something othen than ReadoutInterface"));
       }
+      ifObjs.push_back(&interface->config_object());
+
       for (auto res : interface->get_contains()) {
          auto stream = res->cast<coredal::DROStreamConf>();
          if (stream == nullptr) {
@@ -310,7 +316,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     }
     readerObj.set_objs("outputs", qObjs);
     readerObj.set_obj("configuration", &rdrConf->config_object());
-    readerObj.set_obj("readout_group", &rset->config_object());
+    readerObj.set_objs("interfaces", ifObjs);
 
     modules.push_back(confdb->get<DataReader>(readerUid));
   }
