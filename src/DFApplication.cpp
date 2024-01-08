@@ -57,8 +57,6 @@ fill_netconn_object_from_desc(const NetworkConnectionDescriptor* netDesc, oksdbi
 {
   netObj.set_by_val<std::string>("data_type", netDesc->get_data_type());
   netObj.set_by_val<std::string>("connection_type", netDesc->get_connection_type());
-  netObj.set_by_val<std::string>("uri", netDesc->get_uri());
-  netObj.set_by_val<uint16_t>("port", netDesc->get_port());
 }
 
 std::vector<const coredal::DaqModule*> 

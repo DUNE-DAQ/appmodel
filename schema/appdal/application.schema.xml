@@ -199,6 +199,7 @@
   </class>
 
   <class name="FakeDataProdConf">
+    <superclass name="ResourceBase"/>
     <attribute name="system_type" type="string" description="The system type of the link" init-value="" is-not-null="yes"/>
     <attribute name="source_id" type="u32" description="The SourceID of this link" is-not-null="yes"/>
     <attribute name="time_tick_diff" type="u32" init-value="1" description="Time tick difference between frames" is-not-null="yes"/>
@@ -302,6 +303,14 @@
   </method>
  </class>
 
+  <class name="FakeDataApplication">
+    <superclass name="ResourceSetAND"/>
+    <superclass name="SmartDaqApplication"/>
+    <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
+    <method name="generate_modules" description="Generate daq module dal objects for streams of the FakeDataApplication on the fly">
+      <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
+    </method>
+  </class>
  <class name="ReadoutHost">
   <superclass name="VirtualHost"/>
  </class>
