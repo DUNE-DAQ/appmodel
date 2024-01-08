@@ -141,7 +141,20 @@
  <class name="DataReaderConf">
   <attribute name="template_for" description="OKS class of the DataReader that this config is a template for" type="class" init-value="DataReader" is-not-null="yes"/>
   <attribute name="emulation_mode" type="bool" init-value="false"/>
- </class>
+  <relationship name="emulation_conf" description="Parameters for emulating the stream." class-type="StreamEmulationParameters" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  </class>
+
+<class name="StreamEmulationParameters">
+  <attribute name="data_file_name" type="string"/>
+  <attribute name="tp_data_file_name" type="string"/>
+  <attribute name="input_file_size_limit" type="u32" init-value="10485100" is-not-null="yes"/>
+  <attribute name="set_t0" type="bool" description="Set first timestamp to now" init-value="true" is-not-null="yes"/>
+  <attribute name="random_population_size" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="frame_error_rate_hz" type="float" init-value="0.0" is-not-null="yes"/>
+  <attribute name="generate_periodic_adc_pattern" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="TP_rate_per_channel" description="TP rate per channel in units of 100 Hz." type="float" init-value="0.0" is-not-null="yes"/>
+  </class>
+
 
  <class name="DataRecorder" is-abstract="yes">
   <superclass name="DaqModule"/>
