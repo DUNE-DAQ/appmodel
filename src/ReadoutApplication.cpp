@@ -212,24 +212,24 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
       continue;
     }
     // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader module
-    auto rset = roGroup->cast<coredal::ReadoutGroup>();
+    auto group_rset = roGroup->cast<coredal::ReadoutGroup>();
 
-    if (rset == nullptr) {
+    if (group_rset == nullptr) {
         throw (BadConf(ERS_HERE, "ReadoutApplication contains something other than ReadoutGroup"));
     }
     std::vector<const coredal::Connection*> outputQueues;
-    if (rset->get_contains().empty()) {
+    if (group_rset->get_contains().empty()) {
         throw (BadConf(ERS_HERE, "ReadoutGroup does not contain interfaces"));
     }
 
     std::vector<const oksdbinterfaces::ConfigObject*> ifObjs;
-    auto interfaces = rset->get_contains();
-    for (auto res_set : interfaces) {
-      if (res_set->disabled(*session)) {
-        TLOG_DEBUG(7) << "Ignoring disabled ReadoutInterface " << res_set->UID();
+    auto interfaces = group_rset->get_contains();
+    for (auto interface_rset : interfaces) {
+      if (interface_rset->disabled(*session)) {
+        TLOG_DEBUG(7) << "Ignoring disabled ReadoutInterface " << interface_rset->UID();
         continue;
       }
-      auto interface = res_set->cast<coredal::ReadoutInterface>();
+      auto interface = interface_rset->cast<coredal::ReadoutInterface>();
       if (interface == nullptr) {
         throw (BadConf(ERS_HERE, "ReadoutGroup contains something othen than ReadoutInterface"));
       }
