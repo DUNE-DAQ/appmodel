@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="7" oks-format="schema" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="glehmann" last-modified-on="lxplus928.cern.ch" last-modification-time="20240107T173733"/>
+<info name="" type="" num-of-items="7" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20240109T161725"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -111,7 +111,7 @@
   <attribute name="interrupt_mode" description="Use device interrupts or polling for DMA parsing." type="bool" init-value="false" is-not-null="yes"/>
   <attribute name="poll_time" description="Poll time in us. Ignored if interrupt mode is on." type="u32" init-value="5000" is-not-null="yes"/>
   <attribute name="numa_id" description="CMEM_RCC NUMA region selector" type="u8" init-value="0" is-not-null="yes"/>
-  <attribute name="links_enabled" description="Number of elinks configured." type="u32" is-multi-value="yes" init-value="{0,1,2,3,4}" is-not-null="yes"/>
+  <attribute name="links_enabled" description="Number of elinks configured." type="u32" is-multi-value="yes" init-value="0,1,2,3,4" is-not-null="yes"/>
  </class>
 
  <class name="FelixStreamParameters">
