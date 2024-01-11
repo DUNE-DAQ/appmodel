@@ -63,31 +63,77 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="2" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20231207T111909"/>
+  <info name="" type="" num-of-items="4" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20231207T111909"/>
 
-<include>
- <file path="schema/coredal/dunedaq.schema.xml"/>
- <file path="schema/appdal/application.schema.xml"/>
-</include>
+  <include>
+    <file path="schema/coredal/dunedaq.schema.xml"/>
+    <file path="schema/appdal/application.schema.xml"/>
+  </include>
 
-<comments>
- <comment creation-time="20231207T111607" created-by="gjc" created-on="thinkpad" author="gjc" text="u"/>
- <comment creation-time="20231207T111909" created-by="gjc" created-on="thinkpad" author="gjc" text="h"/>
-</comments>
+  <comments>
+    <comment creation-time="20231207T111607" created-by="gjc" created-on="thinkpad" author="gjc" text="u"/>
+    <comment creation-time="20231207T111909" created-by="gjc" created-on="thinkpad" author="gjc" text="h"/>
+  </comments>
 
+  <obj class="NetworkConnectionDescriptor" id="ti-net-desc-1">
+    <attr name="uid_base" type="string" val="triggerInhibit"/>
+    <attr name="connection_type" type="enum" val="kSendRecv"/>
+    <attr name="data_type" type="string" val="TriggerInhibit"/>
+    <rel name="associated_service" class="Service" id="triggerInhibits"/>
+  </obj>
+  <obj class="NetworkConnectionDescriptor" id="td-net-desc-1">
+    <attr name="uid_base" type="string" val="triggerdecision"/>
+    <attr name="connection_type" type="enum" val="kSendRecv"/>
+    <attr name="data_type" type="string" val="TriggerDecision"/>
+    <rel name="associated_service" class="Service" id="triggerDecisions"/>
+  </obj>
+  <obj class="NetworkConnectionDescriptor" id="dft-net-desc-1">
+    <attr name="uid_base" type="string" val="dataflowtoken"/>
+    <attr name="connection_type" type="enum" val="kSendRecv"/>
+    <attr name="data_type" type="string" val="TriggerDecisionToken"/>
+    <rel name="associated_service" class="Service" id="dfTokens"/>
+  </obj>
 
-<obj class="RCApplication" id="df-controller">
- <attr name="application_name" type="string" val="controller"/>
- <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
- <rel name="fsm" class="FSMconfiguration" id="fsmConf-1"/>
-</obj>
+  <obj class="NetworkConnectionRule" id="td-net-rule">
+    <attr name="endpoint_class" type="class" val="DFOModule"/>
+    <rel name="descriptor" class="NetworkConnectionDescriptor" id="td-net-desc-1"/>
+  </obj>
+  <obj class="NetworkConnectionRule" id="dft-net-rule">
+    <attr name="endpoint_class" type="class" val="DFOModule"/>
+    <rel name="descriptor" class="NetworkConnectionDescriptor" id="dft-net-desc-1"/>
+  </obj>
+  <obj class="NetworkConnectionRule" id="ti-net-rule">
+    <attr name="endpoint_class" type="class" val="DFOModule"/>
+    <rel name="descriptor" class="NetworkConnectionDescriptor" id="ti-net-desc-1"/>
+  </obj>
 
-<obj class="Segment" id="df-segment">
- <rel name="segments">
-  <ref class="Segment" id="ru-segment"/>
-  <ref class="Segment" id="df-segment"/>
- </rel>
- <rel name="controller" class="RCApplication" id="df-controller"/>
-</obj>
+  <obj class="RCApplication" id="df-controller">
+    <attr name="application_name" type="string" val="controller"/>
+    <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+    <rel name="fsm" class="FSMconfiguration" id="fsmConf-1"/>
+  </obj>
+
+  <obj class="DFOConf" id="dfoconf-01">
+    <attr name="general_queue_timeout_ms" type="u32" val="100"/>
+    <attr name="stop_timeout_ms" type="u32" val="100"/>
+    <attr name="td_send_retries" type="s32" val="5"/>
+    <attr name="busy_threshold" type="s32" val="2"/>
+    <attr name="free_threshold" type="s32" val="1"/>
+  </obj>
+  
+  <obj class="DFOApplication" id="dfo-01">
+    <attr name="application_name" type="string" val="daq_application"/>
+    <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+    <rel name="dfo" class="DFOConf" id="dfoconf-01"/>
+    <rel name="network_rules">
+      <ref class="NetworkConnectionRule" id="td-net-rule"/>
+      <ref class="NetworkConnectionRule" id="ti-net-rule"/>
+      <ref class="NetworkConnectionRule" id="dft-net-rule"/>
+    </rel>
+  </obj>
+
+  <obj class="Segment" id="df-segment">
+    <rel name="controller" class="RCApplication" id="df-controller"/>
+  </obj>
 
 </oks-data>

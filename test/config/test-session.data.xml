@@ -98,6 +98,7 @@
 <obj class="Segment" id="root-segment">
  <rel name="segments">
   <ref class="Segment" id="ru-segment"/>
+  <ref class="Segment" id="df-segment"/>
  </rel>
  <rel name="controller" class="RCApplication" id="root-controller"/>
 </obj>
@@ -111,6 +112,21 @@
  <attr name="protocol" type="string" val="tcp"/>
  <attr name="port" type="u16" val="5000"/>
 </obj>
+  
+  <obj class="Service" id="triggerDecisions">
+    <attr name="protocol" type="string" val="tcp"/>
+    <attr name="port" type="u16" val="5000"/>
+  </obj>
+
+  <obj class="Service" id="triggerInhibits">
+    <attr name="protocol" type="string" val="tcp"/>
+    <attr name="port" type="u16" val="5000"/>
+  </obj>
+
+  <obj class="Service" id="dfTokens">
+    <attr name="protocol" type="string" val="tcp"/>
+    <attr name="port" type="u16" val="5000"/>
+  </obj>
 
 <obj class="Session" id="test-session">
  <attr name="use_connectivity_server" type="bool" val="1"/>

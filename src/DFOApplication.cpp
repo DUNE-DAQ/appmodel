@@ -16,6 +16,7 @@
 #include "coredal/NetworkConnection.hpp"
 #include "appdal/DFOApplication.hpp"
 #include "appdal/DFOConf.hpp"
+#include "appdal/DFOModule.hpp"
 #include "appdal/NetworkConnectionRule.hpp"
 #include "appdal/NetworkConnectionDescriptor.hpp"
 #include "appdal/QueueConnectionRule.hpp"
@@ -57,6 +58,10 @@ DFOApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   auto dfoConf = get_dfo();
   dfoObj.set_obj("configuration", &dfoConf->config_object());
 
+  if (dfoConf == 0) {
+    throw(BadConf(ERS_HERE, "No DFOConf configuration given"));
+  }
+
   std::vector<const oksdbinterfaces::ConfigObject*> output_conns;
   std::vector<const oksdbinterfaces::ConfigObject*> input_conns;
   oksdbinterfaces::ConfigObject tdInObj;
@@ -87,8 +92,22 @@ DFOApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
       }
     }
   }
+
+  if (tdInObj == nullptr) {
+    throw(BadConf(ERS_HERE, "No TriggerDecision input connection descriptor given"));
+  }
+  if (busyOutObj == nullptr) {
+    throw(BadConf(ERS_HERE, "No TriggerInhibit output connection descriptor given"));
+  }
+  if (tokenInObj == nullptr) {
+    throw(BadConf(ERS_HERE, "No TriggerDecisionToken input connection descriptor given"));
+  }
+
   dfoObj.set_objs("inputs", input_conns);
   dfoObj.set_objs("outputs", output_conns);
+
+  // Add to our list of modules to return
+  modules.push_back(confdb->get<DFOModule>(dfoUid));
 
   return modules;
 }
