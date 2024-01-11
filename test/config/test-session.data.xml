@@ -67,11 +67,11 @@
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
- <file path="config/fsm.data.xml"/>
- <file path="config/hosts.data.xml"/>
- <file path="config/dummy-readoutmap.data.xml"/>
- <file path="config/ru-segment.data.xml"/>
- <file path="config/df-segment.data.xml"/>
+ <file path="test/config/fsm.data.xml"/>
+ <file path="test/config/hosts.data.xml"/>
+ <file path="test/config/dummy-readoutmap.data.xml"/>
+ <file path="test/config/ru-segment.data.xml"/>
+ <file path="test/config/df-segment.data.xml"/>
 </include>
 
 <comments>
