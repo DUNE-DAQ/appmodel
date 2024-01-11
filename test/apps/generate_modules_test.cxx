@@ -29,7 +29,7 @@ using namespace dunedaq;
 
 int main(int argc, char* argv[]) {
   if (argc < 4) {
-    std::cout << "Usage: " << argv[0] << " <session> <readout-app> <database-file>\n";
+    std::cout << "Usage: " << argv[0] << " <session> <smart-app> <database-file>\n";
     return 0;
   }
   logging::Logging::setup();
@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
               << " from database\n";
     return 0;
   }
-  auto daqapp = confdb->get<coredal::Application>(appName);
+  auto daqapp = confdb->get<appdal::SmartDaqApplication>(appName);
   if (daqapp) {
     std::cout << appName << " is of class " << daqapp->class_name() << std::endl;
 
@@ -55,19 +55,12 @@ int main(int argc, char* argv[]) {
       return 0;
     }
     std::vector<const coredal::DaqModule*> modules;
-    auto smart = daqapp->cast<appdal::SmartDaqApplication>();
-    if (smart) {
-      try {
-        modules = smart->generate_modules(confdb, dbfile, session);
-      }
-      catch (appdal::BadConf& exc) {
-        std::cout << "Caught BadConf exception: " << exc << std::endl;
-        exit(-1);
-      }
+    try {
+      modules = daqapp->generate_modules(confdb, dbfile, session);
     }
-    else {
-      std::cout << appName << " failed to cast to SmartDaqApplication\n";
-      return 0;
+    catch (appdal::BadConf& exc) {
+      std::cout << "Caught BadConf exception: " << exc << std::endl;
+      exit(-1);
     }
 
     std::cout << "Generated " << modules.size() << " modules" << std::endl;
@@ -88,7 +81,7 @@ int main(int argc, char* argv[]) {
     }
   }
   else {
-    std::cout << "Failed to get ReadoutApplication " << appName
+    std::cout << "Failed to get SmartDaqApplication " << appName
               << " from database\n";
     return 0;
   }

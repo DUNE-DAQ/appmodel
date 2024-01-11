@@ -93,7 +93,7 @@
   <relationship name="trb" description="Configuration of the TRB to be generated my get_modules()" class-type="TRBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_writer" class-type="DataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="uses" class-type="DFHWConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <method name="generate_modules" description="Generate DLH dal objects for streams of thie ReadoutApplication on the fly">
+  <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
   </method>
  </class>
@@ -105,7 +105,7 @@
  <class name="DFOApplication">
   <superclass name="SmartDaqApplication"/>
   <relationship name="dfo" class-type="DFOConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <method name="generate_modules" description="Generate DLH dal objects for streams of thie ReadoutApplication on the fly">
+  <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
   </method>
  </class>
@@ -121,10 +121,6 @@
  <class name="DFOModule">
   <superclass name="DaqModule"/>
   <relationship name="configuration" class-type="DFOConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="DLH" is-abstract="yes">
-  <superclass name="ReadoutModule"/>
  </class>
 
  <class name="DataProcessor">
@@ -311,7 +307,7 @@
  </class>
 
  <class name="ReadoutModuleConf">
-  <attribute name="template_for" type="class" init-value="DLH" is-not-null="yes"/>
+  <attribute name="template_for" type="class" init-value="ReadoutModule" is-not-null="yes"/>
   <attribute name="input_data_type" description="Type of data received by this readout module" type="string" init-value="WIBEthFrame"/>
   <attribute name="generate_timesync" type="bool" init-value="true" is-not-null="yes"/>
   <relationship name="request_handler" class-type="RequestHandler" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -373,7 +369,7 @@
  <class name="TPWriterApplication">
   <superclass name="SmartDaqApplication"/>
   <relationship name="tp_writer" class-type="TPWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <method name="generate_modules" description="Generate DLH dal objects for streams of thie ReadoutApplication on the fly">
+  <method name="generate_modules" description="Generate dal objects for streams of thie ReadoutApplication on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
   </method>
  </class>

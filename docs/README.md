@@ -29,9 +29,9 @@ Readout and Dataflow applications extend from **SmartDaqApplication**
 
  The **ReadoutApplication** inherits from both **SmartDaqApplication**
 and **ResourceSetAND**. This means it has a contains relationship that
-can contain any class inheriting from **RsourceBase** but should only
+can contain any class inheriting from **ResourceBase** but should only
 contain **ReadoutGroups**. The `generate_modules()` method will
-generate a **DataReader** for each **ReadoutGroup** associatted to the application, and set of **ReadoutModule** object, i.e. **DLH** for each
+generate a **DataReader** for each **ReadoutGroup** associated wit the application, and set of **ReadoutModule** objects, i.e. **DLH** for each
 **DROStreamConf** plus a single **TPHandlerModule**. Optionally **DataRecorder** modules may be created (not supported yet)). The modules are created
 according to the configuration given by the data_reader, link_handler, data_recorder
 and tp_handler relationships respectively. Connections between pairs
@@ -50,3 +50,11 @@ Several OKS classes have far detector specific customisations, as shown in the d
 
 The Datflow applications, which are also **SmartDaqApplication** which
 generate **DaqModules** on the fly, are also included here.
+
+###Testing SmartDaqApplication module generation
+
+This package also provides a program `generate_modules_test` for
+testing the generate_modules method of SmartDaqApplications. It reads
+a configuration from an OKS database, generates the DaqModules for the
+requested SmartDaqApplication and prints a summary of the DaqModules
+and Connections.
