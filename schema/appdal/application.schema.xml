@@ -310,6 +310,7 @@
   <attribute name="template_for" type="class" init-value="ReadoutModule" is-not-null="yes"/>
   <attribute name="input_data_type" description="Type of data received by this readout module" type="string" init-value="WIBEthFrame"/>
   <attribute name="generate_timesync" type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="post_processing_delay_ticks" description="Number of clock tick by which post processing of incoming data shall be delayed." type="u64" init-value="0" is-not-null="yes"/>
   <relationship name="request_handler" class-type="RequestHandler" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="latency_buffer" class-type="LatencyBuffer" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_processor" class-type="DataProcessor" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
