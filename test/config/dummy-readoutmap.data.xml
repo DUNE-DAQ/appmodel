@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="ASCII"?>
+
+<!-- oks-data version 2.2 -->
+
+
+<!DOCTYPE oks-data [
+  <!ELEMENT oks-data (info, (include)?, (comments)?, (obj)+)>
+  <!ELEMENT info EMPTY>
+  <!ATTLIST info
+      name CDATA #IMPLIED
+      type CDATA #IMPLIED
+      num-of-items CDATA #REQUIRED
+      oks-format CDATA #FIXED "data"
+      oks-version CDATA #REQUIRED
+      created-by CDATA #IMPLIED
+      created-on CDATA #IMPLIED
+      creation-time CDATA #IMPLIED
+      last-modified-by CDATA #IMPLIED
+      last-modified-on CDATA #IMPLIED
+      last-modification-time CDATA #IMPLIED
+  >
+  <!ELEMENT include (file)*>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+      path CDATA #REQUIRED
+  >
+  <!ELEMENT comments (comment)*>
+  <!ELEMENT comment EMPTY>
+  <!ATTLIST comment
+      creation-time CDATA #REQUIRED
+      created-by CDATA #REQUIRED
+      created-on CDATA #REQUIRED
+      author CDATA #REQUIRED
+      text CDATA #REQUIRED
+  >
+  <!ELEMENT obj (attr | rel)*>
+  <!ATTLIST obj
+      class CDATA #REQUIRED
+      id CDATA #REQUIRED
+  >
+  <!ELEMENT attr (data)*>
+  <!ATTLIST attr
+      name CDATA #REQUIRED
+      type (bool|s8|u8|s16|u16|s32|u32|s64|u64|float|double|date|time|string|uid|enum|class|-) "-"
+      val CDATA ""
+  >
+  <!ELEMENT data EMPTY>
+  <!ATTLIST data
+      val CDATA #REQUIRED
+  >
+  <!ELEMENT rel (ref)*>
+  <!ATTLIST rel
+      name CDATA #REQUIRED
+      class CDATA ""
+      id CDATA ""
+  >
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref
+      class CDATA #REQUIRED
+      id CDATA #REQUIRED
+  >
+]>
+
+<oks-data>
+
+<info name="" type="" num-of-items="6" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T112620" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20240109T120842"/>
+
+<include>
+ <file path="schema/coredal/dunedaq.schema.xml"/>
+</include>
+
+<comments>
+ <comment creation-time="20231212T113320" created-by="gjc" created-on="thinkpad" author="gjc" text="k"/>
+ <comment creation-time="20240109T120842" created-by="gjc" created-on="thinkpad" author="gjc" text="u"/>
+</comments>
+
+
+<obj class="DROStreamConf" id="dummyStream-1">
+ <attr name="src_id" type="u32" val="1"/>
+ <rel name="geo_id" class="GeoId" id="dummyGeoId-1"/>
+ <rel name="stream_params" class="StreamParameters" id="dummyStream-1"/>
+</obj>
+
+<obj class="GeoId" id="dummyGeoId-1">
+ <attr name="detector_id" type="u32" val="1"/>
+ <attr name="crate_id" type="u32" val="1"/>
+ <attr name="slot_id" type="u32" val="1"/>
+ <attr name="stream_id" type="u32" val="1"/>
+</obj>
+
+<obj class="ReadoutGroup" id="dummyRog">
+ <rel name="contains">
+  <ref class="ReadoutInterface" id="ROInterface-1"/>
+ </rel>
+</obj>
+
+<obj class="ReadoutInterface" id="ROInterface-1">
+ <rel name="contains">
+  <ref class="DROStreamConf" id="dummyStream-1"/>
+ </rel>
+</obj>
+
+<obj class="ReadoutMap" id="dummyRoMap">
+ <rel name="groups">
+  <ref class="ReadoutGroup" id="dummyRog"/>
+ </rel>
+</obj>
+
+<obj class="StreamParameters" id="dummyStream-1">
+ <attr name="mode" type="enum" val="fix_rate"/>
+</obj>
+
+</oks-data>
