@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="ASCII"?>
+
+<!-- oks-data version 2.2 -->
+
+
+<!DOCTYPE oks-data [
+  <!ELEMENT oks-data (info, (include)?, (comments)?, (obj)+)>
+  <!ELEMENT info EMPTY>
+  <!ATTLIST info
+      name CDATA #IMPLIED
+      type CDATA #IMPLIED
+      num-of-items CDATA #REQUIRED
+      oks-format CDATA #FIXED "data"
+      oks-version CDATA #REQUIRED
+      created-by CDATA #IMPLIED
+      created-on CDATA #IMPLIED
+      creation-time CDATA #IMPLIED
+      last-modified-by CDATA #IMPLIED
+      last-modified-on CDATA #IMPLIED
+      last-modification-time CDATA #IMPLIED
+  >
+  <!ELEMENT include (file)*>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+      path CDATA #REQUIRED
+  >
+  <!ELEMENT comments (comment)*>
+  <!ELEMENT comment EMPTY>
+  <!ATTLIST comment
+      creation-time CDATA #REQUIRED
+      created-by CDATA #REQUIRED
+      created-on CDATA #REQUIRED
+      author CDATA #REQUIRED
+      text CDATA #REQUIRED
+  >
+  <!ELEMENT obj (attr | rel)*>
+  <!ATTLIST obj
+      class CDATA #REQUIRED
+      id CDATA #REQUIRED
+  >
+  <!ELEMENT attr (data)*>
+  <!ATTLIST attr
+      name CDATA #REQUIRED
+      type (bool|s8|u8|s16|u16|s32|u32|s64|u64|float|double|date|time|string|uid|enum|class|-) "-"
+      val CDATA ""
+  >
+  <!ELEMENT data EMPTY>
+  <!ATTLIST data
+      val CDATA #REQUIRED
+  >
+  <!ELEMENT rel (ref)*>
+  <!ATTLIST rel
+      name CDATA #REQUIRED
+      class CDATA ""
+      id CDATA ""
+  >
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref
+      class CDATA #REQUIRED
+      id CDATA #REQUIRED
+  >
+]>
+
+<oks-data>
+
+<info name="" type="" num-of-items="4" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20231207T113214"/>
+
+<include>
+ <file path="schema/coredal/dunedaq.schema.xml"/>
+ <file path="test/config/fsm.data.xml"/>
+ <file path="test/config/hosts.data.xml"/>
+ <file path="test/config/dummy-readoutmap.data.xml"/>
+ <file path="test/config/ru-segment.data.xml"/>
+ <file path="test/config/df-segment.data.xml"/>
+</include>
+
+<comments>
+ <comment creation-time="20231207T110014" created-by="gjc" created-on="thinkpad" author="gjc" text="j"/>
+ <comment creation-time="20231207T111607" created-by="gjc" created-on="thinkpad" author="gjc" text="u"/>
+ <comment creation-time="20231207T111909" created-by="gjc" created-on="thinkpad" author="gjc" text="h"/>
+ <comment creation-time="20231207T112252" created-by="gjc" created-on="thinkpad" author="gjc" text="g"/>
+ <comment creation-time="20231207T113214" created-by="gjc" created-on="thinkpad" author="gjc" text="u"/>
+</comments>
+
+
+<obj class="DetectorConfig" id="dummy-detector">
+ <attr name="tpg_channel_map" type="string" val="PD2HDChannelMap"/>
+ <attr name="clock_speed_hz" type="u32" val="62500000"/>
+ <attr name="op_env" type="string" val="test"/>
+</obj>
+
+<obj class="RCApplication" id="root-controller">
+ <attr name="application_name" type="string" val="controller"/>
+ <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="fsm" class="FSMconfiguration" id="fsmConf-1"/>
+</obj>
+
+<obj class="Segment" id="root-segment">
+ <rel name="segments">
+  <ref class="Segment" id="ru-segment"/>
+  <ref class="Segment" id="df-segment"/>
+ </rel>
+ <rel name="controller" class="RCApplication" id="root-controller"/>
+</obj>
+
+<obj class="Service" id="dataFragments">
+ <attr name="protocol" type="string" val="tcp"/>
+ <attr name="port" type="u16" val="5000"/>
+</obj>
+
+<obj class="Service" id="triggerPrimitives">
+ <attr name="protocol" type="string" val="tcp"/>
+ <attr name="port" type="u16" val="5000"/>
+</obj>
+  
+  <obj class="Service" id="triggerDecisions">
+    <attr name="protocol" type="string" val="tcp"/>
+    <attr name="port" type="u16" val="5000"/>
+  </obj>
+
+  <obj class="Service" id="triggerInhibits">
+    <attr name="protocol" type="string" val="tcp"/>
+    <attr name="port" type="u16" val="5000"/>
+  </obj>
+
+  <obj class="Service" id="dfTokens">
+    <attr name="protocol" type="string" val="tcp"/>
+    <attr name="port" type="u16" val="5000"/>
+  </obj>
+
+<obj class="Session" id="test-session">
+ <attr name="use_connectivity_server" type="bool" val="1"/>
+ <attr name="connectivity_service_interval_ms" type="u32" val="2000"/>
+ <attr name="data_request_timeout_ms" type="u32" val="1000"/>
+ <attr name="data_rate_slowdown_factor" type="u32" val="1"/>
+ <rel name="disabled">
+ </rel>
+ <rel name="segment" class="Segment" id="root-segment"/>
+ <rel name="detector_configuration" class="DetectorConfig" id="dummy-detector"/>
+ <rel name="readout_map" class="ReadoutMap" id="dummyRoMap"/>
+</obj>
+
+</oks-data>

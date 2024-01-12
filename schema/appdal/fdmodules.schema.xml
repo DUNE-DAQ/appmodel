@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="7" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20240109T161725"/>
+<info name="" type="" num-of-items="10" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20240111T151253"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -96,6 +96,14 @@
   <attribute name="tx_hostname" description="Transmitter IP name" type="string" init-value="localhost" is-not-null="yes"/>
   <attribute name="lcore" description="Assigned CPU lcore" type="u32" init-value="0" is-not-null="yes"/>
   <attribute name="rx_queue" description="Assigned RX queue of interface" type="u32" init-value="0" is-not-null="yes"/>
+ </class>
+
+ <class name="FDDataLinkHandler">
+  <superclass name="ReadoutModule"/>
+ </class>
+
+ <class name="FelixCardReader">
+  <superclass name="DataReader"/>
  </class>
 
  <class name="FelixInterface" description="Specialization of ReadoutInterface for the FLX card. ">
@@ -140,6 +148,10 @@
   <attribute name="burst_size" type="u32" init-value="256" is-not-null="yes"/>
   <attribute name="lcore_sleep_us" type="u32" init-value="10" is-not-null="yes"/>
   <relationship name="stats_conf" class-type="NICStatsConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="NICReceiver">
+  <superclass name="DataReader"/>
  </class>
 
  <class name="NICReceiverConf">

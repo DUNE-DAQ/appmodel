@@ -11,7 +11,6 @@
 #include "ModuleFactory.hpp"
 
 #include "oksdbinterfaces/Configuration.hpp"
-#include "oks/kernel.hpp"
 
 #include "coredal/Connection.hpp"
 #include "coredal/DROStreamConf.hpp"
@@ -29,7 +28,6 @@
 #include "appdal/DataRecorderConf.hpp"
 
 #include "appdal/ReadoutModule.hpp"
-#include "appdal/DLH.hpp"
 #include "appdal/TPHandlerModule.hpp"
 #include "appdal/FragmentAggregator.hpp"
 #include "appdal/ReadoutModuleConf.hpp"
@@ -64,8 +62,6 @@ std::vector<const coredal::DaqModule*>
 ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
                                      const std::string& dbfile,
                                      const coredal::Session* session) const {
-  //oks::OksFile::set_nolock_mode(true);
-
   std::vector<const coredal::DaqModule*> modules;
 
   auto dlhConf = get_link_handler();
@@ -81,7 +77,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   for (auto rule : get_queue_rules()) {
     auto destination_class = rule->get_destination_class();
     auto data_type = rule->get_descriptor()->get_data_type();
-    if (destination_class == "DLH" || destination_class == dlhClass) {
+    if (destination_class == "ReadoutModule" || destination_class == dlhClass) {
       if (data_type == "DataRequest") {
 	      dlhReqInputQDesc = rule->get_descriptor();
       }
@@ -113,7 +109,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     else if (endpoint_class == "TPHandlerModule") {
       tpNetDesc = rule->get_descriptor(); // this is the connection publishing TPSets!
     }
-    else if (endpoint_class == "DLH" || endpoint_class == dlhClass) {
+    else if (endpoint_class == "ReadoutModule" || endpoint_class == dlhClass) {
       // FIXME: we should not get here
       tsNetDesc = rule->get_descriptor();
     }
@@ -300,7 +296,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
          // Add the input queue dal pointer to the outputs of the DataReader
          outputQueues.push_back(confdb->get<coredal::Connection>(dataQueueUid));
 
-         modules.push_back(confdb->get<DLH>(uid));
+         modules.push_back(confdb->get<ReadoutModule>(uid));
        }
     }
 
@@ -345,6 +341,5 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
   modules.push_back(confdb->get<FragmentAggregator>(faUid));
 
-  //oks::OksFile::set_nolock_mode(false);
   return modules;
 }
