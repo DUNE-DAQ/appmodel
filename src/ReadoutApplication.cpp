@@ -11,7 +11,6 @@
 #include "ModuleFactory.hpp"
 
 #include "oksdbinterfaces/Configuration.hpp"
-#include "oks/kernel.hpp"
 
 #include "coredal/Connection.hpp"
 #include "coredal/DROStreamConf.hpp"
@@ -63,8 +62,6 @@ std::vector<const coredal::DaqModule*>
 ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
                                      const std::string& dbfile,
                                      const coredal::Session* session) const {
-  //oks::OksFile::set_nolock_mode(true);
-
   std::vector<const coredal::DaqModule*> modules;
 
   auto dlhConf = get_link_handler();
@@ -344,6 +341,5 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
   modules.push_back(confdb->get<FragmentAggregator>(faUid));
 
-  //oks::OksFile::set_nolock_mode(false);
   return modules;
 }
