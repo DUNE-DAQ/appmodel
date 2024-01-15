@@ -98,6 +98,7 @@
   <relationship name="tctee"                class-type="TCSetTee" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
 
   <relationship name="random_candidate_maker_conf" class-type="RandomTriggerCandidateMakerConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="timing_candidate_maker_conf" class-type="TimingTriggerCandidateMakerConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
 
   <method name="generate_modules" description="Generate daq module dal objects for streams of the TriggerApplication on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
@@ -157,7 +158,26 @@
   <attribute name="clock_frequency_hz" type="u32" init-value="62500000" is-not-null="yes"/>
   <attribute name="timestamp_method" type="enum" range="kTimeSync,kSystemClock" init-value="kTimeSync" is-not-null="yes"/>
   <attribute name="time_distributon" type="enum" range="kUniform,kPoisson" init-value="kUniform" is-not-null="yes"/>
-  <relationship name="tcbuffer" class-type="TCBuffer" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="tcbuffer_conf" class-type="TCBufferConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <!-- Timing Trigger Candidate Maker Configuration -->
+ <class name="TimingTriggerCandidateMaker">
+   <superclass name="DaqModule"/>
+   <relationship name="configuration" class-type="TimingTriggerCandidateMakerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="TimingTriggerOffsetMap">
+  <attribute name="signal_type" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="time_before" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="time_after" type="u32" init-value="20000" is-not-null="yes"/>
+ </class>
+
+ <class name="TimingTriggerCandidateMakerConf">
+   <attribute name="s0" type="class" init-value="TimingTriggerOffsetMap"/>
+   <attribute name="s1" type="class" init-value="TimingTriggerOffsetMap"/>
+   <attribute name="s2" type="class" init-value="TimingTriggerOffsetMap"/>
+   <attribute name="hsi_trigger_type_passthrough" type="bool" init-value="false" is-not-null="yes"/>
  </class>
 
  <!-- Trigger algorithms configurations, for when we run with TPG on -->
@@ -244,11 +264,15 @@
  <class name="TABuffer">
   <superclass name="DaqModule"/>
  </class>
- <class name="TCBuffer">
-  <superclass name="DaqModule"/>
+
+ <class name="TCBufferConf">
   <relationship name="latencybuffer"  class-type="LatencyBuffer" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="requesthandler" class-type="RequestHandler" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
+ <class name="TCBuffer">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="TCBufferConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+</class>
 
  <class name="TPZipper">
   <superclass name="DaqModule"/>
