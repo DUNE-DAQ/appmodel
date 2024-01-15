@@ -299,6 +299,7 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     oksdbinterfaces::ConfigObject tcBufferTmgObj;
     confdb->create(dbfile, "TCBuffer", tmgBufferUid + UID(), tcBufferTmgObj);
 
+    // TODO: This is very bad, TimingTimingCandidate should either have it's own buffer schema relation, or the conf should be taken from the application-buffer relationship (if any?)
     auto tcBufferConf       = rndTCMakerConf->get_tcbuffer_conf();
     auto tc_buffer_conf_obj = tcBufferConf->config_object();
     //auto tcBufferLatency    = tcBufferConf->get_latencybuffer();

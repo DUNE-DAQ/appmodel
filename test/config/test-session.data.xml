@@ -67,12 +67,12 @@
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
- <file path="config/fsm.data.xml"/>
- <file path="config/hosts.data.xml"/>
- <file path="config/dummy-readoutmap.data.xml"/>
- <file path="config/ru-segment.data.xml"/>
- <file path="config/df-segment.data.xml"/>
- <file path="config/trigger.data.xml"/>
+ <file path="fsm.data.xml"/>
+ <file path="hosts.data.xml"/>
+ <file path="dummy-readoutmap.data.xml"/>
+ <file path="ru-segment.data.xml"/>
+ <file path="df-segment.data.xml"/>
+ <file path="trigger.data.xml"/>
 </include>
 
 <comments>
@@ -109,6 +109,11 @@
 </obj>
 
 <obj class="Service" id="triggerPrimitives">
+ <attr name="protocol" type="string" val="tcp"/>
+ <attr name="port" type="u16" val="5000"/>
+</obj>
+
+<obj class="Service" id="triggerCandidates">
  <attr name="protocol" type="string" val="tcp"/>
  <attr name="port" type="u16" val="5000"/>
 </obj>

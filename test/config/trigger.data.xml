@@ -97,6 +97,18 @@
  <rel name="descriptor" class="NetworkConnectionDescriptor" id="td-mlt-desc-1"/>
 </obj>
 
+<obj class="NetworkConnectionDescriptor" id="timing-desc-1">
+ <attr name="uid_base" type="string" val="triggerCandidate"/>
+ <attr name="connection_type" type="enum" val="kSendRecv"/>
+ <attr name="data_type" type="string" val="TriggerCandidate"/>
+ <rel name="associated_service" class="Service" id="triggerCandidates"/>
+</obj>
+
+<obj class="NetworkConnectionRule" id="timing-rule-1">
+ <attr name="endpoint_class" type="class" val="TimingTriggerCandidateMaker"/>
+ <rel name="descriptor" class="NetworkConnectionDescriptor" id="timing-desc-1"/>
+</obj>
+
 <!-- Queue connections -->
 <obj class="QueueConnectionRule" id="tcQueueRule">
  <attr name="destination_class" type="class" val="ModuleLevelTrigger"/>
@@ -124,7 +136,7 @@
  <attr name="enable_raw_recording" type="bool" val="0"/>
 </obj>
 
-<obj class="TCBuffer" id="tc-buffer">
+<obj class="TCBufferConf" id="tc-buffer">
  <rel name="latencybuffer" class="LatencyBuffer" id="tclatencybuffer-generic"/>
  <rel name="requesthandler" class="RequestHandler" id="requesthandler-generic"/>
 </obj>
@@ -135,7 +147,11 @@
 
 <!-- RandomTriggerCandidateMaker-->
 <obj class="RandomTriggerCandidateMakerConf" id="rtcm-conf-1">
- <rel name="tcbuffer" class="TCBuffer" id="tc-buffer"/>
+ <rel name="tcbuffer_conf" class="TCBufferConf" id="tc-buffer"/>
+</obj>
+
+<!-- TimingTriggerCandidateMaker-->
+<obj class="TimingTriggerCandidateMakerConf" id="timing-conf-1">
 </obj>
 
 <!-- Application -->
@@ -146,12 +162,14 @@
   <ref class="NetworkConnectionRule" id="tpdlh-rule-1"/>
   <ref class="NetworkConnectionRule" id="ti-mlt-rule-1"/>
   <ref class="NetworkConnectionRule" id="td-mlt-rule-1"/>
+  <ref class="NetworkConnectionRule" id="timing-rule-1"/>
  </rel>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="tcQueueRule"/>
  </rel>
  <rel name="mlt_conf" class="ModuleLevelTriggerConf" id="mlt-conf-1"/>
  <rel name="random_candidate_maker_conf" class="RandomTriggerCandidateMakerConf" id="rtcm-conf-1">
+ <rel name="timing_candidate_maker_conf" class="TimingTriggerCandidateMakerConf" id="timing-conf-1">
 </obj>
 
 </oks-data>
