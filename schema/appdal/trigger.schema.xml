@@ -180,6 +180,19 @@
    <attribute name="hsi_trigger_type_passthrough" type="bool" init-value="false" is-not-null="yes"/>
  </class>
 
+ <!-- Custom Trigger Candidate Maker Configuration -->
+ <class name="CustomTriggerCandidateMaker">
+   <superclass name="DaqModule"/>
+   <relationship name="configuration" class-type="CustomTriggerCandidateMakerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="CustomTriggerCandidateMakerConf">
+  <attribute name="trigger_types"     type="u32" is-multi-value="yes"/>
+  <attribute name="trigger_intervals" type="u32" is-multi-value="yes"/>
+  <attribute name="clock_freq"        type="u32" init-value="62500000"/>
+  <attribute name="timestamp_method"  type="enum" range="kTimeSync,kSystemClock" init-value="kTimeSync" is-not-null="yes"/>
+ </class>
+
  <!-- Trigger algorithms configurations, for when we run with TPG on -->
  <class name="TriggeringAlgorithms">
   <relationship name="tam"  class-type="TriggerActivityMaker"   low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
