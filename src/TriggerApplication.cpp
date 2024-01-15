@@ -131,7 +131,7 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
       tiMLTNetDesc = rule->get_descriptor();
     if(endpoint_class == "ModuleLevelTrigger" && data_type == "TriggerDecision")
       tdMLTNetDesc = rule->get_descriptor();
-    if(endpoint_class == "TimingTriggerCandidateMaker" && data_type == "TriggerCandidate")
+    if(endpoint_class == "TimingTriggerCandidateMaker" && data_type == "HSIEvent")
       tmgTrgNetDesc = rule->get_descriptor();
 
     std::cout << "Endpoint class: " << endpoint_class << " data_type: " << data_type << std::endl;

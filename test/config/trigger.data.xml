@@ -98,10 +98,10 @@
 </obj>
 
 <obj class="NetworkConnectionDescriptor" id="timing-desc-1">
- <attr name="uid_base" type="string" val="triggerCandidate"/>
+ <attr name="uid_base" type="string" val="hsievent"/>
  <attr name="connection_type" type="enum" val="kSendRecv"/>
- <attr name="data_type" type="string" val="TriggerCandidate"/>
- <rel name="associated_service" class="Service" id="triggerCandidates"/>
+ <attr name="data_type" type="string" val="HSIEvent"/>
+ <rel name="associated_service" class="Service" id="HSIEvents"/>
 </obj>
 
 <obj class="NetworkConnectionRule" id="timing-rule-1">

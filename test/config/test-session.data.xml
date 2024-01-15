@@ -113,7 +113,7 @@
  <attr name="port" type="u16" val="5000"/>
 </obj>
 
-<obj class="Service" id="triggerCandidates">
+<obj class="Service" id="HSIEvents">
  <attr name="protocol" type="string" val="tcp"/>
  <attr name="port" type="u16" val="5000"/>
 </obj>
