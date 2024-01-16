@@ -73,15 +73,6 @@
 
 <comments>
  <comment creation-time="20231207T111607" created-by="gjc" created-on="thinkpad" author="gjc" text="u"/>
- <comment creation-time="20231207T111909" created-by="gjc" created-on="thinkpad" author="gjc" text="h"/>
- <comment creation-time="20231207T155830" created-by="gjc" created-on="thinkpad" author="gjc" text="k"/>
- <comment creation-time="20231207T155918" created-by="gjc" created-on="thinkpad" author="gjc" text="k"/>
- <comment creation-time="20231207T160041" created-by="gjc" created-on="thinkpad" author="gjc" text="k"/>
- <comment creation-time="20231212T101321" created-by="gjc" created-on="thinkpad" author="gjc" text="k"/>
- <comment creation-time="20231212T105959" created-by="gjc" created-on="thinkpad" author="gjc" text="h"/>
- <comment creation-time="20231212T110529" created-by="gjc" created-on="thinkpad" author="gjc" text="h"/>
- <comment creation-time="20231212T110630" created-by="gjc" created-on="thinkpad" author="gjc" text="o"/>
- <comment creation-time="20231212T112146" created-by="gjc" created-on="thinkpad" author="gjc" text="#"/>
 </comments>
 
 
@@ -94,7 +85,7 @@
 </obj>
 
 <obj class="NICReceiverConf" id="ReceiverConf-1">
- <attr name="template_for" type="class" val="NICReceiver"/>
+ <attr name="template_for" type="class" val="FakeCardReader"/>
  <attr name="mbuf_cache_size" type="u32" val="256"/>
  <attr name="lcore_sleep_us" type="u32" val="10"/>
  <attr name="mtu" type="u32" val="9000"/>
@@ -133,7 +124,7 @@
 </obj>
 
 <obj class="NetworkConnectionRule" id="dlh-net-rule">
- <attr name="endpoint_class" type="class" val="DLH"/>
+ <attr name="endpoint_class" type="class" val="ReadoutModule"/>
  <rel name="descriptor" class="NetworkConnectionDescriptor" id="dlh-net-desc-1"/>
 </obj>
 
@@ -143,7 +134,7 @@
 </obj>
 
 <obj class="NetworkConnectionRule" id="tpdlh-rule-1">
- <attr name="endpoint_class" type="class" val="TPHandler"/>
+ <attr name="endpoint_class" type="class" val="TPHandlerModule"/>
  <rel name="descriptor" class="NetworkConnectionDescriptor" id="tpdlh-net-desc-1"/>
 </obj>
 
@@ -153,22 +144,22 @@
 </obj>
 
 <obj class="QueueConnectionRule" id="dataRequestRule">
- <attr name="destination_class" type="class" val="DLH"/>
+ <attr name="destination_class" type="class" val="ReadoutModule"/>
  <rel name="descriptor" class="QueueDescriptor" id="DataRequestQueueDescriptor"/>
 </obj>
 
 <obj class="QueueConnectionRule" id="processingData-1">
- <attr name="destination_class" type="class" val="TPHandler"/>
+ <attr name="destination_class" type="class" val="TPHandlerModule"/>
  <rel name="descriptor" class="QueueDescriptor" id="processingInput-1"/>
 </obj>
 
 <obj class="QueueConnectionRule" id="rawData-1">
- <attr name="destination_class" type="class" val="DLH"/>
+ <attr name="destination_class" type="class" val="ReadoutModule"/>
  <rel name="descriptor" class="QueueDescriptor" id="rawInput-1"/>
 </obj>
 
 <obj class="QueueConnectionRule" id="tpRequestRule">
- <attr name="destination_class" type="class" val="TPHandler"/>
+ <attr name="destination_class" type="class" val="TPHandlerModule"/>
  <rel name="descriptor" class="QueueDescriptor" id="tpRequestQueueDescriptor"/>
 </obj>
 
@@ -214,7 +205,7 @@
  <rel name="contains">
   <ref class="ReadoutGroup" id="dummyRog"/>
  </rel>
- <rel name="runs_on" class="VirtualHost" id="vlocalhost-1"/>
+ <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="agregatorInputRule"/>
   <ref class="QueueConnectionRule" id="dataRequestRule"/>
@@ -228,22 +219,22 @@
   <ref class="NetworkConnectionRule" id="tpdlh-rule-1"/>
  </rel>
  <rel name="uses" class="RoHwConfig" id="rohw-1"/>
- <rel name="link_handler" class="ReadoutModelConf" id="linkHandler-1"/>
- <rel name="tp_handler" class="ReadoutModelConf" id="tpHandler-1"/>
+ <rel name="link_handler" class="ReadoutModuleConf" id="linkHandler-1"/>
+ <rel name="tp_handler" class="ReadoutModuleConf" id="tpHandler-1"/>
  <rel name="data_reader" class="NICReceiverConf" id="ReceiverConf-1"/>
 </obj>
 
-<obj class="ReadoutModelConf" id="linkHandler-1">
+<obj class="ReadoutModuleConf" id="linkHandler-1">
  <attr name="template_for" type="class" val="FDDataLinkHandler"/>
  <attr name="input_data_type" type="string" val="WIBEthFrame"/>
  <rel name="request_handler" class="RequestHandler" id="requestHandler-1"/>
  <rel name="latency_buffer" class="LatencyBuffer" id="latencyBuf-1"/>
 </obj>
 
-<obj class="ReadoutModelConf" id="tpHandler-1">
- <attr name="template_for" type="class" val="TPHandler"/>
+<obj class="ReadoutModuleConf" id="tpHandler-1">
+ <attr name="template_for" type="class" val="FDDataLinkHandler"/>
  <attr name="input_data_type" type="string" val="TPSet"/>
- <rel name="request_handler" class="TPHandlerConf" id="TPHandlerConf-1"/>
+ <rel name="request_handler" class="TPRequestHandler" id="TPHandlerConf-1"/>
  <rel name="latency_buffer" class="LatencyBuffer" id="latencyBuf-1"/>
 </obj>
 
@@ -262,7 +253,7 @@
  <rel name="controller" class="RCApplication" id="ru-controller"/>
 </obj>
 
-<obj class="TPHandlerConf" id="TPHandlerConf-1">
+<obj class="TPRequestHandler" id="TPHandlerConf-1">
  <attr name="handlier_threads" type="u16" val="1"/>
  <attr name="request_timeout" type="u32" val="10000"/>
  <attr name="streaming_buffer_size" type="u32" val="1000"/>

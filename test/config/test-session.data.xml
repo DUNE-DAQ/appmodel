@@ -67,12 +67,12 @@
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
- <file path="fsm.data.xml"/>
- <file path="hosts.data.xml"/>
- <file path="dummy-readoutmap.data.xml"/>
- <file path="ru-segment.data.xml"/>
- <file path="df-segment.data.xml"/>
- <file path="trigger.data.xml"/>
+ <file path="test/config/fsm.data.xml"/>
+ <file path="test/config/hosts.data.xml"/>
+ <file path="test/config/dummy-readoutmap.data.xml"/>
+ <file path="test/config/ru-segment.data.xml"/>
+ <file path="test/config/df-segment.data.xml"/>
+ <file path="test/config/trigger.data.xml"/>
 </include>
 
 <comments>
@@ -99,6 +99,7 @@
 <obj class="Segment" id="root-segment">
  <rel name="segments">
   <ref class="Segment" id="ru-segment"/>
+  <ref class="Segment" id="df-segment"/>
  </rel>
  <rel name="controller" class="RCApplication" id="root-controller"/>
 </obj>
@@ -113,20 +114,25 @@
  <attr name="port" type="u16" val="5000"/>
 </obj>
 
-<obj class="Service" id="HSIEvents">
- <attr name="protocol" type="string" val="tcp"/>
- <attr name="port" type="u16" val="5000"/>
-</obj>
+  <obj class="Service" id="HSIEvents">
+   <attr name="protocol" type="string" val="tcp"/>
+   <attr name="port" type="u16" val="5000"/>
+  </obj>
+  
+  <obj class="Service" id="triggerDecisions">
+    <attr name="protocol" type="string" val="tcp"/>
+    <attr name="port" type="u16" val="5000"/>
+  </obj>
 
-<obj class="Service" id="triggerInhibits">
- <attr name="protocol" type="string" val="tcp"/>
- <attr name="port" type="u16" val="5000"/>
-</obj>
+  <obj class="Service" id="triggerInhibits">
+    <attr name="protocol" type="string" val="tcp"/>
+    <attr name="port" type="u16" val="5000"/>
+  </obj>
 
-<obj class="Service" id="triggerDecisions">
- <attr name="protocol" type="string" val="tcp"/>
- <attr name="port" type="u16" val="5000"/>
-</obj>
+  <obj class="Service" id="dfTokens">
+    <attr name="protocol" type="string" val="tcp"/>
+    <attr name="port" type="u16" val="5000"/>
+  </obj>
 
 <obj class="Session" id="test-session">
  <attr name="use_connectivity_server" type="bool" val="1"/>

@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="5" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T112620" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20231212T113320"/>
+<info name="" type="" num-of-items="6" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T112620" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20240109T120842"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -71,6 +71,7 @@
 
 <comments>
  <comment creation-time="20231212T113320" created-by="gjc" created-on="thinkpad" author="gjc" text="k"/>
+ <comment creation-time="20240109T120842" created-by="gjc" created-on="thinkpad" author="gjc" text="u"/>
 </comments>
 
 
@@ -88,6 +89,12 @@
 </obj>
 
 <obj class="ReadoutGroup" id="dummyRog">
+ <rel name="contains">
+  <ref class="ReadoutInterface" id="ROInterface-1"/>
+ </rel>
+</obj>
+
+<obj class="ReadoutInterface" id="ROInterface-1">
  <rel name="contains">
   <ref class="DROStreamConf" id="dummyStream-1"/>
  </rel>

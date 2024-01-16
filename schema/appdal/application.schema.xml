@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="38" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20231212T095913"/>
+<info name="" type="" num-of-items="40" oks-format="schema" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="glehmann" last-modified-on="lxplus928.cern.ch" last-modification-time="20240107T173725"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -93,7 +93,7 @@
   <relationship name="trb" description="Configuration of the TRB to be generated my get_modules()" class-type="TRBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_writer" class-type="DataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="uses" class-type="DFHWConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <method name="generate_modules" description="Generate DLH dal objects for streams of thie ReadoutApplication on the fly">
+  <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
   </method>
  </class>
@@ -105,7 +105,7 @@
  <class name="DFOApplication">
   <superclass name="SmartDaqApplication"/>
   <relationship name="dfo" class-type="DFOConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <method name="generate_modules" description="Generate DLH dal objects for streams of thie ReadoutApplication on the fly">
+  <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
   </method>
  </class>
@@ -123,26 +123,51 @@
   <relationship name="configuration" class-type="DFOConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="DLH" is-abstract="yes">
-  <superclass name="ReadoutModule"/>
- </class>
-
  <class name="DataProcessor">
+  <attribute name="queue_sizes" type="u32" init-value="10000"/>
+  <attribute name="thread_names_prefix" type="string" init-value="postproc-"/>
  </class>
 
  <class name="DataReader" is-abstract="yes">
   <superclass name="DaqModule"/>
-  <attribute name="emulated" type="bool" init-value="false"/>
   <relationship name="configuration" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="interfaces" class-type="ReadoutInterface" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="DataReaderConf" is-abstract="yes">
+ <class name="DataReaderConf">
   <attribute name="template_for" description="OKS class of the DataReader that this config is a template for" type="class" init-value="DataReader" is-not-null="yes"/>
+  <attribute name="emulation_mode" type="bool" init-value="false"/>
+  <relationship name="emulation_conf" description="Parameters for emulating the stream." class-type="StreamEmulationParameters" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  </class>
+
+<class name="StreamEmulationParameters">
+  <attribute name="data_file_name" type="string"/>
+  <attribute name="tp_data_file_name" type="string"/>
+  <attribute name="input_file_size_limit" type="u32" init-value="10485100" is-not-null="yes"/>
+  <attribute name="set_t0" type="bool" description="Set first timestamp to now" init-value="true" is-not-null="yes"/>
+  <attribute name="random_population_size" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="frame_error_rate_hz" type="float" init-value="0.0" is-not-null="yes"/>
+  <attribute name="generate_periodic_adc_pattern" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="TP_rate_per_channel" description="TP rate per channel in units of 100 Hz." type="float" init-value="0.0" is-not-null="yes"/>
+  </class>
+
+
+ <class name="DataRecorder" is-abstract="yes">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="DataRecorderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="DataRecorderConf">
+  <attribute name="output_file" type="string"/>
+  <attribute name="streaming_buffer_size" type="u32" init-value="1000" is-not-null="yes"/>
+  <attribute name="compression_algorithm" type="string" init-value="None" is-not-null="yes"/>
+  <attribute name="use_o_direct" description="Whether to use O_DIRECT flag when opening files" type="bool" init-value="true"/>
  </class>
 
  <class name="DataStoreConf">
   <attribute name="type" type="string"/>
   <attribute name="operational_environment" type="string"/>
+  <attribute name="directory_path" type="string" description="The base directory for saving files" is-not-null="yes"/>
   <attribute name="mode" description="The operation mode that the DataStore should use when organizing the data into files" type="enum" range="all-per-file,one-event-per-file" init-value="all-per-file" is-not-null="yes"/>
   <attribute name="max_file_size" type="u64" init-value="0" is-not-null="yes"/>
   <attribute name="disable_unique_filename_suffix" type="bool" init-value="false"/>
@@ -167,6 +192,21 @@
  <class name="FakeCardReader">
   <superclass name="DataReader"/>
  </class>
+
+  <class name="FakeDataProd">
+    <superclass name="DaqModule"/>
+    <relationship name="configuration" class-type="FakeDataProdConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  </class>
+
+  <class name="FakeDataProdConf">
+    <superclass name="ResourceBase"/>
+    <attribute name="system_type" type="string" description="The system type of the link" init-value="" is-not-null="yes"/>
+    <attribute name="source_id" type="u32" description="The SourceID of this link" is-not-null="yes"/>
+    <attribute name="time_tick_diff" type="u32" init-value="1" description="Time tick difference between frames" is-not-null="yes"/>
+    <attribute name="frame_size" type="u32" init-value="0" description="The size of a fake frame" is-not-null="yes"/>
+    <attribute name="response_delay" type="u32" init-value="0" description="Wait for this amount of ns before sending the fragment" is-not-null="yes"/>
+    <attribute name="fragment_type" type="string" description="Fragment type of the response" is-not-null="yes"/>
+  </class>
 
  <class name="FilenameParams">
   <attribute name="overall_prefix" type="string" init-value="minidaq" is-not-null="yes"/>
@@ -238,39 +278,52 @@
   <attribute name="tp_src_id" description="Source ID for TP handler if TPs are being generated" type="u32"/>
   <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
   <relationship name="uses" description="Configuration of the host hardware resources used by this application" class-type="RoHwConfig" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
-  <relationship name="link_handler" class-type="ReadoutModelConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="tp_handler" class-type="ReadoutModelConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="link_handler" class-type="ReadoutModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="tp_handler" class-type="ReadoutModuleConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_reader" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="data_recorder" class-type="DataRecorderConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate daq module dal objects for streams of thie ReadoutApplication on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
   </method>
  </class>
 
+  <class name="FakeDataApplication">
+    <superclass name="ResourceSetAND"/>
+    <superclass name="SmartDaqApplication"/>
+    <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
+    <method name="generate_modules" description="Generate daq module dal objects for streams of the FakeDataApplication on the fly">
+      <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
+    </method>
+  </class>
  <class name="ReadoutHost">
   <superclass name="VirtualHost"/>
- </class>
-
- <class name="ReadoutModelConf">
-  <attribute name="template_for" type="class" init-value="DLH" is-not-null="yes"/>
-  <attribute name="input_data_type" description="Type of data received by this readout module" type="string" init-value="WIBEthFrame"/>
-  <relationship name="request_handler" class-type="RequestHandler" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="latency_buffer" class-type="LatencyBuffer" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="data_processor" class-type="DataProcessor" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="ReadoutModule" is-abstract="yes">
   <superclass name="DaqModule"/>
   <attribute name="source_id" type="u32" is-not-null="yes"/>
-  <relationship name="module_configuration" class-type="ReadoutModelConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <attribute name="detector_id" type="u32" is-not-null="yes"/>
+  <relationship name="module_configuration" class-type="ReadoutModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="ReadoutModuleConf">
+  <attribute name="template_for" type="class" init-value="ReadoutModule" is-not-null="yes"/>
+  <attribute name="input_data_type" description="Type of data received by this readout module" type="string" init-value="WIBEthFrame"/>
+  <attribute name="generate_timesync" type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="post_processing_delay_ticks" description="Number of clock tick by which post processing of incoming data shall be delayed." type="u64" init-value="0" is-not-null="yes"/>
+  <relationship name="request_handler" class-type="RequestHandler" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="latency_buffer" class-type="LatencyBuffer" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="data_processor" class-type="DataProcessor" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="RequestHandler">
-  <attribute name="handlier_threads" description="Number of threads tohandle this link" type="u16" init-value="1"/>
+  <attribute name="handler_threads" description="Number of threads tohandle this link" type="u16" init-value="1"/>
   <attribute name="request_timeout" description="Request timeout in milliseconds" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="output_file" type="string"/>
-  <attribute name="streaming_buffer_size" type="u32" init-value="1000" is-not-null="yes"/>
-  <attribute name="use_o_direct" description="Whether to use O_DIRECT flag when opening files" type="bool" init-value="true"/>
-  <attribute name="enable_raw_recording" type="bool" init-value="true"/>
+  <attribute name="pop_limit_pct" description="Latency buffer occupancy percentage to issue an auto-pop" type="float" init-value="0.5" is-not-null="yes"/>
+  <attribute name="pop_size_pct" description="Percentage of current occupancy to pop from the latency buffer" type="float" init-value="0.8" is-not-null="yes"/>
+  <attribute name="warn_on_timeout" type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="warn_on_empty_buffer" type="bool" init-value="true" is-not-null="yes"/>
+  <relationship name="data_recorder" class-type="DataRecorderConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="RoHwConfig">
@@ -291,8 +344,7 @@
 
  <class name="TPDataProcessor">
   <superclass name="DataProcessor"/>
-  <attribute name="queue_size" type="u32" init-value="10000"/>
-  <attribute name="max_ticks_tot" type="u32" init-value="8000" is-not-null="yes"/>
+  <attribute name="max_ticks_tot" description="Max ToT after which ongoing TPs are discarded, default is 8000" type="u32" init-value="8000" is-not-null="yes"/>
   <attribute name="tpg_enabled" type="bool" init-value="true"/>
   <attribute name="algorithm" description="TP generation algorithm" type="string"/>
   <attribute name="threshold" description="Hit detection threshold" type="u16"/>
@@ -300,11 +352,11 @@
   <attribute name="channel_map" type="string"/>
  </class>
 
- <class name="TPHandler">
+ <class name="TPHandlerModule">
   <superclass name="ReadoutModule"/>
  </class>
 
- <class name="TPHandlerConf">
+ <class name="TPRequestHandler">
   <superclass name="RequestHandler"/>
   <attribute name="min_latency_ticks" type="u32" init-value="100" is-not-null="yes"/>
   <attribute name="max_transmission_rate_hz" type="u32" init-value="1000" is-not-null="yes"/>
@@ -318,20 +370,22 @@
  <class name="TPWriterApplication">
   <superclass name="SmartDaqApplication"/>
   <relationship name="tp_writer" class-type="TPWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <method name="generate_modules" description="Generate DLH dal objects for streams of thie ReadoutApplication on the fly">
+  <method name="generate_modules" description="Generate dal objects for streams of thie ReadoutApplication on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
   </method>
  </class>
 
  <class name="TPWriterConf">
-  <attribute name="tp_accumulation_interval" type="u64" init-value="0" is-not-null="yes"/>
+   <attribute name="tp_accumulation_interval" type="u64" init-value="0" is-not-null="yes"/>
+   <attribute name="source_id" type="u32" is-not-null="yes"/>
   <relationship name="data_store_params" class-type="DataStoreConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="TRBConf">
   <attribute name="queues_timeout" type="u32" init-value="0" is-not-null="yes"/>
   <attribute name="trigger_record_timeout_ms" type="u32" init-value="0" is-not-null="yes"/>
-  <attribute name="mac_time_window" type="s64" init-value="0" is-not-null="yes"/>
+  <attribute name="max_time_window" type="s64" init-value="0" is-not-null="yes"/>
+   <attribute name="source_id" type="u32" is-not-null="yes"/>
  </class>
 
  <class name="TRBuilder">

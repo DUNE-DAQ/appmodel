@@ -83,20 +83,6 @@
  </rel>
 </obj>
 
-<obj class="ProcessingResource" id="localhost-cpu-01">
- <attr name="cpu_cores" type="u16">
-  <data val="0"/>
-  <data val="1"/>
- </attr>
-</obj>
-
-<obj class="ProcessingResource" id="localhost-cpu-23">
- <attr name="cpu_cores" type="u16">
-  <data val="2"/>
-  <data val="3"/>
- </attr>
-</obj>
-
 <obj class="ProcessingResource" id="localhost_cpus">
  <attr name="cpu_cores" type="u16">
   <data val="0"/>
@@ -109,20 +95,6 @@
 <obj class="VirtualHost" id="vlocalhost">
  <rel name="uses">
   <ref class="ProcessingResource" id="localhost_cpus"/>
- </rel>
- <rel name="runs_on" class="PhysicalHost" id="localhost"/>
-</obj>
-
-<obj class="VirtualHost" id="vlocalhost-1">
- <rel name="uses">
-  <ref class="ProcessingResource" id="localhost-cpu-01"/>
- </rel>
- <rel name="runs_on" class="PhysicalHost" id="localhost"/>
-</obj>
-
-<obj class="VirtualHost" id="vlocalhost-2">
- <rel name="uses">
-  <ref class="ProcessingResource" id="localhost-cpu-23"/>
  </rel>
  <rel name="runs_on" class="PhysicalHost" id="localhost"/>
 </obj>
