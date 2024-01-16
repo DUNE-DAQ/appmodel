@@ -16,7 +16,7 @@
 #include "coredal/NetworkConnection.hpp"
 #include "appdal/DFOApplication.hpp"
 #include "appdal/DFOConf.hpp"
-#include "appdal/DFOModule.hpp"
+#include "appdal/DataFlowOrchestrator.hpp"
 #include "appdal/NetworkConnectionRule.hpp"
 #include "appdal/NetworkConnectionDescriptor.hpp"
 #include "appdal/QueueConnectionRule.hpp"
@@ -52,8 +52,8 @@ DFOApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
   std::string dfoUid("DFO-" + UID());
   oksdbinterfaces::ConfigObject dfoObj;
-  TLOG_DEBUG(7) << "creating OKS configuration object for DFOModule class ";
-  confdb->create(dbfile, "DFOModule", dfoUid, dfoObj);
+  TLOG_DEBUG(7) << "creating OKS configuration object for DataFlowOrchestrator class ";
+  confdb->create(dbfile, "DataFlowOrchestrator", dfoUid, dfoObj);
 
   auto dfoConf = get_dfo();
   dfoObj.set_obj("configuration", &dfoConf->config_object());
@@ -70,7 +70,7 @@ DFOApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
   for (auto rule : get_network_rules()) {
     auto endpoint_class = rule->get_endpoint_class();
-    if (endpoint_class == "DFOModule") {
+    if (endpoint_class == "DataFlowOrchestrator") {
       auto descriptor = rule->get_descriptor();
 
       oksdbinterfaces::ConfigObject connObj;
@@ -107,7 +107,7 @@ DFOApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   dfoObj.set_objs("outputs", output_conns);
 
   // Add to our list of modules to return
-  modules.push_back(confdb->get<DFOModule>(dfoUid));
+  modules.push_back(confdb->get<DataFlowOrchestrator>(dfoUid));
 
   return modules;
 }

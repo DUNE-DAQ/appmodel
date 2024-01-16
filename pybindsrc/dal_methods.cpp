@@ -16,7 +16,7 @@
 #include "appdal/DFApplication.hpp"
 #include "appdal/DFOApplication.hpp"
 #include "appdal/ReadoutApplication.hpp"
-#include "appdal/TPWriterApplication.hpp"
+#include "appdal/TPStreamWriterApplication.hpp"
 
 #include <sstream>
 
@@ -94,7 +94,7 @@ namespace dunedaq::appdal::python {
                                 const std::string& app_id,
                                 const std::string& session_id) {
     auto app =
-      const_cast<oksdbinterfaces::Configuration&>(confdb).get<TPWriterApplication>(app_id);
+      const_cast<oksdbinterfaces::Configuration&>(confdb).get<TPStreamWriterApplication>(app_id);
     auto session =
       const_cast<oksdbinterfaces::Configuration&>(confdb).get<coredal::Session>(session_id);
 
@@ -118,7 +118,7 @@ register_dal_methods(py::module& m)
   m.def("readout_application_generate", &readout_application_generate, "Generate DaqModules required by ReadoutApplication");
   m.def("df_application_generate", &df_application_generate, "Generate DaqModules required by DFApplication");
   m.def("dfo_application_generate", &dfo_application_generate, "Generate DaqModules required by DFOApplication");
-  m.def("tpwriter_application_generate", &tpwriter_application_generate, "Generate DaqModules required by TPWriterApplication");
+  m.def("tpwriter_application_generate", &tpwriter_application_generate, "Generate DaqModules required by TPStreamWriterApplication");
 }
 
 } // namespace dunedaq::appdal::python

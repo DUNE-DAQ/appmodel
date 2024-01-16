@@ -1,7 +1,7 @@
 /**
  * @file DFO.cpp
  *
- * Implementation of TPWriterApplication's generate_modules dal method
+ * Implementation of TPStreamWriterApplication's generate_modules dal method
  *
  * This is part of the DUNE DAQ Software Suite, copyright 2023.
  * Licensing/copyright details are in the COPYING file that you should have
@@ -14,9 +14,9 @@
 #include "oks/kernel.hpp"
 #include "coredal/Connection.hpp"
 #include "coredal/NetworkConnection.hpp"
-#include "appdal/TPWriterApplication.hpp"
-#include "appdal/TPWriterConf.hpp"
-#include "appdal/TPWriter.hpp"
+#include "appdal/TPStreamWriterApplication.hpp"
+#include "appdal/TPStreamWriterConf.hpp"
+#include "appdal/TPStreamWriter.hpp"
 #include "appdal/NetworkConnectionRule.hpp"
 #include "appdal/NetworkConnectionDescriptor.hpp"
 #include "appdal/QueueConnectionRule.hpp"
@@ -32,18 +32,18 @@ using namespace dunedaq;
 using namespace dunedaq::appdal;
 
 static ModuleFactory::Registrator
-__reg__("TPWriterApplication", [] (const SmartDaqApplication* smartApp,
+__reg__("TPStreamWriterApplication", [] (const SmartDaqApplication* smartApp,
                              oksdbinterfaces::Configuration* confdb,
                              const std::string& dbfile,
                              const coredal::Session* session) -> ModuleFactory::ReturnType
   {
-    auto app = smartApp->cast<TPWriterApplication>();
+    auto app = smartApp->cast<TPStreamWriterApplication>();
     return app->generate_modules(confdb, dbfile, session);
   }
   );
 
 std::vector<const coredal::DaqModule*> 
-TPWriterApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
+TPStreamWriterApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
                                      const std::string& dbfile,
                                      const coredal::Session* session) const
 {
@@ -51,7 +51,7 @@ TPWriterApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
   auto tpwriterConf = get_tp_writer();
   if (tpwriterConf == 0) {
-    throw (BadConf(ERS_HERE, "No TPWriter configuration given"));
+    throw (BadConf(ERS_HERE, "No TPStreamWriter configuration given"));
   }
   auto tpwriterConfObj = tpwriterConf->config_object();
   auto dataStoreParams = tpwriterConf->get_data_store_params();
@@ -66,7 +66,7 @@ TPWriterApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     }
     auto rset = roGroup->cast<coredal::ReadoutGroup>();
     if (rset == nullptr) {
-      throw (BadConf(ERS_HERE, "TPWriterApplication contains something other than ReadoutGroup"));
+      throw (BadConf(ERS_HERE, "TPStreamWriterApplication contains something other than ReadoutGroup"));
     }
   }
 */
@@ -76,14 +76,14 @@ TPWriterApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
   oksdbinterfaces::ConfigObject tpwrObj;
   std::string tpwrUid("tpwriter-"+std::to_string(100));
-  confdb->create(dbfile, "TPWriter", tpwrUid, tpwrObj);
+  confdb->create(dbfile, "TPStreamWriter", tpwrUid, tpwrObj);
   tpwrObj.set_obj("configuration", &tpwriterConf->config_object());
   //tpwrObj.set_obj("inputs", {&} );
 
 
-  modules.push_back(confdb->get<TPWriter>(tpwrUid));
+  modules.push_back(confdb->get<TPStreamWriter>(tpwrUid));
 
-  // Process the queue rules looking for inputs to our TPWriter module
+  // Process the queue rules looking for inputs to our TPStreamWriter module
   const QueueDescriptor *tpwrInputQDesc = nullptr;
   for (auto rule : get_queue_rules()) {
     //auto destination_class = rule->get_destination_class();

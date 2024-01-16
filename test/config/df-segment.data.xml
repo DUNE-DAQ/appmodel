@@ -151,27 +151,27 @@
 </obj>
 
 <obj class="NetworkConnectionRule" id="dft-net-rule">
- <attr name="endpoint_class" type="class" val="DFOModule"/>
+ <attr name="endpoint_class" type="class" val="DataFlowOrchestrator"/>
  <rel name="descriptor" class="NetworkConnectionDescriptor" id="dft-net-desc-1"/>
 </obj>
 
 <obj class="NetworkConnectionRule" id="frag-net-rule">
- <attr name="endpoint_class" type="class" val="TRBuilder"/>
+ <attr name="endpoint_class" type="class" val="TriggerRecordBuilder"/>
  <rel name="descriptor" class="NetworkConnectionDescriptor" id="frag-net-desc-1"/>
 </obj>
 
 <obj class="NetworkConnectionRule" id="td-net-rule">
- <attr name="endpoint_class" type="class" val="DFOModule"/>
+ <attr name="endpoint_class" type="class" val="DataFlowOrchestrator"/>
  <rel name="descriptor" class="NetworkConnectionDescriptor" id="td-net-desc-1"/>
 </obj>
 
 <obj class="NetworkConnectionRule" id="td-trb-net-rule">
- <attr name="endpoint_class" type="class" val="TRBuilder"/>
+ <attr name="endpoint_class" type="class" val="TriggerRecordBuilder"/>
  <rel name="descriptor" class="NetworkConnectionDescriptor" id="td-net-desc-1"/>
 </obj>
 
 <obj class="NetworkConnectionRule" id="ti-net-rule">
- <attr name="endpoint_class" type="class" val="DFOModule"/>
+ <attr name="endpoint_class" type="class" val="DataFlowOrchestrator"/>
  <rel name="descriptor" class="NetworkConnectionDescriptor" id="ti-net-desc-1"/>
 </obj>
 

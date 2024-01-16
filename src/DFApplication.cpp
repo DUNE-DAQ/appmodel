@@ -14,7 +14,7 @@
 #include "oks/kernel.hpp"
 #include "coredal/Connection.hpp"
 #include "coredal/NetworkConnection.hpp"
-#include "appdal/TRBuilder.hpp"
+#include "appdal/TriggerRecordBuilder.hpp"
 #include "appdal/TRBConf.hpp"
 #include "appdal/DataWriter.hpp"
 #include "appdal/DataWriterConf.hpp"
@@ -98,10 +98,10 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     auto endpoint_class = rule->get_endpoint_class();
     auto descriptor = rule->get_descriptor();
     auto data_type = descriptor->get_data_type();
-    if (endpoint_class == "TRBuilder" && data_type == "Fragment") {
+    if (endpoint_class == "TriggerRecordBuilder" && data_type == "Fragment") {
       fragNetDesc = rule->get_descriptor();
     }
-    else if (endpoint_class == "TRBuilder" && data_type == "TriggerDecision") {
+    else if (endpoint_class == "TriggerRecordBuilder" && data_type == "TriggerDecision") {
       trigdecNetDesc = rule->get_descriptor();
     }
   }
@@ -115,7 +115,7 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   oksdbinterfaces::ConfigObject fragNetObj;
   oksdbinterfaces::ConfigObject trigdecNetObj;
   std::string fragNetUid("fragments-to-dataflow-"+UID());
-  std::string trigdecNetUid("tigger-decisions-"+UID());
+  std::string trigdecNetUid("trigger-decisions-"+UID());
   confdb->create(dbfile, "NetworkConnection", fragNetUid, fragNetObj);
   confdb->create(dbfile, "NetworkConnection", trigdecNetUid, trigdecNetObj);
   fill_netconn_object_from_desc(fragNetDesc, fragNetObj);
@@ -158,12 +158,12 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   // Prepare TRB Module Object and assign its Config Object.
   oksdbinterfaces::ConfigObject trbObj;
   std::string trbUid("trbuilder-"+UID());
-  confdb->create(dbfile, "TRBuilder", trbUid, trbObj);
+  confdb->create(dbfile, "TriggerRecordBuilder", trbUid, trbObj);
   trbObj.set_obj("configuration", &trbConfObj);
   trbObj.set_objs("inputs", {&trigdecNetObj, &fragNetObj});
   trbObj.set_objs("outputs", trbOutputObjs);
   // Push TRB Module Object from confdb
-  modules.push_back(confdb->get<TRBuilder>(trbUid));
+  modules.push_back(confdb->get<TriggerRecordBuilder>(trbUid));
 
 
   // Get DataWriter Config Object
