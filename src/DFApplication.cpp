@@ -14,6 +14,7 @@
 #include "oks/kernel.hpp"
 #include "coredal/Connection.hpp"
 #include "coredal/NetworkConnection.hpp"
+#include "coredal/Service.hpp"
 #include "appdal/TriggerRecordBuilder.hpp"
 #include "appdal/TRBConf.hpp"
 #include "appdal/DataWriter.hpp"
@@ -57,6 +58,9 @@ fill_netconn_object_from_desc(const NetworkConnectionDescriptor* netDesc, oksdbi
 {
   netObj.set_by_val<std::string>("data_type", netDesc->get_data_type());
   netObj.set_by_val<std::string>("connection_type", netDesc->get_connection_type());
+
+  auto serviceObj = netDesc->get_associated_service()->config_object();
+  netObj.set_obj("associated_service", &serviceObj);
 }
 
 std::vector<const coredal::DaqModule*> 
@@ -94,6 +98,7 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   // Process the network rules looking for the Fragments and TriggerDecision inputs for TRB
   const NetworkConnectionDescriptor* fragNetDesc = nullptr;
   const NetworkConnectionDescriptor* trigdecNetDesc = nullptr; 
+  const NetworkConnectionDescriptor* tokenNetDesc = nullptr;
   for (auto rule : get_network_rules()) {
     auto endpoint_class = rule->get_endpoint_class();
     auto descriptor = rule->get_descriptor();
@@ -103,6 +108,8 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     }
     else if (endpoint_class == "TriggerRecordBuilder" && data_type == "TriggerDecision") {
       trigdecNetDesc = rule->get_descriptor();
+    } else if (endpoint_class == "DataWriter" && data_type == "TriggerDecisionToken") {
+      tokenNetDesc = rule->get_descriptor();
     }
   }
   if (fragNetDesc == nullptr) { // BadConf if no descriptor for Fragments into TRB
@@ -111,15 +118,22 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   if (trigdecNetDesc == nullptr) { // BadCond if no descriptor for TriggerDecisions into TRB
     throw (BadConf(ERS_HERE, "Could not find network descriptor rule for input TriggerDecisions!"));
   }
+  if (tokenNetDesc == nullptr) { // BadCond if no descriptor for Tokens out of DataWriter
+    throw(BadConf(ERS_HERE, "Could not find network descriptor rule for output TriggerDecisionTokens!"));
+  }
   // Create network connection config object
   oksdbinterfaces::ConfigObject fragNetObj;
   oksdbinterfaces::ConfigObject trigdecNetObj;
+  oksdbinterfaces::ConfigObject tokenNetObj;
   std::string fragNetUid("fragments-to-dataflow-"+UID());
   std::string trigdecNetUid("trigger-decisions-"+UID());
+  std::string tokenNetUid("tokens-" + UID());
   confdb->create(dbfile, "NetworkConnection", fragNetUid, fragNetObj);
   confdb->create(dbfile, "NetworkConnection", trigdecNetUid, trigdecNetObj);
+  confdb->create(dbfile, "NetworkConnection", tokenNetUid, tokenNetObj);
   fill_netconn_object_from_desc(fragNetDesc, fragNetObj);
   fill_netconn_object_from_desc(trigdecNetDesc, trigdecNetObj);
+  fill_netconn_object_from_desc(tokenNetDesc, tokenNetObj);
 
   // Process special Network rules! 
   // Looking for DataRequest rules from ReadoutAppplications in current Session
@@ -177,7 +191,8 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   std::string dwrUid("datawriter-"+UID());
   confdb->create(dbfile, "DataWriter", dwrUid, dwrObj);
   dwrObj.set_obj("configuration", &dwrConfObj);
-  dwrObj.set_objs("inputs", {&trQueueObj});
+  dwrObj.set_objs("inputs", { &trQueueObj });
+  dwrObj.set_objs("outputs", { &tokenNetObj });
   // Push DataWriter Module Object from confdb
   modules.push_back(confdb->get<DataWriter>(dwrUid));
 

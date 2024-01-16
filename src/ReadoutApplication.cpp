@@ -170,6 +170,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     auto tpServiceObj = tpNetDesc->get_associated_service()->config_object();
     std::string tpStreamUid("tpstream-"+UID());
     confdb->create(dbfile, "NetworkConnection", tpStreamUid, tpNetObj);
+    tpNetObj.set_by_val<std::string>("data_type", tpNetDesc->get_data_type());
     tpNetObj.set_by_val<std::string>("connection_type", tpNetDesc->get_connection_type());
     tpNetObj.set_obj("associated_service", &tpServiceObj);
     
@@ -257,6 +258,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
           oksdbinterfaces::ConfigObject tsNetObj;
           confdb->create(dbfile, "NetworkConnection", tsStreamUid, tsNetObj);
           tsNetObj.set_by_val<std::string>("connection_type", tsNetDesc->get_connection_type());
+          tsNetObj.set_by_val<std::string>("data_type", tsNetDesc->get_data_type());
           tsNetObj.set_obj("associated_service", &tsServiceObj);
 
           if (tpHandlerConf) {
@@ -328,8 +330,9 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   std::string faNetUid("fragmentrequests-"+UID());;
   oksdbinterfaces::ConfigObject faNetObj;
   confdb->create(dbfile, "NetworkConnection", faNetUid, faNetObj);
-  tpNetObj.set_by_val<std::string>("connection_type", faNetDesc->get_connection_type());
-  tpNetObj.set_obj("associated_service", &faServiceObj);
+  faNetObj.set_by_val<std::string>("connection_type", faNetDesc->get_connection_type());
+  faNetObj.set_by_val<std::string>("data_type", faNetDesc->get_data_type());
+  faNetObj.set_obj("associated_service", &faServiceObj);
 
   //Add output queueus of data requests
   std::vector<const oksdbinterfaces::ConfigObject*> qObjs;

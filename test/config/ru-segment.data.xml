@@ -107,19 +107,22 @@
 
 <obj class="NetworkConnectionDescriptor" id="dlh-net-desc-1">
  <attr name="uid_base" type="string" val="data_requests_for_Detector_Readout_0x"/>
- <attr name="connection_type" type="enum" val="kPubSub"/>
- <rel name="associated_service" class="Service" id="dataFragments"/>
+ <attr name="connection_type" type="enum" val="kSendRecv"/>
+  <attr name="data_type" type="string" val="DataRequest"/>
+  <rel name="associated_service" class="Service" id="dataFragments"/>
 </obj>
 
 <obj class="NetworkConnectionDescriptor" id="faConnection">
- <attr name="uid_base" type="string" val="inputReqToDLH"/>
- <attr name="connection_type" type="enum" val="kPubSub"/>
- <rel name="associated_service" class="Service" id="dataFragments"/>
+  <attr name="uid_base" type="string" val="inputReqToDLH"/>
+  <attr name="connection_type" type="enum" val="kSendRecv"/>
+  <attr name="data_type" type="string" val="Fragment"/>
+  <rel name="associated_service" class="Service" id="dataFragments"/>
 </obj>
 
 <obj class="NetworkConnectionDescriptor" id="tpdlh-net-desc-1">
- <attr name="uid_base" type="string" val="triggerPrimitivedatarequest"/>
- <attr name="connection_type" type="enum" val="kPubSub"/>
+  <attr name="uid_base" type="string" val="triggerPrimitivedatarequest"/>
+  <attr name="connection_type" type="enum" val="kPubSub"/>
+  <attr name="data_type" type="string" val="TPSet"/>
  <rel name="associated_service" class="Service" id="triggerPrimitives"/>
 </obj>
 

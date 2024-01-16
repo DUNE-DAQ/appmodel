@@ -91,6 +91,7 @@
  <rel name="network_rules">
   <ref class="NetworkConnectionRule" id="td-trb-net-rule"/>
   <ref class="NetworkConnectionRule" id="frag-net-rule"/>
+   <ref class="NetworkConnectionRule" id="dft-out-net-rule"/>
  </rel>
  <rel name="trb" class="TRBConf" id="trb-01"/>
  <rel name="data_writer" class="DataWriterConf" id="dw-01"/>
@@ -154,6 +155,10 @@
  <attr name="endpoint_class" type="class" val="DataFlowOrchestrator"/>
  <rel name="descriptor" class="NetworkConnectionDescriptor" id="dft-net-desc-1"/>
 </obj>
+  <obj class="NetworkConnectionRule" id="dft-out-net-rule">
+    <attr name="endpoint_class" type="class" val="DataWriter"/>
+    <rel name="descriptor" class="NetworkConnectionDescriptor" id="dft-net-desc-1"/>
+  </obj>
 
 <obj class="NetworkConnectionRule" id="frag-net-rule">
  <attr name="endpoint_class" type="class" val="TriggerRecordBuilder"/>
