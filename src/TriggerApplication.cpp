@@ -32,6 +32,12 @@
 #include "appdal/ModuleLevelTriggerConf.hpp"
 #include "appdal/ModuleLevelTrigger.hpp"
 
+#include "appdal/TimingTriggerCandidateMakerConf.hpp"
+#include "appdal/TimingTriggerCandidateMaker.hpp"
+
+#include "appdal/CustomTriggerCandidateMakerConf.hpp"
+#include "appdal/CustomTriggerCandidateMaker.hpp"
+
 #include "appdal/TCSetTee.hpp"
 #include "appdal/TCBufferConf.hpp"
 #include "appdal/TCBuffer.hpp"
@@ -324,7 +330,7 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
    * Get the custom trigger candidate makers
    **************************************************************/
   auto cstTCMakerConf = get_custom_candidate_maker_conf();
-  if(cst){
+  if(cstTCMakerConf){
     // Create CustomTriggerCandidateMaker
     // TODO: Function/template this.
     std::cout << "Making a custom trigger!" << std::endl;
