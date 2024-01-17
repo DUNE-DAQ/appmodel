@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="26" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105615" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240117T175424"/>
+<info name="" type="" num-of-items="27" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105615" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240117T183308"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -75,6 +75,7 @@
  <comment creation-time="20231207T111607" created-by="gjc" created-on="thinkpad" author="gjc" text="u"/>
  <comment creation-time="20240117T144543" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="glehmann" text=" "/>
  <comment creation-time="20240117T175424" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="glehmann" text=" "/>
+ <comment creation-time="20240117T183308" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="glehmann" text=" "/>
 </comments>
 
 
@@ -146,9 +147,9 @@
  <rel name="descriptor" class="QueueDescriptor" id="fa-input"/>
 </obj>
 
-<obj class="QueueConnectionRule" id="raw-data-rule">
+<obj class="QueueConnectionRule" id="wib-eth-raw-data-rule">
  <attr name="destination_class" type="class" val="FDDataLinkHandler"/>
- <rel name="descriptor" class="QueueDescriptor" id="raw-input"/>
+ <rel name="descriptor" class="QueueDescriptor" id="wib-eth-raw-input"/>
 </obj>
 
 <obj class="QueueConnectionRule" id="tp-queue-rule">
@@ -168,10 +169,10 @@
  <attr name="data_type" type="string" val="Fragment"/>
 </obj>
 
-<obj class="QueueDescriptor" id="raw-input">
+<obj class="QueueDescriptor" id="wib-eth-raw-input">
  <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
  <attr name="capacity" type="u32" val="1000"/>
- <attr name="data_type" type="string" val="raw_data"/>
+ <attr name="data_type" type="string" val="WIBEthFrame"/>
 </obj>
 
 <obj class="QueueDescriptor" id="tp-input">
@@ -197,7 +198,7 @@
   <ref class="QueueConnectionRule" id="fa-queue-rule"/>
   <ref class="QueueConnectionRule" id="data-requests-queue-rule"/>
   <ref class="QueueConnectionRule" id="tp-queue-rule"/>
-  <ref class="QueueConnectionRule" id="raw-data-rule"/>
+  <ref class="QueueConnectionRule" id="wib-eth-raw-data-rule"/>
  </rel>
  <rel name="network_rules">
   <ref class="NetworkConnectionRule" id="fa-net-rule"/>
@@ -224,7 +225,6 @@
  <attr name="generate_timesync" type="bool" val="1"/>
  <rel name="request_handler" class="TPRequestHandler" id="def-tp-request-handler"/>
  <rel name="latency_buffer" class="LatencyBuffer" id="def-latency-buf"/>
-  <rel name="data_processor" class="TPDataProcessor" id="def-tp-processor"/>
 </obj>
 
 <obj class="RequestHandler" id="def-data-request-handler">
@@ -244,7 +244,7 @@
 </obj>
 
 <obj class="StreamEmulationParameters" id="stream-emu">
- <attr name="data_file_name" type="string" val="asset://?label=DuneWIB&amp;subsystem=readout"/>
+	<attr name="data_file_name" type="string" val="/nfs/home/glehmann/nightly/wibeth_output_all_zeros-dd156b4.bin"/>
  <attr name="input_file_size_limit" type="u32" val="1000000"/>
  <attr name="set_t0" type="bool" val="1"/>
  <attr name="random_population_size" type="u32" val="0"/>
@@ -261,7 +261,6 @@
  <attr name="algorithm" type="string" val="SimpleThreshold"/>
  <attr name="threshold" type="u16" val="60"/>
 </obj>
-
 
 <obj class="TPRequestHandler" id="def-tp-request-handler">
  <attr name="handler_threads" type="u16" val="1"/>
