@@ -215,6 +215,7 @@
  <attr name="generate_timesync" type="bool" val="1"/>
  <rel name="request_handler" class="RequestHandler" id="def-data-request-handler"/>
  <rel name="latency_buffer" class="LatencyBuffer" id="def-latency-buf"/>
+ <rel name="data_processor" class="TPDataProcessor" id="def-tp-processor"/>
 </obj>
 
 <obj class="ReadoutModuleConf" id="def-tp-handler">
@@ -223,6 +224,7 @@
  <attr name="generate_timesync" type="bool" val="1"/>
  <rel name="request_handler" class="TPRequestHandler" id="def-tp-request-handler"/>
  <rel name="latency_buffer" class="LatencyBuffer" id="def-latency-buf"/>
+  <rel name="data_processor" class="TPDataProcessor" id="def-tp-processor"/>
 </obj>
 
 <obj class="RequestHandler" id="def-data-request-handler">
@@ -250,6 +252,16 @@
  <attr name="generate_periodic_adc_pattern" type="bool" val="1"/>
  <attr name="TP_rate_per_channel" type="float" val="0"/>
 </obj>
+
+<obj class="TPDataProcessor" id="def-tp-processor">
+ <attr name="queue_sizes" type="u32" val="10000"/>
+ <attr name="thread_names_prefix" type="string" val="tp"/>
+ <attr name="max_ticks_tot" type="u32" val="10000"/>
+ <attr name="tpg_enabled" type="bool" val="0"/>
+ <attr name="algorithm" type="string" val="SimpleThreshold"/>
+ <attr name="threshold" type="u16" val="60"/>
+</obj>
+
 
 <obj class="TPRequestHandler" id="def-tp-request-handler">
  <attr name="handler_threads" type="u16" val="1"/>
