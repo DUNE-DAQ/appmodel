@@ -76,15 +76,15 @@
 </comments>
 
 
-<obj class="LatencyBuffer" id="latencyBuf-1">
- <attr name="size" type="u32" val="1000"/>
+<obj class="LatencyBuffer" id="def-latency-buf">
+ <attr name="size" type="u32" val="1000000"/>
  <attr name="numa_aware" type="bool" val="1"/>
  <attr name="intrinsic_allocator" type="bool" val="1"/>
- <attr name="alignment_size" type="u32" val="1000"/>
+ <attr name="alignment_size" type="u32" val="4096"/>
  <attr name="preallocation" type="bool" val="1"/>
 </obj>
 
-<obj class="NICReceiverConf" id="ReceiverConf-1">
+<obj class="NICReceiverConf" id="def-nic-receiver-conf">
  <attr name="template_for" type="class" val="FakeCardReader"/>
  <attr name="mbuf_cache_size" type="u32" val="256"/>
  <attr name="lcore_sleep_us" type="u32" val="10"/>
@@ -95,105 +95,94 @@
  <attr name="tx_ring_size" type="u32" val="1024"/>
  <attr name="fkow_control" type="bool" val="1"/>
  <attr name="eal_args" type="string" val="-l 0-1 -n 3 -- -m [0:1].0 -j"/>
- <rel name="stats_conf" class="NICStatsConf" id="NICStats-1"/>
+ <rel name="stats_conf" class="NICStatsConf" id="def-nic-stats"/>
 </obj>
 
-<obj class="NICStatsConf" id="NICStats-1">
+<obj class="NICStatsConf" id="def-nic-stats">
  <attr name="analyze_nth_packet" type="s32" val="1"/>
  <attr name="expected_packet_size" type="u32" val="7243"/>
  <attr name="expected_seq_id_step" type="u32" val="1"/>
  <attr name="expected_timestamp_step" type="s32" val="1000"/>
 </obj>
 
-<obj class="NetworkConnectionDescriptor" id="dlh-net-desc-1">
- <attr name="uid_base" type="string" val="data_requests_for_Detector_Readout_0x"/>
- <attr name="connection_type" type="enum" val="kSendRecv"/>
-  <attr name="data_type" type="string" val="DataRequest"/>
-  <rel name="associated_service" class="Service" id="dataFragments"/>
-</obj>
-
-<obj class="NetworkConnectionDescriptor" id="faConnection">
-  <attr name="uid_base" type="string" val="inputReqToDLH"/>
+<obj class="NetworkConnectionDescriptor" id="fa-connection">
+  <attr name="uid_base" type="string" val="data_requests_for_"/>
   <attr name="connection_type" type="enum" val="kSendRecv"/>
   <attr name="data_type" type="string" val="Fragment"/>
   <rel name="associated_service" class="Service" id="dataFragments"/>
 </obj>
 
-<obj class="NetworkConnectionDescriptor" id="tpdlh-net-desc-1">
-  <attr name="uid_base" type="string" val="triggerPrimitivedatarequest"/>
+<obj class="NetworkConnectionDescriptor" id="tp-publisher">
+  <attr name="uid_base" type="string" val="triggerPrimitives_"/>
   <attr name="connection_type" type="enum" val="kPubSub"/>
   <attr name="data_type" type="string" val="TPSet"/>
  <rel name="associated_service" class="Service" id="triggerPrimitives"/>
 </obj>
 
-<obj class="NetworkConnectionRule" id="dlh-net-rule">
- <attr name="endpoint_class" type="class" val="ReadoutModule"/>
- <rel name="descriptor" class="NetworkConnectionDescriptor" id="dlh-net-desc-1"/>
+<obj class="NetworkConnectionDescriptor" id="ts-publisher">
+  <attr name="uid_base" type="string" val="timeSync_"/>
+  <attr name="connection_type" type="enum" val="kPubSub"/>
+  <attr name="data_type" type="string" val="TimeSync"/>
+ <rel name="associated_service" class="Service" id="timeSyncs"/>
 </obj>
 
 <obj class="NetworkConnectionRule" id="fa-net-rule">
  <attr name="endpoint_class" type="class" val="FragmentAggregator"/>
- <rel name="descriptor" class="NetworkConnectionDescriptor" id="faConnection"/>
+ <rel name="descriptor" class="NetworkConnectionDescriptor" id="fa-connection"/>
 </obj>
 
-<obj class="NetworkConnectionRule" id="tpdlh-rule-1">
- <attr name="endpoint_class" type="class" val="TPHandlerModule"/>
- <rel name="descriptor" class="NetworkConnectionDescriptor" id="tpdlh-net-desc-1"/>
+<obj class="NetworkConnectionRule" id="tp-net-rule">
+ <attr name="endpoint_class" type="class" val="FDDataLinkHandler"/>
+ <rel name="descriptor" class="NetworkConnectionDescriptor" id="tp-publisher"/>
 </obj>
 
-<obj class="QueueConnectionRule" id="agregatorInputRule">
+<obj class="NetworkConnectionRule" id="ts-net-rule">
+ <attr name="endpoint_class" type="class" val="FDDataLinkHandler"/>
+ <rel name="descriptor" class="NetworkConnectionDescriptor" id="ts-publisher"/>
+</obj>
+
+<obj class="QueueConnectionRule" id="fa-queue-rule">
  <attr name="destination_class" type="class" val="FragmentAggregator"/>
- <rel name="descriptor" class="QueueDescriptor" id="aggregatorInput"/>
+ <rel name="descriptor" class="QueueDescriptor" id="fa-input"/>
 </obj>
 
-<obj class="QueueConnectionRule" id="dataRequestRule">
- <attr name="destination_class" type="class" val="ReadoutModule"/>
- <rel name="descriptor" class="QueueDescriptor" id="DataRequestQueueDescriptor"/>
+<obj class="QueueConnectionRule" id="data-requests-queue-rule">
+ <attr name="destination_class" type="class" val="FDDataLinkHandler"/>
+ <rel name="descriptor" class="QueueDescriptor" id="data-req-queue-desc"/>
 </obj>
 
-<obj class="QueueConnectionRule" id="processingData-1">
- <attr name="destination_class" type="class" val="TPHandlerModule"/>
- <rel name="descriptor" class="QueueDescriptor" id="processingInput-1"/>
+<obj class="QueueConnectionRule" id="tp-queue-rule">
+ <attr name="destination_class" type="class" val="FDDataLinkHandler"/>
+ <rel name="descriptor" class="QueueDescriptor" id="tp-input"/>
 </obj>
 
-<obj class="QueueConnectionRule" id="rawData-1">
- <attr name="destination_class" type="class" val="ReadoutModule"/>
- <rel name="descriptor" class="QueueDescriptor" id="rawInput-1"/>
+<obj class="QueueConnectionRule" id="raw-data-rule">
+ <attr name="destination_class" type="class" val="FDDataLinkHandler"/>
+ <rel name="descriptor" class="QueueDescriptor" id="raw-input"/>
 </obj>
 
-<obj class="QueueConnectionRule" id="tpRequestRule">
- <attr name="destination_class" type="class" val="TPHandlerModule"/>
- <rel name="descriptor" class="QueueDescriptor" id="tpRequestQueueDescriptor"/>
-</obj>
-
-<obj class="QueueDescriptor" id="DataRequestQueueDescriptor">
+<obj class="QueueDescriptor" id="data-req-queue-desc">
  <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
- <attr name="capacity" type="u32" val="100"/>
+ <attr name="capacity" type="u32" val="1000"/>
  <attr name="data_type" type="string" val="DataRequest"/>
 </obj>
 
-<obj class="QueueDescriptor" id="aggregatorInput">
+<obj class="QueueDescriptor" id="fa-input">
  <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>
- <attr name="capacity" type="u32" val="100"/>
- <attr name="data_type" type="string" val="raw_data"/>
+ <attr name="capacity" type="u32" val="1000"/>
+ <attr name="data_type" type="string" val="Fragment"/>
 </obj>
 
-<obj class="QueueDescriptor" id="processingInput-1">
+<obj class="QueueDescriptor" id="tp-input">
  <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>
- <attr name="capacity" type="u32" val="100"/>
- <attr name="data_type" type="string" val="processing_data"/>
+ <attr name="capacity" type="u32" val="100000"/>
+ <attr name="data_type" type="string" val="TriggerPrimitive"/>
 </obj>
 
-<obj class="QueueDescriptor" id="rawInput-1">
+<obj class="QueueDescriptor" id="raw-input">
  <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
  <attr name="capacity" type="u32" val="1000"/>
  <attr name="data_type" type="string" val="raw_data"/>
-</obj>
-
-<obj class="QueueDescriptor" id="tpRequestQueueDescriptor">
- <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>
- <attr name="capacity" type="u32" val="100"/>
- <attr name="data_type" type="string" val="DataRequest"/>
 </obj>
 
 <obj class="RCApplication" id="ru-controller">
@@ -210,38 +199,37 @@
  </rel>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="queue_rules">
-  <ref class="QueueConnectionRule" id="agregatorInputRule"/>
-  <ref class="QueueConnectionRule" id="dataRequestRule"/>
-  <ref class="QueueConnectionRule" id="processingData-1"/>
-  <ref class="QueueConnectionRule" id="rawData-1"/>
-  <ref class="QueueConnectionRule" id="tpRequestRule"/>
+  <ref class="QueueConnectionRule" id="fa-queue-rule"/>
+  <ref class="QueueConnectionRule" id="data-requests-queue-rule"/>
+  <ref class="QueueConnectionRule" id="tp-queue-rule"/>
+  <ref class="QueueConnectionRule" id="raw-data-rule"/>
  </rel>
  <rel name="network_rules">
-  <ref class="NetworkConnectionRule" id="dlh-net-rule"/>
   <ref class="NetworkConnectionRule" id="fa-net-rule"/>
-  <ref class="NetworkConnectionRule" id="tpdlh-rule-1"/>
+  <ref class="NetworkConnectionRule" id="tp-net-rule"/>
+  <ref class="NetworkConnectionRule" id="ts-net-rule"/>
  </rel>
  <rel name="uses" class="RoHwConfig" id="rohw-1"/>
- <rel name="link_handler" class="ReadoutModuleConf" id="linkHandler-1"/>
- <rel name="tp_handler" class="ReadoutModuleConf" id="tpHandler-1"/>
- <rel name="data_reader" class="NICReceiverConf" id="ReceiverConf-1"/>
+ <rel name="link_handler" class="ReadoutModuleConf" id="def-link-handler"/>
+ <rel name="tp_handler" class="ReadoutModuleConf" id="def-tp-handler"/>
+ <rel name="data_reader" class="NICReceiverConf" id="def-nic-receiver-conf"/>
 </obj>
 
-<obj class="ReadoutModuleConf" id="linkHandler-1">
+<obj class="ReadoutModuleConf" id="def-link-handler">
  <attr name="template_for" type="class" val="FDDataLinkHandler"/>
  <attr name="input_data_type" type="string" val="WIBEthFrame"/>
- <rel name="request_handler" class="RequestHandler" id="requestHandler-1"/>
- <rel name="latency_buffer" class="LatencyBuffer" id="latencyBuf-1"/>
+ <rel name="request_handler" class="RequestHandler" id="def-data-request-handler"/>
+ <rel name="latency_buffer" class="LatencyBuffer" id="def-latency-buf"/>
 </obj>
 
-<obj class="ReadoutModuleConf" id="tpHandler-1">
+<obj class="ReadoutModuleConf" id="def-tp-handler">
  <attr name="template_for" type="class" val="FDDataLinkHandler"/>
- <attr name="input_data_type" type="string" val="TPSet"/>
- <rel name="request_handler" class="TPRequestHandler" id="TPHandlerConf-1"/>
- <rel name="latency_buffer" class="LatencyBuffer" id="latencyBuf-1"/>
+ <attr name="input_data_type" type="string" val="TriggerPrimitive"/>
+ <rel name="request_handler" class="TPRequestHandler" id="def-tp-request-handler"/>
+ <rel name="latency_buffer" class="LatencyBuffer" id="def-latency-buf"/>
 </obj>
 
-<obj class="RequestHandler" id="requestHandler-1">
+<obj class="RequestHandler" id="def-data-request-handler">
  <attr name="handlier_threads" type="u16" val="1"/>
  <attr name="request_timeout" type="u32" val="10000"/>
  <attr name="streaming_buffer_size" type="u32" val="1000"/>
@@ -256,13 +244,13 @@
  <rel name="controller" class="RCApplication" id="ru-controller"/>
 </obj>
 
-<obj class="TPRequestHandler" id="TPHandlerConf-1">
+<obj class="TPRequestHandler" id="def-tp-request-handler">
  <attr name="handlier_threads" type="u16" val="1"/>
  <attr name="request_timeout" type="u32" val="10000"/>
  <attr name="streaming_buffer_size" type="u32" val="1000"/>
  <attr name="use_o_direct" type="bool" val="1"/>
  <attr name="enable_raw_recording" type="bool" val="1"/>
- <attr name="min_latency_ticks" type="u32" val="100"/>
+ <attr name="min_latency_ticks" type="u32" val="6250000"/>
  <attr name="max_transmission_rate_hz" type="u32" val="1000"/>
 </obj>
 
