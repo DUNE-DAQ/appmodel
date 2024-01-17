@@ -20,7 +20,7 @@
 #include "appdal/DFOApplication.hpp"
 #include "appdal/ReadoutApplication.hpp"
 #include "appdal/SmartDaqApplication.hpp"
-#include "appdal/TPWriterApplication.hpp"
+#include "appdal/TPStreamWriterApplication.hpp"
 
 #include "appdal/appdalIssues.hpp"
 

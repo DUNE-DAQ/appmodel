@@ -118,7 +118,7 @@
   <attribute name="free_threshold" type="s32" init-value="5"/>
  </class>
 
- <class name="DFOModule">
+ <class name="DataFlowOrchestrator">
   <superclass name="DaqModule"/>
   <relationship name="configuration" class-type="DFOConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
@@ -166,7 +166,6 @@
 
  <class name="DataStoreConf">
   <attribute name="type" type="string"/>
-  <attribute name="operational_environment" type="string"/>
   <attribute name="directory_path" type="string" description="The base directory for saving files" is-not-null="yes"/>
   <attribute name="mode" description="The operation mode that the DataStore should use when organizing the data into files" type="enum" range="all-per-file,one-event-per-file" init-value="all-per-file" is-not-null="yes"/>
   <attribute name="max_file_size" type="u64" init-value="0" is-not-null="yes"/>
@@ -189,9 +188,6 @@
   <relationship name="data_store_params" class-type="DataStoreConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="FakeCardReader">
-  <superclass name="DataReader"/>
- </class>
 
   <class name="FakeDataProd">
     <superclass name="DaqModule"/>
@@ -313,7 +309,7 @@
   <attribute name="post_processing_delay_ticks" description="Number of clock tick by which post processing of incoming data shall be delayed." type="u64" init-value="0" is-not-null="yes"/>
   <relationship name="request_handler" class-type="RequestHandler" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="latency_buffer" class-type="LatencyBuffer" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="data_processor" class-type="DataProcessor" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="data_processor" class-type="DataProcessor" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="RequestHandler">
@@ -362,20 +358,20 @@
   <attribute name="max_transmission_rate_hz" type="u32" init-value="1000" is-not-null="yes"/>
  </class>
 
- <class name="TPWriter">
+ <class name="TPStreamWriter">
   <superclass name="DaqModule"/>
-  <relationship name="configuration" class-type="TPWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="configuration" class-type="TPStreamWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="TPWriterApplication">
+ <class name="TPStreamWriterApplication">
   <superclass name="SmartDaqApplication"/>
-  <relationship name="tp_writer" class-type="TPWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="tp_writer" class-type="TPStreamWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate dal objects for streams of thie ReadoutApplication on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
   </method>
  </class>
 
- <class name="TPWriterConf">
+ <class name="TPStreamWriterConf">
    <attribute name="tp_accumulation_interval" type="u64" init-value="0" is-not-null="yes"/>
    <attribute name="source_id" type="u32" is-not-null="yes"/>
   <relationship name="data_store_params" class-type="DataStoreConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -388,7 +384,7 @@
    <attribute name="source_id" type="u32" is-not-null="yes"/>
  </class>
 
- <class name="TRBuilder">
+ <class name="TriggerRecordBuilder">
   <superclass name="DaqModule"/>
   <relationship name="configuration" class-type="TRBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
