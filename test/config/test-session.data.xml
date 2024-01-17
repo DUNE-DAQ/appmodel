@@ -112,7 +112,12 @@
  <attr name="protocol" type="string" val="tcp"/>
  <attr name="port" type="u16" val="0"/>
 </obj>
-  
+
+<obj class="Service" id="timeSyncs">
+ <attr name="protocol" type="string" val="tcp"/>
+ <attr name="port" type="u16" val="0"/>
+</obj>
+
   <obj class="Service" id="triggerDecisions">
     <attr name="protocol" type="string" val="tcp"/>
     <attr name="port" type="u16" val="0"/>
