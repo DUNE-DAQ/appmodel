@@ -88,6 +88,10 @@
 </include>
 
 
+ <class name="FDFakeCardReader">
+  <superclass name="DataReader"/>
+ </class>
+
  <class name="EthStreamParameters">
   <superclass name="StreamParameters"/>
   <attribute name="protocol" type="enum" range="udp,zmq" init-value="udp" is-not-null="yes"/>
