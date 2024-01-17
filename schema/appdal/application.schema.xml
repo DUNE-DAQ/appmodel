@@ -188,9 +188,6 @@
   <relationship name="data_store_params" class-type="DataStoreConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="FakeCardReader">
-  <superclass name="DataReader"/>
- </class>
 
   <class name="FakeDataProd">
     <superclass name="DaqModule"/>
