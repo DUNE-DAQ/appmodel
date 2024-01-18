@@ -108,13 +108,19 @@
  <rel name="associated_service" class="Service" id="dataFragments"/>
 </obj>
 
+<obj class="NetworkConnectionDescriptor" id="tp-publisher">
+ <attr name="uid_base" type="string" val="triggerPrimitives_"/>
+ <attr name="connection_type" type="enum" val="kPubSub"/>
+ <attr name="data_type" type="string" val="TPSet"/>
+ <rel name="associated_service" class="Service" id="triggerPrimitives"/>
+</obj>
+
 <obj class="NetworkConnectionDescriptor" id="ts-publisher">
  <attr name="uid_base" type="string" val="timeSync_"/>
  <attr name="connection_type" type="enum" val="kPubSub"/>
  <attr name="data_type" type="string" val="TimeSync"/>
  <rel name="associated_service" class="Service" id="timeSyncs"/>
 </obj>
-
 
 <obj class="NetworkConnectionRule" id="fa-net-rule">
  <attr name="endpoint_class" type="class" val="FragmentAggregator"/>
