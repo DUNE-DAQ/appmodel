@@ -112,7 +112,8 @@
   <attribute name="trigger_candidate_input" type="string" is-not-null="yes"/>
   <attribute name="dfo_inhibit_input"       type="string" is-not-null="yes"/>
   <attribute name="td_output"               type="string" is-not-null="yes"/>
-  <relationship name="configuration" class-type="ModuleLevelTriggerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="configuration"        class-type="ModuleLevelTriggerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="mandatory_links"      class-type="SourceIDConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="ModuleLevelTriggerConf">
@@ -132,6 +133,7 @@
 
   <attribute name="use_readout_map"               type="bool" init-value="false" is-not-null="yes"/>
   <relationship name="tc_readout_map"             class-type="TCReadoutMap" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+
  </class>
 
  <class name="ROIGroupConf">
@@ -146,6 +148,11 @@
   <attribute name="time_before"                   type="u32" init-value="1000" is-not-null="yes"/>
   <attribute name="time_after"                   type="u32"   init-value="1001" is-not-null="yes"/>
  </class>
+
+<class name="SourceIDConf">
+  <attribute name="id" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="subsystem" type="enum" range="kUnknown,kDetectorReadout,kHwDisnalsInterface,kTrigger,kTRBuilder" init-value="kUnknown" is-not-null="yes"/>
+</class>
 
  <!-- Random Trigger Candidate Maker configuration --> 
  <class name="RandomTriggerCandidateMaker">

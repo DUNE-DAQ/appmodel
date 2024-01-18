@@ -16,6 +16,7 @@
 #include "coredal/Connection.hpp"
 #include "coredal/DROStreamConf.hpp"
 #include "coredal/NetworkConnection.hpp"
+#include "coredal/ReadoutInterface.hpp"
 #include "coredal/ReadoutGroup.hpp"
 #include "coredal/ResourceSet.hpp"
 #include "coredal/Service.hpp"
@@ -25,6 +26,7 @@
 #include "appdal/NetworkConnectionDescriptor.hpp"
 #include "appdal/QueueConnectionRule.hpp"
 #include "appdal/QueueDescriptor.hpp"
+#include "appdal/ReadoutModule.hpp"
 
 #include "appdal/LatencyBuffer.hpp"
 #include "appdal/RequestHandler.hpp"
@@ -133,11 +135,11 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     std::string data_type = rule->get_descriptor()->get_data_type();
 
     // Network connections for the MLT
-    if(endpoint_class == "ModuleLevelTrigger" && data_type == "TriggerInhibit")
+    if(data_type == "TriggerInhibit")
       tiMLTNetDesc = rule->get_descriptor();
-    if(endpoint_class == "ModuleLevelTrigger" && data_type == "TriggerDecision")
+    if(data_type == "TriggerDecision")
       tdMLTNetDesc = rule->get_descriptor();
-    if(endpoint_class == "TimingTriggerCandidateMaker" && data_type == "HSIEvent")
+    if(data_type == "HSIEvent")
       tmgTrgNetDesc = rule->get_descriptor();
 
     std::cout << "Endpoint class: " << endpoint_class << " data_type: " << data_type << std::endl;
@@ -165,6 +167,72 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   std::string mltUid("mlt");
   confdb->create(dbfile, "ModuleLevelTrigger", mltUid, mltObj);
   mltObj.set_obj("configuration", &mlt_conf_obj);
+
+  // Create the readout map
+  auto resources = get_contains();
+  if (resources.size() == 0) {
+    throw (BadConf(ERS_HERE, "No ReadoutGroups contained in application"));
+  }
+
+  std::vector<const oksdbinterfaces::ConfigObject*> sourceIdConfs;
+  TLOG() << "Number of ReadoutGroups in the application: " << resources.size();
+  // Interate over all the readout groups
+  for(auto roGroup : resources){
+    TLOG() << "Some ReadoutGroup found!" << std::endl;
+    if (roGroup->disabled(*session)) {
+      TLOG_DEBUG(7) << "Ignoring disabled ReadoutGroup " << roGroup->UID();
+      continue;
+    }
+
+    auto group_rset = roGroup->cast<coredal::ReadoutGroup>();
+    if (group_rset == nullptr) {
+        throw (BadConf(ERS_HERE, "TriggerApplication's readoutgroup list contains something other than ReadoutGroup"));
+    }
+    if (group_rset->get_contains().empty()) {
+        throw (BadConf(ERS_HERE, "ReadoutGroup does not contain interfaces"));
+    }
+
+    // Iterate over each interface in per group
+    auto interfaces = group_rset->get_contains();
+    TLOG() << "Number of ReadoutInterfaces in that group : " << interfaces.size();
+    for (auto interface_rset : interfaces) {
+      TLOG() << "Some ReadoutInterface found!" << std::endl;
+      if (interface_rset->disabled(*session)) {
+        TLOG_DEBUG(7) << "Ignoring disabled ReadoutInterface " << interface_rset->UID();
+        continue;
+      }
+      auto interface = interface_rset->cast<coredal::ReadoutInterface>();
+      if (interface == nullptr) {
+        throw (BadConf(ERS_HERE, "ReadoutGroup contains something othen than ReadoutInterface"));
+      }
+      auto streams = interface->get_contains();
+      TLOG() << "Number of streams in that interface: " << streams.size();
+
+      // Interate over all the streams
+      for (auto link : streams) {
+        TLOG() << "Some ReadoutStream found!" << std::endl;
+        // TODO: In the future need to check if this is DROStreamConf, or some other e.g. TCBufferLink, etc
+        // TODO: For now we only have DROStreamConf!
+        auto stream = link->cast<coredal::DROStreamConf>();
+        if (stream == nullptr) {
+          throw (BadConf(ERS_HERE, "ReadoutInterface contains something other than DROStreamConf"));
+        }
+        if (stream->disabled(*session)) {
+          TLOG_DEBUG(7) << "Ignoring disabled DROStreamConf " << stream->UID();
+          continue;
+        }
+         auto id    = stream->get_src_id();
+         oksdbinterfaces::ConfigObject sourceIdConf;
+         std::string sourceIdConfId("dro-mlt-stream-config-");
+         confdb->create(dbfile, "SourceIDConf", sourceIdConfId + std::to_string(sourceIdConfs.size()), sourceIdConf);
+         sourceIdConf.set_by_val<uint32_t>("id", id);
+         sourceIdConf.set_by_val<std::string>("subsystem", "kDetectorReadout");
+         sourceIdConfs.push_back(&sourceIdConf);
+      }
+    }
+  }
+  TLOG() << "Number of readout links: " << sourceIdConfs.size();
+  mltObj.set_objs("mandatory_links", sourceIdConfs);
 
   // Network connection for the MLT: input TriggerInhibit
   oksdbinterfaces::ConfigObject tiMLTNetObj = create_network_connection(std::string("df_busy_signal-") + UID(), tiMLTNetDesc, confdb, dbfile);
@@ -336,7 +404,7 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     std::cout << "Making a custom trigger!" << std::endl;
     auto cstTCMakerConfObj = cstTCMakerConf->config_object();
     oksdbinterfaces::ConfigObject cstTCMakerObj;
-    std::string cstTCMakerUid("timing-");
+    std::string cstTCMakerUid("customtm-");
     confdb->create(dbfile, "CustomTriggerCandidateMaker", cstTCMakerUid + UID(), cstTCMakerObj);
     cstTCMakerObj.set_obj("configuration", &cstTCMakerConfObj);
 
