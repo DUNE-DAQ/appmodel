@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="ASCII"?>
+
+<!-- oks-data version 2.2 -->
+
+
+<!DOCTYPE oks-data [
+  <!ELEMENT oks-data (info, (include)?, (comments)?, (obj)+)>
+  <!ELEMENT info EMPTY>
+  <!ATTLIST info
+      name CDATA #IMPLIED
+      type CDATA #IMPLIED
+      num-of-items CDATA #REQUIRED
+      oks-format CDATA #FIXED "data"
+      oks-version CDATA #REQUIRED
+      created-by CDATA #IMPLIED
+      created-on CDATA #IMPLIED
+      creation-time CDATA #IMPLIED
+      last-modified-by CDATA #IMPLIED
+      last-modified-on CDATA #IMPLIED
+      last-modification-time CDATA #IMPLIED
+  >
+  <!ELEMENT include (file)*>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+      path CDATA #REQUIRED
+  >
+  <!ELEMENT comments (comment)*>
+  <!ELEMENT comment EMPTY>
+  <!ATTLIST comment
+      creation-time CDATA #REQUIRED
+      created-by CDATA #REQUIRED
+      created-on CDATA #REQUIRED
+      author CDATA #REQUIRED
+      text CDATA #REQUIRED
+  >
+  <!ELEMENT obj (attr | rel)*>
+  <!ATTLIST obj
+      class CDATA #REQUIRED
+      id CDATA #REQUIRED
+  >
+  <!ELEMENT attr (data)*>
+  <!ATTLIST attr
+      name CDATA #REQUIRED
+      type (bool|s8|u8|s16|u16|s32|u32|s64|u64|float|double|date|time|string|uid|enum|class|-) "-"
+      val CDATA ""
+  >
+  <!ELEMENT data EMPTY>
+  <!ATTLIST data
+      val CDATA #REQUIRED
+  >
+  <!ELEMENT rel (ref)*>
+  <!ATTLIST rel
+      name CDATA #REQUIRED
+      class CDATA ""
+      id CDATA ""
+  >
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref
+      class CDATA #REQUIRED
+      id CDATA #REQUIRED
+  >
+]>
+
+<oks-data>
+<info name="" type="" num-of-items="4" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20231207T113214"/>
+
+<include>
+ <file path="schema/coredal/dunedaq.schema.xml"/>
+</include>
+
+<comments>
+</comments>
+
+<obj class="Service" id="dataFragments">
+ <attr name="protocol" type="string" val="tcp"/>
+ <attr name="port" type="u16" val="0"/>
+</obj>
+
+<obj class="Service" id="triggerPrimitives">
+ <attr name="protocol" type="string" val="tcp"/>
+ <attr name="port" type="u16" val="0"/>
+</obj>
+
+<obj class="Service" id="timeSyncs">
+ <attr name="protocol" type="string" val="tcp"/>
+ <attr name="port" type="u16" val="0"/>
+</obj>
+
+  <obj class="Service" id="triggerDecisions">
+    <attr name="protocol" type="string" val="tcp"/>
+    <attr name="port" type="u16" val="0"/>
+  </obj>
+
+  <obj class="Service" id="triggerInhibits">
+    <attr name="protocol" type="string" val="tcp"/>
+    <attr name="port" type="u16" val="0"/>
+  </obj>
+
+  <obj class="Service" id="dfTokens">
+    <attr name="protocol" type="string" val="tcp"/>
+    <attr name="port" type="u16" val="0"/>
+  </obj>
+
+<obj class="NetworkConnectionDescriptor" id="fa-connection">
+ <attr name="uid_base" type="string" val="data_requests_for_"/>
+ <attr name="connection_type" type="enum" val="kSendRecv"/>
+ <attr name="data_type" type="string" val="Fragment"/>
+ <rel name="associated_service" class="Service" id="dataFragments"/>
+</obj>
+
+<obj class="NetworkConnectionDescriptor" id="ts-publisher">
+ <attr name="uid_base" type="string" val="timeSync_"/>
+ <attr name="connection_type" type="enum" val="kPubSub"/>
+ <attr name="data_type" type="string" val="TimeSync"/>
+ <rel name="associated_service" class="Service" id="timeSyncs"/>
+</obj>
+
+
+<obj class="NetworkConnectionRule" id="fa-net-rule">
+ <attr name="endpoint_class" type="class" val="FragmentAggregator"/>
+ <rel name="descriptor" class="NetworkConnectionDescriptor" id="fa-connection"/>
+</obj>
+
+<obj class="NetworkConnectionRule" id="tp-net-rule">
+ <attr name="endpoint_class" type="class" val="FDDataLinkHandler"/>
+ <rel name="descriptor" class="NetworkConnectionDescriptor" id="tp-publisher"/>
+</obj>
+
+<obj class="NetworkConnectionRule" id="ts-net-rule">
+ <attr name="endpoint_class" type="class" val="FDDataLinkHandler"/>
+ <rel name="descriptor" class="NetworkConnectionDescriptor" id="ts-publisher"/>
+</obj>
+
+<obj class="QueueConnectionRule" id="data-requests-queue-rule">
+ <attr name="destination_class" type="class" val="FDDataLinkHandler"/>
+ <rel name="descriptor" class="QueueDescriptor" id="data-req-queue-desc"/>
+</obj>
+
+<obj class="QueueConnectionRule" id="fa-queue-rule">
+ <attr name="destination_class" type="class" val="FragmentAggregator"/>
+ <rel name="descriptor" class="QueueDescriptor" id="fa-input"/>
+</obj>
+
+<obj class="QueueConnectionRule" id="wib-eth-raw-data-rule">
+ <attr name="destination_class" type="class" val="FDDataLinkHandler"/>
+ <rel name="descriptor" class="QueueDescriptor" id="wib-eth-raw-input"/>
+ </obj>
+
+<obj class="QueueConnectionRule" id="tp-queue-rule">
+ <attr name="destination_class" type="class" val="FDDataLinkHandler"/>
+ <rel name="descriptor" class="QueueDescriptor" id="tp-input"/>
+</obj>
+
+<obj class="QueueDescriptor" id="data-req-queue-desc">
+ <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
+ <attr name="capacity" type="u32" val="1000"/>
+ <attr name="data_type" type="string" val="DataRequest"/>
+</obj>
+
+<obj class="QueueDescriptor" id="fa-input">
+ <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>
+ <attr name="capacity" type="u32" val="1000"/>
+ <attr name="data_type" type="string" val="Fragment"/>
+ </obj>
+
+<obj class="QueueDescriptor" id="wib-eth-raw-input">
+ <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
+ <attr name="capacity" type="u32" val="1000"/>
+ <attr name="data_type" type="string" val="WIBEthFrame"/>
+</obj>
+
+<obj class="QueueDescriptor" id="tp-input">
+ <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>
+ <attr name="capacity" type="u32" val="100000"/>
+ <attr name="data_type" type="string" val="TriggerPrimitive"/>
+</obj>
+
+<obj class="NetworkConnectionDescriptor" id="dft-net-desc-1">
+ <attr name="uid_base" type="string" val="dataflowtoken"/>
+ <attr name="connection_type" type="enum" val="kSendRecv"/>
+ <attr name="data_type" type="string" val="TriggerDecisionToken"/>
+ <rel name="associated_service" class="Service" id="dfTokens"/>
+</obj>
+
+<obj class="NetworkConnectionDescriptor" id="frag-net-desc-1">
+ <attr name="uid_base" type="string" val="fragments"/>
+ <attr name="connection_type" type="enum" val="kSendRecv"/>
+ <attr name="data_type" type="string" val="Fragment"/>
+ <rel name="associated_service" class="Service" id="dataFragments"/>
+</obj>
+
+<obj class="NetworkConnectionDescriptor" id="td-net-desc-1">
+ <attr name="uid_base" type="string" val="triggerdecision"/>
+ <attr name="connection_type" type="enum" val="kSendRecv"/>
+ <attr name="data_type" type="string" val="TriggerDecision"/>
+ <rel name="associated_service" class="Service" id="triggerDecisions"/>
+</obj>
+
+<obj class="NetworkConnectionDescriptor" id="ti-net-desc-1">
+ <attr name="uid_base" type="string" val="triggerInhibit"/>
+ <attr name="connection_type" type="enum" val="kSendRecv"/>
+ <attr name="data_type" type="string" val="TriggerInhibit"/>
+ <rel name="associated_service" class="Service" id="triggerInhibits"/>
+</obj>
+
+<obj class="NetworkConnectionRule" id="dft-net-rule">
+ <attr name="endpoint_class" type="class" val="DataFlowOrchestrator"/>
+ <rel name="descriptor" class="NetworkConnectionDescriptor" id="dft-net-desc-1"/>
+</obj>
+  <obj class="NetworkConnectionRule" id="dft-out-net-rule">
+    <attr name="endpoint_class" type="class" val="DataWriter"/>
+    <rel name="descriptor" class="NetworkConnectionDescriptor" id="dft-net-desc-1"/>
+  </obj>
+
+<obj class="NetworkConnectionRule" id="frag-net-rule">
+ <attr name="endpoint_class" type="class" val="TriggerRecordBuilder"/>
+ <rel name="descriptor" class="NetworkConnectionDescriptor" id="frag-net-desc-1"/>
+</obj>
+
+<obj class="NetworkConnectionRule" id="td-net-rule">
+ <attr name="endpoint_class" type="class" val="DataFlowOrchestrator"/>
+ <rel name="descriptor" class="NetworkConnectionDescriptor" id="td-net-desc-1"/>
+</obj>
+
+<obj class="NetworkConnectionRule" id="td-trb-net-rule">
+ <attr name="endpoint_class" type="class" val="TriggerRecordBuilder"/>
+ <rel name="descriptor" class="NetworkConnectionDescriptor" id="td-net-desc-1"/>
+</obj>
+
+<obj class="NetworkConnectionRule" id="ti-net-rule">
+ <attr name="endpoint_class" type="class" val="DataFlowOrchestrator"/>
+ <rel name="descriptor" class="NetworkConnectionDescriptor" id="ti-net-desc-1"/>
+</obj>
+
+<obj class="QueueConnectionRule" id="trigger-record-q-rule">
+ <attr name="destination_class" type="class" val="DataWriter"/>
+ <rel name="descriptor" class="QueueDescriptor" id="trigger-record-1"/>
+</obj>
+
+<obj class="QueueDescriptor" id="trigger-record-1">
+ <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
+ <attr name="capacity" type="u32" val="11"/>
+ <attr name="data_type" type="string" val="TriggerRecord"/>
+</obj>
+
+</oks-data>

@@ -68,7 +68,8 @@
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
  <file path="schema/appdal/application.schema.xml"/>
- <file path="test/config/data-store-params.data.xml"/>
+ <file path="config/appdal/connections.data.xml"/>
+ <file path="config/appdal/moduleconfs.data.xml"/>
 </include>
 
 <comments>
@@ -115,82 +116,6 @@
  <rel name="dfo" class="DFOConf" id="dfoconf-01"/>
 </obj>
 
-<obj class="DFOConf" id="dfoconf-01">
- <attr name="general_queue_timeout_ms" type="u32" val="100"/>
- <attr name="stop_timeout_ms" type="u32" val="100"/>
- <attr name="td_send_retries" type="s32" val="5"/>
- <attr name="busy_threshold" type="s32" val="2"/>
- <attr name="free_threshold" type="s32" val="1"/>
-</obj>
-
-<obj class="NetworkConnectionDescriptor" id="dft-net-desc-1">
- <attr name="uid_base" type="string" val="dataflowtoken"/>
- <attr name="connection_type" type="enum" val="kSendRecv"/>
- <attr name="data_type" type="string" val="TriggerDecisionToken"/>
- <rel name="associated_service" class="Service" id="dfTokens"/>
-</obj>
-
-<obj class="NetworkConnectionDescriptor" id="frag-net-desc-1">
- <attr name="uid_base" type="string" val="fragments"/>
- <attr name="connection_type" type="enum" val="kSendRecv"/>
- <attr name="data_type" type="string" val="Fragment"/>
- <rel name="associated_service" class="Service" id="dataFragments"/>
-</obj>
-
-<obj class="NetworkConnectionDescriptor" id="td-net-desc-1">
- <attr name="uid_base" type="string" val="triggerdecision"/>
- <attr name="connection_type" type="enum" val="kSendRecv"/>
- <attr name="data_type" type="string" val="TriggerDecision"/>
- <rel name="associated_service" class="Service" id="triggerDecisions"/>
-</obj>
-
-<obj class="NetworkConnectionDescriptor" id="ti-net-desc-1">
- <attr name="uid_base" type="string" val="triggerInhibit"/>
- <attr name="connection_type" type="enum" val="kSendRecv"/>
- <attr name="data_type" type="string" val="TriggerInhibit"/>
- <rel name="associated_service" class="Service" id="triggerInhibits"/>
-</obj>
-
-<obj class="NetworkConnectionRule" id="dft-net-rule">
- <attr name="endpoint_class" type="class" val="DataFlowOrchestrator"/>
- <rel name="descriptor" class="NetworkConnectionDescriptor" id="dft-net-desc-1"/>
-</obj>
-  <obj class="NetworkConnectionRule" id="dft-out-net-rule">
-    <attr name="endpoint_class" type="class" val="DataWriter"/>
-    <rel name="descriptor" class="NetworkConnectionDescriptor" id="dft-net-desc-1"/>
-  </obj>
-
-<obj class="NetworkConnectionRule" id="frag-net-rule">
- <attr name="endpoint_class" type="class" val="TriggerRecordBuilder"/>
- <rel name="descriptor" class="NetworkConnectionDescriptor" id="frag-net-desc-1"/>
-</obj>
-
-<obj class="NetworkConnectionRule" id="td-net-rule">
- <attr name="endpoint_class" type="class" val="DataFlowOrchestrator"/>
- <rel name="descriptor" class="NetworkConnectionDescriptor" id="td-net-desc-1"/>
-</obj>
-
-<obj class="NetworkConnectionRule" id="td-trb-net-rule">
- <attr name="endpoint_class" type="class" val="TriggerRecordBuilder"/>
- <rel name="descriptor" class="NetworkConnectionDescriptor" id="td-net-desc-1"/>
-</obj>
-
-<obj class="NetworkConnectionRule" id="ti-net-rule">
- <attr name="endpoint_class" type="class" val="DataFlowOrchestrator"/>
- <rel name="descriptor" class="NetworkConnectionDescriptor" id="ti-net-desc-1"/>
-</obj>
-
-<obj class="QueueConnectionRule" id="trigger-record-q-rule">
- <attr name="destination_class" type="class" val="DataWriter"/>
- <rel name="descriptor" class="QueueDescriptor" id="trigger-record-1"/>
-</obj>
-
-<obj class="QueueDescriptor" id="trigger-record-1">
- <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
- <attr name="capacity" type="u32" val="11"/>
- <attr name="data_type" type="string" val="TriggerRecord"/>
-</obj>
-
 <obj class="RCApplication" id="df-controller">
  <attr name="application_name" type="string" val="controller"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
@@ -203,11 +128,6 @@
 
 <obj class="StorageDevice" id="storage-01">
  <attr name="storage" type="u32" val="1000"/>
-</obj>
-
-<obj class="TRBConf" id="trb-01">
- <attr name="queues_timeout" type="u32" val="100"/>
- <attr name="trigger_record_timeout_ms" type="u32" val="2858"/>
 </obj>
 
 </oks-data>
