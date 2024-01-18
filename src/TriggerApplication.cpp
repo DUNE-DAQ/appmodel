@@ -125,6 +125,8 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     if((destination_class == "ModuleLevelTrigger") && (data_type == "TriggerCandidate"))
       tcQueueDesc = rule->get_descriptor();
   }
+  if(!tcQueueDesc)
+    throw (BadConf(ERS_HERE, "No description for the queue of TCs going tinto the MLT given"));
 
   /**************************************************************
    * Get all the network connections
@@ -164,21 +166,32 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   // Create MLT config object
   auto mlt_conf_obj = mlt_conf->config_object();
   oksdbinterfaces::ConfigObject mltObj;
-  std::string mltUid("mlt");
+  std::string mltUid("mlt-" + UID());
   confdb->create(dbfile, "ModuleLevelTrigger", mltUid, mltObj);
   mltObj.set_obj("configuration", &mlt_conf_obj);
 
-  // Create the readout map
+  // Create TC queue to the MLT
+  std::string tcQueueToMLTID("tcqueue-to-mlt-" + UID());
+  oksdbinterfaces::ConfigObject tcQueueToMLTObj;
+  confdb->create(dbfile, "Queue", tcQueueToMLTID, tcQueueToMLTObj);
+  tcQueueToMLTObj.set_by_val<std::string>("data_type", tcQueueDesc->get_data_type());
+  tcQueueToMLTObj.set_by_val<std::string>("queue_type", tcQueueDesc->get_queue_type());
+  tcQueueToMLTObj.set_by_val<uint32_t>("capacity", tcQueueDesc->get_capacity());
+  //rndTCMakerObj.set_objs("outputs", {&tcQueueToMLTObj});
+  mlt_inputs.push_back(&tcQueueToMLTObj);
+
+  /**************************************************************
+   * Create the readout map for MLT
+   **************************************************************/
   auto resources = get_contains();
   if (resources.size() == 0) {
     throw (BadConf(ERS_HERE, "No ReadoutGroups contained in application"));
   }
 
   std::vector<const oksdbinterfaces::ConfigObject*> sourceIdConfs;
-  TLOG() << "Number of ReadoutGroups in the application: " << resources.size();
+  TLOG_DEBUG(7) << "Number of ReadoutGroups in the application: " << resources.size();
   // Interate over all the readout groups
   for(auto roGroup : resources){
-    TLOG() << "Some ReadoutGroup found!" << std::endl;
     if (roGroup->disabled(*session)) {
       TLOG_DEBUG(7) << "Ignoring disabled ReadoutGroup " << roGroup->UID();
       continue;
@@ -194,9 +207,8 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
     // Iterate over each interface in per group
     auto interfaces = group_rset->get_contains();
-    TLOG() << "Number of ReadoutInterfaces in that group : " << interfaces.size();
+    TLOG_DEBUG(7) << "Number of ReadoutInterfaces in that group : " << interfaces.size();
     for (auto interface_rset : interfaces) {
-      TLOG() << "Some ReadoutInterface found!" << std::endl;
       if (interface_rset->disabled(*session)) {
         TLOG_DEBUG(7) << "Ignoring disabled ReadoutInterface " << interface_rset->UID();
         continue;
@@ -206,11 +218,10 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
         throw (BadConf(ERS_HERE, "ReadoutGroup contains something othen than ReadoutInterface"));
       }
       auto streams = interface->get_contains();
-      TLOG() << "Number of streams in that interface: " << streams.size();
+      TLOG_DEBUG(7) << "Number of streams in that interface: " << streams.size();
 
       // Interate over all the streams
       for (auto link : streams) {
-        TLOG() << "Some ReadoutStream found!" << std::endl;
         // TODO: In the future need to check if this is DROStreamConf, or some other e.g. TCBufferLink, etc
         // TODO: For now we only have DROStreamConf!
         auto stream = link->cast<coredal::DROStreamConf>();
@@ -221,6 +232,8 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
           TLOG_DEBUG(7) << "Ignoring disabled DROStreamConf " << stream->UID();
           continue;
         }
+
+        // Create SourceIDConf object for the MLT
          auto id    = stream->get_src_id();
          oksdbinterfaces::ConfigObject sourceIdConf;
          std::string sourceIdConfId("dro-mlt-stream-config-");
@@ -246,70 +259,64 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
    **************************************************************/
   auto rndTCMakerConf  = get_random_candidate_maker_conf();
   if(rndTCMakerConf){
-    if(!tcQueueDesc)
-      throw (BadConf(ERS_HERE, "No RTCM queue description given"));
-
     std::cout << "Making the RTCM!" << std::endl;
     // Make RTCM object
     auto rndTCMakerConfObj = rndTCMakerConf->config_object();
     oksdbinterfaces::ConfigObject rndTCMakerObj;
-    std::string rndTCMakerUid("rtcm-");
-    confdb->create(dbfile, "RandomTriggerCandidateMaker", rndTCMakerUid + UID(), rndTCMakerObj);
+    std::string rndTCMakerUid("rtcm-tcm-" + UID());
+    confdb->create(dbfile, "RandomTriggerCandidateMaker", rndTCMakerUid, rndTCMakerObj);
     rndTCMakerObj.set_obj("configuration", &rndTCMakerConfObj);
+    rndTCMakerObj.set_objs("outputs", {&tcQueueToMLTObj});
 
-    // Create the queue to the tee
-    std::string rtcmToTeeQueueUid("rtcm-to-tee-");
-    oksdbinterfaces::ConfigObject queueRTCMTeeObj;
-    confdb->create(dbfile, "Queue", rtcmToTeeQueueUid + UID(), queueRTCMTeeObj);
-    queueRTCMTeeObj.set_by_val<std::string>("data_type", tcQueueDesc->get_data_type());
-    queueRTCMTeeObj.set_by_val<std::string>("queue_type", tcQueueDesc->get_queue_type());
-    queueRTCMTeeObj.set_by_val<uint32_t>("capacity", tcQueueDesc->get_capacity());
-    rndTCMakerObj.set_objs("outputs", {&queueRTCMTeeObj});
+    //// Create the queue to the tee
+    //std::string rtcmToTeeQueueUid("rtcm-to-tee-");
+    //oksdbinterfaces::ConfigObject queueRTCMTeeObj;
+    //confdb->create(dbfile, "Queue", rtcmToTeeQueueUid + UID(), queueRTCMTeeObj);
+    //queueRTCMTeeObj.set_by_val<std::string>("data_type", tcQueueDesc->get_data_type());
+    //queueRTCMTeeObj.set_by_val<std::string>("queue_type", tcQueueDesc->get_queue_type());
+    //queueRTCMTeeObj.set_by_val<uint32_t>("capacity", tcQueueDesc->get_capacity());
+    //rndTCMakerObj.set_objs("outputs", {&queueRTCMTeeObj});
 
-    // Create the tee itself
-    std::string rtcmTCTeeUid("rtcm-TCSetTee-");
-    oksdbinterfaces::ConfigObject tcTeeRTCMObj;
-    confdb->create(dbfile, "TCSetTee", rtcmTCTeeUid + UID(), tcTeeRTCMObj);
-    tcTeeRTCMObj.set_objs("inputs", {&queueRTCMTeeObj});
+    //// Create the tee itself
+    //std::string rtcmTCTeeUid("rtcm-TCSetTee-");
+    //oksdbinterfaces::ConfigObject tcTeeRTCMObj;
+    //confdb->create(dbfile, "TCSetTee", rtcmTCTeeUid + UID(), tcTeeRTCMObj);
+    //tcTeeRTCMObj.set_objs("inputs", {&queueRTCMTeeObj});
 
-    // Queue to the buffer
-    std::string rtcmTeeToBufferQueueUid("rtcm-tctee-to-buffer-");
-    oksdbinterfaces::ConfigObject queueRTCMTeeToBufferObj;
-    confdb->create(dbfile, "Queue", rtcmTeeToBufferQueueUid + UID(), queueRTCMTeeToBufferObj);
-    queueRTCMTeeToBufferObj.set_by_val<std::string>("data_type", tcQueueDesc->get_data_type());
-    queueRTCMTeeToBufferObj.set_by_val<std::string>("queue_type", tcQueueDesc->get_queue_type());
-    queueRTCMTeeToBufferObj.set_by_val<uint32_t>("capacity", tcQueueDesc->get_capacity());
+    //// Queue to the buffer
+    //std::string rtcmTeeToBufferQueueUid("rtcm-tctee-to-buffer-");
+    //oksdbinterfaces::ConfigObject queueRTCMTeeToBufferObj;
+    //confdb->create(dbfile, "Queue", rtcmTeeToBufferQueueUid + UID(), queueRTCMTeeToBufferObj);
+    //queueRTCMTeeToBufferObj.set_by_val<std::string>("data_type", tcQueueDesc->get_data_type());
+    //queueRTCMTeeToBufferObj.set_by_val<std::string>("queue_type", tcQueueDesc->get_queue_type());
+    //queueRTCMTeeToBufferObj.set_by_val<uint32_t>("capacity", tcQueueDesc->get_capacity());
 
-    // Queue to the MLT
-    std::string rtcmTeeToMLTQueueUid("rtcm-tctee-to-mlt-");
-    oksdbinterfaces::ConfigObject queueRTCMTeeToMLTObj;
-    confdb->create(dbfile, "Queue", rtcmTeeToMLTQueueUid + UID(), queueRTCMTeeToMLTObj);
-    queueRTCMTeeToMLTObj.set_by_val<std::string>("data_type", tcQueueDesc->get_data_type());
-    queueRTCMTeeToMLTObj.set_by_val<std::string>("queue_type", tcQueueDesc->get_queue_type());
-    queueRTCMTeeToMLTObj.set_by_val<uint32_t>("capacity", tcQueueDesc->get_capacity());
+    //// Queue to the MLT
+    //std::string rtcmTeeToMLTQueueUid("rtcm-tctee-to-mlt-");
+    //oksdbinterfaces::ConfigObject queueRTCMTeeToMLTObj;
+    //confdb->create(dbfile, "Queue", rtcmTeeToMLTQueueUid + UID(), queueRTCMTeeToMLTObj);
+    //queueRTCMTeeToMLTObj.set_by_val<std::string>("data_type", tcQueueDesc->get_data_type());
+    //queueRTCMTeeToMLTObj.set_by_val<std::string>("queue_type", tcQueueDesc->get_queue_type());
+    //queueRTCMTeeToMLTObj.set_by_val<uint32_t>("capacity", tcQueueDesc->get_capacity());
 
-    // The TCBuffer
-    std::string rtcmBufferUid("rtcm-tcbuffer");
-    oksdbinterfaces::ConfigObject tcBufferRTCMObj;
-    confdb->create(dbfile, "TCBuffer", rtcmBufferUid + UID(), tcBufferRTCMObj);
+    //// The TCBuffer
+    //std::string rtcmBufferUid("rtcm-tcbuffer");
+    //oksdbinterfaces::ConfigObject tcBufferRTCMObj;
+    //confdb->create(dbfile, "TCBuffer", rtcmBufferUid + UID(), tcBufferRTCMObj);
 
-    auto tcBufferConf       = rndTCMakerConf->get_tcbuffer_conf();
-    auto tc_buffer_conf_obj = tcBufferConf->config_object();
-    //auto tcBufferLatency    = tcBufferConf->get_latencybuffer();
-    //auto tcBufferReqHandler = tcBufferConf->get_requesthandler();
+    //auto tcBufferConf       = rndTCMakerConf->get_tcbuffer_conf();
+    //auto tc_buffer_conf_obj = tcBufferConf->config_object();
 
-    tcBufferRTCMObj.set_obj("configuration", &tc_buffer_conf_obj);
+    //tcBufferRTCMObj.set_obj("configuration", &tc_buffer_conf_obj);
+    //tcBufferRTCMObj.set_objs("inputs", {&queueRTCMTeeToBufferObj});
+    //modules.push_back(confdb->get<TCBuffer>(rtcmBufferUid + UID()));
 
-    tcBufferRTCMObj.set_objs("inputs", {&queueRTCMTeeToBufferObj});
+    //tcTeeRTCMObj.set_objs("outputs", {&queueRTCMTeeToBufferObj, &queueRTCMTeeToMLTObj});
+    //mlt_inputs.push_back(std::move(&queueRTCMTeeToMLTObj));
 
-    modules.push_back(confdb->get<TCBuffer>(rtcmBufferUid + UID()));
-
-    tcTeeRTCMObj.set_objs("outputs", {&queueRTCMTeeToBufferObj, &queueRTCMTeeToMLTObj});
-    mlt_inputs.push_back(std::move(&queueRTCMTeeToMLTObj));
-
-    // Push all the modules related with the RTCM 
-    modules.push_back(confdb->get<RandomTriggerCandidateMaker>(rndTCMakerUid + UID()));
-    modules.push_back(confdb->get<TCSetTee>(rtcmTCTeeUid + UID()));
+    //// Push all the modules related with the RTCM 
+    modules.push_back(confdb->get<RandomTriggerCandidateMaker>(rndTCMakerUid));
+    //modules.push_back(confdb->get<TCSetTee>(rtcmTCTeeUid + UID()));
   }
 
   /**************************************************************
@@ -325,73 +332,74 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     std::cout << "Making the timing trigger!" << std::endl;
     auto tmgTCMakerConfObj = tmgTCMakerConf->config_object();
     oksdbinterfaces::ConfigObject tmgTCMakerObj;
-    std::string tmgTCMakerUid("timing-");
-    confdb->create(dbfile, "TimingTriggerCandidateMaker", tmgTCMakerUid + UID(), tmgTCMakerObj);
+    std::string tmgTCMakerUid("timing-tcm-" + UID());
+    confdb->create(dbfile, "TimingTriggerCandidateMaker", tmgTCMakerUid, tmgTCMakerObj);
     tmgTCMakerObj.set_obj("configuration", &tmgTCMakerConfObj);
+    tmgTCMakerObj.set_objs("outputs", {&tcQueueToMLTObj});
 
     // Create the network connection with trigger input
     oksdbinterfaces::ConfigObject tmgNetObj = create_network_connection(std::string("hsievents-") + UID(), tmgTrgNetDesc, confdb, dbfile);
     tmgTCMakerObj.set_objs("inputs", {&tmgNetObj});
 
-    // Create queue to the tee
-    // TODO: Once again, abstract into function
-    std::string tmgToTeeQueueUid("tmg-to-tee-");
-    oksdbinterfaces::ConfigObject queueTmgToTeeObj;
-    confdb->create(dbfile, "Queue", tmgToTeeQueueUid + UID(), queueTmgToTeeObj);
-    queueTmgToTeeObj.set_by_val<std::string>("data_type", tcQueueDesc->get_data_type());
-    queueTmgToTeeObj.set_by_val<std::string>("queue_type", tcQueueDesc->get_queue_type());
-    queueTmgToTeeObj.set_by_val<uint32_t>("capacity", tcQueueDesc->get_capacity());
-    tmgTCMakerObj.set_objs("outputs", {&queueTmgToTeeObj});
+    //// Create queue to the tee
+    //// TODO: Once again, abstract into function
+    //std::string tmgToTeeQueueUid("tmg-to-tee-");
+    //oksdbinterfaces::ConfigObject queueTmgToTeeObj;
+    //confdb->create(dbfile, "Queue", tmgToTeeQueueUid + UID(), queueTmgToTeeObj);
+    //queueTmgToTeeObj.set_by_val<std::string>("data_type", tcQueueDesc->get_data_type());
+    //queueTmgToTeeObj.set_by_val<std::string>("queue_type", tcQueueDesc->get_queue_type());
+    //queueTmgToTeeObj.set_by_val<uint32_t>("capacity", tcQueueDesc->get_capacity());
+    //tmgTCMakerObj.set_objs("outputs", {&queueTmgToTeeObj});
 
-    // Create the tee itself
-    std::string tmgTCTeeUid("tmg-TCSetTee-");
-    oksdbinterfaces::ConfigObject tcTeeTmgObj;
-    confdb->create(dbfile, "TCSetTee", tmgTCTeeUid + UID(), tcTeeTmgObj);
-    tcTeeTmgObj.set_objs("inputs", {&queueTmgToTeeObj});
+    //// Create the tee itself
+    //std::string tmgTCTeeUid("tmg-TCSetTee-");
+    //oksdbinterfaces::ConfigObject tcTeeTmgObj;
+    //confdb->create(dbfile, "TCSetTee", tmgTCTeeUid + UID(), tcTeeTmgObj);
+    //tcTeeTmgObj.set_objs("inputs", {&queueTmgToTeeObj});
 
-    // Queue to the buffer
-    std::string tmgTeeToBufferQueueUid("tmg-tctee-to-buffer-");
-    oksdbinterfaces::ConfigObject queueTmgTeeToBufferObj;
-    confdb->create(dbfile, "Queue", tmgTeeToBufferQueueUid + UID(), queueTmgTeeToBufferObj);
-    queueTmgTeeToBufferObj.set_by_val<std::string>("data_type", tcQueueDesc->get_data_type());
-    queueTmgTeeToBufferObj.set_by_val<std::string>("queue_type", tcQueueDesc->get_queue_type());
-    queueTmgTeeToBufferObj.set_by_val<uint32_t>("capacity", tcQueueDesc->get_capacity());
+    //// Queue to the buffer
+    //std::string tmgTeeToBufferQueueUid("tmg-tctee-to-buffer-");
+    //oksdbinterfaces::ConfigObject queueTmgTeeToBufferObj;
+    //confdb->create(dbfile, "Queue", tmgTeeToBufferQueueUid + UID(), queueTmgTeeToBufferObj);
+    //queueTmgTeeToBufferObj.set_by_val<std::string>("data_type", tcQueueDesc->get_data_type());
+    //queueTmgTeeToBufferObj.set_by_val<std::string>("queue_type", tcQueueDesc->get_queue_type());
+    //queueTmgTeeToBufferObj.set_by_val<uint32_t>("capacity", tcQueueDesc->get_capacity());
 
-    // Queue to the MLT
-    // TODO: This is going to be wrong for now!
-    // TODO: I think there can only be ONE TC queue to MLT, and that queue will have multiple inputs.
-    // TODO: Should define that queue right at the top with the MLT.
-    std::string tmgTeeToMLTQueueUid("tmg-tctee-to-mlt-");
-    oksdbinterfaces::ConfigObject queueTmgTeeToMLTObj;
-    confdb->create(dbfile, "Queue", tmgTeeToMLTQueueUid + UID(), queueTmgTeeToMLTObj);
-    queueTmgTeeToMLTObj.set_by_val<std::string>("data_type", tcQueueDesc->get_data_type());
-    queueTmgTeeToMLTObj.set_by_val<std::string>("queue_type", tcQueueDesc->get_queue_type());
-    queueTmgTeeToMLTObj.set_by_val<uint32_t>("capacity", tcQueueDesc->get_capacity());
+    //// Queue to the MLT
+    //// TODO: This is going to be wrong for now!
+    //// TODO: I think there can only be ONE TC queue to MLT, and that queue will have multiple inputs.
+    //// TODO: Should define that queue right at the top with the MLT.
+    //std::string tmgTeeToMLTQueueUid("tmg-tctee-to-mlt-");
+    //oksdbinterfaces::ConfigObject queueTmgTeeToMLTObj;
+    //confdb->create(dbfile, "Queue", tmgTeeToMLTQueueUid + UID(), queueTmgTeeToMLTObj);
+    //queueTmgTeeToMLTObj.set_by_val<std::string>("data_type", tcQueueDesc->get_data_type());
+    //queueTmgTeeToMLTObj.set_by_val<std::string>("queue_type", tcQueueDesc->get_queue_type());
+    //queueTmgTeeToMLTObj.set_by_val<uint32_t>("capacity", tcQueueDesc->get_capacity());
 
-    // The TCBuffer
-    std::string tmgBufferUid("tmg-tcbuffer");
-    oksdbinterfaces::ConfigObject tcBufferTmgObj;
-    confdb->create(dbfile, "TCBuffer", tmgBufferUid + UID(), tcBufferTmgObj);
+    //// The TCBuffer
+    //std::string tmgBufferUid("tmg-tcbuffer");
+    //oksdbinterfaces::ConfigObject tcBufferTmgObj;
+    //confdb->create(dbfile, "TCBuffer", tmgBufferUid + UID(), tcBufferTmgObj);
 
-    // TODO: This is very bad, TimingTimingCandidate should either have it's own buffer schema relation, or the conf should be taken from the application-buffer relationship (if any?)
-    auto tcBufferConf       = rndTCMakerConf->get_tcbuffer_conf();
-    auto tc_buffer_conf_obj = tcBufferConf->config_object();
-    //auto tcBufferLatency    = tcBufferConf->get_latencybuffer();
-    //auto tcBufferReqHandler = tcBufferConf->get_requesthandler();
+    //// TODO: This is very bad, TimingTimingCandidate should either have it's own buffer schema relation, or the conf should be taken from the application-buffer relationship (if any?)
+    //auto tcBufferConf       = rndTCMakerConf->get_tcbuffer_conf();
+    //auto tc_buffer_conf_obj = tcBufferConf->config_object();
+    ////auto tcBufferLatency    = tcBufferConf->get_latencybuffer();
+    ////auto tcBufferReqHandler = tcBufferConf->get_requesthandler();
 
-    tcBufferTmgObj.set_obj("configuration", &tc_buffer_conf_obj);
+    //tcBufferTmgObj.set_obj("configuration", &tc_buffer_conf_obj);
 
-    tcBufferTmgObj.set_objs("inputs", {&queueTmgTeeToBufferObj});
+    //tcBufferTmgObj.set_objs("inputs", {&queueTmgTeeToBufferObj});
 
-    // Push everything to modules & MLT queues
-    modules.push_back(confdb->get<TCBuffer>(tmgBufferUid + UID()));
+    //// Push everything to modules & MLT queues
+    //modules.push_back(confdb->get<TCBuffer>(tmgBufferUid + UID()));
 
-    tcTeeTmgObj.set_objs("outputs", {&queueTmgTeeToBufferObj, &queueTmgTeeToMLTObj});
-    mlt_inputs.push_back(std::move(&queueTmgTeeToMLTObj));
+    //tcTeeTmgObj.set_objs("outputs", {&queueTmgTeeToBufferObj, &queueTmgTeeToMLTObj});
+    //mlt_inputs.push_back(std::move(&queueTmgTeeToMLTObj));
 
     // Push all the modules related with the RTCM
-    modules.push_back(confdb->get<TimingTriggerCandidateMaker>(tmgTCMakerUid + UID()));
-    modules.push_back(confdb->get<TCSetTee>(tmgTCTeeUid + UID()));
+    modules.push_back(confdb->get<TimingTriggerCandidateMaker>(tmgTCMakerUid));
+    //modules.push_back(confdb->get<TCSetTee>(tmgTCTeeUid + UID()));
   }
 
   /**************************************************************
@@ -404,69 +412,70 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     std::cout << "Making a custom trigger!" << std::endl;
     auto cstTCMakerConfObj = cstTCMakerConf->config_object();
     oksdbinterfaces::ConfigObject cstTCMakerObj;
-    std::string cstTCMakerUid("customtm-");
-    confdb->create(dbfile, "CustomTriggerCandidateMaker", cstTCMakerUid + UID(), cstTCMakerObj);
+    std::string cstTCMakerUid("custom-tcm-" + UID());
+    confdb->create(dbfile, "CustomTriggerCandidateMaker", cstTCMakerUid, cstTCMakerObj);
     cstTCMakerObj.set_obj("configuration", &cstTCMakerConfObj);
+    cstTCMakerObj.set_objs("outputs", {&tcQueueToMLTObj});
 
-    // Create queue to the queue
-    // TODO: Again, abstract out into a function
-    std::string cstToTeeQueueUid("cst-to-tee-");
-    oksdbinterfaces::ConfigObject queueCstToTeeObj;
-    confdb->create(dbfile, "Queue", cstToTeeQueueUid + UID(), queueCstToTeeObj);
-    queueCstToTeeObj.set_by_val<std::string>("data_type", tcQueueDesc->get_data_type());
-    queueCstToTeeObj.set_by_val<std::string>("queue_type", tcQueueDesc->get_queue_type());
-    queueCstToTeeObj.set_by_val<uint32_t>("capacity", tcQueueDesc->get_capacity());
-    cstTCMakerObj.set_objs("outputs", {&queueCstToTeeObj});
+    //// Create queue to the queue
+    //// TODO: Again, abstract out into a function
+    //std::string cstToTeeQueueUid("cst-to-tee-");
+    //oksdbinterfaces::ConfigObject queueCstToTeeObj;
+    //confdb->create(dbfile, "Queue", cstToTeeQueueUid + UID(), queueCstToTeeObj);
+    //queueCstToTeeObj.set_by_val<std::string>("data_type", tcQueueDesc->get_data_type());
+    //queueCstToTeeObj.set_by_val<std::string>("queue_type", tcQueueDesc->get_queue_type());
+    //queueCstToTeeObj.set_by_val<uint32_t>("capacity", tcQueueDesc->get_capacity());
+    //cstTCMakerObj.set_objs("outputs", {&queueCstToTeeObj});
 
-    // Create the tee itself
-    std::string cstTCTeeUid("cst-TCSetTee-");
-    oksdbinterfaces::ConfigObject tcTeeCstObj;
-    confdb->create(dbfile, "TCSetTee", cstTCTeeUid + UID(), tcTeeCstObj);
-    tcTeeCstObj.set_objs("inputs", {&queueCstToTeeObj});
+    //// Create the tee itself
+    //std::string cstTCTeeUid("cst-TCSetTee-");
+    //oksdbinterfaces::ConfigObject tcTeeCstObj;
+    //confdb->create(dbfile, "TCSetTee", cstTCTeeUid + UID(), tcTeeCstObj);
+    //tcTeeCstObj.set_objs("inputs", {&queueCstToTeeObj});
 
-    // Queue to the buffer
-    std::string cstTeeToBufferQueueUid("cst-tctee-to-buffer-");
-    oksdbinterfaces::ConfigObject queueCstTeeToBufferObj;
-    confdb->create(dbfile, "Queue", cstTeeToBufferQueueUid + UID(), queueCstTeeToBufferObj);
-    queueCstTeeToBufferObj.set_by_val<std::string>("data_type", tcQueueDesc->get_data_type());
-    queueCstTeeToBufferObj.set_by_val<std::string>("queue_type", tcQueueDesc->get_queue_type());
-    queueCstTeeToBufferObj.set_by_val<uint32_t>("capacity", tcQueueDesc->get_capacity());
+    //// Queue to the buffer
+    //std::string cstTeeToBufferQueueUid("cst-tctee-to-buffer-");
+    //oksdbinterfaces::ConfigObject queueCstTeeToBufferObj;
+    //confdb->create(dbfile, "Queue", cstTeeToBufferQueueUid + UID(), queueCstTeeToBufferObj);
+    //queueCstTeeToBufferObj.set_by_val<std::string>("data_type", tcQueueDesc->get_data_type());
+    //queueCstTeeToBufferObj.set_by_val<std::string>("queue_type", tcQueueDesc->get_queue_type());
+    //queueCstTeeToBufferObj.set_by_val<uint32_t>("capacity", tcQueueDesc->get_capacity());
 
-    // Queue to the MLT
-    // TODO: This is going to be wrong for now!
-    // TODO: I think there can only be ONE TC queue to MLT, and that queue will have multiple inputs.
-    // TODO: Should define that queue right at the top with the MLT.
-    std::string cstTeeToMLTQueueUid("cst-tctee-to-mlt-");
-    oksdbinterfaces::ConfigObject queueCstTeeToMLTObj;
-    confdb->create(dbfile, "Queue", cstTeeToMLTQueueUid + UID(), queueCstTeeToMLTObj);
-    queueCstTeeToMLTObj.set_by_val<std::string>("data_type", tcQueueDesc->get_data_type());
-    queueCstTeeToMLTObj.set_by_val<std::string>("queue_type", tcQueueDesc->get_queue_type());
-    queueCstTeeToMLTObj.set_by_val<uint32_t>("capacity", tcQueueDesc->get_capacity());
+    //// Queue to the MLT
+    //// TODO: This is going to be wrong for now!
+    //// TODO: I think there can only be ONE TC queue to MLT, and that queue will have multiple inputs.
+    //// TODO: Should define that queue right at the top with the MLT.
+    //std::string cstTeeToMLTQueueUid("cst-tctee-to-mlt-");
+    //oksdbinterfaces::ConfigObject queueCstTeeToMLTObj;
+    //confdb->create(dbfile, "Queue", cstTeeToMLTQueueUid + UID(), queueCstTeeToMLTObj);
+    //queueCstTeeToMLTObj.set_by_val<std::string>("data_type", tcQueueDesc->get_data_type());
+    //queueCstTeeToMLTObj.set_by_val<std::string>("queue_type", tcQueueDesc->get_queue_type());
+    //queueCstTeeToMLTObj.set_by_val<uint32_t>("capacity", tcQueueDesc->get_capacity());
 
-    // The TCBuffer
-    std::string cstBufferUid("cst-tcbuffer");
-    oksdbinterfaces::ConfigObject tcBufferCstObj;
-    confdb->create(dbfile, "TCBuffer", cstBufferUid + UID(), tcBufferCstObj);
+    //// The TCBuffer
+    //std::string cstBufferUid("cst-tcbuffer");
+    //oksdbinterfaces::ConfigObject tcBufferCstObj;
+    //confdb->create(dbfile, "TCBuffer", cstBufferUid + UID(), tcBufferCstObj);
 
-    // TODO: This is very bad, TimingTimingCandidate should either have it's own buffer schema relation, or the conf should be taken from the application-buffer relationship (if any?)
-    auto tcBufferConf       = rndTCMakerConf->get_tcbuffer_conf();
-    auto tc_buffer_conf_obj = tcBufferConf->config_object();
-    //auto tcBufferLatency    = tcBufferConf->get_latencybuffer();
-    //auto tcBufferReqHandler = tcBufferConf->get_requesthandler();
+    //// TODO: This is very bad, TimingTimingCandidate should either have it's own buffer schema relation, or the conf should be taken from the application-buffer relationship (if any?)
+    //auto tcBufferConf       = rndTCMakerConf->get_tcbuffer_conf();
+    //auto tc_buffer_conf_obj = tcBufferConf->config_object();
+    ////auto tcBufferLatency    = tcBufferConf->get_latencybuffer();
+    ////auto tcBufferReqHandler = tcBufferConf->get_requesthandler();
 
-    tcBufferCstObj.set_obj("configuration", &tc_buffer_conf_obj);
+    //tcBufferCstObj.set_obj("configuration", &tc_buffer_conf_obj);
 
-    tcBufferCstObj.set_objs("inputs", {&queueCstTeeToBufferObj});
+    //tcBufferCstObj.set_objs("inputs", {&queueCstTeeToBufferObj});
 
-    // Push everything to modules & MLT queues
-    modules.push_back(confdb->get<TCBuffer>(cstBufferUid + UID()));
+    //// Push everything to modules & MLT queues
+    //modules.push_back(confdb->get<TCBuffer>(cstBufferUid + UID()));
 
-    tcTeeCstObj.set_objs("outputs", {&queueCstTeeToBufferObj, &queueCstTeeToMLTObj});
-    mlt_inputs.push_back(std::move(&queueCstTeeToMLTObj));
+    //tcTeeCstObj.set_objs("outputs", {&queueCstTeeToBufferObj, &queueCstTeeToMLTObj});
+    //mlt_inputs.push_back(std::move(&queueCstTeeToMLTObj));
 
-    // Push all the modules related with the RTCM
-    modules.push_back(confdb->get<CustomTriggerCandidateMaker>(cstTCMakerUid + UID()));
-    modules.push_back(confdb->get<TCSetTee>(cstTCTeeUid + UID()));
+    //// Push all the modules related with the RTCM
+    modules.push_back(confdb->get<CustomTriggerCandidateMaker>(cstTCMakerUid));
+    //modules.push_back(confdb->get<TCSetTee>(cstTCTeeUid + UID()));
   }
 
   // TODO: Warning! Not finished yet, remove and move down.

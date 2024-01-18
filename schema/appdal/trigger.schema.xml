@@ -166,7 +166,9 @@
   <attribute name="clock_frequency_hz" type="u32" init-value="62500000" is-not-null="yes"/>
   <attribute name="timestamp_method" type="enum" range="kTimeSync,kSystemClock" init-value="kTimeSync" is-not-null="yes"/>
   <attribute name="time_distribution" type="enum" range="kUniform,kPoisson" init-value="kUniform" is-not-null="yes"/>
+  <!--
   <relationship name="tcbuffer_conf" class-type="TCBufferConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  -->
  </class>
 
  <!-- Timing Trigger Candidate Maker Configuration -->
