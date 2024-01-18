@@ -331,8 +331,8 @@
 
  <class name="SmartDaqApplication" is-abstract="yes">
   <superclass name="Application"/>
-  <relationship name="queue_rules" class-type="QueueConnectionRule" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="network_rules" class-type="NetworkConnectionRule" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="queue_rules" class-type="QueueConnectionRule" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="network_rules" class-type="NetworkConnectionRule" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="">
    <method-implementation language="c++" prototype="virtual std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const" body=""/>
   </method>
