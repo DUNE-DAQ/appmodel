@@ -125,15 +125,15 @@
  </rel>
 </obj>
 
-<obj class="ALink" id="DFOModule-2-DFOConf-via-configuration">
+<obj class="ALink" id="DataFlowOrchestrator-2-DFOConf-via-configuration">
  <attr name="Name" type="string" val="configuration"/>
- <rel name="From" class="Class" id="DFOModule"/>
+ <rel name="From" class="Class" id="DataFlowOrchestrator"/>
  <rel name="To" class="Class" id="DFOConf"/>
  <rel name="Points">
-  <ref class="Point" id="1 DFOModule-2-DFOConf-via-configuration"/>
-  <ref class="Point" id="2 DFOModule-2-DFOConf-via-configuration"/>
-  <ref class="Point" id="3 DFOModule-2-DFOConf-via-configuration"/>
-  <ref class="Point" id="4 DFOModule-2-DFOConf-via-configuration"/>
+  <ref class="Point" id="1 DataFlowOrchestrator-2-DFOConf-via-configuration"/>
+  <ref class="Point" id="2 DataFlowOrchestrator-2-DFOConf-via-configuration"/>
+  <ref class="Point" id="3 DataFlowOrchestrator-2-DFOConf-via-configuration"/>
+  <ref class="Point" id="4 DataFlowOrchestrator-2-DFOConf-via-configuration"/>
  </rel>
 </obj>
 
@@ -269,51 +269,51 @@
  </rel>
 </obj>
 
-<obj class="ALink" id="TPWriter-2-TPWriterConf-via-configuration">
+<obj class="ALink" id="TPStreamWriter-2-TPStreamWriterConf-via-configuration">
  <attr name="Name" type="string" val="configuration"/>
- <rel name="From" class="Class" id="TPWriter"/>
- <rel name="To" class="Class" id="TPWriterConf"/>
+ <rel name="From" class="Class" id="TPStreamWriter"/>
+ <rel name="To" class="Class" id="TPStreamWriterConf"/>
  <rel name="Points">
-  <ref class="Point" id="1 TPWriter-2-TPWriterConf-via-configuration"/>
-  <ref class="Point" id="2 TPWriter-2-TPWriterConf-via-configuration"/>
-  <ref class="Point" id="3 TPWriter-2-TPWriterConf-via-configuration"/>
-  <ref class="Point" id="4 TPWriter-2-TPWriterConf-via-configuration"/>
+  <ref class="Point" id="1 TPStreamWriter-2-TPStreamWriterConf-via-configuration"/>
+  <ref class="Point" id="2 TPStreamWriter-2-TPStreamWriterConf-via-configuration"/>
+  <ref class="Point" id="3 TPStreamWriter-2-TPStreamWriterConf-via-configuration"/>
+  <ref class="Point" id="4 TPStreamWriter-2-TPStreamWriterConf-via-configuration"/>
  </rel>
 </obj>
 
-<obj class="ALink" id="TPWriterApplication-2-TPWriterConf-via-tp_writer">
+<obj class="ALink" id="TPStreamWriterApplication-2-TPStreamWriterConf-via-tp_writer">
  <attr name="Name" type="string" val="tp_writer"/>
- <rel name="From" class="Class" id="TPWriterApplication"/>
- <rel name="To" class="Class" id="TPWriterConf"/>
+ <rel name="From" class="Class" id="TPStreamWriterApplication"/>
+ <rel name="To" class="Class" id="TPStreamWriterConf"/>
  <rel name="Points">
-  <ref class="Point" id="1 TPWriterApplication-2-TPWriterConf-via-tp_writer"/>
-  <ref class="Point" id="2 TPWriterApplication-2-TPWriterConf-via-tp_writer"/>
-  <ref class="Point" id="3 TPWriterApplication-2-TPWriterConf-via-tp_writer"/>
-  <ref class="Point" id="4 TPWriterApplication-2-TPWriterConf-via-tp_writer"/>
+  <ref class="Point" id="1 TPStreamWriterApplication-2-TPStreamWriterConf-via-tp_writer"/>
+  <ref class="Point" id="2 TPStreamWriterApplication-2-TPStreamWriterConf-via-tp_writer"/>
+  <ref class="Point" id="3 TPStreamWriterApplication-2-TPStreamWriterConf-via-tp_writer"/>
+  <ref class="Point" id="4 TPStreamWriterApplication-2-TPStreamWriterConf-via-tp_writer"/>
  </rel>
 </obj>
 
-<obj class="ALink" id="TPWriterConf-2-DataStoreConf-via-data_store_params">
+<obj class="ALink" id="TPStreamWriterConf-2-DataStoreConf-via-data_store_params">
  <attr name="Name" type="string" val="data_store_params"/>
- <rel name="From" class="Class" id="TPWriterConf"/>
+ <rel name="From" class="Class" id="TPStreamWriterConf"/>
  <rel name="To" class="Class" id="DataStoreConf"/>
  <rel name="Points">
-  <ref class="Point" id="1 TPWriterConf-2-DataStoreConf-via-data_store_params"/>
-  <ref class="Point" id="2 TPWriterConf-2-DataStoreConf-via-data_store_params"/>
-  <ref class="Point" id="3 TPWriterConf-2-DataStoreConf-via-data_store_params"/>
-  <ref class="Point" id="4 TPWriterConf-2-DataStoreConf-via-data_store_params"/>
+  <ref class="Point" id="1 TPStreamWriterConf-2-DataStoreConf-via-data_store_params"/>
+  <ref class="Point" id="2 TPStreamWriterConf-2-DataStoreConf-via-data_store_params"/>
+  <ref class="Point" id="3 TPStreamWriterConf-2-DataStoreConf-via-data_store_params"/>
+  <ref class="Point" id="4 TPStreamWriterConf-2-DataStoreConf-via-data_store_params"/>
  </rel>
 </obj>
 
-<obj class="ALink" id="TRBuilder-2-TRBConf-via-configuration">
+<obj class="ALink" id="TriggerRecordBuilder-2-TRBConf-via-configuration">
  <attr name="Name" type="string" val="configuration"/>
- <rel name="From" class="Class" id="TRBuilder"/>
+ <rel name="From" class="Class" id="TriggerRecordBuilder"/>
  <rel name="To" class="Class" id="TRBConf"/>
  <rel name="Points">
-  <ref class="Point" id="1 TRBuilder-2-TRBConf-via-configuration"/>
-  <ref class="Point" id="2 TRBuilder-2-TRBConf-via-configuration"/>
-  <ref class="Point" id="3 TRBuilder-2-TRBConf-via-configuration"/>
-  <ref class="Point" id="4 TRBuilder-2-TRBConf-via-configuration"/>
+  <ref class="Point" id="1 TriggerRecordBuilder-2-TRBConf-via-configuration"/>
+  <ref class="Point" id="2 TriggerRecordBuilder-2-TRBConf-via-configuration"/>
+  <ref class="Point" id="3 TriggerRecordBuilder-2-TRBConf-via-configuration"/>
+  <ref class="Point" id="4 TriggerRecordBuilder-2-TRBConf-via-configuration"/>
  </rel>
 </obj>
 
@@ -342,7 +342,7 @@
  <attr name="y" type="s16" val="648"/>
 </obj>
 
-<obj class="Class" id="DFOModule">
+<obj class="Class" id="DataFlowOrchestrator">
  <attr name="x" type="s16" val="1163"/>
  <attr name="y" type="s16" val="697"/>
 </obj>
@@ -412,17 +412,17 @@
  <attr name="y" type="s16" val="454"/>
 </obj>
 
-<obj class="Class" id="TPWriter">
+<obj class="Class" id="TPStreamWriter">
  <attr name="x" type="s16" val="1160"/>
  <attr name="y" type="s16" val="620"/>
 </obj>
 
-<obj class="Class" id="TPWriterApplication">
+<obj class="Class" id="TPStreamWriterApplication">
  <attr name="x" type="s16" val="53"/>
  <attr name="y" type="s16" val="604"/>
 </obj>
 
-<obj class="Class" id="TPWriterConf">
+<obj class="Class" id="TPStreamWriterConf">
  <attr name="x" type="s16" val="284"/>
  <attr name="y" type="s16" val="615"/>
 </obj>
@@ -432,19 +432,19 @@
  <attr name="y" type="s16" val="158"/>
 </obj>
 
-<obj class="Class" id="TRBuilder">
+<obj class="Class" id="TriggerRecordBuilder">
  <attr name="x" type="s16" val="1112"/>
  <attr name="y" type="s16" val="197"/>
 </obj>
 
-<obj class="GLink" id="DaqModule-2-DFOModule">
+<obj class="GLink" id="DaqModule-2-DataFlowOrchestrator">
  <rel name="From" class="Class" id="DaqModule"/>
- <rel name="To" class="Class" id="DFOModule"/>
+ <rel name="To" class="Class" id="DataFlowOrchestrator"/>
  <rel name="Points">
-  <ref class="Point" id="1 DaqModule-2-DFOModule"/>
-  <ref class="Point" id="2 DaqModule-2-DFOModule"/>
-  <ref class="Point" id="3 DaqModule-2-DFOModule"/>
-  <ref class="Point" id="4 DaqModule-2-DFOModule"/>
+  <ref class="Point" id="1 DaqModule-2-DataFlowOrchestrator"/>
+  <ref class="Point" id="2 DaqModule-2-DataFlowOrchestrator"/>
+  <ref class="Point" id="3 DaqModule-2-DataFlowOrchestrator"/>
+  <ref class="Point" id="4 DaqModule-2-DataFlowOrchestrator"/>
  </rel>
 </obj>
 
@@ -459,25 +459,25 @@
  </rel>
 </obj>
 
-<obj class="GLink" id="DaqModule-2-TPWriter">
+<obj class="GLink" id="DaqModule-2-TPStreamWriter">
  <rel name="From" class="Class" id="DaqModule"/>
- <rel name="To" class="Class" id="TPWriter"/>
+ <rel name="To" class="Class" id="TPStreamWriter"/>
  <rel name="Points">
-  <ref class="Point" id="1 DaqModule-2-TPWriter"/>
-  <ref class="Point" id="2 DaqModule-2-TPWriter"/>
-  <ref class="Point" id="3 DaqModule-2-TPWriter"/>
-  <ref class="Point" id="4 DaqModule-2-TPWriter"/>
+  <ref class="Point" id="1 DaqModule-2-TPStreamWriter"/>
+  <ref class="Point" id="2 DaqModule-2-TPStreamWriter"/>
+  <ref class="Point" id="3 DaqModule-2-TPStreamWriter"/>
+  <ref class="Point" id="4 DaqModule-2-TPStreamWriter"/>
  </rel>
 </obj>
 
-<obj class="GLink" id="DaqModule-2-TRBuilder">
+<obj class="GLink" id="DaqModule-2-TriggerRecordBuilder">
  <rel name="From" class="Class" id="DaqModule"/>
- <rel name="To" class="Class" id="TRBuilder"/>
+ <rel name="To" class="Class" id="TriggerRecordBuilder"/>
  <rel name="Points">
-  <ref class="Point" id="1 DaqModule-2-TRBuilder"/>
-  <ref class="Point" id="2 DaqModule-2-TRBuilder"/>
-  <ref class="Point" id="3 DaqModule-2-TRBuilder"/>
-  <ref class="Point" id="4 DaqModule-2-TRBuilder"/>
+  <ref class="Point" id="1 DaqModule-2-TriggerRecordBuilder"/>
+  <ref class="Point" id="2 DaqModule-2-TriggerRecordBuilder"/>
+  <ref class="Point" id="3 DaqModule-2-TriggerRecordBuilder"/>
+  <ref class="Point" id="4 DaqModule-2-TriggerRecordBuilder"/>
  </rel>
 </obj>
 
@@ -503,14 +503,14 @@
  </rel>
 </obj>
 
-<obj class="GLink" id="SmartDaqApplication-2-TPWriterApplication">
+<obj class="GLink" id="SmartDaqApplication-2-TPStreamWriterApplication">
  <rel name="From" class="Class" id="SmartDaqApplication"/>
- <rel name="To" class="Class" id="TPWriterApplication"/>
+ <rel name="To" class="Class" id="TPStreamWriterApplication"/>
  <rel name="Points">
-  <ref class="Point" id="1 SmartDaqApplication-2-TPWriterApplication"/>
-  <ref class="Point" id="2 SmartDaqApplication-2-TPWriterApplication"/>
-  <ref class="Point" id="3 SmartDaqApplication-2-TPWriterApplication"/>
-  <ref class="Point" id="4 SmartDaqApplication-2-TPWriterApplication"/>
+  <ref class="Point" id="1 SmartDaqApplication-2-TPStreamWriterApplication"/>
+  <ref class="Point" id="2 SmartDaqApplication-2-TPStreamWriterApplication"/>
+  <ref class="Point" id="3 SmartDaqApplication-2-TPStreamWriterApplication"/>
+  <ref class="Point" id="4 SmartDaqApplication-2-TPStreamWriterApplication"/>
  </rel>
 </obj>
 
@@ -539,7 +539,7 @@
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 DFOModule-2-DFOConf-via-configuration">
+<obj class="Point" id="1 DataFlowOrchestrator-2-DFOConf-via-configuration">
  <attr name="x" type="s16" val="59"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
@@ -554,7 +554,7 @@
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 DaqModule-2-DFOModule">
+<obj class="Point" id="1 DaqModule-2-DataFlowOrchestrator">
  <attr name="x" type="s16" val="72"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
@@ -564,12 +564,12 @@
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 DaqModule-2-TPWriter">
+<obj class="Point" id="1 DaqModule-2-TPStreamWriter">
  <attr name="x" type="s16" val="49"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 DaqModule-2-TRBuilder">
+<obj class="Point" id="1 DaqModule-2-TriggerRecordBuilder">
  <attr name="x" type="s16" val="4"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
@@ -629,27 +629,27 @@
  <attr name="y" type="s16" val="38"/>
 </obj>
 
-<obj class="Point" id="1 SmartDaqApplication-2-TPWriterApplication">
+<obj class="Point" id="1 SmartDaqApplication-2-TPStreamWriterApplication">
  <attr name="x" type="s16" val="46"/>
  <attr name="y" type="s16" val="38"/>
 </obj>
 
-<obj class="Point" id="1 TPWriter-2-TPWriterConf-via-configuration">
+<obj class="Point" id="1 TPStreamWriter-2-TPStreamWriterConf-via-configuration">
  <attr name="x" type="s16" val="42"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 TPWriterApplication-2-TPWriterConf-via-tp_writer">
+<obj class="Point" id="1 TPStreamWriterApplication-2-TPStreamWriterConf-via-tp_writer">
  <attr name="x" type="s16" val="90"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 TPWriterConf-2-DataStoreConf-via-data_store_params">
+<obj class="Point" id="1 TPStreamWriterConf-2-DataStoreConf-via-data_store_params">
  <attr name="x" type="s16" val="67"/>
  <attr name="y" type="s16" val="38"/>
 </obj>
 
-<obj class="Point" id="1 TRBuilder-2-TRBConf-via-configuration">
+<obj class="Point" id="1 TriggerRecordBuilder-2-TRBConf-via-configuration">
  <attr name="x" type="s16" val="48"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
@@ -679,7 +679,7 @@
  <attr name="y" type="s16" val="713"/>
 </obj>
 
-<obj class="Point" id="2 DFOModule-2-DFOConf-via-configuration">
+<obj class="Point" id="2 DataFlowOrchestrator-2-DFOConf-via-configuration">
  <attr name="x" type="s16" val="59"/>
  <attr name="y" type="s16" val="716"/>
 </obj>
@@ -694,7 +694,7 @@
  <attr name="y" type="s16" val="50"/>
 </obj>
 
-<obj class="Point" id="2 DaqModule-2-DFOModule">
+<obj class="Point" id="2 DaqModule-2-DataFlowOrchestrator">
  <attr name="x" type="s16" val="72"/>
  <attr name="y" type="s16" val="298"/>
 </obj>
@@ -704,12 +704,12 @@
  <attr name="y" type="s16" val="141"/>
 </obj>
 
-<obj class="Point" id="2 DaqModule-2-TPWriter">
+<obj class="Point" id="2 DaqModule-2-TPStreamWriter">
  <attr name="x" type="s16" val="49"/>
  <attr name="y" type="s16" val="265"/>
 </obj>
 
-<obj class="Point" id="2 DaqModule-2-TRBuilder">
+<obj class="Point" id="2 DaqModule-2-TriggerRecordBuilder">
  <attr name="x" type="s16" val="4"/>
  <attr name="y" type="s16" val="109"/>
 </obj>
@@ -769,27 +769,27 @@
  <attr name="y" type="s16" val="57"/>
 </obj>
 
-<obj class="Point" id="2 SmartDaqApplication-2-TPWriterApplication">
+<obj class="Point" id="2 SmartDaqApplication-2-TPStreamWriterApplication">
  <attr name="x" type="s16" val="46"/>
  <attr name="y" type="s16" val="234"/>
 </obj>
 
-<obj class="Point" id="2 TPWriter-2-TPWriterConf-via-configuration">
+<obj class="Point" id="2 TPStreamWriter-2-TPStreamWriterConf-via-configuration">
  <attr name="x" type="s16" val="42"/>
  <attr name="y" type="s16" val="633"/>
 </obj>
 
-<obj class="Point" id="2 TPWriterApplication-2-TPWriterConf-via-tp_writer">
+<obj class="Point" id="2 TPStreamWriterApplication-2-TPStreamWriterConf-via-tp_writer">
  <attr name="x" type="s16" val="90"/>
  <attr name="y" type="s16" val="635"/>
 </obj>
 
-<obj class="Point" id="2 TPWriterConf-2-DataStoreConf-via-data_store_params">
+<obj class="Point" id="2 TPStreamWriterConf-2-DataStoreConf-via-data_store_params">
  <attr name="x" type="s16" val="67"/>
  <attr name="y" type="s16" val="443"/>
 </obj>
 
-<obj class="Point" id="2 TRBuilder-2-TRBConf-via-configuration">
+<obj class="Point" id="2 TriggerRecordBuilder-2-TRBConf-via-configuration">
  <attr name="x" type="s16" val="48"/>
  <attr name="y" type="s16" val="221"/>
 </obj>
@@ -819,7 +819,7 @@
  <attr name="y" type="s16" val="713"/>
 </obj>
 
-<obj class="Point" id="3 DFOModule-2-DFOConf-via-configuration">
+<obj class="Point" id="3 DataFlowOrchestrator-2-DFOConf-via-configuration">
  <attr name="x" type="s16" val="15"/>
  <attr name="y" type="s16" val="716"/>
 </obj>
@@ -834,7 +834,7 @@
  <attr name="y" type="s16" val="50"/>
 </obj>
 
-<obj class="Point" id="3 DaqModule-2-DFOModule">
+<obj class="Point" id="3 DaqModule-2-DataFlowOrchestrator">
  <attr name="x" type="s16" val="65"/>
  <attr name="y" type="s16" val="298"/>
 </obj>
@@ -844,12 +844,12 @@
  <attr name="y" type="s16" val="141"/>
 </obj>
 
-<obj class="Point" id="3 DaqModule-2-TPWriter">
+<obj class="Point" id="3 DaqModule-2-TPStreamWriter">
  <attr name="x" type="s16" val="45"/>
  <attr name="y" type="s16" val="265"/>
 </obj>
 
-<obj class="Point" id="3 DaqModule-2-TRBuilder">
+<obj class="Point" id="3 DaqModule-2-TriggerRecordBuilder">
  <attr name="x" type="s16" val="48"/>
  <attr name="y" type="s16" val="109"/>
 </obj>
@@ -909,27 +909,27 @@
  <attr name="y" type="s16" val="57"/>
 </obj>
 
-<obj class="Point" id="3 SmartDaqApplication-2-TPWriterApplication">
+<obj class="Point" id="3 SmartDaqApplication-2-TPStreamWriterApplication">
  <attr name="x" type="s16" val="8"/>
  <attr name="y" type="s16" val="234"/>
 </obj>
 
-<obj class="Point" id="3 TPWriter-2-TPWriterConf-via-configuration">
+<obj class="Point" id="3 TPStreamWriter-2-TPStreamWriterConf-via-configuration">
  <attr name="x" type="s16" val="146"/>
  <attr name="y" type="s16" val="633"/>
 </obj>
 
-<obj class="Point" id="3 TPWriterApplication-2-TPWriterConf-via-tp_writer">
+<obj class="Point" id="3 TPStreamWriterApplication-2-TPStreamWriterConf-via-tp_writer">
  <attr name="x" type="s16" val="20"/>
  <attr name="y" type="s16" val="635"/>
 </obj>
 
-<obj class="Point" id="3 TPWriterConf-2-DataStoreConf-via-data_store_params">
+<obj class="Point" id="3 TPStreamWriterConf-2-DataStoreConf-via-data_store_params">
  <attr name="x" type="s16" val="65"/>
  <attr name="y" type="s16" val="443"/>
 </obj>
 
-<obj class="Point" id="3 TRBuilder-2-TRBConf-via-configuration">
+<obj class="Point" id="3 TriggerRecordBuilder-2-TRBConf-via-configuration">
  <attr name="x" type="s16" val="53"/>
  <attr name="y" type="s16" val="221"/>
 </obj>
@@ -959,7 +959,7 @@
  <attr name="y" type="s16" val="8"/>
 </obj>
 
-<obj class="Point" id="4 DFOModule-2-DFOConf-via-configuration">
+<obj class="Point" id="4 DataFlowOrchestrator-2-DFOConf-via-configuration">
  <attr name="x" type="s16" val="15"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
@@ -974,7 +974,7 @@
  <attr name="y" type="s16" val="12"/>
 </obj>
 
-<obj class="Point" id="4 DaqModule-2-DFOModule">
+<obj class="Point" id="4 DaqModule-2-DataFlowOrchestrator">
  <attr name="x" type="s16" val="65"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
@@ -984,12 +984,12 @@
  <attr name="y" type="s16" val="8"/>
 </obj>
 
-<obj class="Point" id="4 DaqModule-2-TPWriter">
+<obj class="Point" id="4 DaqModule-2-TPStreamWriter">
  <attr name="x" type="s16" val="45"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
 
-<obj class="Point" id="4 DaqModule-2-TRBuilder">
+<obj class="Point" id="4 DaqModule-2-TriggerRecordBuilder">
  <attr name="x" type="s16" val="48"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
@@ -1049,27 +1049,27 @@
  <attr name="y" type="s16" val="12"/>
 </obj>
 
-<obj class="Point" id="4 SmartDaqApplication-2-TPWriterApplication">
+<obj class="Point" id="4 SmartDaqApplication-2-TPStreamWriterApplication">
  <attr name="x" type="s16" val="8"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
 
-<obj class="Point" id="4 TPWriter-2-TPWriterConf-via-configuration">
+<obj class="Point" id="4 TPStreamWriter-2-TPStreamWriterConf-via-configuration">
  <attr name="x" type="s16" val="146"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
 
-<obj class="Point" id="4 TPWriterApplication-2-TPWriterConf-via-tp_writer">
+<obj class="Point" id="4 TPStreamWriterApplication-2-TPStreamWriterConf-via-tp_writer">
  <attr name="x" type="s16" val="20"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
 
-<obj class="Point" id="4 TPWriterConf-2-DataStoreConf-via-data_store_params">
+<obj class="Point" id="4 TPStreamWriterConf-2-DataStoreConf-via-data_store_params">
  <attr name="x" type="s16" val="65"/>
  <attr name="y" type="s16" val="35"/>
 </obj>
 
-<obj class="Point" id="4 TRBuilder-2-TRBConf-via-configuration">
+<obj class="Point" id="4 TriggerRecordBuilder-2-TRBConf-via-configuration">
  <attr name="x" type="s16" val="53"/>
  <attr name="y" type="s16" val="21"/>
 </obj>

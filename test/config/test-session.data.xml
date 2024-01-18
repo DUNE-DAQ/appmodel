@@ -106,33 +106,38 @@
 
 <obj class="Service" id="dataFragments">
  <attr name="protocol" type="string" val="tcp"/>
- <attr name="port" type="u16" val="5000"/>
+ <attr name="port" type="u16" val="0"/>
 </obj>
 
 <obj class="Service" id="triggerPrimitives">
  <attr name="protocol" type="string" val="tcp"/>
- <attr name="port" type="u16" val="5000"/>
+ <attr name="port" type="u16" val="0"/>
 </obj>
 
-  <obj class="Service" id="HSIEvents">
-   <attr name="protocol" type="string" val="tcp"/>
-   <attr name="port" type="u16" val="5000"/>
-  </obj>
+<obj class="Service" id="HSIEvents">
+ <attr name="protocol" type="string" val="tcp"/>
+ <attr name="port" type="u16" val="0"/>
+</obj>
   
-  <obj class="Service" id="triggerDecisions">
-    <attr name="protocol" type="string" val="tcp"/>
-    <attr name="port" type="u16" val="5000"/>
-  </obj>
+<obj class="Service" id="timeSyncs">
+ <attr name="protocol" type="string" val="tcp"/>
+ <attr name="port" type="u16" val="0"/>
+</obj>
 
-  <obj class="Service" id="triggerInhibits">
-    <attr name="protocol" type="string" val="tcp"/>
-    <attr name="port" type="u16" val="5000"/>
-  </obj>
+<obj class="Service" id="triggerDecisions">
+  <attr name="protocol" type="string" val="tcp"/>
+  <attr name="port" type="u16" val="0"/>
+</obj>
 
-  <obj class="Service" id="dfTokens">
-    <attr name="protocol" type="string" val="tcp"/>
-    <attr name="port" type="u16" val="5000"/>
-  </obj>
+<obj class="Service" id="triggerInhibits">
+  <attr name="protocol" type="string" val="tcp"/>
+  <attr name="port" type="u16" val="0"/>
+</obj>
+
+<obj class="Service" id="dfTokens">
+  <attr name="protocol" type="string" val="tcp"/>
+  <attr name="port" type="u16" val="0"/>
+</obj>
 
 <obj class="Session" id="test-session">
  <attr name="use_connectivity_server" type="bool" val="1"/>

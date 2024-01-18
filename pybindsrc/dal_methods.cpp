@@ -16,8 +16,8 @@
 #include "appdal/DFApplication.hpp"
 #include "appdal/DFOApplication.hpp"
 #include "appdal/ReadoutApplication.hpp"
-#include "appdal/TPWriterApplication.hpp"
 #include "appdal/TriggerApplication.hpp"
+#include "appdal/TPStreamWriterApplication.hpp"
 
 #include <sstream>
 
@@ -65,7 +65,7 @@ register_dal_methods(py::module& m)
   m.def("readout_application_generate", &application_generate_template<ReadoutApplication>, "Generate DaqModules required by ReadoutApplication");
   m.def("df_application_generate", &application_generate_template<DFApplication>, "Generate DaqModules required by DFApplication");
   m.def("dfo_application_generate", &application_generate_template<DFOApplication>, "Generate DaqModules required by DFOApplication");
-  m.def("tpwriter_application_generate", &application_generate_template<TPWriterApplication>, "Generate DaqModules required by TPWriterApplication");
+  m.def("tpwriter_application_generate", &application_generate_template<TPStreamWriterApplication>, "Generate DaqModules required by TPStreamWriterApplication");
   m.def("trigger_application_generate", &application_generate_template<TriggerApplication>, "Generate DaqModules required by TriggerApplication");
 }
 
