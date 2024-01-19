@@ -100,17 +100,17 @@
 
 <!-- RandomTriggerCandidateMaker-->
 <obj class="CustomTriggerCandidateMakerConf" id="cstm-conf-1">
+  <attr name="template_for" type="class" val="CustomTriggerCandidateMaker"/>
 </obj>
 
 <!-- RandomTriggerCandidateMaker-->
 <obj class="RandomTriggerCandidateMakerConf" id="rtcm-conf-1">
-  <!--
- <rel name="tcbuffer_conf" class="TCBufferConf" id="tc-buffer"/>
-  -->
+  <attr name="template_for" type="class" val="RandomTriggerCandidateMaker"/>
 </obj>
 
 <!-- TimingTriggerCandidateMaker-->
 <obj class="TimingTriggerCandidateMakerConf" id="timing-conf-1">
+  <attr name="template_for" type="class" val="TimingTriggerCandidateMaker"/>
 </obj>
 
 <!-- Application -->
@@ -130,13 +130,11 @@
   <ref class="QueueConnectionRule" id="tcQueueRule"/>
  </rel>
  <rel name="mlt_conf" class="ModuleLevelTriggerConf" id="mlt-conf-1"/>
-
- <!-- Optional RandomTriggerCandidateMaker-->
- <rel name="random_candidate_maker_conf" class="RandomTriggerCandidateMakerConf" id="rtcm-conf-1"/>
- <!-- Optional CustomTriggerCandidateMaker-->
- <rel name="custom_candidate_maker_conf" class="CustomTriggerCandidateMakerConf" id="cstm-conf-1"/>
- <!-- Optional TimingTriggerCandidateMaker (converting HSIEvents to TCs) -->
- <rel name="timing_candidate_maker_conf" class="TimingTriggerCandidateMakerConf" id="timing-conf-1"/>
+ <rel name="standalone_candidate_maker_confs">
+   <ref class="RandomTriggerCandidateMakerConf" id="rtcm-conf-1"/>
+   <ref class="CustomTriggerCandidateMakerConf" id="cstm-conf-1"/>
+   <ref class="TimingTriggerCandidateMakerConf" id="timing-conf-1"/>
+ </rel>
 </obj>
 
 </oks-data>

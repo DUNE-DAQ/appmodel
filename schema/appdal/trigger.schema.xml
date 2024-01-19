@@ -97,9 +97,7 @@
 
   <relationship name="tctee"                class-type="TCSetTee" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
 
-  <relationship name="random_candidate_maker_conf" class-type="RandomTriggerCandidateMakerConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="timing_candidate_maker_conf" class-type="TimingTriggerCandidateMakerConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="custom_candidate_maker_conf" class-type="CustomTriggerCandidateMakerConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="standalone_candidate_maker_confs" class-type="StandaloneCandidateMakerConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
 
   <method name="generate_modules" description="Generate daq module dal objects for streams of the TriggerApplication on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
@@ -154,14 +152,23 @@
   <attribute name="subsystem" type="enum" range="kUnknown,kDetectorReadout,kHwDisnalsInterface,kTrigger,kTRBuilder" init-value="kUnknown" is-not-null="yes"/>
 </class>
 
+<class name="StandaloneCandidateMaker">
+  <superclass name="DaqModule"/>
+</class>
+
+<class name="StandaloneCandidateMakerConf">
+  <attribute name="template_for" type="class" init-value="StandaloneCandidateMaker" is-not-null="yes"/>
+</class>
+
  <!-- Random Trigger Candidate Maker configuration --> 
  <class name="RandomTriggerCandidateMaker">
-  <superclass name="DaqModule"/>
+  <superclass name="StandaloneCandidateMaker"/>
   <attribute name="trigger_candidate_sink" type="string" is-not-null="yes"/>
   <relationship name="configuration"  class-type="RandomTriggerCandidateMakerConf"  low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="RandomTriggerCandidateMakerConf">
+   <superclass name="StandaloneCandidateMakerConf"/>
   <attribute name="trigger_interval_ticks" type="u32" init-value="64000000" is-not-null="yes"/>
   <attribute name="clock_frequency_hz" type="u32" init-value="62500000" is-not-null="yes"/>
   <attribute name="timestamp_method" type="enum" range="kTimeSync,kSystemClock" init-value="kTimeSync" is-not-null="yes"/>
@@ -173,7 +180,7 @@
 
  <!-- Timing Trigger Candidate Maker Configuration -->
  <class name="TimingTriggerCandidateMaker">
-   <superclass name="DaqModule"/>
+   <superclass name="StandaloneCandidateMaker"/>
    <relationship name="configuration" class-type="TimingTriggerCandidateMakerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
@@ -184,6 +191,7 @@
  </class>
 
  <class name="TimingTriggerCandidateMakerConf">
+   <superclass name="StandaloneCandidateMakerConf"/>
    <relationship name="s0" class-type="TimingTriggerOffsetMap" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
    <relationship name="s1" class-type="TimingTriggerOffsetMap" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
    <relationship name="s2" class-type="TimingTriggerOffsetMap" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -192,11 +200,12 @@
 
  <!-- Custom Trigger Candidate Maker Configuration -->
  <class name="CustomTriggerCandidateMaker">
-   <superclass name="DaqModule"/>
+   <superclass name="StandaloneCandidateMaker"/>
    <relationship name="configuration" class-type="CustomTriggerCandidateMakerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="CustomTriggerCandidateMakerConf">
+   <superclass name="StandaloneCandidateMakerConf"/>
   <attribute name="trigger_types"      type="u32" is-multi-value="yes"/>
   <attribute name="trigger_intervals"  type="u32" is-multi-value="yes"/>
   <attribute name="clock_frequency_hz" type="u32" init-value="62500000"/>
