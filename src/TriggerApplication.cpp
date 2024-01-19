@@ -122,11 +122,13 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   for (auto rule : get_queue_rules()) {
     std::string destination_class = rule->get_destination_class();
     std::string data_type = rule->get_descriptor()->get_data_type();
-    if((destination_class == "ModuleLevelTrigger") && (data_type == "TriggerCandidate"))
+    if((destination_class == "ModuleLevelTrigger") && (data_type == "TriggerCandidate")){
       tcQueueDesc = rule->get_descriptor();
+    }
   }
-  if(!tcQueueDesc)
+  if(!tcQueueDesc){
     throw (BadConf(ERS_HERE, "No description for the queue of TCs going tinto the MLT given"));
+  }
 
   /**************************************************************
    * Get all the network connections
@@ -137,26 +139,31 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     std::string data_type = rule->get_descriptor()->get_data_type();
 
     // Network connections for the MLT
-    if(data_type == "TriggerInhibit")
+    if(data_type == "TriggerInhibit"){
       tiMLTNetDesc = rule->get_descriptor();
-    if(data_type == "TriggerDecision")
+    }
+    if(data_type == "TriggerDecision"){
       tdMLTNetDesc = rule->get_descriptor();
-    if(data_type == "HSIEvent")
+    }
+    if(data_type == "HSIEvent"){
       tmgTrgNetDesc = rule->get_descriptor();
+    }
 
     std::cout << "Endpoint class: " << endpoint_class << " data_type: " << data_type << std::endl;
   }
 
-  if(!tdMLTNetDesc)
+  if(!tdMLTNetDesc){
     throw (BadConf(ERS_HERE, "No MLT network connection for the output TriggerDecision given"));
+  }
 
   /**************************************************************
    * Get the MLT
    **************************************************************/
   auto mlt_conf = get_mlt_conf();
   // Don't build the rest if we have no MLT
-  if(!mlt_conf)
-    return modules;
+  if(!mlt_conf){
+    throw (BadConf(ERS_HERE, "No MLT configuration in TriggerApplication given"));
+  }
 
   // Vector of MLT inputs and output connections
   std::vector<oksdbinterfaces::ConfigObject> mlt_inputs_copies;
@@ -324,8 +331,9 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
    **************************************************************/
   auto tmgTCMakerConf = get_timing_candidate_maker_conf();
   if(tmgTCMakerConf){
-    if(!tmgTrgNetDesc)
+    if(!tmgTrgNetDesc){
       throw (BadConf(ERS_HERE, "No timing trigger input network connection given"));
+    }
 
     // TODO: Should probably template this at some point...
     // Create the TimingTriggerCandidateMaker object
@@ -488,14 +496,16 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
    * Get the trigger graph
    **************************************************************/
   // Don't bother building the entire trigger graph if we have no tpstreams in.
-  if(!nReadoutLinks)
+  if(!nReadoutLinks){
     return modules;
+  }
 
   // Get the triggering algos handler
   auto trigger_algs = get_trigger_algs();
   // Don't build the rest if we don't have triggering algs
-  if(trigger_algs.size() == 0)
+  if(trigger_algs.size() == 0){
     return modules;
+  }
 
   // Make the TPChannelFilters
   auto tpChannelFilterConf = get_tpchannelfilter_conf();
