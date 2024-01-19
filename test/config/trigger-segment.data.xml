@@ -72,54 +72,6 @@
 </include>
 
 
-<!-- Network connections -->
-<obj class="NetworkConnectionDescriptor" id="ti-mlt-desc-1">
- <attr name="uid_base" type="string" val="triggerInhibit"/>
- <attr name="connection_type" type="enum" val="kSendRecv"/>
- <attr name="data_type" type="string" val="TriggerInhibit"/>
- <rel name="associated_service" class="Service" id="triggerInhibits"/>
-</obj>
-
-<obj class="NetworkConnectionRule" id="ti-mlt-rule-1">
- <attr name="endpoint_class" type="class" val="ModuleLevelTrigger"/>
- <rel name="descriptor" class="NetworkConnectionDescriptor" id="ti-mlt-desc-1"/>
-</obj>
-
-<obj class="NetworkConnectionDescriptor" id="td-mlt-desc-1">
- <attr name="uid_base" type="string" val="triggerDecision"/>
- <attr name="connection_type" type="enum" val="kSendRecv"/>
- <attr name="data_type" type="string" val="TriggerDecision"/>
- <rel name="associated_service" class="Service" id="triggerDecisions"/>
-</obj>
-
-<obj class="NetworkConnectionRule" id="td-mlt-rule-1">
- <attr name="endpoint_class" type="class" val="ModuleLevelTrigger"/>
- <rel name="descriptor" class="NetworkConnectionDescriptor" id="td-mlt-desc-1"/>
-</obj>
-
-<obj class="NetworkConnectionDescriptor" id="timing-desc-1">
- <attr name="uid_base" type="string" val="hsievent"/>
- <attr name="connection_type" type="enum" val="kSendRecv"/>
- <attr name="data_type" type="string" val="HSIEvent"/>
- <rel name="associated_service" class="Service" id="HSIEvents"/>
-</obj>
-
-<obj class="NetworkConnectionRule" id="timing-rule-1">
- <attr name="endpoint_class" type="class" val="TimingTriggerCandidateMaker"/>
- <rel name="descriptor" class="NetworkConnectionDescriptor" id="timing-desc-1"/>
-</obj>
-
-<!-- Queue connections -->
-<obj class="QueueConnectionRule" id="tcQueueRule">
- <attr name="destination_class" type="class" val="ModuleLevelTrigger"/>
- <rel name="descriptor" class="QueueDescriptor" id="tcQueueRuleDescriptor"/>
-</obj>
-<obj class="QueueDescriptor" id="tcQueueRuleDescriptor">
- <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>
- <attr name="capacity" type="u32" val="1000"/>
- <attr name="data_type" type="string" val="TriggerCandidate"/>
-</obj>
-
 <!-- Buffers -->
 <obj class="LatencyBuffer" id="tclatencybuffer-generic">
  <attr name="size" type="u32" val="100000"/>
@@ -178,11 +130,11 @@
  <rel name="mlt_conf" class="ModuleLevelTriggerConf" id="mlt-conf-1"/>
 
  <!-- Optional RandomTriggerCandidateMaker-->
- <rel name="random_candidate_maker_conf" class="RandomTriggerCandidateMakerConf" id="rtcm-conf-1">
+ <rel name="random_candidate_maker_conf" class="RandomTriggerCandidateMakerConf" id="rtcm-conf-1"/>
  <!-- Optional CustomTriggerCandidateMaker-->
- <rel name="custom_candidate_maker_conf" class="CustomTriggerCandidateMakerConf" id="cstm-conf-1">
+ <rel name="custom_candidate_maker_conf" class="CustomTriggerCandidateMakerConf" id="cstm-conf-1"/>
  <!-- Optional TimingTriggerCandidateMaker (converting HSIEvents to TCs) -->
- <rel name="timing_candidate_maker_conf" class="TimingTriggerCandidateMakerConf" id="timing-conf-1">
+ <rel name="timing_candidate_maker_conf" class="TimingTriggerCandidateMakerConf" id="timing-conf-1"/>
 </obj>
 
 </oks-data>

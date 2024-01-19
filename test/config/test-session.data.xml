@@ -67,7 +67,7 @@
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
- <file path="test/config/fsm.data.xml"/>
+ <file path="config/appdal/fsm.data.xml"/>
  <file path="test/config/hosts.data.xml"/>
  <file path="test/config/dummy-readoutmap.data.xml"/>
  <file path="test/config/ru-segment.data.xml"/>
@@ -102,41 +102,6 @@
   <ref class="Segment" id="df-segment"/>
  </rel>
  <rel name="controller" class="RCApplication" id="root-controller"/>
-</obj>
-
-<obj class="Service" id="dataFragments">
- <attr name="protocol" type="string" val="tcp"/>
- <attr name="port" type="u16" val="0"/>
-</obj>
-
-<obj class="Service" id="triggerPrimitives">
- <attr name="protocol" type="string" val="tcp"/>
- <attr name="port" type="u16" val="0"/>
-</obj>
-
-<obj class="Service" id="HSIEvents">
- <attr name="protocol" type="string" val="tcp"/>
- <attr name="port" type="u16" val="0"/>
-</obj>
-  
-<obj class="Service" id="timeSyncs">
- <attr name="protocol" type="string" val="tcp"/>
- <attr name="port" type="u16" val="0"/>
-</obj>
-
-<obj class="Service" id="triggerDecisions">
-  <attr name="protocol" type="string" val="tcp"/>
-  <attr name="port" type="u16" val="0"/>
-</obj>
-
-<obj class="Service" id="triggerInhibits">
-  <attr name="protocol" type="string" val="tcp"/>
-  <attr name="port" type="u16" val="0"/>
-</obj>
-
-<obj class="Service" id="dfTokens">
-  <attr name="protocol" type="string" val="tcp"/>
-  <attr name="port" type="u16" val="0"/>
 </obj>
 
 <obj class="Session" id="test-session">
