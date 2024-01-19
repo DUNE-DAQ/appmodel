@@ -69,6 +69,8 @@
  <file path="schema/coredal/dunedaq.schema.xml"/>
  <file path="schema/appdal/application.schema.xml"/>
  <file path="schema/appdal/fdmodules.schema.xml"/>
+ <file path="config/appdal/connections.data.xml"/>
+ <file path="config/appdal/moduleconfs.data.xml"/>
 </include>
 
 <comments>
@@ -77,109 +79,6 @@
  <comment creation-time="20240117T175424" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="glehmann" text=" "/>
  <comment creation-time="20240117T183308" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="glehmann" text=" "/>
 </comments>
-
-
-<obj class="LatencyBuffer" id="def-latency-buf">
- <attr name="size" type="u32" val="139008"/>
- <attr name="numa_aware" type="bool" val="0"/>
- <attr name="intrinsic_allocator" type="bool" val="1"/>
- <attr name="alignment_size" type="u32" val="4096"/>
- <attr name="preallocation" type="bool" val="0"/>
-</obj>
-
-<obj class="NICReceiverConf" id="def-nic-receiver-conf">
- <attr name="template_for" type="class" val="FDFakeCardReader"/>
- <attr name="emulation_mode" type="bool" val="1"/>
- <attr name="eal_args" type="string" val="-l 0-1 -n 3 -- -m [0:1].0 -j"/>
- <rel name="emulation_conf" class="StreamEmulationParameters" id="stream-emu"/>
-</obj>
-
-<obj class="NICStatsConf" id="def-nic-stats">
- <attr name="analyze_nth_packet" type="s32" val="1"/>
- <attr name="expected_packet_size" type="u32" val="7243"/>
- <attr name="expected_seq_id_step" type="u32" val="1"/>
- <attr name="expected_timestamp_step" type="s32" val="1000"/>
-</obj>
-
-<obj class="NetworkConnectionDescriptor" id="fa-connection">
- <attr name="uid_base" type="string" val="data_requests_for_"/>
- <attr name="connection_type" type="enum" val="kSendRecv"/>
- <attr name="data_type" type="string" val="Fragment"/>
- <rel name="associated_service" class="Service" id="dataFragments"/>
-</obj>
-
-<obj class="NetworkConnectionDescriptor" id="tp-publisher">
- <attr name="uid_base" type="string" val="triggerPrimitives_"/>
- <attr name="connection_type" type="enum" val="kPubSub"/>
- <attr name="data_type" type="string" val="TPSet"/>
- <rel name="associated_service" class="Service" id="triggerPrimitives"/>
-</obj>
-
-<obj class="NetworkConnectionDescriptor" id="ts-publisher">
- <attr name="uid_base" type="string" val="timeSync_"/>
- <attr name="connection_type" type="enum" val="kPubSub"/>
- <attr name="data_type" type="string" val="TimeSync"/>
- <rel name="associated_service" class="Service" id="timeSyncs"/>
-</obj>
-
-<obj class="NetworkConnectionRule" id="fa-net-rule">
- <attr name="endpoint_class" type="class" val="FragmentAggregator"/>
- <rel name="descriptor" class="NetworkConnectionDescriptor" id="fa-connection"/>
-</obj>
-
-<obj class="NetworkConnectionRule" id="tp-net-rule">
- <attr name="endpoint_class" type="class" val="FDDataLinkHandler"/>
- <rel name="descriptor" class="NetworkConnectionDescriptor" id="tp-publisher"/>
-</obj>
-
-<obj class="NetworkConnectionRule" id="ts-net-rule">
- <attr name="endpoint_class" type="class" val="FDDataLinkHandler"/>
- <rel name="descriptor" class="NetworkConnectionDescriptor" id="ts-publisher"/>
-</obj>
-
-<obj class="QueueConnectionRule" id="data-requests-queue-rule">
- <attr name="destination_class" type="class" val="FDDataLinkHandler"/>
- <rel name="descriptor" class="QueueDescriptor" id="data-req-queue-desc"/>
-</obj>
-
-<obj class="QueueConnectionRule" id="fa-queue-rule">
- <attr name="destination_class" type="class" val="FragmentAggregator"/>
- <rel name="descriptor" class="QueueDescriptor" id="fa-input"/>
-</obj>
-
-<obj class="QueueConnectionRule" id="wib-eth-raw-data-rule">
- <attr name="destination_class" type="class" val="FDDataLinkHandler"/>
- <rel name="descriptor" class="QueueDescriptor" id="wib-eth-raw-input"/>
-</obj>
-
-<obj class="QueueConnectionRule" id="tp-queue-rule">
- <attr name="destination_class" type="class" val="FDDataLinkHandler"/>
- <rel name="descriptor" class="QueueDescriptor" id="tp-input"/>
-</obj>
-
-<obj class="QueueDescriptor" id="data-req-queue-desc">
- <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
- <attr name="capacity" type="u32" val="1000"/>
- <attr name="data_type" type="string" val="DataRequest"/>
-</obj>
-
-<obj class="QueueDescriptor" id="fa-input">
- <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>
- <attr name="capacity" type="u32" val="1000"/>
- <attr name="data_type" type="string" val="Fragment"/>
-</obj>
-
-<obj class="QueueDescriptor" id="wib-eth-raw-input">
- <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
- <attr name="capacity" type="u32" val="1000"/>
- <attr name="data_type" type="string" val="WIBEthFrame"/>
-</obj>
-
-<obj class="QueueDescriptor" id="tp-input">
- <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>
- <attr name="capacity" type="u32" val="100000"/>
- <attr name="data_type" type="string" val="TriggerPrimitive"/>
-</obj>
 
 <obj class="RCApplication" id="ru-controller">
  <attr name="application_name" type="string" val="controller"/>
@@ -210,67 +109,11 @@
  <rel name="data_reader" class="NICReceiverConf" id="def-nic-receiver-conf"/>
 </obj>
 
-<obj class="ReadoutModuleConf" id="def-link-handler">
- <attr name="template_for" type="class" val="FDDataLinkHandler"/>
- <attr name="input_data_type" type="string" val="WIBEthFrame"/>
- <attr name="generate_timesync" type="bool" val="1"/>
- <rel name="request_handler" class="RequestHandler" id="def-data-request-handler"/>
- <rel name="latency_buffer" class="LatencyBuffer" id="def-latency-buf"/>
- <rel name="data_processor" class="TPDataProcessor" id="def-tp-processor"/>
-</obj>
-
-<obj class="ReadoutModuleConf" id="def-tp-handler">
- <attr name="template_for" type="class" val="FDDataLinkHandler"/>
- <attr name="input_data_type" type="string" val="TriggerPrimitive"/>
- <attr name="generate_timesync" type="bool" val="1"/>
- <rel name="request_handler" class="TPRequestHandler" id="def-tp-request-handler"/>
- <rel name="latency_buffer" class="LatencyBuffer" id="def-latency-buf"/>
-</obj>
-
-<obj class="RequestHandler" id="def-data-request-handler">
- <attr name="handler_threads" type="u16" val="1"/>
- <attr name="request_timeout" type="u32" val="10000"/>
- <attr name="pop_limit_pct" type="float" val="0.5"/>
- <attr name="pop_size_pct" type="float" val="0.8"/>
- <attr name="warn_on_timeout" type="bool" val="1"/>
- <attr name="warn_on_empty_buffer" type="bool" val="1"/>
-</obj>
-
 <obj class="RoHwConfig" id="rohw-1">
 </obj>
 
 <obj class="Segment" id="ru-segment">
  <rel name="controller" class="RCApplication" id="ru-controller"/>
-</obj>
-
-<obj class="StreamEmulationParameters" id="stream-emu">
-	<attr name="data_file_name" type="string" val="/nfs/home/glehmann/nightly/wibeth_output_all_zeros-dd156b4.bin"/>
- <attr name="input_file_size_limit" type="u32" val="1000000"/>
- <attr name="set_t0" type="bool" val="1"/>
- <attr name="random_population_size" type="u32" val="0"/>
- <attr name="frame_error_rate_hz" type="float" val="0"/>
- <attr name="generate_periodic_adc_pattern" type="bool" val="1"/>
- <attr name="TP_rate_per_channel" type="float" val="0"/>
-</obj>
-
-<obj class="TPDataProcessor" id="def-tp-processor">
- <attr name="queue_sizes" type="u32" val="10000"/>
- <attr name="thread_names_prefix" type="string" val="tp"/>
- <attr name="max_ticks_tot" type="u32" val="10000"/>
- <attr name="tpg_enabled" type="bool" val="0"/>
- <attr name="algorithm" type="string" val="SimpleThreshold"/>
- <attr name="threshold" type="u16" val="60"/>
-</obj>
-
-<obj class="TPRequestHandler" id="def-tp-request-handler">
- <attr name="handler_threads" type="u16" val="1"/>
- <attr name="request_timeout" type="u32" val="10000"/>
- <attr name="pop_limit_pct" type="float" val="0.5"/>
- <attr name="pop_size_pct" type="float" val="0.8"/>
- <attr name="warn_on_timeout" type="bool" val="1"/>
- <attr name="warn_on_empty_buffer" type="bool" val="1"/>
- <attr name="min_latency_ticks" type="u32" val="6250000"/>
- <attr name="max_transmission_rate_hz" type="u32" val="1000"/>
 </obj>
 
 </oks-data>

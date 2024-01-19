@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="ASCII"?>
+
+<!-- oks-data version 2.2 -->
+
+
+<!DOCTYPE oks-data [
+  <!ELEMENT oks-data (info, (include)?, (comments)?, (obj)+)>
+  <!ELEMENT info EMPTY>
+  <!ATTLIST info
+      name CDATA #IMPLIED
+      type CDATA #IMPLIED
+      num-of-items CDATA #REQUIRED
+      oks-format CDATA #FIXED "data"
+      oks-version CDATA #REQUIRED
+      created-by CDATA #IMPLIED
+      created-on CDATA #IMPLIED
+      creation-time CDATA #IMPLIED
+      last-modified-by CDATA #IMPLIED
+      last-modified-on CDATA #IMPLIED
+      last-modification-time CDATA #IMPLIED
+  >
+  <!ELEMENT include (file)*>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+      path CDATA #REQUIRED
+  >
+  <!ELEMENT comments (comment)*>
+  <!ELEMENT comment EMPTY>
+  <!ATTLIST comment
+      creation-time CDATA #REQUIRED
+      created-by CDATA #REQUIRED
+      created-on CDATA #REQUIRED
+      author CDATA #REQUIRED
+      text CDATA #REQUIRED
+  >
+  <!ELEMENT obj (attr | rel)*>
+  <!ATTLIST obj
+      class CDATA #REQUIRED
+      id CDATA #REQUIRED
+  >
+  <!ELEMENT attr (data)*>
+  <!ATTLIST attr
+      name CDATA #REQUIRED
+      type (bool|s8|u8|s16|u16|s32|u32|s64|u64|float|double|date|time|string|uid|enum|class|-) "-"
+      val CDATA ""
+  >
+  <!ELEMENT data EMPTY>
+  <!ATTLIST data
+      val CDATA #REQUIRED
+  >
+  <!ELEMENT rel (ref)*>
+  <!ATTLIST rel
+      name CDATA #REQUIRED
+      class CDATA ""
+      id CDATA ""
+  >
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref
+      class CDATA #REQUIRED
+      id CDATA #REQUIRED
+  >
+]>
+
+<oks-data>
+
+<info name="" type="" num-of-items="19" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240112T170541"/>
+
+<include>
+ <file path="schema/coredal/dunedaq.schema.xml"/>
+ <file path="schema/appdal/application.schema.xml"/>
+ <file path="config/appdal/connections.data.xml"/>
+ <file path="config/appdal/data-store-params.data.xml"/>
+</include>
+
+<comments>
+ <comment creation-time="20231207T111607" created-by="gjc" created-on="thinkpad" author="gjc" text="u"/>
+ <comment creation-time="20231207T111909" created-by="gjc" created-on="thinkpad" author="gjc" text="h"/>
+ <comment creation-time="20240112T145841" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="Adding storage"/>
+ <comment creation-time="20240112T163053" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="Add TRB"/>
+ <comment creation-time="20240112T170242" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="Add queue"/>
+ <comment creation-time="20240112T170541" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="Add network connections"/>
+</comments>
+
+<obj class="DFOConf" id="dfoconf-01">
+ <attr name="general_queue_timeout_ms" type="u32" val="100"/>
+ <attr name="stop_timeout_ms" type="u32" val="100"/>
+ <attr name="td_send_retries" type="s32" val="5"/>
+ <attr name="busy_threshold" type="s32" val="2"/>
+ <attr name="free_threshold" type="s32" val="1"/>
+</obj>
+
+<obj class="TRBConf" id="trb-01">
+ <attr name="queues_timeout" type="u32" val="100"/>
+ <attr name="trigger_record_timeout_ms" type="u32" val="2858"/>
+</obj>
+
+<obj class="DataWriterConf" id="dw-01">
+ <attr name="data_storage_prescale" type="s32" val="1"/>
+ <attr name="min_write_retry_time_ms" type="s32" val="1"/>
+ <attr name="max_write_retry_time_ms" type="s32" val="1000"/>
+ <attr name="write_retry_time_increase_factor" type="s32" val="2"/>
+ <rel name="data_store_params" class="DataStoreConf" id="default"/>
+</obj>
+
+<obj class="LatencyBuffer" id="def-latency-buf">
+ <attr name="size" type="u32" val="139008"/>
+ <attr name="numa_aware" type="bool" val="0"/>
+ <attr name="intrinsic_allocator" type="bool" val="1"/>
+ <attr name="alignment_size" type="u32" val="4096"/>
+ <attr name="preallocation" type="bool" val="0"/>
+</obj>
+
+<obj class="NICReceiverConf" id="def-nic-receiver-conf">
+ <attr name="template_for" type="class" val="FDFakeCardReader"/>
+ <attr name="emulation_mode" type="bool" val="1"/>
+ <attr name="eal_args" type="string" val="-l 0-1 -n 3 -- -m [0:1].0 -j"/>
+ <rel name="emulation_conf" class="StreamEmulationParameters" id="stream-emu"/>
+</obj>
+
+<obj class="NICStatsConf" id="def-nic-stats">
+ <attr name="analyze_nth_packet" type="s32" val="1"/>
+ <attr name="expected_packet_size" type="u32" val="7243"/>
+ <attr name="expected_seq_id_step" type="u32" val="1"/>
+ <attr name="expected_timestamp_step" type="s32" val="1000"/>
+</obj>
+
+<obj class="ReadoutModuleConf" id="def-link-handler">
+ <attr name="template_for" type="class" val="FDDataLinkHandler"/>
+ <attr name="input_data_type" type="string" val="WIBEthFrame"/>
+ <attr name="generate_timesync" type="bool" val="1"/>
+ <rel name="request_handler" class="RequestHandler" id="def-data-request-handler"/>
+ <rel name="latency_buffer" class="LatencyBuffer" id="def-latency-buf"/>
+ <rel name="data_processor" class="TPDataProcessor" id="def-tp-processor"/>
+</obj>
+
+<obj class="ReadoutModuleConf" id="def-tp-handler">
+ <attr name="template_for" type="class" val="FDDataLinkHandler"/>
+ <attr name="input_data_type" type="string" val="TriggerPrimitive"/>
+ <attr name="generate_timesync" type="bool" val="1"/>
+ <rel name="request_handler" class="TPRequestHandler" id="def-tp-request-handler"/>
+ <rel name="latency_buffer" class="LatencyBuffer" id="def-latency-buf"/>
+</obj>
+
+<obj class="RequestHandler" id="def-data-request-handler">
+ <attr name="handler_threads" type="u16" val="1"/>
+ <attr name="request_timeout" type="u32" val="10000"/>
+ <attr name="pop_limit_pct" type="float" val="0.5"/>
+ <attr name="pop_size_pct" type="float" val="0.8"/>
+ <attr name="warn_on_timeout" type="bool" val="1"/>
+ <attr name="warn_on_empty_buffer" type="bool" val="1"/>
+</obj>
+
+<obj class="StreamEmulationParameters" id="stream-emu">
+        <attr name="data_file_name" type="string" val="/nfs/home/glehmann/nightly/wibeth_output_all_zeros-dd156b4.bin"/>
+ <attr name="input_file_size_limit" type="u32" val="1000000"/>
+ <attr name="set_t0" type="bool" val="1"/>
+ <attr name="random_population_size" type="u32" val="0"/>
+ <attr name="frame_error_rate_hz" type="float" val="0"/>
+ <attr name="generate_periodic_adc_pattern" type="bool" val="1"/>
+ <attr name="TP_rate_per_channel" type="float" val="0"/>
+</obj>
+
+<obj class="TPDataProcessor" id="def-tp-processor">
+ <attr name="queue_sizes" type="u32" val="10000"/>
+ <attr name="thread_names_prefix" type="string" val="tp"/>
+ <attr name="max_ticks_tot" type="u32" val="10000"/>
+ <attr name="tpg_enabled" type="bool" val="0"/>
+ <attr name="algorithm" type="string" val="SimpleThreshold"/>
+ <attr name="threshold" type="u16" val="60"/>
+</obj>
+
+<obj class="TPRequestHandler" id="def-tp-request-handler">
+ <attr name="handler_threads" type="u16" val="1"/>
+ <attr name="request_timeout" type="u32" val="10000"/>
+ <attr name="pop_limit_pct" type="float" val="0.5"/>
+ <attr name="pop_size_pct" type="float" val="0.8"/>
+ <attr name="warn_on_timeout" type="bool" val="1"/>
+ <attr name="warn_on_empty_buffer" type="bool" val="1"/>
+ <attr name="min_latency_ticks" type="u32" val="6250000"/>
+ <attr name="max_transmission_rate_hz" type="u32" val="1000"/>
+</obj>
+
+</oks-data>
