@@ -98,19 +98,16 @@
 <obj class="ModuleLevelTriggerConf" id="mlt-conf-1">
 </obj>
 
-<!-- RandomTriggerCandidateMaker-->
+<!-- CustomTriggerCandidateMaker-->
 <obj class="CustomTriggerCandidateMakerConf" id="cstm-conf-1">
-  <attr name="template_for" type="class" val="CustomTriggerCandidateMaker"/>
 </obj>
 
 <!-- RandomTriggerCandidateMaker-->
 <obj class="RandomTriggerCandidateMakerConf" id="rtcm-conf-1">
-  <attr name="template_for" type="class" val="RandomTriggerCandidateMaker"/>
 </obj>
 
 <!-- TimingTriggerCandidateMaker-->
 <obj class="TimingTriggerCandidateMakerConf" id="timing-conf-1">
-  <attr name="template_for" type="class" val="TimingTriggerCandidateMaker"/>
 </obj>
 
 <!-- Application -->

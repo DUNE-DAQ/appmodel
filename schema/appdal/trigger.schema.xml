@@ -156,7 +156,7 @@
   <superclass name="DaqModule"/>
 </class>
 
-<class name="StandaloneCandidateMakerConf">
+<class name="StandaloneCandidateMakerConf" is-abstract="yes">
   <attribute name="template_for" type="class" init-value="StandaloneCandidateMaker" is-not-null="yes"/>
 </class>
 
@@ -167,12 +167,14 @@
   <relationship name="configuration"  class-type="RandomTriggerCandidateMakerConf"  low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="RandomTriggerCandidateMakerConf">
-   <superclass name="StandaloneCandidateMakerConf"/>
+ <class name="RandomTriggerCandidateMakerConf" >
+  <superclass name="StandaloneCandidateMakerConf"/>
+  <attribute name="template_for" type="class" init-value="RandomTriggerCandidateMaker"/>
   <attribute name="trigger_interval_ticks" type="u32" init-value="64000000" is-not-null="yes"/>
   <attribute name="clock_frequency_hz" type="u32" init-value="62500000" is-not-null="yes"/>
   <attribute name="timestamp_method" type="enum" range="kTimeSync,kSystemClock" init-value="kTimeSync" is-not-null="yes"/>
   <attribute name="time_distribution" type="enum" range="kUniform,kPoisson" init-value="kUniform" is-not-null="yes"/>
+
   <!--
   <relationship name="tcbuffer_conf" class-type="TCBufferConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   -->
@@ -184,14 +186,16 @@
    <relationship name="configuration" class-type="TimingTriggerCandidateMakerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="TimingTriggerOffsetMap">
-  <attribute name="signal_type" type="u32" init-value="0" is-not-null="yes"/>
-  <attribute name="time_before" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="time_after" type="u32" init-value="20000" is-not-null="yes"/>
- </class>
+<class name="TimingTriggerOffsetMap">
 
- <class name="TimingTriggerCandidateMakerConf">
+<attribute name="signal_type" type="u32" init-value="0" is-not-null="yes"/>
+<attribute name="time_before" type="u32" init-value="10000" is-not-null="yes"/>
+<attribute name="time_after" type="u32" init-value="20000" is-not-null="yes"/>
+</class>
+
+ <class name="TimingTriggerCandidateMakerConf" >
    <superclass name="StandaloneCandidateMakerConf"/>
+   <attribute name="template_for" type="class" init-value="TimingTriggerCandidateMaker"/>
    <relationship name="s0" class-type="TimingTriggerOffsetMap" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
    <relationship name="s1" class-type="TimingTriggerOffsetMap" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
    <relationship name="s2" class-type="TimingTriggerOffsetMap" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -204,12 +208,14 @@
    <relationship name="configuration" class-type="CustomTriggerCandidateMakerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="CustomTriggerCandidateMakerConf">
-   <superclass name="StandaloneCandidateMakerConf"/>
+ <class name="CustomTriggerCandidateMakerConf" >
+  <superclass name="StandaloneCandidateMakerConf"/>
+  <attribute name="template_for" type="class" init-value="CustomTriggerCandidateMaker"/>
   <attribute name="trigger_types"      type="u32" is-multi-value="yes"/>
   <attribute name="trigger_intervals"  type="u32" is-multi-value="yes"/>
   <attribute name="clock_frequency_hz" type="u32" init-value="62500000"/>
   <attribute name="timestamp_method"   type="enum" range="kTimeSync,kSystemClock" init-value="kTimeSync" is-not-null="yes"/>
+
  </class>
 
  <!-- Trigger algorithms configurations, for when we run with TPG on -->
