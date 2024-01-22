@@ -66,6 +66,8 @@
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
+  <file path="schema/appdal/application.schema.xml"/>
+  <file path="schema/appdal/trigger.schema.xml"/>
 </include>
 
 <comments>
@@ -81,7 +83,12 @@
  <attr name="port" type="u16" val="0"/>
 </obj>
 
-<obj class="Service" id="timeSyncs">
+  <obj class="Service" id="HSIEvents">
+    <attr name="protocol" type="string" val="tcp"/>
+    <attr name="port" type="u16" val="0"/>
+  </obj>
+
+  <obj class="Service" id="timeSyncs">
  <attr name="protocol" type="string" val="tcp"/>
  <attr name="port" type="u16" val="0"/>
 </obj>
@@ -181,6 +188,27 @@
  <attr name="data_type" type="string" val="TriggerPrimitive"/>
 </obj>
 
+  <obj class="NetworkConnectionDescriptor" id="ti-mlt-desc-1">
+    <attr name="uid_base" type="string" val="triggerInhibit"/>
+    <attr name="connection_type" type="enum" val="kSendRecv"/>
+    <attr name="data_type" type="string" val="TriggerInhibit"/>
+    <rel name="associated_service" class="Service" id="triggerInhibits"/>
+  </obj>
+
+  <obj class="NetworkConnectionDescriptor" id="td-mlt-desc-1">
+    <attr name="uid_base" type="string" val="triggerDecision"/>
+    <attr name="connection_type" type="enum" val="kSendRecv"/>
+    <attr name="data_type" type="string" val="TriggerDecision"/>
+    <rel name="associated_service" class="Service" id="triggerDecisions"/>
+  </obj>
+
+  <obj class="NetworkConnectionDescriptor" id="timing-desc-1">
+    <attr name="uid_base" type="string" val="hsievent"/>
+    <attr name="connection_type" type="enum" val="kSendRecv"/>
+    <attr name="data_type" type="string" val="HSIEvent"/>
+    <rel name="associated_service" class="Service" id="HSIEvents"/>
+  </obj>
+  
 <obj class="NetworkConnectionDescriptor" id="dft-net-desc-1">
  <attr name="uid_base" type="string" val="dataflowtoken"/>
  <attr name="connection_type" type="enum" val="kSendRecv"/>
@@ -238,6 +266,26 @@
  <rel name="descriptor" class="NetworkConnectionDescriptor" id="ti-net-desc-1"/>
 </obj>
 
+  <obj class="NetworkConnectionRule" id="ti-mlt-rule-1">
+    <attr name="endpoint_class" type="class" val="ModuleLevelTrigger"/>
+    <rel name="descriptor" class="NetworkConnectionDescriptor" id="ti-mlt-desc-1"/>
+  </obj>
+
+  <obj class="NetworkConnectionRule" id="td-mlt-rule-1">
+    <attr name="endpoint_class" type="class" val="ModuleLevelTrigger"/>
+    <rel name="descriptor" class="NetworkConnectionDescriptor" id="td-mlt-desc-1"/>
+  </obj>
+
+  <obj class="NetworkConnectionRule" id="timing-rule-1">
+    <attr name="endpoint_class" type="class" val="TimingTriggerCandidateMaker"/>
+    <rel name="descriptor" class="NetworkConnectionDescriptor" id="timing-desc-1"/>
+  </obj>
+
+  <obj class="QueueConnectionRule" id="tcQueueRule">
+    <attr name="destination_class" type="class" val="ModuleLevelTrigger"/>
+    <rel name="descriptor" class="QueueDescriptor" id="tcQueueRuleDescriptor"/>
+  </obj>
+
 <obj class="QueueConnectionRule" id="trigger-record-q-rule">
  <attr name="destination_class" type="class" val="DataWriter"/>
  <rel name="descriptor" class="QueueDescriptor" id="trigger-record-1"/>
@@ -248,5 +296,11 @@
  <attr name="capacity" type="u32" val="11"/>
  <attr name="data_type" type="string" val="TriggerRecord"/>
 </obj>
+  
+  <obj class="QueueDescriptor" id="tcQueueRuleDescriptor">
+    <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>
+    <attr name="capacity" type="u32" val="1000"/>
+    <attr name="data_type" type="string" val="TriggerCandidate"/>
+  </obj>
 
 </oks-data>

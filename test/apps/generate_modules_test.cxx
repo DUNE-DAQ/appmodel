@@ -20,6 +20,7 @@
 #include "appdal/DFOApplication.hpp"
 #include "appdal/ReadoutApplication.hpp"
 #include "appdal/SmartDaqApplication.hpp"
+#include "appdal/TriggerApplication.hpp"
 #include "appdal/TPStreamWriterApplication.hpp"
 
 #include "appdal/appdalIssues.hpp"
@@ -37,7 +38,14 @@ int main(int argc, char* argv[]) {
   std::string sessionName(argv[1]);
   std::string appName(argv[2]);
   std::string dbfile(argv[3]);
-  auto confdb = new oksdbinterfaces::Configuration("oksconfig:" + dbfile);
+  oksdbinterfaces::Configuration* confdb;
+  try {
+    confdb = new oksdbinterfaces::Configuration("oksconfig:" + dbfile);
+  }
+  catch (oksdbinterfaces::Generic& exc) {
+    std::cout << "Failed to load OKS database: " << exc << std::endl;
+    return 0;
+  }
 
   auto session = confdb->get<coredal::Session>(sessionName);
   if (session == nullptr) {

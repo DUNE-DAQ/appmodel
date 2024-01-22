@@ -121,8 +121,8 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   std::vector<const coredal::Connection*> faOutputQueues;
 
 
-  std::string taFragQueueUid("reqToFA-"+UID());
-  confdb->create(dbfile, "Queue", taFragQueueUid, faQueueObj);
+  std::string faFragQueueUid("reqToFA-"+UID());
+  confdb->create(dbfile, "Queue", faFragQueueUid, faQueueObj);
   faQueueObj.set_by_val<std::string>("data_type", faOutputQDesc->get_data_type());
   faQueueObj.set_by_val<std::string>("queue_type", faOutputQDesc->get_queue_type());
   faQueueObj.set_by_val<uint32_t>("capacity", faOutputQDesc->get_capacity());
@@ -199,6 +199,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
   int rnum = 0;
   // Create a DataReader for each (non-disabled) group and a Data Link
+  // Handler for each stream of this DataReader
   for (auto roGroup : get_contains()) {
     if (roGroup->disabled(*session)) {
       TLOG_DEBUG(7) << "Ignoring disabled ReadoutGroup " << roGroup->UID();
