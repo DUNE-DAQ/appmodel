@@ -512,7 +512,7 @@
  <class name="TriggerApplication">
   <superclass name="ResourceSetAND"/>
   <superclass name="SmartDaqApplication"/>
-  <attribute name="tc_src_id" description="Source ID if TCs are being generated" type="u32"/>
+  <attribute name="src_id" description="Source ID if Trigger sets are being generated" type="u32"/>
   <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
   <relationship name="trigger_inputs_handler" class-type="ReadoutModuleConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_subscriber" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>

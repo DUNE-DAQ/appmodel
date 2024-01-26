@@ -35,7 +35,8 @@
 #include "appdal/QueueConnectionRule.hpp"
 #include "appdal/QueueDescriptor.hpp"
 #include "appdal/ReadoutApplication.hpp"
-#include "appdal/TPRequestHandler.hpp"
+#include "appdal/RequestHandler.hpp"
+#include "appdal/TriggerRequestHandler.hpp"
 
 #include "appdal/appdalIssues.hpp"
 
