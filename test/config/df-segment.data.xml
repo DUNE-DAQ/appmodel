@@ -124,6 +124,10 @@
 
 <obj class="Segment" id="df-segment">
  <rel name="controller" class="RCApplication" id="df-controller"/>
+ <rel name="applications">
+	 <ref class="DFOApplication" id="dfo-01"/>
+	 <ref class="DFApplication" id="df-01"/>
+ </rel></obj>
 </obj>
 
 <obj class="StorageDevice" id="storage-01">

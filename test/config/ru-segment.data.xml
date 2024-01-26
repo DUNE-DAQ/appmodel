@@ -114,6 +114,8 @@
 
 <obj class="Segment" id="ru-segment">
  <rel name="controller" class="RCApplication" id="ru-controller"/>
-</obj>
+ <rel name="applications">
+  <ref class="ReadoutApplication" id="ru-1"/>
+ </rel></obj>
 
 </oks-data>
