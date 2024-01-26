@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="40" oks-format="schema" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="glehmann" last-modified-on="lxplus928.cern.ch" last-modification-time="20240107T173725"/>
+<info name="" type="" num-of-items="57" oks-format="schema" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="glehmann" last-modified-on="lxplus924.cern.ch" last-modification-time="20240126T102906"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -138,19 +138,7 @@
   <attribute name="template_for" description="OKS class of the DataReader that this config is a template for" type="class" init-value="DataReader" is-not-null="yes"/>
   <attribute name="emulation_mode" type="bool" init-value="false"/>
   <relationship name="emulation_conf" description="Parameters for emulating the stream." class-type="StreamEmulationParameters" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  </class>
-
-<class name="StreamEmulationParameters">
-  <attribute name="data_file_name" type="string"/>
-  <attribute name="tp_data_file_name" type="string"/>
-  <attribute name="input_file_size_limit" type="u32" init-value="10485100" is-not-null="yes"/>
-  <attribute name="set_t0" type="bool" description="Set first timestamp to now" init-value="true" is-not-null="yes"/>
-  <attribute name="random_population_size" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="frame_error_rate_hz" type="float" init-value="0.0" is-not-null="yes"/>
-  <attribute name="generate_periodic_adc_pattern" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="TP_rate_per_channel" description="TP rate per channel in units of 100 Hz." type="float" init-value="0.0" is-not-null="yes"/>
-  </class>
-
+ </class>
 
  <class name="DataRecorder" is-abstract="yes">
   <superclass name="DaqModule"/>
@@ -166,13 +154,18 @@
 
  <class name="DataStoreConf">
   <attribute name="type" type="string"/>
-  <attribute name="directory_path" type="string" description="The base directory for saving files" is-not-null="yes"/>
+  <attribute name="directory_path" description="The base directory for saving files" type="string" is-not-null="yes"/>
   <attribute name="mode" description="The operation mode that the DataStore should use when organizing the data into files" type="enum" range="all-per-file,one-event-per-file" init-value="all-per-file" is-not-null="yes"/>
   <attribute name="max_file_size" type="u64" init-value="0" is-not-null="yes"/>
   <attribute name="disable_unique_filename_suffix" type="bool" init-value="false"/>
   <attribute name="free_space_safety_factor" type="s32" init-value="0" is-not-null="yes"/>
   <relationship name="file_layout_params" class-type="HDF5FileLayoutParams" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="filename_params" class-type="FilenameParams" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="DataSubscriber" is-abstract="yes">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="DataWriter">
@@ -188,21 +181,29 @@
   <relationship name="data_store_params" class-type="DataStoreConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
+ <class name="FakeDataApplication">
+  <superclass name="ResourceSetAND"/>
+  <superclass name="SmartDaqApplication"/>
+  <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
+  <method name="generate_modules" description="Generate daq module dal objects for streams of the FakeDataApplication on the fly">
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
+  </method>
+ </class>
 
-  <class name="FakeDataProd">
-    <superclass name="DaqModule"/>
-    <relationship name="configuration" class-type="FakeDataProdConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  </class>
+ <class name="FakeDataProd">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="FakeDataProdConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
 
-  <class name="FakeDataProdConf">
-    <superclass name="ResourceBase"/>
-    <attribute name="system_type" type="string" description="The system type of the link" init-value="" is-not-null="yes"/>
-    <attribute name="source_id" type="u32" description="The SourceID of this link" is-not-null="yes"/>
-    <attribute name="time_tick_diff" type="u32" init-value="1" description="Time tick difference between frames" is-not-null="yes"/>
-    <attribute name="frame_size" type="u32" init-value="0" description="The size of a fake frame" is-not-null="yes"/>
-    <attribute name="response_delay" type="u32" init-value="0" description="Wait for this amount of ns before sending the fragment" is-not-null="yes"/>
-    <attribute name="fragment_type" type="string" description="Fragment type of the response" is-not-null="yes"/>
-  </class>
+ <class name="FakeDataProdConf">
+  <superclass name="ResourceBase"/>
+  <attribute name="system_type" description="The system type of the link" type="string" is-not-null="yes"/>
+  <attribute name="source_id" description="The SourceID of this link" type="u32" is-not-null="yes"/>
+  <attribute name="time_tick_diff" description="Time tick difference between frames" type="u32" init-value="1" is-not-null="yes"/>
+  <attribute name="frame_size" description="The size of a fake frame" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="response_delay" description="Wait for this amount of ns before sending the fragment" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="fragment_type" description="Fragment type of the response" type="string" is-not-null="yes"/>
+ </class>
 
  <class name="FilenameParams">
   <attribute name="overall_prefix" type="string" init-value="minidaq" is-not-null="yes"/>
@@ -234,6 +235,12 @@
   <attribute name="detector_group_name" type="string" init-value="unspecified" is-not-null="yes"/>
   <attribute name="element_name_prefix" type="string" init-value="Element" is-not-null="yes"/>
   <attribute name="digits_for_element_number" type="s32" init-value="5"/>
+ </class>
+
+ <class name="HSISignalWindow">
+  <attribute name="signal_type" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="time_before" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="time_after" type="u32" init-value="20000" is-not-null="yes"/>
  </class>
 
  <class name="LatencyBuffer">
@@ -271,7 +278,8 @@
  <class name="ReadoutApplication">
   <superclass name="ResourceSetAND"/>
   <superclass name="SmartDaqApplication"/>
-  <attribute name="tp_src_id" description="Source ID for TP handler if TPs are being generated" type="u32"/>
+  <attribute name="tp_src_id" description="Source ID if TPs are being generated" type="u32"/>
+  <attribute name="ta_src_id" description="Source ID if TAs are being generated" type="u32"/>
   <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
   <relationship name="uses" description="Configuration of the host hardware resources used by this application" class-type="RoHwConfig" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
   <relationship name="link_handler" class-type="ReadoutModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -283,14 +291,6 @@
   </method>
  </class>
 
-  <class name="FakeDataApplication">
-    <superclass name="ResourceSetAND"/>
-    <superclass name="SmartDaqApplication"/>
-    <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
-    <method name="generate_modules" description="Generate daq module dal objects for streams of the FakeDataApplication on the fly">
-      <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
-    </method>
-  </class>
  <class name="ReadoutHost">
   <superclass name="VirtualHost"/>
  </class>
@@ -317,6 +317,7 @@
   <attribute name="request_timeout" description="Request timeout in milliseconds" type="u32" init-value="10000" is-not-null="yes"/>
   <attribute name="pop_limit_pct" description="Latency buffer occupancy percentage to issue an auto-pop" type="float" init-value="0.5" is-not-null="yes"/>
   <attribute name="pop_size_pct" description="Percentage of current occupancy to pop from the latency buffer" type="float" init-value="0.8" is-not-null="yes"/>
+  <attribute name="min_latency_ticks" description="Number of ticks by which the post processing should be delayed. Important for data that arrive unordered, to allow them to get reordered." type="u32" init-value="0" is-not-null="yes"/>
   <attribute name="warn_on_timeout" type="bool" init-value="true" is-not-null="yes"/>
   <attribute name="warn_on_empty_buffer" type="bool" init-value="true" is-not-null="yes"/>
   <relationship name="data_recorder" class-type="DataRecorderConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -338,6 +339,94 @@
   </method>
  </class>
 
+ <class name="StreamEmulationParameters">
+  <attribute name="data_file_name" type="string"/>
+  <attribute name="tp_data_file_name" type="string"/>
+  <attribute name="input_file_size_limit" type="u32" init-value="10485100" is-not-null="yes"/>
+  <attribute name="set_t0" description="Set first timestamp to now" type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="random_population_size" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="frame_error_rate_hz" type="float" init-value="0.0" is-not-null="yes"/>
+  <attribute name="generate_periodic_adc_pattern" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="TP_rate_per_channel" description="TP rate per channel in units of 100 Hz." type="float" init-value="0.0" is-not-null="yes"/>
+ </class>
+
+ <class name="TAAlgorithm" description="Base class for TA algorithms">
+  <attribute name="prescale" description="Prescale factor to apply to algorithm output" type="u32" init-value="1" is-not-null="yes"/>
+ </class>
+
+ <class name="TADataProcessor">
+  <superclass name="DataProcessor"/>
+  <attribute name="print_tp_info" description="Whether to print TP information in the TA processor" type="bool" init-value="false"/>
+  <relationship name="algorithms" class-type="TAAlgorithm" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="channel_filter_conf" class-type="TPChannelFilterConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="TAHorizontalMuon">
+  <superclass name="TAAlgorithm"/>
+  <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="trigger_on_n_channels" description="Whether to trigger on N Channels" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="trigger_on_adjacency" description="Whether to trigger on adjacency" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="n_channels_threshold" description="Threshold for the N Channels algorithm" type="u32" init-value="8" is-not-null="yes"/>
+  <attribute name="adjacency_threshold" description="Threshold for the adjacency algorithm" type="u32" init-value="6" is-not-null="yes"/>
+  <attribute name="adjacency_tolerance" description="Tolerance for the number of allowed gaps for the adjacency algorithm" type="u32" init-value="4" is-not-null="yes"/>
+ </class>
+
+ <class name="TAPassThrough">
+  <superclass name="TAAlgorithm"/>
+ </class>
+
+ <class name="TCAlgorithm" description="Base class for TC algorithms">
+  <attribute name="prescale" description="Prescale factor to apply to algorithm output" type="u32" init-value="1" is-not-null="yes"/>
+ </class>
+
+ <class name="TCCustom">
+  <superclass name="TCAlgorithm"/>
+  <attribute name="trigger_types" type="u32" is-multi-value="yes"/>
+  <attribute name="trigger_intervals" type="u32" is-multi-value="yes"/>
+  <attribute name="timestamp_method" type="enum" range="kTimeSync,kSystemClock" init-value="kTimeSync" is-not-null="yes"/>
+ </class>
+
+ <class name="TCDataProcessor">
+  <superclass name="DataProcessor"/>
+  <attribute name="print_ta_info" description="Whether to print TP information in the TA processor" type="bool" init-value="false"/>
+  <relationship name="algorithms" class-type="TCAlgorithm" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="channel_filter_conf" class-type="TPChannelFilterConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="TCHSI">
+  <superclass name="TCAlgorithm"/>
+  <attribute name="hsi_trigger_type_passthrough" type="bool" init-value="false" is-not-null="yes"/>
+  <relationship name="signals" class-type="HSISignalWindow" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="TCHorizontalMuon">
+  <superclass name="TCAlgorithm"/>
+  <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="trigger_on_n_channels" description="Whether to trigger on N Channels" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="trigger_on_adjacency" description="Whether to trigger on adjacency" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="n_channels_threshold" description="Threshold for the N Channels algorithm" type="u32" init-value="8" is-not-null="yes"/>
+ </class>
+
+ <class name="TCPassThrough">
+  <superclass name="TCAlgorithm"/>
+ </class>
+
+ <class name="TCRandom">
+  <superclass name="TCAlgorithm"/>
+  <attribute name="trigger_interval_ticks" type="u32" init-value="64000000" is-not-null="yes"/>
+  <attribute name="clock_frequency_hz" type="u32" init-value="62500000" is-not-null="yes"/>
+  <attribute name="timestamp_method" type="enum" range="kTimeSync,kSystemClock" init-value="kTimeSync" is-not-null="yes"/>
+  <attribute name="time_distribution" type="enum" range="kUniform,kPoisson" init-value="kUniform" is-not-null="yes"/>
+ </class>
+
+ <class name="TPChannelFilterConf">
+  <attribute name="keep_collection" description="Whether to keep the collection channel TPs." type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="keep_induction" description="Whether to keep the induction channel TPs." type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="channel_map_name" description="Name of the channel map." type="string" is-not-null="yes"/>
+ </class>
+
  <class name="TPDataProcessor">
   <superclass name="DataProcessor"/>
   <attribute name="max_ticks_tot" description="Max ToT after which ongoing TPs are discarded, default is 8000" type="u32" init-value="8000" is-not-null="yes"/>
@@ -350,12 +439,6 @@
 
  <class name="TPHandlerModule">
   <superclass name="ReadoutModule"/>
- </class>
-
- <class name="TPRequestHandler">
-  <superclass name="RequestHandler"/>
-  <attribute name="min_latency_ticks" type="u32" init-value="100" is-not-null="yes"/>
-  <attribute name="max_transmission_rate_hz" type="u32" init-value="1000" is-not-null="yes"/>
  </class>
 
  <class name="TPStreamWriter">
@@ -372,8 +455,8 @@
  </class>
 
  <class name="TPStreamWriterConf">
-   <attribute name="tp_accumulation_interval" type="u64" init-value="0" is-not-null="yes"/>
-   <attribute name="source_id" type="u32" is-not-null="yes"/>
+  <attribute name="tp_accumulation_interval" type="u64" init-value="0" is-not-null="yes"/>
+  <attribute name="source_id" type="u32" is-not-null="yes"/>
   <relationship name="data_store_params" class-type="DataStoreConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
@@ -381,12 +464,29 @@
   <attribute name="queues_timeout" type="u32" init-value="0" is-not-null="yes"/>
   <attribute name="trigger_record_timeout_ms" type="u32" init-value="0" is-not-null="yes"/>
   <attribute name="max_time_window" type="s64" init-value="0" is-not-null="yes"/>
-   <attribute name="source_id" type="u32" is-not-null="yes"/>
+  <attribute name="source_id" type="u32" is-not-null="yes"/>
+ </class>
+
+ <class name="TriggerApplication">
+  <superclass name="ResourceSetAND"/>
+  <superclass name="SmartDaqApplication"/>
+  <attribute name="tc_src_id" description="Source ID if TCs are being generated" type="u32"/>
+  <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
+  <relationship name="ta_handler" class-type="ReadoutModuleConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="data_subscriber" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <method name="generate_modules" description="Generate daq module dal objects for streams of thie TriggerApplication on the fly">
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
+  </method>
  </class>
 
  <class name="TriggerRecordBuilder">
   <superclass name="DaqModule"/>
   <relationship name="configuration" class-type="TRBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="TriggerRequestHandler">
+  <superclass name="RequestHandler"/>
+  <attribute name="max_transmission_rate_hz" description="Maximum rate at which Trigger Set objects are sent out." type="u32" init-value="1000" is-not-null="yes"/>
  </class>
 
  <class name="geo_id">

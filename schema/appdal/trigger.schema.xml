@@ -200,7 +200,7 @@
    <relationship name="s1" class-type="TimingTriggerOffsetMap" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
    <relationship name="s2" class-type="TimingTriggerOffsetMap" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
    <attribute name="hsi_trigger_type_passthrough" type="bool" init-value="false" is-not-null="yes"/>
- </class>
+</class>
 
  <!-- Custom Trigger Candidate Maker Configuration -->
  <class name="CustomTriggerCandidateMaker">
