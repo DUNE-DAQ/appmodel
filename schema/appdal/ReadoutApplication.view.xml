@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="303" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="glehmann" created-on="lxplus924.cern.ch" creation-time="20240126T102852" last-modified-by="glehmann" last-modified-on="lxplus924.cern.ch" last-modification-time="20240126T102852"/>
+<info name="" type="" num-of-items="303" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="glehmann" created-on="lxplus924.cern.ch" creation-time="20240126T113333" last-modified-by="glehmann" last-modified-on="lxplus924.cern.ch" last-modification-time="20240126T113333"/>
 
 <obj class="ALink" id="DROStreamConf-2-GeoId-via-geo_id">
  <attr name="Name" type="string" val="geo_id"/>
@@ -413,27 +413,27 @@
  </rel>
 </obj>
 
-<obj class="ALink" id="TADataProcessor-2-TAAlgorithm-via-algorithms">
+<obj class="ALink" id="TPDataProcessor-2-TAAlgorithm-via-algorithms">
  <attr name="Name" type="string" val="algorithms"/>
- <rel name="From" class="Class" id="TADataProcessor"/>
+ <rel name="From" class="Class" id="TPDataProcessor"/>
  <rel name="To" class="Class" id="TAAlgorithm"/>
  <rel name="Points">
-  <ref class="Point" id="1 TADataProcessor-2-TAAlgorithm-via-algorithms"/>
-  <ref class="Point" id="2 TADataProcessor-2-TAAlgorithm-via-algorithms"/>
-  <ref class="Point" id="3 TADataProcessor-2-TAAlgorithm-via-algorithms"/>
-  <ref class="Point" id="4 TADataProcessor-2-TAAlgorithm-via-algorithms"/>
+  <ref class="Point" id="1 TPDataProcessor-2-TAAlgorithm-via-algorithms"/>
+  <ref class="Point" id="2 TPDataProcessor-2-TAAlgorithm-via-algorithms"/>
+  <ref class="Point" id="3 TPDataProcessor-2-TAAlgorithm-via-algorithms"/>
+  <ref class="Point" id="4 TPDataProcessor-2-TAAlgorithm-via-algorithms"/>
  </rel>
 </obj>
 
-<obj class="ALink" id="TADataProcessor-2-TPChannelFilterConf-via-channel_filter_conf">
+<obj class="ALink" id="TPDataProcessor-2-TPChannelFilterConf-via-channel_filter_conf">
  <attr name="Name" type="string" val="channel_filter_conf"/>
- <rel name="From" class="Class" id="TADataProcessor"/>
+ <rel name="From" class="Class" id="TPDataProcessor"/>
  <rel name="To" class="Class" id="TPChannelFilterConf"/>
  <rel name="Points">
-  <ref class="Point" id="1 TADataProcessor-2-TPChannelFilterConf-via-channel_filter_conf"/>
-  <ref class="Point" id="2 TADataProcessor-2-TPChannelFilterConf-via-channel_filter_conf"/>
-  <ref class="Point" id="3 TADataProcessor-2-TPChannelFilterConf-via-channel_filter_conf"/>
-  <ref class="Point" id="4 TADataProcessor-2-TPChannelFilterConf-via-channel_filter_conf"/>
+  <ref class="Point" id="1 TPDataProcessor-2-TPChannelFilterConf-via-channel_filter_conf"/>
+  <ref class="Point" id="2 TPDataProcessor-2-TPChannelFilterConf-via-channel_filter_conf"/>
+  <ref class="Point" id="3 TPDataProcessor-2-TPChannelFilterConf-via-channel_filter_conf"/>
+  <ref class="Point" id="4 TPDataProcessor-2-TPChannelFilterConf-via-channel_filter_conf"/>
  </rel>
 </obj>
 
@@ -532,6 +532,11 @@
  <attr name="y" type="s16" val="373"/>
 </obj>
 
+<obj class="Class" id="RawDataProcessor">
+ <attr name="x" type="s16" val="1696"/>
+ <attr name="y" type="s16" val="356"/>
+</obj>
+
 <obj class="Class" id="ReadoutApplication">
  <attr name="x" type="s16" val="605"/>
  <attr name="y" type="s16" val="473"/>
@@ -612,11 +617,6 @@
  <attr name="y" type="s16" val="660"/>
 </obj>
 
-<obj class="Class" id="TADataProcessor">
- <attr name="x" type="s16" val="1572"/>
- <attr name="y" type="s16" val="555"/>
-</obj>
-
 <obj class="Class" id="TAHorizontalMuon">
  <attr name="x" type="s16" val="1560"/>
  <attr name="y" type="s16" val="788"/>
@@ -628,13 +628,13 @@
 </obj>
 
 <obj class="Class" id="TPChannelFilterConf">
- <attr name="x" type="s16" val="1861"/>
- <attr name="y" type="s16" val="552"/>
+ <attr name="x" type="s16" val="1731"/>
+ <attr name="y" type="s16" val="598"/>
 </obj>
 
 <obj class="Class" id="TPDataProcessor">
- <attr name="x" type="s16" val="1660"/>
- <attr name="y" type="s16" val="401"/>
+ <attr name="x" type="s16" val="1558"/>
+ <attr name="y" type="s16" val="560"/>
 </obj>
 
 <obj class="Class" id="TPHandlerModule">
@@ -702,14 +702,14 @@
  </rel>
 </obj>
 
-<obj class="GLink" id="DataProcessor-2-TADataProcessor">
+<obj class="GLink" id="DataProcessor-2-RawDataProcessor">
  <rel name="From" class="Class" id="DataProcessor"/>
- <rel name="To" class="Class" id="TADataProcessor"/>
+ <rel name="To" class="Class" id="RawDataProcessor"/>
  <rel name="Points">
-  <ref class="Point" id="1 DataProcessor-2-TADataProcessor"/>
-  <ref class="Point" id="2 DataProcessor-2-TADataProcessor"/>
-  <ref class="Point" id="3 DataProcessor-2-TADataProcessor"/>
-  <ref class="Point" id="4 DataProcessor-2-TADataProcessor"/>
+  <ref class="Point" id="1 DataProcessor-2-RawDataProcessor"/>
+  <ref class="Point" id="2 DataProcessor-2-RawDataProcessor"/>
+  <ref class="Point" id="3 DataProcessor-2-RawDataProcessor"/>
+  <ref class="Point" id="4 DataProcessor-2-RawDataProcessor"/>
  </rel>
 </obj>
 
@@ -928,7 +928,7 @@
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 DataProcessor-2-TADataProcessor">
+<obj class="Point" id="1 DataProcessor-2-RawDataProcessor">
  <attr name="x" type="s16" val="177"/>
  <attr name="y" type="s16" val="51"/>
 </obj>
@@ -1128,12 +1128,12 @@
  <attr name="y" type="s16" val="38"/>
 </obj>
 
-<obj class="Point" id="1 TADataProcessor-2-TAAlgorithm-via-algorithms">
+<obj class="Point" id="1 TPDataProcessor-2-TAAlgorithm-via-algorithms">
  <attr name="x" type="s16" val="117"/>
  <attr name="y" type="s16" val="38"/>
 </obj>
 
-<obj class="Point" id="1 TADataProcessor-2-TPChannelFilterConf-via-channel_filter_conf">
+<obj class="Point" id="1 TPDataProcessor-2-TPChannelFilterConf-via-channel_filter_conf">
  <attr name="x" type="s16" val="117"/>
  <attr name="y" type="s16" val="38"/>
 </obj>
@@ -1188,14 +1188,14 @@
  <attr name="y" type="s16" val="437"/>
 </obj>
 
-<obj class="Point" id="2 DataProcessor-2-TADataProcessor">
+<obj class="Point" id="2 DataProcessor-2-RawDataProcessor">
  <attr name="x" type="s16" val="177"/>
- <attr name="y" type="s16" val="476"/>
+ <attr name="y" type="s16" val="452"/>
 </obj>
 
 <obj class="Point" id="2 DataProcessor-2-TPDataProcessor">
  <attr name="x" type="s16" val="177"/>
- <attr name="y" type="s16" val="445"/>
+ <attr name="y" type="s16" val="485"/>
 </obj>
 
 <obj class="Point" id="2 DataReader-2-DataReaderConf-via-configuration">
@@ -1388,14 +1388,14 @@
  <attr name="y" type="s16" val="759"/>
 </obj>
 
-<obj class="Point" id="2 TADataProcessor-2-TAAlgorithm-via-algorithms">
+<obj class="Point" id="2 TPDataProcessor-2-TAAlgorithm-via-algorithms">
  <attr name="x" type="s16" val="117"/>
- <attr name="y" type="s16" val="593"/>
+ <attr name="y" type="s16" val="579"/>
 </obj>
 
-<obj class="Point" id="2 TADataProcessor-2-TPChannelFilterConf-via-channel_filter_conf">
+<obj class="Point" id="2 TPDataProcessor-2-TPChannelFilterConf-via-channel_filter_conf">
  <attr name="x" type="s16" val="117"/>
- <attr name="y" type="s16" val="586"/>
+ <attr name="y" type="s16" val="573"/>
 </obj>
 
 <obj class="Point" id="3 Connection-2-NetworkConnection">
@@ -1447,14 +1447,14 @@
  <attr name="y" type="s16" val="437"/>
 </obj>
 
-<obj class="Point" id="3 DataProcessor-2-TADataProcessor">
- <attr name="x" type="s16" val="39"/>
- <attr name="y" type="s16" val="476"/>
+<obj class="Point" id="3 DataProcessor-2-RawDataProcessor">
+ <attr name="x" type="s16" val="40"/>
+ <attr name="y" type="s16" val="452"/>
 </obj>
 
 <obj class="Point" id="3 DataProcessor-2-TPDataProcessor">
  <attr name="x" type="s16" val="40"/>
- <attr name="y" type="s16" val="445"/>
+ <attr name="y" type="s16" val="485"/>
 </obj>
 
 <obj class="Point" id="3 DataReader-2-DataReaderConf-via-configuration">
@@ -1646,14 +1646,14 @@
  <attr name="y" type="s16" val="759"/>
 </obj>
 
-<obj class="Point" id="3 TADataProcessor-2-TAAlgorithm-via-algorithms">
+<obj class="Point" id="3 TPDataProcessor-2-TAAlgorithm-via-algorithms">
  <attr name="x" type="s16" val="28"/>
- <attr name="y" type="s16" val="593"/>
+ <attr name="y" type="s16" val="579"/>
 </obj>
 
-<obj class="Point" id="3 TADataProcessor-2-TPChannelFilterConf-via-channel_filter_conf">
+<obj class="Point" id="3 TPDataProcessor-2-TPChannelFilterConf-via-channel_filter_conf">
  <attr name="x" type="s16" val="42"/>
- <attr name="y" type="s16" val="586"/>
+ <attr name="y" type="s16" val="573"/>
 </obj>
 
 <obj class="Point" id="4 Connection-2-NetworkConnection">
@@ -1705,9 +1705,9 @@
  <attr name="y" type="s16" val="12"/>
 </obj>
 
-<obj class="Point" id="4 DataProcessor-2-TADataProcessor">
- <attr name="x" type="s16" val="39"/>
- <attr name="y" type="s16" val="12"/>
+<obj class="Point" id="4 DataProcessor-2-RawDataProcessor">
+ <attr name="x" type="s16" val="40"/>
+ <attr name="y" type="s16" val="35"/>
 </obj>
 
 <obj class="Point" id="4 DataProcessor-2-TPDataProcessor">
@@ -1904,12 +1904,12 @@
  <attr name="y" type="s16" val="8"/>
 </obj>
 
-<obj class="Point" id="4 TADataProcessor-2-TAAlgorithm-via-algorithms">
+<obj class="Point" id="4 TPDataProcessor-2-TAAlgorithm-via-algorithms">
  <attr name="x" type="s16" val="28"/>
  <attr name="y" type="s16" val="12"/>
 </obj>
 
-<obj class="Point" id="4 TADataProcessor-2-TPChannelFilterConf-via-channel_filter_conf">
+<obj class="Point" id="4 TPDataProcessor-2-TPChannelFilterConf-via-channel_filter_conf">
  <attr name="x" type="s16" val="42"/>
  <attr name="y" type="s16" val="21"/>
 </obj>
