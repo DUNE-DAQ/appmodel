@@ -256,6 +256,10 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   mltObj.set_objs("mandatory_links", sourceIdConfs);
 
   // Network connection for the MLT: input TriggerInhibit
+  if(!tiMLTNetDesc){
+      throw (BadConf(ERS_HERE, "No TriggerInhibit network connection provided for the MLT"));
+  }
+
   oksdbinterfaces::ConfigObject tiMLTNetObj = create_network_connection(std::string("df_busy_signal-") + UID(), tiMLTNetDesc, confdb, dbfile);
   mlt_inputs.push_back(&tiMLTNetObj);
   // Network connection for the MLT: output TriggerDecision
