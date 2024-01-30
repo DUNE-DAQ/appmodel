@@ -188,27 +188,27 @@
  <attr name="data_type" type="string" val="TriggerPrimitive"/>
 </obj>
 
-  <obj class="NetworkConnectionDescriptor" id="ti-mlt-desc-1">
-    <attr name="uid_base" type="string" val="triggerInhibit"/>
-    <attr name="connection_type" type="enum" val="kSendRecv"/>
-    <attr name="data_type" type="string" val="TriggerInhibit"/>
-    <rel name="associated_service" class="Service" id="triggerInhibits"/>
-  </obj>
+<obj class="NetworkConnectionDescriptor" id="ti-mlt-desc-1">
+  <attr name="uid_base" type="string" val="triggerInhibit"/>
+  <attr name="connection_type" type="enum" val="kSendRecv"/>
+  <attr name="data_type" type="string" val="TriggerInhibit"/>
+  <rel name="associated_service" class="Service" id="triggerInhibits"/>
+</obj>
 
-  <obj class="NetworkConnectionDescriptor" id="td-mlt-desc-1">
-    <attr name="uid_base" type="string" val="triggerDecision"/>
-    <attr name="connection_type" type="enum" val="kSendRecv"/>
-    <attr name="data_type" type="string" val="TriggerDecision"/>
-    <rel name="associated_service" class="Service" id="triggerDecisions"/>
-  </obj>
+<obj class="NetworkConnectionDescriptor" id="td-mlt-desc-1">
+  <attr name="uid_base" type="string" val="triggerDecision"/>
+  <attr name="connection_type" type="enum" val="kSendRecv"/>
+  <attr name="data_type" type="string" val="TriggerDecision"/>
+  <rel name="associated_service" class="Service" id="triggerDecisions"/>
+</obj>
 
-  <obj class="NetworkConnectionDescriptor" id="timing-desc-1">
-    <attr name="uid_base" type="string" val="hsievent"/>
-    <attr name="connection_type" type="enum" val="kSendRecv"/>
-    <attr name="data_type" type="string" val="HSIEvent"/>
-    <rel name="associated_service" class="Service" id="HSIEvents"/>
-  </obj>
-  
+<obj class="NetworkConnectionDescriptor" id="timing-desc-1">
+  <attr name="uid_base" type="string" val="hsievent"/>
+  <attr name="connection_type" type="enum" val="kSendRecv"/>
+  <attr name="data_type" type="string" val="HSIEvent"/>
+  <rel name="associated_service" class="Service" id="HSIEvents"/>
+</obj>
+
 <obj class="NetworkConnectionDescriptor" id="dft-net-desc-1">
  <attr name="uid_base" type="string" val="dataflowtoken"/>
  <attr name="connection_type" type="enum" val="kSendRecv"/>
@@ -268,7 +268,7 @@
 
   <obj class="NetworkConnectionRule" id="ti-mlt-rule-1">
     <attr name="endpoint_class" type="class" val="ModuleLevelTrigger"/>
-    <rel name="descriptor" class="NetworkConnectionDescriptor" id="ti-mlt-desc-1"/>
+    <rel name="descriptor" class="NetworkConnectionDescriptor" id="ti-net-desc-1"/>
   </obj>
 
   <obj class="NetworkConnectionRule" id="td-mlt-rule-1">
