@@ -91,10 +91,11 @@ create_network_connection(const std::string& idname,
                           const std::string& dbfile)
 {
   auto ntServiceObj = ntDesc->get_associated_service()->config_object();
-  std::string ntUid(idname);
+  std::string ntUid(ntDesc->get_uid_base());
   oksdbinterfaces::ConfigObject ntObj;
   confdb->create(dbfile, "NetworkConnection", ntUid, ntObj);
   ntObj.set_by_val<std::string>("connection_type", ntDesc->get_connection_type());
+  ntObj.set_by_val<std::string>("data_type", ntDesc->get_data_type());
   ntObj.set_obj("associated_service", &ntServiceObj);
 
   return ntObj;
@@ -263,7 +264,7 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   oksdbinterfaces::ConfigObject tiMLTNetObj = create_network_connection(std::string("df_busy_signal-") + UID(), tiMLTNetDesc, confdb, dbfile);
   mlt_inputs.push_back(&tiMLTNetObj);
   // Network connection for the MLT: output TriggerDecision
-  oksdbinterfaces::ConfigObject tdMLTNetObj = create_network_connection(std::string("td_to_dfo-") + UID(), tdMLTNetDesc, confdb, dbfile);
+  oksdbinterfaces::ConfigObject tdMLTNetObj = create_network_connection("", tdMLTNetDesc, confdb, dbfile);
   mlt_outputs.push_back(&tdMLTNetObj);
 
   /**************************************************************

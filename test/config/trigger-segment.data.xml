@@ -121,7 +121,7 @@
  <rel name="network_rules">
   <ref class="NetworkConnectionRule" id="tpdlh-rule-1"/>
   <ref class="NetworkConnectionRule" id="ti-mlt-rule-1"/>
-  <ref class="NetworkConnectionRule" id="td-mlt-rule-1"/>
+  <ref class="NetworkConnectionRule" id="td-net-rule"/>
   <ref class="NetworkConnectionRule" id="timing-rule-1"/>
  </rel>
  <rel name="queue_rules">

@@ -75,7 +75,7 @@ DFOApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
       oksdbinterfaces::ConfigObject connObj;
       auto serviceObj = descriptor->get_associated_service()->config_object();
-      std::string connUid(descriptor->get_data_type() + "-" + UID());
+      std::string connUid(descriptor->get_uid_base());
       confdb->create(dbfile, "NetworkConnection", connUid, connObj);
       connObj.set_by_val<std::string>("data_type", descriptor->get_data_type());
       connObj.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
