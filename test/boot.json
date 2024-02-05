@@ -1,6 +1,6 @@
 {
   "apps": {
-    "ru-1": {
+    "ru-01": {
       "exec": "daq_application_ssh",
       "host": "local",
       "port": 3333
@@ -15,7 +15,7 @@
       "host": "local",
       "port": 3335
     },
-    "ta-1": {
+    "ta-01": {
       "exec": "daq_application_ssh",
       "host": "local",
       "port": 3336

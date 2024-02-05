@@ -166,7 +166,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     faOutputQueues.push_back(confdb->get<coredal::Connection>(tpReqQueueUid));
 
     auto tpServiceObj = tpNetDesc->get_associated_service()->config_object();
-    std::string tpStreamUid("tpstream-"+UID());
+    std::string tpStreamUid = tpNetDesc->get_uid_base() + UID();
     confdb->create(dbfile, "NetworkConnection", tpStreamUid, tpNetObj);
     tpNetObj.set_by_val<std::string>("data_type", tpNetDesc->get_data_type());
     tpNetObj.set_by_val<std::string>("connection_type", tpNetDesc->get_connection_type());
@@ -250,7 +250,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
          // Time Sync network connection
          if (dlhConf->get_generate_timesync()) {
-          std::string tsStreamUid("timesync"+std::to_string(id));
+          std::string tsStreamUid = tsNetDesc->get_uid_base() + std::to_string(id);
           auto tsServiceObj = tsNetDesc->get_associated_service()->config_object();
           oksdbinterfaces::ConfigObject tsNetObj;
           confdb->create(dbfile, "NetworkConnection", tsStreamUid, tsNetObj);
@@ -324,7 +324,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
   //Add network connection to TRBs
   auto faServiceObj = faNetDesc->get_associated_service()->config_object();
-  std::string faNetUid("fragmentrequests-"+UID());
+  std::string faNetUid = faNetDesc->get_uid_base() + UID();
   oksdbinterfaces::ConfigObject faNetObj;
   confdb->create(dbfile, "NetworkConnection", faNetUid, faNetObj);
   faNetObj.set_by_val<std::string>("connection_type", faNetDesc->get_connection_type());

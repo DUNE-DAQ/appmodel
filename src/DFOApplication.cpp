@@ -70,27 +70,28 @@ DFOApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
   for (auto rule : get_network_rules()) {
     auto endpoint_class = rule->get_endpoint_class();
+    auto descriptor = rule->get_descriptor();
+
+    oksdbinterfaces::ConfigObject connObj;
+    auto serviceObj = descriptor->get_associated_service()->config_object();
+    std::string connUid(descriptor->get_uid_base());
+    confdb->create(dbfile, "NetworkConnection", connUid, connObj);
+    connObj.set_by_val<std::string>("data_type", descriptor->get_data_type());
+    connObj.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
+    connObj.set_obj("associated_service", &serviceObj);
+
     if (endpoint_class == "DataFlowOrchestrator") {
-      auto descriptor = rule->get_descriptor();
-
-      oksdbinterfaces::ConfigObject connObj;
-      auto serviceObj = descriptor->get_associated_service()->config_object();
-      std::string connUid(descriptor->get_data_type() + "-" + UID());
-      confdb->create(dbfile, "NetworkConnection", connUid, connObj);
-      connObj.set_by_val<std::string>("data_type", descriptor->get_data_type());
-      connObj.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
-      connObj.set_obj("associated_service", &serviceObj);
-
-      if (descriptor->get_data_type() == "TriggerInhibit") {
-        busyOutObj = connObj;
-        output_conns.push_back(&busyOutObj);
-      } else if (descriptor->get_data_type() == "TriggerDecision") {
+      if (descriptor->get_data_type() == "TriggerDecision") {
         tdInObj = connObj;
         input_conns.push_back(&tdInObj);
       } else if (descriptor->get_data_type() == "TriggerDecisionToken") {
         tokenInObj = connObj;
         input_conns.push_back(&tokenInObj);
       }
+    }
+    if (endpoint_class == "DataFlowOrchestrator" && descriptor->get_data_type() == "TriggerInhibit") {
+	busyOutObj = connObj;
+        output_conns.push_back(&busyOutObj);
     }
   }
 
