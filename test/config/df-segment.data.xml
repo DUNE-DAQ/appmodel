@@ -91,9 +91,9 @@
  </rel>
  <rel name="network_rules">
   <ref class="NetworkConnectionRule" id="td-trb-net-rule"/>
-  <ref class="NetworkConnectionRule" id="fa-out-net-rule"/>
+  <ref class="NetworkConnectionRule" id="data-req-net-rule"/>
   <ref class="NetworkConnectionRule" id="frag-net-rule"/>
-  <ref class="NetworkConnectionRule" id="dft-out-net-rule"/>
+  <ref class="NetworkConnectionRule" id="df-token-net-rule"/>
  </rel>
  <rel name="trb" class="TRBConf" id="trb-01"/>
  <rel name="data_writer" class="DataWriterConf" id="dw-01"/>
@@ -110,9 +110,9 @@
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="network_rules">
-  <ref class="NetworkConnectionRule" id="td-net-rule"/>
+  <ref class="NetworkConnectionRule" id="td-dfo-net-rule"/>
   <ref class="NetworkConnectionRule" id="ti-net-rule"/>
-  <ref class="NetworkConnectionRule" id="dft-net-rule"/>
+  <ref class="NetworkConnectionRule" id="df-token-net-rule"/>
  </rel>
  <rel name="dfo" class="DFOConf" id="dfoconf-01"/>
 </obj>

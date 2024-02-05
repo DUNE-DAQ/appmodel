@@ -103,12 +103,13 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     auto endpoint_class = rule->get_endpoint_class();
     auto descriptor = rule->get_descriptor();
     auto data_type = descriptor->get_data_type();
-    if (endpoint_class == "TriggerRecordBuilder" && data_type == "Fragment") {
+    if (data_type == "Fragment") {
       fragNetDesc = rule->get_descriptor();
     }
-    else if (endpoint_class == "TriggerRecordBuilder" && data_type == "TriggerDecision") {
+    else if (data_type == "TriggerDecision") {
       trigdecNetDesc = rule->get_descriptor();
-    } else if (data_type == "TriggerDecisionToken") {
+    } 
+    else if (data_type == "TriggerDecisionToken") {
       tokenNetDesc = rule->get_descriptor();
     }
   }

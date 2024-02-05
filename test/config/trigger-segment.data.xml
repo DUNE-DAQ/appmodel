@@ -119,8 +119,8 @@
   <ref class="ReadoutGroup" id="dummyRog"/>
  </rel>
  <rel name="network_rules">
-  <ref class="NetworkConnectionRule" id="ti-mlt-rule-1"/>
-  <ref class="NetworkConnectionRule" id="td-net-rule"/>
+  <ref class="NetworkConnectionRule" id="ti-net-rule"/>
+  <ref class="NetworkConnectionRule" id="td-dfo-net-rule"/>
   <ref class="NetworkConnectionRule" id="hsi-rule"/>
  </rel>
  <rel name="queue_rules">

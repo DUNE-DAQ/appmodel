@@ -100,7 +100,7 @@
   <ref class="QueueConnectionRule" id="wib-eth-raw-data-rule"/>
  </rel>
  <rel name="network_rules">
-  <ref class="NetworkConnectionRule" id="fa-net-rule"/>
+  <ref class="NetworkConnectionRule" id="data-req-net-rule"/>
   <ref class="NetworkConnectionRule" id="tp-net-rule"/>
   <ref class="NetworkConnectionRule" id="ts-net-rule"/>
  </rel>
