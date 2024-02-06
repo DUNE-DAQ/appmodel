@@ -151,7 +151,7 @@
 </obj>
 
 <obj class="StreamEmulationParameters" id="stream-emu">
-        <attr name="data_file_name" type="string" val="/nfs/home/glehmann/wibeth_output_all_zeros.bin"/>
+        <attr name="data_file_name" type="string" val="/cvmfs/dunedaq.opensciencegrid.org/assets/files/d/d/1/wibeth_output_all_zeros.bin"/>
  <attr name="input_file_size_limit" type="u32" val="1000000"/>
  <attr name="set_t0" type="bool" val="1"/>
  <attr name="random_population_size" type="u32" val="0"/>
