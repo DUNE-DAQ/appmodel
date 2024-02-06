@@ -134,24 +134,28 @@
 </obj>
 
 <obj class="QueueDescriptor" id="data-req-queue-desc">
+ <attr name="uid_base" type="string" val="data_requests_for_"/>
  <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
  <attr name="capacity" type="u32" val="1000"/>
  <attr name="data_type" type="string" val="DataRequest"/>
 </obj>
 
 <obj class="QueueDescriptor" id="fa-input">
+ <attr name="uid_base" type="string" val="fragments_"/>
  <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>
  <attr name="capacity" type="u32" val="1000"/>
  <attr name="data_type" type="string" val="Fragment"/>
  </obj>
 
 <obj class="QueueDescriptor" id="wib-eth-raw-input">
+ <attr name="uid_base" type="string" val="raw_input_"/>
  <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
  <attr name="capacity" type="u32" val="1000"/>
  <attr name="data_type" type="string" val="WIBEthFrame"/>
 </obj>
 
 <obj class="QueueDescriptor" id="tp-input">
+ <attr name="uid_base" type="string" val="tp_input_"/>
  <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>
  <attr name="capacity" type="u32" val="100000"/>
  <attr name="data_type" type="string" val="TriggerPrimitive"/>
@@ -292,12 +296,14 @@
 </obj>
 
 <obj class="QueueDescriptor" id="trigger-record-1">
+ <attr name="uid_base" type="string" val="trigger_records_"/>
  <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
  <attr name="capacity" type="u32" val="11"/>
  <attr name="data_type" type="string" val="TriggerRecord"/>
 </obj>
   
   <obj class="QueueDescriptor" id="tcQueueRuleDescriptor">
+    <attr name="uid_base" type="string" val="trigger_candidates_"/>
     <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>
     <attr name="capacity" type="u32" val="1000"/>
     <attr name="data_type" type="string" val="TriggerCandidate"/>
