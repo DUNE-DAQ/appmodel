@@ -148,9 +148,9 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     //  throw (BadConf(ERS_HERE, "No timesync output network descriptor given"));
     //}
     
-    auto tpsrc = get_tp_src_id();
+    auto tpsrc = get_tp_source_id();
     //if (tpsrc == 0) {
-    //  throw (BadConf(ERS_HERE, "No TPHandler src_id given"));
+    //  throw (BadConf(ERS_HERE, "No TPHandler source_id given"));
     //}
     std::string tpQueueUid(tpInputQDesc->get_uid_base());
     confdb->create(dbfile, "Queue", tpQueueUid, tpQueueObj);
@@ -163,7 +163,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     tpReqQueueObj.set_by_val<std::string>("data_type", dlhReqInputQDesc->get_data_type());
     tpReqQueueObj.set_by_val<std::string>("queue_type", dlhReqInputQDesc->get_queue_type());
     tpReqQueueObj.set_by_val<uint32_t>("capacity", dlhReqInputQDesc->get_capacity());
-    tpReqQueueObj.set_by_val<uint32_t>("id", tpsrc);
+    tpReqQueueObj.set_by_val<uint32_t>("source_id", tpsrc);
     faOutputQueues.push_back(confdb->get<coredal::Connection>(tpReqQueueUid));
 
     auto tpServiceObj = tpNetDesc->get_associated_service()->config_object();
@@ -239,7 +239,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
            TLOG_DEBUG(7) << "Ignoring disabled DROStreamConf " << stream->UID();
            continue;
          }
-         auto id = stream->get_src_id();
+         auto id = stream->get_source_id();
          auto det_id = stream->get_geo_id()->get_detector_id();
          std::string uid("DLH-"+std::to_string(id));
          oksdbinterfaces::ConfigObject dlhObj;
@@ -280,7 +280,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
          queueObj.set_by_val<std::string>("data_type", dlhInputQDesc->get_data_type());
          queueObj.set_by_val<std::string>("queue_type", dlhInputQDesc->get_queue_type());
          queueObj.set_by_val<uint32_t>("capacity", dlhInputQDesc->get_capacity());
-         queueObj.set_by_val<uint32_t>("id", stream->get_src_id());
+         queueObj.set_by_val<uint32_t>("source_id", stream->get_source_id());
 
          std::string reqQueueUid(dlhReqInputQDesc->get_uid_base()+std::to_string(id));
          oksdbinterfaces::ConfigObject reqQueueObj;
@@ -288,7 +288,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
          reqQueueObj.set_by_val<std::string>("data_type", dlhReqInputQDesc->get_data_type());
          reqQueueObj.set_by_val<std::string>("queue_type", dlhReqInputQDesc->get_queue_type());
          reqQueueObj.set_by_val<uint32_t>("capacity", dlhReqInputQDesc->get_capacity());
-	 reqQueueObj.set_by_val<uint32_t>("id", stream->get_src_id());
+	 reqQueueObj.set_by_val<uint32_t>("source_id", stream->get_source_id());
          // Add the requessts queue dal pointer to the outputs of the FragmentAggregator
          faOutputQueues.push_back(confdb->get<coredal::Connection>(reqQueueUid));
 

@@ -147,7 +147,7 @@ FakeDataApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
       reqQueueObj.set_by_val<std::string>("data_type", dlhReqInputQDesc->get_data_type());
       reqQueueObj.set_by_val<std::string>("queue_type", dlhReqInputQDesc->get_queue_type());
       reqQueueObj.set_by_val<uint32_t>("capacity", dlhReqInputQDesc->get_capacity());
-      reqQueueObj.set_by_val<uint32_t>("id", stream->get_source_id());
+      reqQueueObj.set_by_val<uint32_t>("source_id", stream->get_source_id());
       // Add the requessts queue dal pointer to the outputs of the FragmentAggregator
       faOutputQueues.push_back(confdb->get<coredal::Connection>(reqQueueUid));
 

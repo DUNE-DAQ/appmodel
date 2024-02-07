@@ -84,7 +84,7 @@
 
 <obj class="DFApplication" id="df-01">
  <attr name="application_name" type="string" val="daq_application"/>
- <attr name="src_id" type="u32" val="1"/>
+ <attr name="source_id" type="u32" val="1"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="trigger-record-q-rule"/>
