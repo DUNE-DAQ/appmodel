@@ -86,7 +86,7 @@
  <rel name="fsm" class="FSMconfiguration" id="fsmConf-1"/>
 </obj>
 
-<obj class="ReadoutApplication" id="ru-1">
+<obj class="ReadoutApplication" id="ru-01">
  <attr name="tp_src_id" type="u32" val="100"/>
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="contains">
@@ -100,7 +100,7 @@
   <ref class="QueueConnectionRule" id="wib-eth-raw-data-rule"/>
  </rel>
  <rel name="network_rules">
-  <ref class="NetworkConnectionRule" id="fa-net-rule"/>
+  <ref class="NetworkConnectionRule" id="data-req-net-rule"/>
   <ref class="NetworkConnectionRule" id="tp-net-rule"/>
   <ref class="NetworkConnectionRule" id="ts-net-rule"/>
  </rel>
@@ -114,6 +114,9 @@
 
 <obj class="Segment" id="ru-segment">
  <rel name="controller" class="RCApplication" id="ru-controller"/>
+ <rel name="applications">
+   <ref class="ReadoutApplication" id="ru-01"/>
+ </rel>
 </obj>
 
 </oks-data>

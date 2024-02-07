@@ -263,6 +263,7 @@
  </class>
 
  <class name="QueueDescriptor">
+  <attribute name="uid_base" description="Base for UID string. May be combined with a source id" type="string" is-not-null="yes"/>
   <attribute name="queue_type" description="Type of queue" type="enum" range="kUnknown,kStdDeQueue,kFollySPSCQueue,kFollyMPMCQueue" init-value="kFollySPSCQueue" is-not-null="yes"/>
   <attribute name="capacity" type="u32" init-value="100" is-not-null="yes"/>
   <attribute name="data_type" description="string identifying type of data transferred through this queue" type="string" is-not-null="yes"/>

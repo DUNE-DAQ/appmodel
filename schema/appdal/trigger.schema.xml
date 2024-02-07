@@ -149,7 +149,7 @@
 
 <class name="SourceIDConf">
   <attribute name="id" type="u32" init-value="0" is-not-null="yes"/>
-  <attribute name="subsystem" type="enum" range="kUnknown,kDetectorReadout,kHwDisnalsInterface,kTrigger,kTRBuilder" init-value="kUnknown" is-not-null="yes"/>
+  <attribute name="subsystem" type="enum" range="kUnknown,Detector_Readout,HW_Signals_Interface,Trigger,TR_Builder" init-value="kUnknown" is-not-null="yes"/>
 </class>
 
 <class name="StandaloneCandidateMaker">
@@ -211,11 +211,10 @@
  <class name="CustomTriggerCandidateMakerConf" >
   <superclass name="StandaloneCandidateMakerConf"/>
   <attribute name="template_for" type="class" init-value="CustomTriggerCandidateMaker"/>
-  <attribute name="trigger_types"      type="u32" is-multi-value="yes"/>
-  <attribute name="trigger_intervals"  type="u32" is-multi-value="yes"/>
+  <attribute name="trigger_types"      type="u32" is-multi-value="yes" init-value="3,7"              is-not-null="yes"/>
+  <attribute name="trigger_intervals"  type="u32" is-multi-value="yes" init-value="62500000,62500000" is-not-null="yes"/>
   <attribute name="clock_frequency_hz" type="u32" init-value="62500000"/>
   <attribute name="timestamp_method"   type="enum" range="kTimeSync,kSystemClock" init-value="kTimeSync" is-not-null="yes"/>
-
  </class>
 
  <!-- Trigger algorithms configurations, for when we run with TPG on -->

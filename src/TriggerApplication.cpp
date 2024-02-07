@@ -85,15 +85,15 @@ __reg__("TriggerApplication", [] (const SmartDaqApplication* smartApp,
  * \ret OKS configuration object for the network connection
  */
 oksdbinterfaces::ConfigObject 
-create_network_connection(const std::string& idname,
+create_network_connection(std::string uid,
                           const NetworkConnectionDescriptor* ntDesc,
                           oksdbinterfaces::Configuration* confdb,
                           const std::string& dbfile)
 {
   auto ntServiceObj = ntDesc->get_associated_service()->config_object();
-  std::string ntUid(idname);
   oksdbinterfaces::ConfigObject ntObj;
-  confdb->create(dbfile, "NetworkConnection", ntUid, ntObj);
+  confdb->create(dbfile, "NetworkConnection", uid, ntObj);
+  ntObj.set_by_val<std::string>("data_type", ntDesc->get_data_type());
   ntObj.set_by_val<std::string>("connection_type", ntDesc->get_connection_type());
   ntObj.set_obj("associated_service", &ntServiceObj);
 
@@ -247,7 +247,8 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
          std::string sourceIdConfId("dro-mlt-stream-config-");
          confdb->create(dbfile, "SourceIDConf", sourceIdConfId + std::to_string(sourceIdConfs.size()), sourceIdConf);
          sourceIdConf.set_by_val<uint32_t>("id", id);
-         sourceIdConf.set_by_val<std::string>("subsystem", "kDetectorReadout");
+         // https://github.com/DUNE-DAQ/daqdataformats/blob/5b99506675a586c8a09123900e224f2371d96df9/include/daqdataformats/detail/SourceID.hxx#L108
+         sourceIdConf.set_by_val<std::string>("subsystem", "Detector_Readout");
          sourceIdConfs.push_back(&sourceIdConf);
       }
     }
@@ -256,10 +257,14 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   mltObj.set_objs("mandatory_links", sourceIdConfs);
 
   // Network connection for the MLT: input TriggerInhibit
-  oksdbinterfaces::ConfigObject tiMLTNetObj = create_network_connection(std::string("df_busy_signal-") + UID(), tiMLTNetDesc, confdb, dbfile);
+  if(!tiMLTNetDesc){
+      throw (BadConf(ERS_HERE, "No TriggerInhibit network connection provided for the MLT"));
+  }
+
+  oksdbinterfaces::ConfigObject tiMLTNetObj = create_network_connection(tiMLTNetDesc->get_uid_base(), tiMLTNetDesc, confdb, dbfile);
   mlt_inputs.push_back(&tiMLTNetObj);
   // Network connection for the MLT: output TriggerDecision
-  oksdbinterfaces::ConfigObject tdMLTNetObj = create_network_connection(std::string("td_to_dfo-") + UID(), tdMLTNetDesc, confdb, dbfile);
+  oksdbinterfaces::ConfigObject tdMLTNetObj = create_network_connection(tdMLTNetDesc->get_uid_base(), tdMLTNetDesc, confdb, dbfile);
   mlt_outputs.push_back(&tdMLTNetObj);
 
   /**************************************************************
@@ -291,7 +296,7 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
       if(!tmgTrgNetDesc){
         throw (BadConf(ERS_HERE, "No timing trigger input network connection given"));
       }
-      oksdbinterfaces::ConfigObject tmgNetObj = create_network_connection(std::string("hsievents-") + UID(), tmgTrgNetDesc, confdb, dbfile);
+      oksdbinterfaces::ConfigObject tmgNetObj = create_network_connection(tmgTrgNetDesc->get_uid_base(), tmgTrgNetDesc, confdb, dbfile);
       tcmakerObj.set_objs("inputs", {&tmgNetObj});
     }
 

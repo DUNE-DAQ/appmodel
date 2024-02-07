@@ -106,22 +106,22 @@
 <obj class="RandomTriggerCandidateMakerConf" id="rtcm-conf-1">
 </obj>
 
-<!-- TimingTriggerCandidateMaker-->
+<!-- TimingTriggerCandidateMaker
 <obj class="TimingTriggerCandidateMakerConf" id="timing-conf-1">
 </obj>
+-->
 
 <!-- Application -->
-<obj class="TriggerApplication" id="ta-1">
+<obj class="TriggerApplication" id="ta-01">
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="contains">
   <ref class="ReadoutGroup" id="dummyRog"/>
  </rel>
  <rel name="network_rules">
-  <ref class="NetworkConnectionRule" id="tpdlh-rule-1"/>
-  <ref class="NetworkConnectionRule" id="ti-mlt-rule-1"/>
-  <ref class="NetworkConnectionRule" id="td-mlt-rule-1"/>
-  <ref class="NetworkConnectionRule" id="timing-rule-1"/>
+  <ref class="NetworkConnectionRule" id="ti-net-rule"/>
+  <ref class="NetworkConnectionRule" id="td-dfo-net-rule"/>
+  <ref class="NetworkConnectionRule" id="hsi-rule"/>
  </rel>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="tcQueueRule"/>
@@ -130,8 +130,23 @@
  <rel name="standalone_candidate_maker_confs">
    <ref class="RandomTriggerCandidateMakerConf" id="rtcm-conf-1"/>
    <ref class="CustomTriggerCandidateMakerConf" id="cstm-conf-1"/>
+   <!--
    <ref class="TimingTriggerCandidateMakerConf" id="timing-conf-1"/>
+   -->
  </rel>
+</obj>
+
+<obj class="Segment" id="trg-segment">
+ <rel name="controller" class="RCApplication" id="trg-controller"/>
+ <rel name="applications">
+   <ref class="TriggerApplication" id="ta-01"/>
+ </rel>
+</obj>
+
+<obj class="RCApplication" id="trg-controller">
+ <attr name="application_name" type="string" val="controller"/>
+ <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="fsm" class="FSMconfiguration" id="fsmConf-1"/>
 </obj>
 
 </oks-data>

@@ -103,12 +103,13 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     auto endpoint_class = rule->get_endpoint_class();
     auto descriptor = rule->get_descriptor();
     auto data_type = descriptor->get_data_type();
-    if (endpoint_class == "TriggerRecordBuilder" && data_type == "Fragment") {
+    if (data_type == "Fragment") {
       fragNetDesc = rule->get_descriptor();
     }
-    else if (endpoint_class == "TriggerRecordBuilder" && data_type == "TriggerDecision") {
+    else if (data_type == "TriggerDecision") {
       trigdecNetDesc = rule->get_descriptor();
-    } else if (endpoint_class == "DataWriter" && data_type == "TriggerDecisionToken") {
+    } 
+    else if (data_type == "TriggerDecisionToken") {
       tokenNetDesc = rule->get_descriptor();
     }
   }
@@ -125,9 +126,9 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   oksdbinterfaces::ConfigObject fragNetObj;
   oksdbinterfaces::ConfigObject trigdecNetObj;
   oksdbinterfaces::ConfigObject tokenNetObj;
-  std::string fragNetUid("fragments-to-dataflow-"+UID());
-  std::string trigdecNetUid("trigger-decisions-"+UID());
-  std::string tokenNetUid("tokens-" + UID());
+  std::string fragNetUid = fragNetDesc->get_uid_base()+UID();
+  std::string trigdecNetUid = trigdecNetDesc->get_uid_base()+UID();
+  std::string tokenNetUid = tokenNetDesc->get_uid_base();
   confdb->create(dbfile, "NetworkConnection", fragNetUid, fragNetObj);
   confdb->create(dbfile, "NetworkConnection", trigdecNetUid, trigdecNetObj);
   confdb->create(dbfile, "NetworkConnection", tokenNetUid, tokenNetObj);
@@ -139,25 +140,22 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   // Looking for DataRequest rules from ReadoutAppplications in current Session
   auto sessionApps = session->get_all_applications();
   for (auto app : sessionApps) {
-    auto smartapp = app->cast<appdal::SmartDaqApplication>();
-    if (smartapp != nullptr) {
-      auto roapp = smartapp->cast<appdal::ReadoutApplication>();
+      auto roapp = app->cast<appdal::ReadoutApplication>();
       if (roapp != nullptr) {
-        TLOG_DEBUG(7) << "Readout app in session: " << roapp;
-	auto roQRules = smartapp->get_network_rules();
+        TLOG() << "Readout app in session: " << roapp;
+	auto roQRules = roapp->get_network_rules();
         for (auto rule : roQRules) {
           auto descriptor = rule->get_descriptor(); 
           auto data_type = descriptor->get_data_type();
 	  if (data_type == "DataRequest") {
             oksdbinterfaces::ConfigObject dreqNetObj;
-	    std::string dreqNetUid("data-request-to-"+roapp->UID()+"-"+UID());
+	    std::string dreqNetUid(descriptor->get_uid_base()+roapp->UID());
 	    confdb->create(dbfile, "NetworkConnection", dreqNetUid, dreqNetObj);
 	    fill_netconn_object_from_desc(descriptor, dreqNetObj);
             trbOutputObjs.push_back(&dreqNetObj);
 	  } // If network rule has DataRequest type of data
 	} // Loop over ReadoutApps network rules 
-      } // if smartapp is ReadoutApplication
-    } // if smartapp cast success
+      } // if app is ReadoutApplication
   } // loop over Session specific Apps
 
   // -- Second, we create the Module objects and assign their configs, with the precreated 

@@ -100,6 +100,7 @@
  <rel name="segments">
   <ref class="Segment" id="ru-segment"/>
   <ref class="Segment" id="df-segment"/>
+  <ref class="Segment" id="trg-segment"/>
  </rel>
  <rel name="controller" class="RCApplication" id="root-controller"/>
 </obj>
