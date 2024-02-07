@@ -179,7 +179,7 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   mltObj.set_obj("configuration", &mlt_conf_obj);
 
   // Create TC queue to the MLT
-  std::string tcQueueToMLTID("tcqueue-to-mlt-" + UID());
+  std::string tcQueueToMLTID(tcQueueDesc->get_uid_base() + UID());
   oksdbinterfaces::ConfigObject tcQueueToMLTObj;
   confdb->create(dbfile, "Queue", tcQueueToMLTID, tcQueueToMLTObj);
   tcQueueToMLTObj.set_by_val<std::string>("data_type", tcQueueDesc->get_data_type());
