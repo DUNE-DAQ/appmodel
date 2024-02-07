@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="40" oks-format="schema" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="glehmann" last-modified-on="lxplus928.cern.ch" last-modification-time="20240107T173725"/>
+<info name="" type="" num-of-items="42" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240207T103249"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -138,19 +138,7 @@
   <attribute name="template_for" description="OKS class of the DataReader that this config is a template for" type="class" init-value="DataReader" is-not-null="yes"/>
   <attribute name="emulation_mode" type="bool" init-value="false"/>
   <relationship name="emulation_conf" description="Parameters for emulating the stream." class-type="StreamEmulationParameters" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  </class>
-
-<class name="StreamEmulationParameters">
-  <attribute name="data_file_name" type="string"/>
-  <attribute name="tp_data_file_name" type="string"/>
-  <attribute name="input_file_size_limit" type="u32" init-value="10485100" is-not-null="yes"/>
-  <attribute name="set_t0" type="bool" description="Set first timestamp to now" init-value="true" is-not-null="yes"/>
-  <attribute name="random_population_size" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="frame_error_rate_hz" type="float" init-value="0.0" is-not-null="yes"/>
-  <attribute name="generate_periodic_adc_pattern" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="TP_rate_per_channel" description="TP rate per channel in units of 100 Hz." type="float" init-value="0.0" is-not-null="yes"/>
-  </class>
-
+ </class>
 
  <class name="DataRecorder" is-abstract="yes">
   <superclass name="DaqModule"/>
@@ -166,7 +154,7 @@
 
  <class name="DataStoreConf">
   <attribute name="type" type="string"/>
-  <attribute name="directory_path" type="string" description="The base directory for saving files" is-not-null="yes"/>
+  <attribute name="directory_path" description="The base directory for saving files" type="string" is-not-null="yes"/>
   <attribute name="mode" description="The operation mode that the DataStore should use when organizing the data into files" type="enum" range="all-per-file,one-event-per-file" init-value="all-per-file" is-not-null="yes"/>
   <attribute name="max_file_size" type="u64" init-value="0" is-not-null="yes"/>
   <attribute name="disable_unique_filename_suffix" type="bool" init-value="false"/>
@@ -188,21 +176,29 @@
   <relationship name="data_store_params" class-type="DataStoreConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
+ <class name="FakeDataApplication">
+  <superclass name="ResourceSetAND"/>
+  <superclass name="SmartDaqApplication"/>
+  <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
+  <method name="generate_modules" description="Generate daq module dal objects for streams of the FakeDataApplication on the fly">
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
+  </method>
+ </class>
 
-  <class name="FakeDataProd">
-    <superclass name="DaqModule"/>
-    <relationship name="configuration" class-type="FakeDataProdConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  </class>
+ <class name="FakeDataProd">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="FakeDataProdConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
 
-  <class name="FakeDataProdConf">
-    <superclass name="ResourceBase"/>
-    <attribute name="system_type" type="string" description="The system type of the link" init-value="" is-not-null="yes"/>
-    <attribute name="source_id" type="u32" description="The SourceID of this link" is-not-null="yes"/>
-    <attribute name="time_tick_diff" type="u32" init-value="1" description="Time tick difference between frames" is-not-null="yes"/>
-    <attribute name="frame_size" type="u32" init-value="0" description="The size of a fake frame" is-not-null="yes"/>
-    <attribute name="response_delay" type="u32" init-value="0" description="Wait for this amount of ns before sending the fragment" is-not-null="yes"/>
-    <attribute name="fragment_type" type="string" description="Fragment type of the response" is-not-null="yes"/>
-  </class>
+ <class name="FakeDataProdConf">
+  <superclass name="ResourceBase"/>
+  <attribute name="system_type" description="The system type of the link" type="string" is-not-null="yes"/>
+  <attribute name="source_id" description="The SourceID of this link" type="u32" is-not-null="yes"/>
+  <attribute name="time_tick_diff" description="Time tick difference between frames" type="u32" init-value="1" is-not-null="yes"/>
+  <attribute name="frame_size" description="The size of a fake frame" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="response_delay" description="Wait for this amount of ns before sending the fragment" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="fragment_type" description="Fragment type of the response" type="string" is-not-null="yes"/>
+ </class>
 
  <class name="FilenameParams">
   <attribute name="overall_prefix" type="string" init-value="minidaq" is-not-null="yes"/>
@@ -284,14 +280,6 @@
   </method>
  </class>
 
-  <class name="FakeDataApplication">
-    <superclass name="ResourceSetAND"/>
-    <superclass name="SmartDaqApplication"/>
-    <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
-    <method name="generate_modules" description="Generate daq module dal objects for streams of the FakeDataApplication on the fly">
-      <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
-    </method>
-  </class>
  <class name="ReadoutHost">
   <superclass name="VirtualHost"/>
  </class>
@@ -330,13 +318,24 @@
   <relationship name="hitFindingProc" class-type="ProcessingResource" low-cc="zero" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
  </class>
 
- <class name="SmartDaqApplication" is-abstract="yes">
+ <class name="SmartDaqApplication" description="A SmartDaqApplication defines a &quot;generate_modules&quot; method which uses input configuration to generate the modules for known DUNE-DAQ applications." is-abstract="yes">
   <superclass name="Application"/>
   <relationship name="queue_rules" class-type="QueueConnectionRule" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="network_rules" class-type="NetworkConnectionRule" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="">
    <method-implementation language="c++" prototype="virtual std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const" body=""/>
   </method>
+ </class>
+
+ <class name="StreamEmulationParameters">
+  <attribute name="data_file_name" type="string"/>
+  <attribute name="tp_data_file_name" type="string"/>
+  <attribute name="input_file_size_limit" type="u32" init-value="10485100" is-not-null="yes"/>
+  <attribute name="set_t0" description="Set first timestamp to now" type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="random_population_size" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="frame_error_rate_hz" type="float" init-value="0.0" is-not-null="yes"/>
+  <attribute name="generate_periodic_adc_pattern" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="TP_rate_per_channel" description="TP rate per channel in units of 100 Hz." type="float" init-value="0.0" is-not-null="yes"/>
  </class>
 
  <class name="TPDataProcessor">
@@ -373,8 +372,8 @@
  </class>
 
  <class name="TPStreamWriterConf">
-   <attribute name="tp_accumulation_interval" type="u64" init-value="0" is-not-null="yes"/>
-   <attribute name="source_id" type="u32" is-not-null="yes"/>
+  <attribute name="tp_accumulation_interval" type="u64" init-value="0" is-not-null="yes"/>
+  <attribute name="source_id" type="u32" is-not-null="yes"/>
   <relationship name="data_store_params" class-type="DataStoreConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
@@ -382,7 +381,7 @@
   <attribute name="queues_timeout" type="u32" init-value="0" is-not-null="yes"/>
   <attribute name="trigger_record_timeout_ms" type="u32" init-value="0" is-not-null="yes"/>
   <attribute name="max_time_window" type="s64" init-value="0" is-not-null="yes"/>
-   <attribute name="source_id" type="u32" is-not-null="yes"/>
+  <attribute name="source_id" type="u32" is-not-null="yes"/>
  </class>
 
  <class name="TriggerRecordBuilder">
