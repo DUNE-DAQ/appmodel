@@ -89,7 +89,7 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   }
   // Create queue connection config object
   oksdbinterfaces::ConfigObject trQueueObj;
-  std::string trQueueUid("trigger-records-"+UID());
+  std::string trQueueUid(trQDesc->get_uid_base()+UID());
   confdb->create(dbfile, "Queue", trQueueUid, trQueueObj);
   fill_queue_object_from_desc(trQDesc, trQueueObj);
   // Place trigger record queue object into vector of output objs of TRB module
