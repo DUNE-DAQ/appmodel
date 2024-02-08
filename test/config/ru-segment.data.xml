@@ -87,7 +87,7 @@
 </obj>
 
 <obj class="ReadoutApplication" id="ru-01">
- <attr name="tp_src_id" type="u32" val="100"/>
+ <attr name="tp_source_id" type="u32" val="100"/>
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="contains">
   <ref class="ReadoutGroup" id="dummyRog"/>

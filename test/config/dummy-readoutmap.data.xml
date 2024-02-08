@@ -76,7 +76,7 @@
 
 
 <obj class="DROStreamConf" id="dummyStream-1">
- <attr name="src_id" type="u32" val="1"/>
+ <attr name="source_id" type="u32" val="1"/>
  <rel name="geo_id" class="GeoId" id="dummyGeoId-1"/>
  <rel name="stream_params" class="StreamParameters" id="dummyStream-1"/>
 </obj>

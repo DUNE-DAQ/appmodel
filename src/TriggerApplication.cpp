@@ -242,7 +242,7 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
         }
 
         // Create SourceIDConf object for the MLT
-         auto id    = stream->get_src_id();
+         auto id    = stream->get_source_id();
          oksdbinterfaces::ConfigObject sourceIdConf;
          std::string sourceIdConfId("dro-mlt-stream-config-");
          confdb->create(dbfile, "SourceIDConf", sourceIdConfId + std::to_string(sourceIdConfs.size()), sourceIdConf);
