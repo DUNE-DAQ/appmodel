@@ -62,153 +62,26 @@
 ]>
 
 <oks-data>
-<info name="" type="" num-of-items="4" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20231207T113214"/>
+
+<info name="" type="" num-of-items="38" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240208T094015"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
-  <file path="schema/appdal/application.schema.xml"/>
-  <file path="schema/appdal/trigger.schema.xml"/>
+ <file path="schema/appdal/application.schema.xml"/>
+ <file path="schema/appdal/fdmodules.schema.xml"/>
+ <file path="schema/appdal/trigger.schema.xml"/>
 </include>
 
 <comments>
+ <comment creation-time="20240208T094015" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="reformat"/>
 </comments>
 
-<obj class="Service" id="dataFragments">
- <attr name="protocol" type="string" val="tcp"/>
- <attr name="port" type="u16" val="0"/>
-</obj>
-
-<obj class="Service" id="dataRequests">
- <attr name="protocol" type="string" val="tcp"/>
- <attr name="port" type="u16" val="0"/>
-</obj>
-
-<obj class="Service" id="triggerPrimitives">
- <attr name="protocol" type="string" val="tcp"/>
- <attr name="port" type="u16" val="0"/>
-</obj>
-
-  <obj class="Service" id="HSIEvents">
-    <attr name="protocol" type="string" val="tcp"/>
-    <attr name="port" type="u16" val="0"/>
-  </obj>
-
-  <obj class="Service" id="timeSyncs">
- <attr name="protocol" type="string" val="tcp"/>
- <attr name="port" type="u16" val="0"/>
-</obj>
-
-  <obj class="Service" id="triggerDecisions">
-    <attr name="protocol" type="string" val="tcp"/>
-    <attr name="port" type="u16" val="0"/>
-  </obj>
-
-  <obj class="Service" id="triggerInhibits">
-    <attr name="protocol" type="string" val="tcp"/>
-    <attr name="port" type="u16" val="0"/>
-  </obj>
-
-  <obj class="Service" id="dfTokens">
-    <attr name="protocol" type="string" val="tcp"/>
-    <attr name="port" type="u16" val="0"/>
-  </obj>
-
-<obj class="QueueConnectionRule" id="data-requests-queue-rule">
- <attr name="destination_class" type="class" val="FDDataLinkHandler"/>
- <rel name="descriptor" class="QueueDescriptor" id="data-req-queue-desc"/>
-</obj>
-
-<obj class="QueueConnectionRule" id="fa-queue-rule">
- <attr name="destination_class" type="class" val="FragmentAggregator"/>
- <rel name="descriptor" class="QueueDescriptor" id="fa-input"/>
-</obj>
-
-<obj class="QueueConnectionRule" id="wib-eth-raw-data-rule">
- <attr name="destination_class" type="class" val="FDDataLinkHandler"/>
- <rel name="descriptor" class="QueueDescriptor" id="wib-eth-raw-input"/>
- </obj>
-
-<obj class="QueueConnectionRule" id="tp-queue-rule">
- <attr name="destination_class" type="class" val="FDDataLinkHandler"/>
- <rel name="descriptor" class="QueueDescriptor" id="tp-input"/>
-</obj>
-
-<obj class="QueueDescriptor" id="data-req-queue-desc">
- <attr name="uid_base" type="string" val="internal_data_requests_for_"/>
- <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
- <attr name="capacity" type="u32" val="1000"/>
- <attr name="data_type" type="string" val="DataRequest"/>
-</obj>
-
-<obj class="QueueDescriptor" id="fa-input">
- <attr name="uid_base" type="string" val="internal_fragments_"/>
- <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>
- <attr name="capacity" type="u32" val="1000"/>
- <attr name="data_type" type="string" val="Fragment"/>
- </obj>
-
-<obj class="QueueDescriptor" id="wib-eth-raw-input">
- <attr name="uid_base" type="string" val="raw_input_"/>
- <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
- <attr name="capacity" type="u32" val="1000"/>
- <attr name="data_type" type="string" val="WIBEthFrame"/>
-</obj>
-
-<obj class="QueueDescriptor" id="tp-input">
- <attr name="uid_base" type="string" val="tp_input_"/>
- <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>
- <attr name="capacity" type="u32" val="100000"/>
- <attr name="data_type" type="string" val="TriggerPrimitive"/>
-</obj>
 
 <obj class="NetworkConnectionDescriptor" id="data-req-net-input">
  <attr name="uid_base" type="string" val="data_requests_for_"/>
  <attr name="connection_type" type="enum" val="kSendRecv"/>
  <attr name="data_type" type="string" val="DataRequest"/>
  <rel name="associated_service" class="Service" id="dataRequests"/>
-</obj>
-
-<obj class="NetworkConnectionDescriptor" id="tp-publisher">
- <attr name="uid_base" type="string" val="trigger_primitives_"/>
- <attr name="connection_type" type="enum" val="kPubSub"/>
- <attr name="data_type" type="string" val="TPSet"/>
- <rel name="associated_service" class="Service" id="triggerPrimitives"/>
-</obj>
-
-<obj class="NetworkConnectionDescriptor" id="timesync-publisher">
- <attr name="uid_base" type="string" val="time_sync_"/>
- <attr name="connection_type" type="enum" val="kPubSub"/>
- <attr name="data_type" type="string" val="TimeSync"/>
- <rel name="associated_service" class="Service" id="timeSyncs"/>
-</obj>
-
-
-<obj class="NetworkConnectionDescriptor" id="trigger-inhibit">
-  <attr name="uid_base" type="string" val="trigger_inhibit"/>
-  <attr name="connection_type" type="enum" val="kSendRecv"/>
-  <attr name="data_type" type="string" val="TriggerInhibit"/>
-  <rel name="associated_service" class="Service" id="triggerInhibits"/>
-</obj>
-
-<obj class="NetworkConnectionDescriptor" id="trigger-decision">
-  <attr name="uid_base" type="string" val="trigger_decision_"/>
-  <attr name="connection_type" type="enum" val="kSendRecv"/>
-  <attr name="data_type" type="string" val="TriggerDecision"/>
-  <rel name="associated_service" class="Service" id="triggerDecisions"/>
-</obj>
-
-<obj class="NetworkConnectionDescriptor" id="trigger-decision-dfo">
-  <attr name="uid_base" type="string" val="trigger_decision_dfo"/>
-  <attr name="connection_type" type="enum" val="kSendRecv"/>
-  <attr name="data_type" type="string" val="TriggerDecision"/>
-  <rel name="associated_service" class="Service" id="triggerDecisions"/>
-</obj>
-
-<obj class="NetworkConnectionDescriptor" id="hsi-desc">
-  <attr name="uid_base" type="string" val="hsi_event"/>
-  <attr name="connection_type" type="enum" val="kSendRecv"/>
-  <attr name="data_type" type="string" val="HSIEvent"/>
-  <rel name="associated_service" class="Service" id="HSIEvents"/>
 </obj>
 
 <obj class="NetworkConnectionDescriptor" id="df-token-desc">
@@ -225,34 +98,51 @@
  <rel name="associated_service" class="Service" id="dataFragments"/>
 </obj>
 
-<!--
-<obj class="NetworkConnectionDescriptor" id="td-net-desc-1">
- <attr name="uid_base" type="string" val="triggerdecision"/>
+<obj class="NetworkConnectionDescriptor" id="hsi-desc">
+ <attr name="uid_base" type="string" val="hsi_event"/>
+ <attr name="connection_type" type="enum" val="kSendRecv"/>
+ <attr name="data_type" type="string" val="HSIEvent"/>
+ <rel name="associated_service" class="Service" id="HSIEvents"/>
+</obj>
+
+<obj class="NetworkConnectionDescriptor" id="timesync-publisher">
+ <attr name="uid_base" type="string" val="time_sync_"/>
+ <attr name="connection_type" type="enum" val="kPubSub"/>
+ <attr name="data_type" type="string" val="TimeSync"/>
+ <rel name="associated_service" class="Service" id="timeSyncs"/>
+</obj>
+
+<obj class="NetworkConnectionDescriptor" id="tp-publisher">
+ <attr name="uid_base" type="string" val="trigger_primitives_"/>
+ <attr name="connection_type" type="enum" val="kPubSub"/>
+ <attr name="data_type" type="string" val="TPSet"/>
+ <rel name="associated_service" class="Service" id="triggerPrimitives"/>
+</obj>
+
+<obj class="NetworkConnectionDescriptor" id="trigger-decision">
+ <attr name="uid_base" type="string" val="trigger_decision_"/>
  <attr name="connection_type" type="enum" val="kSendRecv"/>
  <attr name="data_type" type="string" val="TriggerDecision"/>
  <rel name="associated_service" class="Service" id="triggerDecisions"/>
 </obj>
-<obj class="NetworkConnectionDescriptor" id="ti-net-desc-1">
- <attr name="uid_base" type="string" val="triggerInhibit"/>
+
+<obj class="NetworkConnectionDescriptor" id="trigger-decision-dfo">
+ <attr name="uid_base" type="string" val="trigger_decision_dfo"/>
+ <attr name="connection_type" type="enum" val="kSendRecv"/>
+ <attr name="data_type" type="string" val="TriggerDecision"/>
+ <rel name="associated_service" class="Service" id="triggerDecisions"/>
+</obj>
+
+<obj class="NetworkConnectionDescriptor" id="trigger-inhibit">
+ <attr name="uid_base" type="string" val="trigger_inhibit"/>
  <attr name="connection_type" type="enum" val="kSendRecv"/>
  <attr name="data_type" type="string" val="TriggerInhibit"/>
  <rel name="associated_service" class="Service" id="triggerInhibits"/>
 </obj>
--->
 
 <obj class="NetworkConnectionRule" id="data-req-net-rule">
  <attr name="endpoint_class" type="class" val="FragmentAggregator"/>
  <rel name="descriptor" class="NetworkConnectionDescriptor" id="data-req-net-input"/>
-</obj>
-
-<obj class="NetworkConnectionRule" id="tp-net-rule">
- <attr name="endpoint_class" type="class" val="FDDataLinkHandler"/>
- <rel name="descriptor" class="NetworkConnectionDescriptor" id="tp-publisher"/>
-</obj>
-
-<obj class="NetworkConnectionRule" id="ts-net-rule">
- <attr name="endpoint_class" type="class" val="FDDataLinkHandler"/>
- <rel name="descriptor" class="NetworkConnectionDescriptor" id="timesync-publisher"/>
 </obj>
 
 <obj class="NetworkConnectionRule" id="df-token-net-rule">
@@ -265,6 +155,11 @@
  <rel name="descriptor" class="NetworkConnectionDescriptor" id="fragments"/>
 </obj>
 
+<obj class="NetworkConnectionRule" id="hsi-rule">
+ <attr name="endpoint_class" type="class" val="TimingTriggerCandidateMaker"/>
+ <rel name="descriptor" class="NetworkConnectionDescriptor" id="hsi-desc"/>
+</obj>
+
 <obj class="NetworkConnectionRule" id="td-dfo-net-rule">
  <attr name="endpoint_class" type="class" val="DataFlowOrchestrator"/>
  <rel name="descriptor" class="NetworkConnectionDescriptor" id="trigger-decision-dfo"/>
@@ -275,24 +170,77 @@
  <rel name="descriptor" class="NetworkConnectionDescriptor" id="trigger-decision"/>
 </obj>
 
-  <obj class="NetworkConnectionRule" id="ti-net-rule">
-    <attr name="endpoint_class" type="class" val="ModuleLevelTrigger"/>
-    <rel name="descriptor" class="NetworkConnectionDescriptor" id="trigger-inhibit"/>
-  </obj>
+<obj class="NetworkConnectionRule" id="ti-net-rule">
+ <attr name="endpoint_class" type="class" val="ModuleLevelTrigger"/>
+ <rel name="descriptor" class="NetworkConnectionDescriptor" id="trigger-inhibit"/>
+</obj>
 
-  <obj class="NetworkConnectionRule" id="hsi-rule">
-    <attr name="endpoint_class" type="class" val="TimingTriggerCandidateMaker"/>
-    <rel name="descriptor" class="NetworkConnectionDescriptor" id="hsi-desc"/>
-  </obj>
+<obj class="NetworkConnectionRule" id="tp-net-rule">
+ <attr name="endpoint_class" type="class" val="FDDataLinkHandler"/>
+ <rel name="descriptor" class="NetworkConnectionDescriptor" id="tp-publisher"/>
+</obj>
 
-  <obj class="QueueConnectionRule" id="tcQueueRule">
-    <attr name="destination_class" type="class" val="ModuleLevelTrigger"/>
-    <rel name="descriptor" class="QueueDescriptor" id="tcQueueRuleDescriptor"/>
-  </obj>
+<obj class="NetworkConnectionRule" id="ts-net-rule">
+ <attr name="endpoint_class" type="class" val="FDDataLinkHandler"/>
+ <rel name="descriptor" class="NetworkConnectionDescriptor" id="timesync-publisher"/>
+</obj>
+
+<obj class="QueueConnectionRule" id="data-requests-queue-rule">
+ <attr name="destination_class" type="class" val="FDDataLinkHandler"/>
+ <rel name="descriptor" class="QueueDescriptor" id="data-req-queue-desc"/>
+</obj>
+
+<obj class="QueueConnectionRule" id="fa-queue-rule">
+ <attr name="destination_class" type="class" val="FragmentAggregator"/>
+ <rel name="descriptor" class="QueueDescriptor" id="fa-input"/>
+</obj>
+
+<obj class="QueueConnectionRule" id="tcQueueRule">
+ <attr name="destination_class" type="class" val="ModuleLevelTrigger"/>
+ <rel name="descriptor" class="QueueDescriptor" id="tcQueueRuleDescriptor"/>
+</obj>
+
+<obj class="QueueConnectionRule" id="tp-queue-rule">
+ <attr name="destination_class" type="class" val="FDDataLinkHandler"/>
+ <rel name="descriptor" class="QueueDescriptor" id="tp-input"/>
+</obj>
 
 <obj class="QueueConnectionRule" id="trigger-record-q-rule">
  <attr name="destination_class" type="class" val="DataWriter"/>
  <rel name="descriptor" class="QueueDescriptor" id="trigger-record-1"/>
+</obj>
+
+<obj class="QueueConnectionRule" id="wib-eth-raw-data-rule">
+ <attr name="destination_class" type="class" val="FDDataLinkHandler"/>
+ <rel name="descriptor" class="QueueDescriptor" id="wib-eth-raw-input"/>
+</obj>
+
+<obj class="QueueDescriptor" id="data-req-queue-desc">
+ <attr name="uid_base" type="string" val="internal_data_requests_for_"/>
+ <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
+ <attr name="capacity" type="u32" val="1000"/>
+ <attr name="data_type" type="string" val="DataRequest"/>
+</obj>
+
+<obj class="QueueDescriptor" id="fa-input">
+ <attr name="uid_base" type="string" val="internal_fragments_"/>
+ <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>
+ <attr name="capacity" type="u32" val="1000"/>
+ <attr name="data_type" type="string" val="Fragment"/>
+</obj>
+
+<obj class="QueueDescriptor" id="tcQueueRuleDescriptor">
+ <attr name="uid_base" type="string" val="trigger_candidates_"/>
+ <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>
+ <attr name="capacity" type="u32" val="1000"/>
+ <attr name="data_type" type="string" val="TriggerCandidate"/>
+</obj>
+
+<obj class="QueueDescriptor" id="tp-input">
+ <attr name="uid_base" type="string" val="tp_input_"/>
+ <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>
+ <attr name="capacity" type="u32" val="100000"/>
+ <attr name="data_type" type="string" val="TriggerPrimitive"/>
 </obj>
 
 <obj class="QueueDescriptor" id="trigger-record-1">
@@ -301,12 +249,52 @@
  <attr name="capacity" type="u32" val="11"/>
  <attr name="data_type" type="string" val="TriggerRecord"/>
 </obj>
-  
-  <obj class="QueueDescriptor" id="tcQueueRuleDescriptor">
-    <attr name="uid_base" type="string" val="trigger_candidates_"/>
-    <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>
-    <attr name="capacity" type="u32" val="1000"/>
-    <attr name="data_type" type="string" val="TriggerCandidate"/>
-  </obj>
+
+<obj class="QueueDescriptor" id="wib-eth-raw-input">
+ <attr name="uid_base" type="string" val="raw_input_"/>
+ <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
+ <attr name="capacity" type="u32" val="1000"/>
+ <attr name="data_type" type="string" val="WIBEthFrame"/>
+</obj>
+
+<obj class="Service" id="HSIEvents">
+ <attr name="protocol" type="string" val="tcp"/>
+ <attr name="port" type="u16" val="0"/>
+</obj>
+
+<obj class="Service" id="dataFragments">
+ <attr name="protocol" type="string" val="tcp"/>
+ <attr name="port" type="u16" val="0"/>
+</obj>
+
+<obj class="Service" id="dataRequests">
+ <attr name="protocol" type="string" val="tcp"/>
+ <attr name="port" type="u16" val="0"/>
+</obj>
+
+<obj class="Service" id="dfTokens">
+ <attr name="protocol" type="string" val="tcp"/>
+ <attr name="port" type="u16" val="0"/>
+</obj>
+
+<obj class="Service" id="timeSyncs">
+ <attr name="protocol" type="string" val="tcp"/>
+ <attr name="port" type="u16" val="0"/>
+</obj>
+
+<obj class="Service" id="triggerDecisions">
+ <attr name="protocol" type="string" val="tcp"/>
+ <attr name="port" type="u16" val="0"/>
+</obj>
+
+<obj class="Service" id="triggerInhibits">
+ <attr name="protocol" type="string" val="tcp"/>
+ <attr name="port" type="u16" val="0"/>
+</obj>
+
+<obj class="Service" id="triggerPrimitives">
+ <attr name="protocol" type="string" val="tcp"/>
+ <attr name="port" type="u16" val="0"/>
+</obj>
 
 </oks-data>

@@ -63,11 +63,16 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="0" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T110859" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20231207T110859"/>
+<info name="" type="" num-of-items="22" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T110859" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240208T094131"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
 </include>
+
+<comments>
+ <comment creation-time="20240208T094131" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="reformat"/>
+</comments>
+
 
 <obj class="FSMCommand" id="conf">
  <attr name="cmd" type="string" val="conf"/>
