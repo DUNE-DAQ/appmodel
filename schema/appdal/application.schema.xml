@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="42" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240207T103249"/>
+<info name="" type="" num-of-items="46" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240208T144253"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -200,6 +200,30 @@
   <attribute name="fragment_type" description="Fragment type of the response" type="string" is-not-null="yes"/>
  </class>
 
+ <class name="FakeHSIApplication">
+  <superclass name="SmartDaqApplication"/>
+  <relationship name="link_handler" class-type="ReadoutModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="generator" class-type="FakeHSIEventGeneratorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
+  </method>
+ </class>
+
+ <class name="FakeHSIEventGenerator">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="FakeHSIEventGeneratorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="FakeHSIEventGeneratorConf">
+  <attribute name="clock_frequency" description="Assumed clock frequency in Hz (for current-timestamp estimation)" type="u64" init-value="62500000" is-not-null="yes"/>
+  <attribute name="timestamp_offset" description="Offset for HSIEvent timestamps in units of clock ticks. Positive offset increases timestamp estimate." type="s64" init-value="0" is-not-null="yes"/>
+  <attribute name="trigger_rate" description="Trigger rate (in Hz) for the HSIEvent generation" type="double" init-value="1.0" is-not-null="yes"/>
+  <attribute name="hsi_device_id" description="HSI device ID for emulated HSIEvent messages" type="u32" init-value="1" is-not-null="yes"/>
+  <attribute name="mean_signal_multiplicity" description="Mean number of edges expected per signal. Used when signal emulation mode is 1" type="u32" init-value="1" is-not-null="yes"/>
+  <attribute name="enabled_signals" description="Which signals or bit of the 32 bit signal bit map are enabled, i.e. could produce an emulated signal" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="signal_emulation_mode" description="Signal bit map emulation mode. 0: enabled signals always on; 1: enabled signals are emulated (independently) on according to a Poisson with mean mean_signal_multiplicity; signal map generated with uniform distr. enabled signals only" type="u32" init-value="0" is-not-null="yes"/>
+ </class>
+
  <class name="FilenameParams">
   <attribute name="overall_prefix" type="string" init-value="minidaq" is-not-null="yes"/>
   <attribute name="run_number_prefix" type="string" init-value="run" is-not-null="yes"/>
@@ -230,6 +254,10 @@
   <attribute name="detector_group_name" type="string" init-value="unspecified" is-not-null="yes"/>
   <attribute name="element_name_prefix" type="string" init-value="Element" is-not-null="yes"/>
   <attribute name="digits_for_element_number" type="s32" init-value="5"/>
+ </class>
+
+ <class name="HSIDataLinkHandler">
+  <superclass name="ReadoutModule"/>
  </class>
 
  <class name="LatencyBuffer">
@@ -298,7 +326,7 @@
   <attribute name="post_processing_delay_ticks" description="Number of clock tick by which post processing of incoming data shall be delayed." type="u64" init-value="0" is-not-null="yes"/>
   <relationship name="request_handler" class-type="RequestHandler" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="latency_buffer" class-type="LatencyBuffer" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="data_processor" class-type="DataProcessor" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="data_processor" class-type="DataProcessor" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="RequestHandler">

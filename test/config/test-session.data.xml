@@ -72,6 +72,7 @@
  <file path="test/config/dummy-readoutmap.data.xml"/>
  <file path="test/config/ru-segment.data.xml"/>
  <file path="test/config/df-segment.data.xml"/>
+ <file path="test/config/hsi-segment.data.xml"/>
  <file path="test/config/trigger-segment.data.xml"/>
 </include>
 
@@ -102,6 +103,7 @@
   <ref class="Segment" id="ru-segment"/>
   <ref class="Segment" id="df-segment"/>
   <ref class="Segment" id="trg-segment"/>
+  <ref class="Segment" id="hsi-segment"/>
  </rel>
  <rel name="controller" class="RCApplication" id="root-controller"/>
 </obj>
