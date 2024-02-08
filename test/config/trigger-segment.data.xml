@@ -116,7 +116,9 @@
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="contains">
-  <ref class="ReadoutGroup" id="dummyRog"/>
+  <ref class="ReadoutGroup" id="rog-1"/>
+	 <ref class="ReadoutGroup" id="rog-2"/>
+	 <ref class="ReadoutGroup" id="rog-3"/>
  </rel>
  <rel name="network_rules">
   <ref class="NetworkConnectionRule" id="ti-net-rule"/>

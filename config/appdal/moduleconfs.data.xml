@@ -151,12 +151,12 @@
 </obj>
 
 <obj class="StreamEmulationParameters" id="stream-emu">
-        <attr name="data_file_name" type="string" val="/cvmfs/dunedaq.opensciencegrid.org/assets/files/d/d/1/wibeth_output_all_zeros.bin"/>
+        <attr name="data_file_name" type="string" val="/cvmfs/dunedaq.opensciencegrid.org/assets/files/e/9/6/wibethframes.bin"/>
  <attr name="input_file_size_limit" type="u32" val="1000000"/>
  <attr name="set_t0" type="bool" val="1"/>
  <attr name="random_population_size" type="u32" val="0"/>
  <attr name="frame_error_rate_hz" type="float" val="0"/>
- <attr name="generate_periodic_adc_pattern" type="bool" val="1"/>
+ <attr name="generate_periodic_adc_pattern" type="bool" val="0"/>
  <attr name="TP_rate_per_channel" type="float" val="0"/>
 </obj>
 
