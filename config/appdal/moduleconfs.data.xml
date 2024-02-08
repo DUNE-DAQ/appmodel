@@ -63,11 +63,12 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="19" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240112T170541"/>
+<info name="" type="" num-of-items="12" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240208T095403"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
  <file path="schema/appdal/application.schema.xml"/>
+ <file path="schema/appdal/fdmodules.schema.xml"/>
  <file path="config/appdal/connections.data.xml"/>
  <file path="config/appdal/data-store-params.data.xml"/>
 </include>
@@ -79,7 +80,9 @@
  <comment creation-time="20240112T163053" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="Add TRB"/>
  <comment creation-time="20240112T170242" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="Add queue"/>
  <comment creation-time="20240112T170541" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="Add network connections"/>
+ <comment creation-time="20240208T095403" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="reformat"/>
 </comments>
+
 
 <obj class="DFOConf" id="dfoconf-01">
  <attr name="general_queue_timeout_ms" type="u32" val="100"/>
@@ -87,11 +90,6 @@
  <attr name="td_send_retries" type="s32" val="5"/>
  <attr name="busy_threshold" type="s32" val="2"/>
  <attr name="free_threshold" type="s32" val="1"/>
-</obj>
-
-<obj class="TRBConf" id="trb-01">
- <attr name="queues_timeout" type="u32" val="100"/>
- <attr name="trigger_record_timeout_ms" type="u32" val="2858"/>
 </obj>
 
 <obj class="DataWriterConf" id="dw-01">
@@ -151,7 +149,7 @@
 </obj>
 
 <obj class="StreamEmulationParameters" id="stream-emu">
-        <attr name="data_file_name" type="string" val="/cvmfs/dunedaq.opensciencegrid.org/assets/files/e/9/6/wibethframes.bin"/>
+ <attr name="data_file_name" type="string" val="/cvmfs/dunedaq.opensciencegrid.org/assets/files/e/9/6/wibethframes.bin"/>
  <attr name="input_file_size_limit" type="u32" val="1000000"/>
  <attr name="set_t0" type="bool" val="1"/>
  <attr name="random_population_size" type="u32" val="0"/>
@@ -178,6 +176,11 @@
  <attr name="warn_on_empty_buffer" type="bool" val="1"/>
  <attr name="min_latency_ticks" type="u32" val="6250000"/>
  <attr name="max_transmission_rate_hz" type="u32" val="1000"/>
+</obj>
+
+<obj class="TRBConf" id="trb-01">
+ <attr name="queues_timeout" type="u32" val="100"/>
+ <attr name="trigger_record_timeout_ms" type="u32" val="2858"/>
 </obj>
 
 </oks-data>
