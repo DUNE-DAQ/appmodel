@@ -12,6 +12,7 @@ find_package(ers REQUIRED)
 find_package(logging REQUIRED)
 find_package(oksdbinterfaces REQUIRED)
 find_package(coredal REQUIRED)
+find_package(CLI11 REQUIRED)
 
 
 #find_package(Boost COMPONENTS unit_test_framework REQUIRED)
@@ -32,6 +33,10 @@ daq_add_python_bindings(dal_methods.cpp module.cpp LINK_LIBRARIES
 daq_add_application(generate_modules_test generate_modules_test.cxx
  TEST LINK_LIBRARIES appdal coredal::coredal oksdbinterfaces::oksdbinterfaces
  logging::logging)
+
+ daq_add_application(test_dal_factory test_dal_factory.cxx
+ TEST LINK_LIBRARIES appdal coredal::coredal oksdbinterfaces::oksdbinterfaces
+ logging::logging CLI11::CLI11)
 
 ##############################################################################
 

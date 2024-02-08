@@ -25,6 +25,9 @@
 
 #include "appdal/appdalIssues.hpp"
 
+#include "coredal/Queue.hpp"
+#include "coredal/NetworkConnection.hpp"
+
 #include <string>
 using namespace dunedaq;
 
@@ -73,15 +76,26 @@ int main(int argc, char* argv[]) {
 
     std::cout << "Generated " << modules.size() << " modules" << std::endl;
     for (auto module: modules) {
+
       std::cout << "module " << module->UID() << std::endl;
       module->config_object().print_ref(std::cout, *confdb, "  ");
       std::cout  << " input objects "  << std::endl;
       for (auto input : module->get_inputs()) {
+
+      std::cout << "   in: UID=" << input->UID() << " " <<  input->class_name()
+          << " get_xxx=" << input->get_xxx() 
+          << " is_queue=" << (dynamic_cast<const dunedaq::coredal::Queue*>(input)!=0) 
+          << " is_net=" << (dynamic_cast<const dunedaq::coredal::NetworkConnection*>(input)!=0) << std::endl;
+
         auto iObj = input->config_object();
         iObj.print_ref(std::cout, *confdb, "    ");
       }
       std::cout  << " output objects "  << std::endl;
       for (auto output : module->get_outputs()) {
+        std::cout << "out: UID=" << output->UID() << " " << output->class_name()
+            << " get_xxx=" << output->get_xxx() 
+            << " is_queue=" << (dynamic_cast<const dunedaq::coredal::Queue*>(output)!=0) 
+            << " is_net=" << (dynamic_cast<const dunedaq::coredal::NetworkConnection*>(output)!=0) << std::endl;
         auto oObj = output->config_object();
         oObj.print_ref(std::cout, *confdb, "    ");
       }
