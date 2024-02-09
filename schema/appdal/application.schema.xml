@@ -260,6 +260,10 @@
   <superclass name="ReadoutModule"/>
  </class>
 
+<class name="HSIFrameProcessor">
+ <superclass name="DataProcessor"/>
+</class>
+
  <class name="LatencyBuffer">
   <attribute name="size" type="u32" init-value="100000" is-not-null="yes"/>
   <attribute name="numa_aware" type="bool" init-value="true"/>
