@@ -39,6 +39,11 @@
       "exec": "daq_application_ssh",
       "host": "local",
       "port": 3340
+    },
+    "hsi-01": {
+      "exec": "daq_application_ssh",
+      "host": "local",
+      "port": 3341
     }
   },
   "env": {
