@@ -116,7 +116,7 @@
  <rel name="readout_map" class="ReadoutMap" id="dummyRoMap"/>
 </obj>
 
-<obj class="DaqModule" it="dummy-module">
-</obj>
+<!-- <obj class="DaqModule" id="dummy-module">
+</obj> -->
 
 </oks-data>
