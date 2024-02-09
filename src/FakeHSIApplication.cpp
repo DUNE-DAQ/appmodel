@@ -10,19 +10,19 @@
 
 #include "ModuleFactory.hpp"
 
+#include "appdal/FakeHSIApplication.hpp"
+#include "appdal/FakeHSIEventGenerator.hpp"
+#include "appdal/FakeHSIEventGeneratorConf.hpp"
 #include "appdal/NetworkConnectionDescriptor.hpp"
 #include "appdal/NetworkConnectionRule.hpp"
 #include "appdal/QueueConnectionRule.hpp"
 #include "appdal/QueueDescriptor.hpp"
-#include "appdal/FakeHSIEventGenerator.hpp"
-#include "appdal/FakeHSIApplication.hpp"
-#include "appdal/FakeHSIEventGeneratorConf.hpp"
-#include "appdal/appdalIssues.hpp"
-#include "coredal/Connection.hpp"
-#include "coredal/Service.hpp"
 #include "appdal/ReadoutModule.hpp"
 #include "appdal/ReadoutModuleConf.hpp"
+#include "appdal/appdalIssues.hpp"
+#include "coredal/Connection.hpp"
 #include "coredal/NetworkConnection.hpp"
+#include "coredal/Service.hpp"
 #include "logging/Logging.hpp"
 #include "oks/kernel.hpp"
 #include "oksdbinterfaces/Configuration.hpp"
@@ -45,8 +45,8 @@ static ModuleFactory::Registrator __reg__("FakeHSIApplication",
 
 std::vector<const coredal::DaqModule*>
 FakeHSIApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
-                                            const std::string& dbfile,
-                                            const coredal::Session* session) const
+                                     const std::string& dbfile,
+                                     const coredal::Session* session) const
 {
   std::vector<const coredal::DaqModule*> modules;
 
@@ -54,12 +54,12 @@ FakeHSIApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   auto dlhClass = dlhConf->get_template_for();
 
   const QueueDescriptor* dlhInputQDesc = nullptr;
-    
+
   for (auto rule : get_queue_rules()) {
     auto destination_class = rule->get_destination_class();
     auto data_type = rule->get_descriptor()->get_data_type();
     if (destination_class == "ReadoutModule" || destination_class == dlhClass) {
-        dlhInputQDesc = rule->get_descriptor();
+      dlhInputQDesc = rule->get_descriptor();
     }
   }
 
@@ -72,15 +72,15 @@ FakeHSIApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     auto data_type = rule->get_descriptor()->get_data_type();
 
     if (endpoint_class == "ReadoutModule" || endpoint_class == dlhClass) {
-        if (data_type == "TimeSync") {
-          tsNetDesc = rule->get_descriptor();
-        }
-        if (data_type == "DataRequest") {
-          dlhReqInputNetDesc = rule->get_descriptor();
-        } 
+      if (data_type == "TimeSync") {
+        tsNetDesc = rule->get_descriptor();
+      }
+      if (data_type == "DataRequest") {
+        dlhReqInputNetDesc = rule->get_descriptor();
+      }
     }
     if (data_type == "HSIEvent") {
-        hsiNetDesc = rule->get_descriptor();
+      hsiNetDesc = rule->get_descriptor();
     }
   }
 
@@ -94,8 +94,11 @@ FakeHSIApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   if (dlhReqInputNetDesc == nullptr) {
     throw(BadConf(ERS_HERE, "No DLH request input network descriptor given"));
   }
+  if (hsiNetDesc == nullptr) {
+    throw(BadConf(ERS_HERE, "No HSIEvent output network descriptor given"));
+  }
 
-  auto id = 0; // TODO Eric Flumerfelt <eflumerf@fnal.gov>, 08-Feb-2024: This is a magic number
+  auto id = 0;     // TODO Eric Flumerfelt <eflumerf@fnal.gov>, 08-Feb-2024: This is a magic number
   auto det_id = 1; // TODO Eric Flumerfelt <eflumerf@fnal.gov>, 08-Feb-2024: This is a magic number
   std::string uid("DLH-" + std::to_string(id));
   oksdbinterfaces::ConfigObject dlhObj;
@@ -115,9 +118,9 @@ FakeHSIApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     tsNetObj.set_by_val<std::string>("data_type", tsNetDesc->get_data_type());
     tsNetObj.set_obj("associated_service", &tsServiceObj);
 
-        dlhObj.set_objs("outputs", { &tsNetObj });
+    dlhObj.set_objs("outputs", { &tsNetObj });
   } else {
-        dlhObj.set_objs("outputs", {  });
+    dlhObj.set_objs("outputs", {});
   }
   std::string dataQueueUid(dlhInputQDesc->get_uid_base() + std::to_string(id));
   oksdbinterfaces::ConfigObject queueObj;
@@ -138,6 +141,22 @@ FakeHSIApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   dlhObj.set_objs("inputs", { &queueObj, &faNetObj });
 
   modules.push_back(confdb->get<ReadoutModule>(uid));
+
+  auto hsiServiceObj = hsiNetDesc->get_associated_service()->config_object();
+  std::string hsiNetUid = hsiNetDesc->get_uid_base() + UID();
+  oksdbinterfaces::ConfigObject hsiNetObj;
+  confdb->create(dbfile, "NetworkConnection", hsiNetUid, hsiNetObj);
+  hsiNetObj.set_by_val<std::string>("connection_type", hsiNetDesc->get_connection_type());
+  hsiNetObj.set_by_val<std::string>("data_type", hsiNetDesc->get_data_type());
+  hsiNetObj.set_obj("associated_service", &hsiServiceObj);
+  
+  std::string genuid("FakeHSI-" + std::to_string(id));
+  oksdbinterfaces::ConfigObject fakehsiObj;
+  confdb->create(dbfile, "FakeHSIEventGenerator", genuid, fakehsiObj);
+  fakehsiObj.set_obj("configuration", &rdrConf->config_object());
+  fakehsiObj.set_objs("outputs", { &queueObj, &hsiNetObj });
+
+  modules.push_back(confdb->get<FakeHSIEventGenerator>(genuid));
 
   return modules;
 }

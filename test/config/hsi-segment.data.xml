@@ -89,6 +89,7 @@
  <rel name="network_rules">
   <ref class="NetworkConnectionRule" id="hsi-data-req-net-rule"/>
   <ref class="NetworkConnectionRule" id="hsi-ts-net-rule"/>
+  <ref class="NetworkConnectionRule" id="hsi-rule"/>
  </rel>
  <rel name="link_handler" class="ReadoutModuleConf" id="def-hsi-handler"/>
  <rel name="generator" class="FakeHSIEventGeneratorConf" id="fakehsi"/>
