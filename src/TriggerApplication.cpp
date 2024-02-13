@@ -8,8 +8,6 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
-
 #include "oks/kernel.hpp"
 #include "oksdbinterfaces/Configuration.hpp"
 
@@ -65,15 +63,6 @@
 using namespace dunedaq;
 using namespace dunedaq::appdal;
 
-static ModuleFactory::Registrator __reg__("TriggerApplication",
-                                          [](const SmartDaqApplication* smartApp,
-                                             oksdbinterfaces::Configuration* confdb,
-                                             const std::string& dbfile,
-                                             const coredal::Session* session) -> ModuleFactory::ReturnType {
-                                            auto app = smartApp->cast<TriggerApplication>();
-                                            return app->generate_modules(confdb, dbfile, session);
-                                          });
-
 /**
  * \brief Helper function that gets a network connection config
  *
@@ -101,11 +90,11 @@ create_network_connection(std::string uid,
 }
 
 std::vector<const coredal::DaqModule*>
-TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
-                                     const std::string& dbfile,
+TriggerApplication::generate_modules(const std::string& dbfile,
                                      const coredal::Session* session) const
 {
   std::vector<const coredal::DaqModule*> modules;
+  auto confdb = &configuration();
 
   // Trigger Interrupt network descriptor
   const NetworkConnectionDescriptor* tiMLTNetDesc = nullptr;

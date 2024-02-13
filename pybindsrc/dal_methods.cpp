@@ -46,8 +46,7 @@ namespace dunedaq::appdal::python {
       const_cast<oksdbinterfaces::Configuration&>(confdb).get<coredal::Session>(session_id);
 
     std::vector<ObjectLocator> mods;
-    for (auto mod : app->generate_modules(
-           const_cast<oksdbinterfaces::Configuration*>(&confdb), dbfile, session)) {
+    for (auto mod : app->generate_modules(dbfile, session)) {
       mods.push_back({mod->UID(),mod->class_name()});
     }
     return mods;

@@ -8,8 +8,6 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
-
 #include "oksdbinterfaces/Configuration.hpp"
 #include "oks/kernel.hpp"
 #include "coredal/Connection.hpp"
@@ -31,23 +29,12 @@
 using namespace dunedaq;
 using namespace dunedaq::appdal;
 
-static ModuleFactory::Registrator
-__reg__("TPStreamWriterApplication", [] (const SmartDaqApplication* smartApp,
-                             oksdbinterfaces::Configuration* confdb,
-                             const std::string& dbfile,
-                             const coredal::Session* session) -> ModuleFactory::ReturnType
-  {
-    auto app = smartApp->cast<TPStreamWriterApplication>();
-    return app->generate_modules(confdb, dbfile, session);
-  }
-  );
-
 std::vector<const coredal::DaqModule*> 
-TPStreamWriterApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
-                                     const std::string& dbfile,
-                                     const coredal::Session* session) const
+TPStreamWriterApplication::generate_modules(const std::string& dbfile,
+                                            const coredal::Session* session) const
 {
   std::vector<const coredal::DaqModule*> modules;
+  auto confdb = &configuration();
 
   auto tpwriterConf = get_tp_writer();
   if (tpwriterConf == 0) {

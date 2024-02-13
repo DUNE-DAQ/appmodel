@@ -53,8 +53,15 @@ int main(int argc, char* argv[]) {
               << " from database\n";
     return 0;
   }
-  auto daqapp = confdb->get<appdal::SmartDaqApplication>(appName);
-  if (daqapp) {
+
+  const appdal::SmartDaqApplication* daqapp = nullptr;
+  for (auto app: session->get_all_applications()) {
+    if (app->UID() == appName) {
+      daqapp = dynamic_cast<const appdal::SmartDaqApplication*>(app);
+      break;
+    }
+  }
+  if (daqapp != nullptr) {
     std::cout << appName << " is of class " << daqapp->class_name() << std::endl;
 
     auto res = daqapp->cast<coredal::ResourceBase>();
@@ -64,7 +71,7 @@ int main(int argc, char* argv[]) {
     }
     std::vector<const coredal::DaqModule*> modules;
     try {
-      modules = daqapp->generate_modules(confdb, dbfile, session);
+      modules = daqapp->generate_modules(dbfile, session);
     }
     catch (appdal::BadConf& exc) {
       std::cout << "Caught BadConf exception: " << exc << std::endl;

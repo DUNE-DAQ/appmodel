@@ -8,8 +8,6 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
-
 #include "oks/kernel.hpp"
 #include "oksdbinterfaces/Configuration.hpp"
 
@@ -39,23 +37,12 @@
 using namespace dunedaq;
 using namespace dunedaq::appdal;
 
-static ModuleFactory::Registrator __reg__("FakeDataApplication",
-                                          [](const SmartDaqApplication* smartApp,
-                                             oksdbinterfaces::Configuration* confdb,
-                                             const std::string& dbfile,
-                                             const coredal::Session* session) -> ModuleFactory::ReturnType {
-                                            auto app = smartApp->cast<FakeDataApplication>();
-                                            return app->generate_modules(confdb, dbfile, session);
-                                          });
-
 std::vector<const coredal::DaqModule*>
-FakeDataApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
-                                      const std::string& dbfile,
+FakeDataApplication::generate_modules(const std::string& dbfile,
                                       const coredal::Session* session) const
 {
-  // oks::OksFile::set_nolock_mode(true);
-
   std::vector<const coredal::DaqModule*> modules;
+  auto confdb = &configuration();
 
   // Process the queue rules looking for inputs to our DL/TP handler modules
   const QueueDescriptor* dlhReqInputQDesc = nullptr;

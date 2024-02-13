@@ -8,8 +8,6 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
-
 #include "appdal/DFApplication.hpp"
 #include "appdal/DataWriter.hpp"
 #include "appdal/DataWriterConf.hpp"
@@ -26,6 +24,7 @@
 #include "coredal/Connection.hpp"
 #include "coredal/NetworkConnection.hpp"
 #include "coredal/Service.hpp"
+#include "coredal/Session.hpp"
 #include "logging/Logging.hpp"
 #include "oks/kernel.hpp"
 #include "oksdbinterfaces/Configuration.hpp"
@@ -35,15 +34,6 @@
 
 using namespace dunedaq;
 using namespace dunedaq::appdal;
-
-static ModuleFactory::Registrator __reg__("DFApplication",
-                                          [](const SmartDaqApplication* smartApp,
-                                             oksdbinterfaces::Configuration* confdb,
-                                             const std::string& dbfile,
-                                             const coredal::Session* session) -> ModuleFactory::ReturnType {
-                                            auto app = smartApp->cast<DFApplication>();
-                                            return app->generate_modules(confdb, dbfile, session);
-                                          });
 
 inline void
 fill_queue_object_from_desc(const QueueDescriptor* qDesc, oksdbinterfaces::ConfigObject& qObj)
@@ -64,11 +54,11 @@ fill_netconn_object_from_desc(const NetworkConnectionDescriptor* netDesc, oksdbi
 }
 
 std::vector<const coredal::DaqModule*>
-DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
-                                const std::string& dbfile,
+DFApplication::generate_modules(const std::string& dbfile,
                                 const coredal::Session* session) const
 {
   std::vector<const coredal::DaqModule*> modules;
+  auto confdb = &configuration();
 
   // Containers for module specific config objects for output/input
   // Prepare TRB output objects
