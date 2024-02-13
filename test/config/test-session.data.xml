@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="4" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240208T095535"/>
+<info name="" type="" num-of-items="5" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="plasorak" last-modified-on="np04-srv-019.cern.ch" last-modification-time="20240213T114752"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -92,7 +92,13 @@
 </obj>
 
 <obj class="RCApplication" id="root-controller">
- <attr name="application_name" type="string" val="controller"/>
+ <attr name="commandline_parameters" type="string">
+  <data val="oksconfig:///nfs/home/plasorak/NAFD24-02-08-OKS/swdir/sourcecode/appdal/test/config/test-session.data.xml"/>
+  <data val="3333"/>
+  <data val="root-controller"/>
+  <data val="test-session"/>
+ </attr>
+ <attr name="application_name" type="string" val="drunc-controller"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="fsm" class="FSMconfiguration" id="fsmConf-1"/>
 </obj>
@@ -111,9 +117,75 @@
  <attr name="connectivity_service_interval_ms" type="u32" val="2000"/>
  <attr name="data_request_timeout_ms" type="u32" val="1000"/>
  <attr name="data_rate_slowdown_factor" type="u32" val="1"/>
+ <attr name="rte_script" type="string" val="/nfs/home/plasorak/NAFD24-02-08-OKS/swdir/install/daq_app_rte.sh">
+ <rel name="environment">
+  <ref class="Variable" id="session-env-session-name-0"/>
+  <ref class="Variable" id="session-env-session-name-1"/>
+  <ref class="Variable" id="session-env-info-svc"/>
+  <ref class="Variable" id="session-env-ers-verb"/>
+  <ref class="Variable" id="session-env-ers-info"/>
+  <ref class="Variable" id="session-env-ers-warning"/>
+  <ref class="Variable" id="session-env-ers-error"/>
+  <ref class="Variable" id="session-env-ers-fatal"/>
+  <ref class="Variable" id="session-env-connectivity-server"/>
+  <ref class="Variable" id="session-env-connectivity-port"/>
+ </rel>
  <rel name="segment" class="Segment" id="root-segment"/>
  <rel name="detector_configuration" class="DetectorConfig" id="dummy-detector"/>
  <rel name="readout_map" class="ReadoutMap" id="dummyRoMap"/>
+</obj>
+
+<obj class="Variable" id="session-env-session-name-0">
+ <attr name="name" type="string" val="DUNEDAQ_PARTITION"/>
+ <attr name="value" type="string" val="test-session"/>
+</obj>
+
+<obj class="Variable" id="session-env-session-name-1">
+ <attr name="name" type="string" val="DUNEDAQ_SESSION"/>
+ <attr name="value" type="string" val="test-session"/>
+</obj>
+
+<obj class="Variable" id="session-env-ers-verb">
+ <attr name="name" type="string" val="DUNEDAQ_ERS_VERBOSITY_LEVEL"/>
+ <attr name="value" type="string" val="1"/>
+</obj>
+
+<obj class="Variable" id="session-env-info-svc">
+ <attr name="name" type="string" val="INFO_SVC"/>
+ <attr name="value" type="string" val="kafka://monkafka.cern.ch:30092/opmon"/>
+ </obj>
+
+
+<obj class="Variable" id="session-env-ers-info">
+ <attr name="name" type="string" val="DUNEDAQ_ERS_INFO"/>
+ <attr name="value" type="string" val="erstrace,throttle,lstdout,protobufstream(monkafka.cern.ch:30092)"/>
+</obj>
+
+<obj class="Variable" id="session-env-ers-warning">
+ <attr name="name" type="string" val="DUNEDAQ_ERS_WARNING"/>
+ <attr name="value" type="string" val="erstrace,throttle,lstdout,protobufstream(monkafka.cern.ch:30092)"/>
+</obj>
+
+<obj class="Variable" id="session-env-ers-error">
+ <attr name="name" type="string" val="DUNEDAQ_ERS_ERROR"/>
+ <attr name="value" type="string" val="erstrace,throttle,lstdout,protobufstream(monkafka.cern.ch:30092)"/>
+</obj>
+
+<obj class="Variable" id="session-env-ers-fatal">
+ <attr name="name" type="string" val="DUNEDAQ_ERS_FATAL"/>
+ <attr name="value" type="string" val="erstrace,lstdout,protobufstream(monkafka.cern.ch:30092)"/>
+</obj>
+
+
+
+<obj class="Variable" id="session-env-connectivity-server">
+ <attr name="name" type="string" val="CONNECTION_SERVER"/>
+ <attr name="value" type="string" val="np04-srv-017"/>
+</obj>
+
+<obj class="Variable" id="session-env-connectivity-port">
+ <attr name="name" type="string" val="CONNECTION_PORT"/>
+ <attr name="value" type="string" val="30005"/>
 </obj>
 
 </oks-data>

@@ -85,6 +85,16 @@
 
 <obj class="DFApplication" id="df-01">
  <attr name="application_name" type="string" val="daq_application"/>
+ <attr name="commandline_parameters" type="string">
+  <data val="--name"/>
+  <data val="df-01"/>
+  <data val="-c"/>
+  <data val="rest://localhost:3339"/>
+  <data val="-i"/>
+  <data val="kafka://monkafka.cern.ch:30092/opmon"/>
+  <data val="--configurationService"/>
+  <data val="oksconfig:///nfs/home/plasorak/NAFD24-02-08-OKS/swdir/sourcecode/appdal/test/config/test-session.data.xml"/>
+ </attr>
  <attr name="source_id" type="u32" val="1"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="queue_rules">
@@ -103,6 +113,16 @@
 
 <obj class="DFApplication" id="df-02">
  <attr name="application_name" type="string" val="daq_application"/>
+ <attr name="commandline_parameters" type="string">
+  <data val="--name"/>
+  <data val="df-02"/>
+  <data val="-c"/>
+  <data val="rest://localhost:3340"/>
+  <data val="-i"/>
+  <data val="kafka://monkafka.cern.ch:30092/opmon"/>
+  <data val="--configurationService"/>
+  <data val="oksconfig:///nfs/home/plasorak/NAFD24-02-08-OKS/swdir/sourcecode/appdal/test/config/test-session.data.xml"/>
+ </attr>
  <attr name="source_id" type="u32" val="2"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="queue_rules">
@@ -121,6 +141,16 @@
 
 <obj class="DFApplication" id="df-03">
  <attr name="application_name" type="string" val="daq_application"/>
+ <attr name="commandline_parameters" type="string">
+  <data val="--name"/>
+  <data val="df-03"/>
+  <data val="-c"/>
+  <data val="rest://localhost:3341"/>
+  <data val="-i"/>
+  <data val="kafka://monkafka.cern.ch:30092/opmon"/>
+  <data val="--configurationService"/>
+  <data val="oksconfig:///nfs/home/plasorak/NAFD24-02-08-OKS/swdir/sourcecode/appdal/test/config/test-session.data.xml"/>
+ </attr>
  <attr name="source_id" type="u32" val="3"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="queue_rules">
@@ -145,6 +175,16 @@
 
 <obj class="DFOApplication" id="dfo-01">
  <attr name="application_name" type="string" val="daq_application"/>
+ <attr name="commandline_parameters" type="string">
+  <data val="--name"/>
+  <data val="dfo-01"/>
+  <data val="-c"/>
+  <data val="rest://localhost:3342"/>
+  <data val="-i"/>
+  <data val="kafka://monkafka.cern.ch:30092/opmon"/>
+  <data val="--configurationService"/>
+  <data val="oksconfig:///nfs/home/plasorak/NAFD24-02-08-OKS/swdir/sourcecode/appdal/test/config/test-session.data.xml"/>
+ </attr>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="network_rules">
   <ref class="NetworkConnectionRule" id="td-dfo-net-rule"/>
@@ -155,7 +195,13 @@
 </obj>
 
 <obj class="RCApplication" id="df-controller">
- <attr name="application_name" type="string" val="controller"/>
+ <attr name="application_name" type="string" val="drunc-controller"/>
+ <attr name="commandline_parameters" type="string">
+  <data val="oksconfig:///nfs/home/plasorak/NAFD24-02-08-OKS/swdir/sourcecode/appdal/test/config/test-session.data.xml"/>
+  <data val="3338"/>
+  <data val="df-controller"/>
+  <data val="test-session"/>
+ </attr>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="fsm" class="FSMconfiguration" id="fsmConf-1"/>
 </obj>

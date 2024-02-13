@@ -112,7 +112,13 @@
 </obj>
 
 <obj class="RCApplication" id="trg-controller">
- <attr name="application_name" type="string" val="controller"/>
+ <attr name="application_name" type="string" val="drunc-controller"/>
+ <attr name="commandline_parameters" type="string">
+  <data val="oksconfig:///nfs/home/plasorak/NAFD24-02-08-OKS/swdir/sourcecode/appdal/test/config/test-session.data.xml"/>
+  <data val="3533"/>
+  <data val="root-controller"/>
+  <data val="test-session"/>
+ </attr>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="fsm" class="FSMconfiguration" id="fsmConf-1"/>
 </obj>
@@ -148,6 +154,16 @@
 
 <obj class="TriggerApplication" id="ta-01">
  <attr name="application_name" type="string" val="daq_application"/>
+ <attr name="commandline_parameters" type="string">
+  <data val="--name"/>
+  <data val="ta-01"/>
+  <data val="-c"/>
+  <data val="rest://localhost:3344"/>
+  <data val="-i"/>
+  <data val="kafka://monkafka.cern.ch:30092/opmon"/>
+  <data val="--configurationService"/>
+  <data val="oksconfig:///nfs/home/plasorak/NAFD24-02-08-OKS/swdir/sourcecode/appdal/test/config/test-session.data.xml"/>
+ </attr>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="tcQueueRule"/>
