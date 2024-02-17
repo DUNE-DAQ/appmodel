@@ -165,6 +165,8 @@
 <obj class="Segment" id="ru-segment">
  <rel name="applications">
   <ref class="ReadoutApplication" id="ru-01"/>
+  <ref class="ReadoutApplication" id="ru-02"/>
+  <ref class="ReadoutApplication" id="ru-03"/>
  </rel>
  <rel name="controller" class="RCApplication" id="ru-controller"/>
  </rel></obj>

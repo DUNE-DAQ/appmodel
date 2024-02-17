@@ -35,7 +35,7 @@
       "host": "local",
       "port": 3339
     },
-    "ta-01": {
+    "mlt": {
       "exec": "daq_application_ssh",
       "host": "local",
       "port": 3340
