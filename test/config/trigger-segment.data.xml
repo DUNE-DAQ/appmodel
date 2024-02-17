@@ -63,18 +63,35 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="0" oks-format="data" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="asztuc" last-modified-on="np04-srv-019.cern.ch" last-modification-time="20231212T171111"/>
+<info name="" type="" num-of-items="9" oks-format="data" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240208T095451"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
  <file path="schema/appdal/application.schema.xml"/>
  <file path="schema/appdal/trigger.schema.xml"/>
-  <file path="config/appdal/connections.data.xml"/>
-  <file path="config/appdal/moduleconfs.data.xml"/>
+ <file path="config/appdal/connections.data.xml"/>
+ <file path="config/appdal/moduleconfs.data.xml"/>
 </include>
 
+<comments>
+ <comment creation-time="20240208T095451" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="reformat"/>
+</comments>
 
-<!-- Buffers -->
+
+<obj class="CustomTriggerCandidateMakerConf" id="cstm-conf-1">
+ <attr name="template_for" type="class" val="CustomTriggerCandidateMaker"/>
+ <attr name="trigger_types" type="u32">
+  <data val="3"/>
+  <data val="7"/>
+ </attr>
+ <attr name="trigger_intervals" type="u32">
+  <data val="62500000"/>
+  <data val="62500000"/>
+ </attr>
+ <attr name="clock_frequency_hz" type="u32" val="62500000"/>
+ <attr name="timestamp_method" type="enum" val="kTimeSync"/>
+</obj>
+
 <obj class="LatencyBuffer" id="tclatencybuffer-generic">
  <attr name="size" type="u32" val="100000"/>
  <attr name="numa_aware" type="bool" val="1"/>
@@ -83,10 +100,45 @@
  <attr name="preallocation" type="bool" val="1"/>
 </obj>
 
+<obj class="ModuleLevelTriggerConf" id="mlt-conf-1">
+ <attr name="hsi_trigger_type_passthrough" type="bool" val="0"/>
+ <attr name="merge_overlapping_tcs" type="bool" val="1"/>
+ <attr name="td_out_of_timeout" type="bool" val="1"/>
+ <attr name="buffer_timeout" type="u32" val="100"/>
+ <attr name="td_readout_limit" type="u32" val="1000"/>
+ <attr name="use_bitwords" type="bool" val="0"/>
+ <attr name="use_roi_readout" type="bool" val="0"/>
+ <attr name="use_readout_map" type="bool" val="0"/>
+</obj>
+
+<obj class="RCApplication" id="trg-controller">
+ <attr name="application_name" type="string" val="controller"/>
+ <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="fsm" class="FSMconfiguration" id="fsmConf-1"/>
+</obj>
+
+<obj class="RandomTriggerCandidateMakerConf" id="rtcm-conf-1">
+ <attr name="template_for" type="class" val="RandomTriggerCandidateMaker"/>
+ <attr name="trigger_interval_ticks" type="u32" val="64000000"/>
+ <attr name="clock_frequency_hz" type="u32" val="62500000"/>
+ <attr name="timestamp_method" type="enum" val="kTimeSync"/>
+ <attr name="time_distribution" type="enum" val="kUniform"/>
+</obj>
+
 <obj class="RequestHandler" id="requesthandler-generic">
+ <attr name="handler_threads" type="u16" val="1"/>
  <attr name="request_timeout" type="u32" val="1000"/>
- <attr name="streaming_buffer_size" type="u32" val="8388608"/>
- <attr name="enable_raw_recording" type="bool" val="0"/>
+ <attr name="pop_limit_pct" type="float" val="0.5"/>
+ <attr name="pop_size_pct" type="float" val="0.8"/>
+ <attr name="warn_on_timeout" type="bool" val="1"/>
+ <attr name="warn_on_empty_buffer" type="bool" val="1"/>
+</obj>
+
+<obj class="Segment" id="trg-segment">
+ <rel name="applications">
+  <ref class="TriggerApplication" id="ta-01"/>
+ </rel>
+ <rel name="controller" class="RCApplication" id="trg-controller"/>
 </obj>
 
 <obj class="TCBufferConf" id="tc-buffer">
@@ -94,43 +146,26 @@
  <rel name="requesthandler" class="RequestHandler" id="requesthandler-generic"/>
 </obj>
 
-<!-- ModuleLevelTrigger -->
-<obj class="ModuleLevelTriggerConf" id="mlt-conf-1">
-</obj>
-
-<!-- CustomTriggerCandidateMaker-->
-<obj class="CustomTriggerCandidateMakerConf" id="cstm-conf-1">
-</obj>
-
-<!-- RandomTriggerCandidateMaker-->
-<obj class="RandomTriggerCandidateMakerConf" id="rtcm-conf-1">
-</obj>
-
-<!-- TimingTriggerCandidateMaker-->
-<obj class="TimingTriggerCandidateMakerConf" id="timing-conf-1">
-</obj>
-
-<!-- Application -->
-<obj class="TriggerApplication" id="ta-1">
+<obj class="TriggerApplication" id="ta-01">
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
- <rel name="contains">
-  <ref class="ReadoutGroup" id="dummyRog"/>
- </rel>
- <rel name="network_rules">
-  <ref class="NetworkConnectionRule" id="tpdlh-rule-1"/>
-  <ref class="NetworkConnectionRule" id="ti-mlt-rule-1"/>
-  <ref class="NetworkConnectionRule" id="td-mlt-rule-1"/>
-  <ref class="NetworkConnectionRule" id="timing-rule-1"/>
- </rel>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="tcQueueRule"/>
  </rel>
+ <rel name="network_rules">
+  <ref class="NetworkConnectionRule" id="ti-net-rule"/>
+  <ref class="NetworkConnectionRule" id="td-dfo-net-rule"/>
+  <ref class="NetworkConnectionRule" id="hsi-rule"/>
+ </rel>
+ <rel name="contains">
+  <ref class="ReadoutGroup" id="rog-1"/>
+  <ref class="ReadoutGroup" id="rog-2"/>
+  <ref class="ReadoutGroup" id="rog-3"/>
+ </rel>
  <rel name="mlt_conf" class="ModuleLevelTriggerConf" id="mlt-conf-1"/>
  <rel name="standalone_candidate_maker_confs">
-   <ref class="RandomTriggerCandidateMakerConf" id="rtcm-conf-1"/>
-   <ref class="CustomTriggerCandidateMakerConf" id="cstm-conf-1"/>
-   <ref class="TimingTriggerCandidateMakerConf" id="timing-conf-1"/>
+  <ref class="RandomTriggerCandidateMakerConf" id="rtcm-conf-1"/>
+  <ref class="CustomTriggerCandidateMakerConf" id="cstm-conf-1"/>
  </rel>
 </obj>
 

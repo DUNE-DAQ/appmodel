@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="27" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105615" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240117T183308"/>
+<info name="" type="" num-of-items="6" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105615" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240208T092918"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -78,7 +78,11 @@
  <comment creation-time="20240117T144543" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="glehmann" text=" "/>
  <comment creation-time="20240117T175424" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="glehmann" text=" "/>
  <comment creation-time="20240117T183308" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="glehmann" text=" "/>
+ <comment creation-time="20240207T131311" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="d"/>
+ <comment creation-time="20240207T131321" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="d"/>
+ <comment creation-time="20240208T092918" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="a"/>
 </comments>
+
 
 <obj class="RCApplication" id="ru-controller">
  <attr name="application_name" type="string" val="controller"/>
@@ -86,11 +90,11 @@
  <rel name="fsm" class="FSMconfiguration" id="fsmConf-1"/>
 </obj>
 
-<obj class="ReadoutApplication" id="ru-1">
- <attr name="tp_src_id" type="u32" val="100"/>
+<obj class="ReadoutApplication" id="ru-01">
+ <attr name="tp_source_id" type="u32" val="100"/>
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="contains">
-  <ref class="ReadoutGroup" id="dummyRog"/>
+  <ref class="ReadoutGroup" id="rog-1"/>
  </rel>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="queue_rules">
@@ -100,7 +104,53 @@
   <ref class="QueueConnectionRule" id="wib-eth-raw-data-rule"/>
  </rel>
  <rel name="network_rules">
-  <ref class="NetworkConnectionRule" id="fa-net-rule"/>
+  <ref class="NetworkConnectionRule" id="data-req-net-rule"/>
+  <ref class="NetworkConnectionRule" id="tp-net-rule"/>
+  <ref class="NetworkConnectionRule" id="ts-net-rule"/>
+ </rel>
+ <rel name="uses" class="RoHwConfig" id="rohw-1"/>
+ <rel name="link_handler" class="ReadoutModuleConf" id="def-link-handler"/>
+ <rel name="data_reader" class="NICReceiverConf" id="def-nic-receiver-conf"/>
+</obj>
+
+<obj class="ReadoutApplication" id="ru-02">
+ <attr name="tp_source_id" type="u32" val="200"/>
+ <attr name="application_name" type="string" val="daq_application"/>
+ <rel name="contains">
+  <ref class="ReadoutGroup" id="rog-2"/>
+ </rel>
+ <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="queue_rules">
+  <ref class="QueueConnectionRule" id="fa-queue-rule"/>
+  <ref class="QueueConnectionRule" id="data-requests-queue-rule"/>
+  <ref class="QueueConnectionRule" id="tp-queue-rule"/>
+  <ref class="QueueConnectionRule" id="wib-eth-raw-data-rule"/>
+ </rel>
+ <rel name="network_rules">
+  <ref class="NetworkConnectionRule" id="data-req-net-rule"/>
+  <ref class="NetworkConnectionRule" id="tp-net-rule"/>
+  <ref class="NetworkConnectionRule" id="ts-net-rule"/>
+ </rel>
+ <rel name="uses" class="RoHwConfig" id="rohw-1"/>
+ <rel name="link_handler" class="ReadoutModuleConf" id="def-link-handler"/>
+ <rel name="data_reader" class="NICReceiverConf" id="def-nic-receiver-conf"/>
+</obj>
+
+<obj class="ReadoutApplication" id="ru-03">
+ <attr name="tp_source_id" type="u32" val="300"/>
+ <attr name="application_name" type="string" val="daq_application"/>
+ <rel name="contains">
+  <ref class="ReadoutGroup" id="rog-3"/>
+ </rel>
+ <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="queue_rules">
+  <ref class="QueueConnectionRule" id="fa-queue-rule"/>
+  <ref class="QueueConnectionRule" id="data-requests-queue-rule"/>
+  <ref class="QueueConnectionRule" id="tp-queue-rule"/>
+  <ref class="QueueConnectionRule" id="wib-eth-raw-data-rule"/>
+ </rel>
+ <rel name="network_rules">
+  <ref class="NetworkConnectionRule" id="data-req-net-rule"/>
   <ref class="NetworkConnectionRule" id="tp-net-rule"/>
   <ref class="NetworkConnectionRule" id="ts-net-rule"/>
  </rel>
@@ -113,9 +163,12 @@
 </obj>
 
 <obj class="Segment" id="ru-segment">
- <rel name="controller" class="RCApplication" id="ru-controller"/>
  <rel name="applications">
-  <ref class="ReadoutApplication" id="ru-1"/>
+  <ref class="ReadoutApplication" id="ru-01"/>
+  <ref class="ReadoutApplication" id="ru-02"/>
+  <ref class="ReadoutApplication" id="ru-03"/>
+ </rel>
+ <rel name="controller" class="RCApplication" id="ru-controller"/>
  </rel></obj>
 
 </oks-data>

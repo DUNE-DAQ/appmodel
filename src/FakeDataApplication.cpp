@@ -92,7 +92,7 @@ FakeDataApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   oksdbinterfaces::ConfigObject faQueueObj;
   std::vector<const coredal::Connection*> faOutputQueues;
 
-  std::string taFragQueueUid("reqToFA-" + UID());
+  std::string taFragQueueUid(faOutputQDesc->get_uid_base() + UID());
   confdb->create(dbfile, "Queue", taFragQueueUid, faQueueObj);
   faQueueObj.set_by_val<std::string>("data_type", faOutputQDesc->get_data_type());
   faQueueObj.set_by_val<std::string>("queue_type", faOutputQDesc->get_queue_type());
@@ -131,21 +131,23 @@ FakeDataApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
       dlhObj.set_obj("configuration", &stream->config_object());
 
       // Time Sync network connection
-      std::string tsStreamUid("timesync" + std::to_string(id));
+      std::string tsStreamUid = tsNetDesc->get_uid_base() + std::to_string(id);
       auto tsServiceObj = tsNetDesc->get_associated_service()->config_object();
       oksdbinterfaces::ConfigObject tsNetObj;
       confdb->create(dbfile, "NetworkConnection", tsStreamUid, tsNetObj);
       tsNetObj.set_by_val<std::string>("connection_type", tsNetDesc->get_connection_type());
+      tsNetObj.set_by_val<std::string>("data_type", tsNetDesc->get_data_type());
       tsNetObj.set_obj("associated_service", &tsServiceObj);
 
       dlhObj.set_objs("outputs", { &faQueueObj, &tsNetObj });
 
-      std::string reqQueueUid("inputReqToDLH-" + std::to_string(id));
+      std::string reqQueueUid(dlhReqInputQDesc->get_uid_base() + std::to_string(id));
       oksdbinterfaces::ConfigObject reqQueueObj;
-      confdb->create(dbfile, "Queue", reqQueueUid, reqQueueObj);
+      confdb->create(dbfile, "QueueWithId", reqQueueUid, reqQueueObj);
       reqQueueObj.set_by_val<std::string>("data_type", dlhReqInputQDesc->get_data_type());
       reqQueueObj.set_by_val<std::string>("queue_type", dlhReqInputQDesc->get_queue_type());
       reqQueueObj.set_by_val<uint32_t>("capacity", dlhReqInputQDesc->get_capacity());
+      reqQueueObj.set_by_val<uint32_t>("source_id", stream->get_source_id());
       // Add the requessts queue dal pointer to the outputs of the FragmentAggregator
       faOutputQueues.push_back(confdb->get<coredal::Connection>(reqQueueUid));
 
@@ -163,11 +165,11 @@ FakeDataApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
   // Add network connection to TRBs
   auto faServiceObj = faNetDesc->get_associated_service()->config_object();
-  std::string faNetUid("fragmentrequests-" + UID());
-  ;
+  std::string faNetUid = faNetDesc->get_uid_base() + UID();
   oksdbinterfaces::ConfigObject faNetObj;
   confdb->create(dbfile, "NetworkConnection", faNetUid, faNetObj);
   faNetObj.set_by_val<std::string>("connection_type", faNetDesc->get_connection_type());
+  faNetObj.set_by_val<std::string>("data_type", faNetDesc->get_data_type());
   faNetObj.set_obj("associated_service", &faServiceObj);
 
   // Add output queueus of data requests

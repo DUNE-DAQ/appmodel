@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="61" oks-format="schema" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="glehmann" last-modified-on="lxplus924.cern.ch" last-modification-time="20240126T112940"/>
+<info name="" type="" num-of-items="42" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240207T103249"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -89,7 +89,7 @@
 
  <class name="DFApplication">
   <superclass name="SmartDaqApplication"/>
-  <attribute name="src_id" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="source_id" type="u32" init-value="0" is-not-null="yes"/>
   <relationship name="trb" description="Configuration of the TRB to be generated my get_modules()" class-type="TRBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_writer" class-type="DataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="uses" class-type="DFHWConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -163,11 +163,6 @@
   <relationship name="filename_params" class-type="FilenameParams" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="DataSubscriber" is-abstract="yes">
-  <superclass name="DaqModule"/>
-  <relationship name="configuration" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
  <class name="DataWriter">
   <superclass name="DaqModule"/>
   <relationship name="configuration" class-type="DataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -237,12 +232,6 @@
   <attribute name="digits_for_element_number" type="s32" init-value="5"/>
  </class>
 
- <class name="HSISignalWindow">
-  <attribute name="signal_type" type="u32" init-value="0" is-not-null="yes"/>
-  <attribute name="time_before" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="time_after" type="u32" init-value="20000" is-not-null="yes"/>
- </class>
-
  <class name="LatencyBuffer">
   <attribute name="size" type="u32" init-value="100000" is-not-null="yes"/>
   <attribute name="numa_aware" type="bool" init-value="true"/>
@@ -250,25 +239,6 @@
   <attribute name="intrinsic_allocator" type="bool" init-value="true"/>
   <attribute name="alignment_size" type="u32" init-value="0"/>
   <attribute name="preallocation" type="bool" init-value="true"/>
- </class>
-
- <class name="MLTAlgorithm" description="Base class for MLT algorithms">
-  <attribute name="trigger_candidate_input" type="string" is-not-null="yes"/>
-  <attribute name="dfo_inhibit_input" type="string" is-not-null="yes"/>
-  <attribute name="td_output" type="string" is-not-null="yes"/>
-  <attribute name="hsi_trigger_type_passthrough" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="merge_overlapping_tcs" type="bool" init-value="true" is-not-null="yes"/>
-  <attribute name="td_out_of_timeout" type="bool" init-value="true" is-not-null="yes"/>
-  <attribute name="buffer_timeout" type="u32" init-value="100" is-not-null="yes"/>
-  <attribute name="td_readout_limit" type="u32" init-value="1000" is-not-null="yes"/>
-  <attribute name="ignore_tc" type="u32" is-multi-value="yes"/>
-  <attribute name="use_bitwords" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="trigger_bitwords" type="string" is-multi-value="yes"/>
-  <attribute name="use_roi_readout" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="use_readout_map" type="bool" init-value="false" is-not-null="yes"/>
-  <relationship name="roi_group_conf" class-type="ROIGroupConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="tc_readout_map" class-type="TCReadoutMap" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="mandatory_links" class-type="SourceIDConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="NetworkConnectionDescriptor">
@@ -289,16 +259,10 @@
  </class>
 
  <class name="QueueDescriptor">
+  <attribute name="uid_base" description="Base for UID string. May be combined with a source id" type="string" is-not-null="yes"/>
   <attribute name="queue_type" description="Type of queue" type="enum" range="kUnknown,kStdDeQueue,kFollySPSCQueue,kFollyMPMCQueue" init-value="kFollySPSCQueue" is-not-null="yes"/>
   <attribute name="capacity" type="u32" init-value="100" is-not-null="yes"/>
   <attribute name="data_type" description="string identifying type of data transferred through this queue" type="string" is-not-null="yes"/>
- </class>
-
- <class name="ROIGroupConf">
-  <attribute name="number_of_link_groups" type="u32" init-value="1" is-not-null="yes"/>
-  <attribute name="probability" type="float" init-value="0.1" is-not-null="yes"/>
-  <attribute name="time_window" type="u32" init-value="1" is-not-null="yes"/>
-  <attribute name="groups_selection_mode" type="enum" range="kRandom,kSequential" init-value="kRandom" is-not-null="yes"/>
  </class>
 
  <class name="RawDataProcessor">
@@ -314,8 +278,8 @@
  <class name="ReadoutApplication">
   <superclass name="ResourceSetAND"/>
   <superclass name="SmartDaqApplication"/>
-  <attribute name="tp_src_id" description="Source ID if TPs are being generated" type="u32"/>
-  <attribute name="ta_src_id" description="Source ID if TAs are being generated" type="u32"/>
+  <attribute name="tp_source_id" description="Source ID for TP handler if TPs are being generated" type="u32"/>
+  <attribute name="ta_source_id" description="Source ID if TAs are being generated" type="u32"/>
   <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
   <relationship name="uses" description="Configuration of the host hardware resources used by this application" class-type="RoHwConfig" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
   <relationship name="link_handler" class-type="ReadoutModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -356,6 +320,7 @@
   <attribute name="min_latency_ticks" description="Number of ticks by which the post processing should be delayed. Important for data that arrive unordered, to allow them to get reordered." type="u32" init-value="0" is-not-null="yes"/>
   <attribute name="warn_on_timeout" type="bool" init-value="true" is-not-null="yes"/>
   <attribute name="warn_on_empty_buffer" type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="periodic_data_transmission_ms" description="Period at which data are sent out, optionally. 0 means never" type="u32" init-value="0" is-not-null="yes"/>
   <relationship name="data_recorder" class-type="DataRecorderConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
@@ -366,7 +331,7 @@
   <relationship name="hitFindingProc" class-type="ProcessingResource" low-cc="zero" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
  </class>
 
- <class name="SmartDaqApplication" is-abstract="yes">
+ <class name="SmartDaqApplication" description="A SmartDaqApplication defines a &quot;generate_modules&quot; method which uses input configuration to generate the modules for known DUNE-DAQ applications." is-abstract="yes">
   <superclass name="Application"/>
   <relationship name="queue_rules" class-type="QueueConnectionRule" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="network_rules" class-type="NetworkConnectionRule" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -377,7 +342,7 @@
 
  <class name="SourceIDConf">
   <attribute name="id" type="u32" init-value="0" is-not-null="yes"/>
-  <attribute name="subsystem" type="enum" range="kUnknown,kDetectorReadout,kHwDisnalsInterface,kTrigger,kTRBuilder" init-value="kUnknown" is-not-null="yes"/>
+  <attribute name="subsystem" type="enum" range="kUnknown,kDetectorReadout,kHwSignalsInterface,kTrigger,kTRBuilder" init-value="kUnknown" is-not-null="yes"/>
  </class>
 
  <class name="StreamEmulationParameters">
@@ -389,98 +354,6 @@
   <attribute name="frame_error_rate_hz" type="float" init-value="0.0" is-not-null="yes"/>
   <attribute name="generate_periodic_adc_pattern" type="bool" init-value="false" is-not-null="yes"/>
   <attribute name="TP_rate_per_channel" description="TP rate per channel in units of 100 Hz." type="float" init-value="0.0" is-not-null="yes"/>
- </class>
-
- <class name="TAAlgorithm" description="Base class for TA algorithms">
-  <attribute name="prescale" description="Prescale factor to apply to algorithm output" type="u32" init-value="1" is-not-null="yes"/>
- </class>
-
- <class name="TADataProcessor">
-  <superclass name="DataProcessor"/>
-  <attribute name="print_ta_info" description="Whether to print TP information in the TA processor" type="bool" init-value="false"/>
-  <relationship name="algorithms" class-type="TCAlgorithm" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="TAHorizontalMuon">
-  <superclass name="TAAlgorithm"/>
-  <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="trigger_on_n_channels" description="Whether to trigger on N Channels" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="trigger_on_adjacency" description="Whether to trigger on adjacency" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="n_channels_threshold" description="Threshold for the N Channels algorithm" type="u32" init-value="8" is-not-null="yes"/>
-  <attribute name="adjacency_threshold" description="Threshold for the adjacency algorithm" type="u32" init-value="6" is-not-null="yes"/>
-  <attribute name="adjacency_tolerance" description="Tolerance for the number of allowed gaps for the adjacency algorithm" type="u32" init-value="4" is-not-null="yes"/>
- </class>
-
- <class name="TAPassThrough">
-  <superclass name="TAAlgorithm"/>
- </class>
-
- <class name="TCAlgorithm" description="Base class for TC algorithms">
-  <attribute name="prescale" description="Prescale factor to apply to algorithm output" type="u32" init-value="1" is-not-null="yes"/>
- </class>
-
- <class name="TCCustom">
-  <superclass name="TCAlgorithm"/>
-  <attribute name="trigger_types" type="u32" is-multi-value="yes"/>
-  <attribute name="trigger_intervals" type="u32" is-multi-value="yes"/>
-  <attribute name="timestamp_method" type="enum" range="kTimeSync,kSystemClock" init-value="kTimeSync" is-not-null="yes"/>
- </class>
-
- <class name="TCDataProcessor">
-  <superclass name="DataProcessor"/>
-  <attribute name="print_ta_info" description="Whether to print TP information in the TA processor" type="bool" init-value="false"/>
-  <relationship name="algorithm" class-type="MLTAlgorithm" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="TCHSI">
-  <superclass name="TCAlgorithm"/>
-  <attribute name="hsi_trigger_type_passthrough" type="bool" init-value="false" is-not-null="yes"/>
-  <relationship name="signals" class-type="HSISignalWindow" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="TCHorizontalMuon">
-  <superclass name="TCAlgorithm"/>
-  <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="trigger_on_n_channels" description="Whether to trigger on N Channels" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="trigger_on_adjacency" description="Whether to trigger on adjacency" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="n_channels_threshold" description="Threshold for the N Channels algorithm" type="u32" init-value="8" is-not-null="yes"/>
- </class>
-
- <class name="TCPassThrough">
-  <superclass name="TCAlgorithm"/>
- </class>
-
- <class name="TCRandom">
-  <superclass name="TCAlgorithm"/>
-  <attribute name="trigger_interval_ticks" type="u32" init-value="64000000" is-not-null="yes"/>
-  <attribute name="clock_frequency_hz" type="u32" init-value="62500000" is-not-null="yes"/>
-  <attribute name="timestamp_method" type="enum" range="kTimeSync,kSystemClock" init-value="kTimeSync" is-not-null="yes"/>
-  <attribute name="time_distribution" type="enum" range="kUniform,kPoisson" init-value="kUniform" is-not-null="yes"/>
- </class>
-
- <class name="TCReadoutMap">
-  <attribute name="candidate_type" type="u32" init-value="0" is-not-null="yes"/>
-  <attribute name="time_before" type="u32" init-value="1000" is-not-null="yes"/>
-  <attribute name="time_after" type="u32" init-value="1001" is-not-null="yes"/>
- </class>
-
- <class name="TPChannelFilterConf">
-  <attribute name="keep_collection" description="Whether to keep the collection channel TPs." type="bool" init-value="true" is-not-null="yes"/>
-  <attribute name="keep_induction" description="Whether to keep the induction channel TPs." type="bool" init-value="true" is-not-null="yes"/>
-  <attribute name="channel_map_name" description="Name of the channel map." type="string" is-not-null="yes"/>
- </class>
-
- <class name="TPDataProcessor">
-  <superclass name="DataProcessor"/>
-  <attribute name="print_tp_info" description="Whether to print TP information in the TA processor" type="bool" init-value="false"/>
-  <relationship name="algorithms" class-type="TAAlgorithm" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="channel_filter_conf" class-type="TPChannelFilterConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="TPHandlerModule">
-  <superclass name="ReadoutModule"/>
  </class>
 
  <class name="TPStreamWriter">
@@ -509,26 +382,9 @@
   <attribute name="source_id" type="u32" is-not-null="yes"/>
  </class>
 
- <class name="TriggerApplication">
-  <superclass name="ResourceSetAND"/>
-  <superclass name="SmartDaqApplication"/>
-  <attribute name="src_id" description="Source ID if Trigger sets are being generated" type="u32"/>
-  <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
-  <relationship name="trigger_inputs_handler" class-type="ReadoutModuleConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="data_subscriber" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <method name="generate_modules" description="Generate daq module dal objects for streams of thie TriggerApplication on the fly">
-   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
-  </method>
- </class>
-
  <class name="TriggerRecordBuilder">
   <superclass name="DaqModule"/>
   <relationship name="configuration" class-type="TRBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="TriggerRequestHandler">
-  <superclass name="RequestHandler"/>
-  <attribute name="max_transmission_rate_hz" description="Maximum rate at which Trigger Set objects are sent out." type="u32" init-value="1000" is-not-null="yes"/>
  </class>
 
 </oks-schema>

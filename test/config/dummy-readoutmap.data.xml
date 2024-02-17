@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="6" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T112620" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20240109T120842"/>
+<info name="" type="" num-of-items="16" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T112620" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240208T093213"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -72,12 +72,32 @@
 <comments>
  <comment creation-time="20231212T113320" created-by="gjc" created-on="thinkpad" author="gjc" text="k"/>
  <comment creation-time="20240109T120842" created-by="gjc" created-on="thinkpad" author="gjc" text="u"/>
+ <comment creation-time="20240207T130746" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="Use crates instead of slots"/>
+ <comment creation-time="20240208T093213" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="format"/>
 </comments>
 
 
 <obj class="DROStreamConf" id="dummyStream-1">
- <attr name="src_id" type="u32" val="1"/>
+ <attr name="source_id" type="u32" val="1"/>
  <rel name="geo_id" class="GeoId" id="dummyGeoId-1"/>
+ <rel name="stream_params" class="StreamParameters" id="dummyStream-1"/>
+</obj>
+
+<obj class="DROStreamConf" id="dummyStream-2">
+ <attr name="source_id" type="u32" val="2"/>
+ <rel name="geo_id" class="GeoId" id="dummyGeoId-2"/>
+ <rel name="stream_params" class="StreamParameters" id="dummyStream-1"/>
+</obj>
+
+<obj class="DROStreamConf" id="dummyStream-3">
+ <attr name="source_id" type="u32" val="3"/>
+ <rel name="geo_id" class="GeoId" id="dummyGeoId-3"/>
+ <rel name="stream_params" class="StreamParameters" id="dummyStream-1"/>
+</obj>
+
+<obj class="DROStreamConf" id="dummyStream-4">
+ <attr name="source_id" type="u32" val="4"/>
+ <rel name="geo_id" class="GeoId" id="dummyGeoId-4"/>
  <rel name="stream_params" class="StreamParameters" id="dummyStream-1"/>
 </obj>
 
@@ -88,21 +108,69 @@
  <attr name="stream_id" type="u32" val="1"/>
 </obj>
 
-<obj class="ReadoutGroup" id="dummyRog">
+<obj class="GeoId" id="dummyGeoId-2">
+ <attr name="detector_id" type="u32" val="1"/>
+ <attr name="crate_id" type="u32" val="1"/>
+ <attr name="slot_id" type="u32" val="1"/>
+ <attr name="stream_id" type="u32" val="2"/>
+</obj>
+
+<obj class="GeoId" id="dummyGeoId-3">
+ <attr name="detector_id" type="u32" val="1"/>
+ <attr name="crate_id" type="u32" val="3"/>
+ <attr name="slot_id" type="u32" val="1"/>
+ <attr name="stream_id" type="u32" val="1"/>
+</obj>
+
+<obj class="GeoId" id="dummyGeoId-4">
+ <attr name="detector_id" type="u32" val="1"/>
+ <attr name="crate_id" type="u32" val="4"/>
+ <attr name="slot_id" type="u32" val="1"/>
+ <attr name="stream_id" type="u32" val="1"/>
+</obj>
+
+<obj class="ReadoutGroup" id="rog-1">
  <rel name="contains">
   <ref class="ReadoutInterface" id="ROInterface-1"/>
+ </rel>
+</obj>
+
+<obj class="ReadoutGroup" id="rog-2">
+ <rel name="contains">
+  <ref class="ReadoutInterface" id="ROInterface-2"/>
+ </rel>
+</obj>
+
+<obj class="ReadoutGroup" id="rog-3">
+ <rel name="contains">
+  <ref class="ReadoutInterface" id="ROInterface-3"/>
  </rel>
 </obj>
 
 <obj class="ReadoutInterface" id="ROInterface-1">
  <rel name="contains">
   <ref class="DROStreamConf" id="dummyStream-1"/>
+  <ref class="DROStreamConf" id="dummyStream-2"/>
+ </rel>
+</obj>
+
+<obj class="ReadoutInterface" id="ROInterface-2">
+ <rel name="contains">
+  <ref class="DROStreamConf" id="dummyStream-3"/>
+ </rel>
+</obj>
+
+<obj class="ReadoutInterface" id="ROInterface-3">
+ <rel name="contains">
+  <ref class="DROStreamConf" id="dummyStream-4"/>
  </rel>
 </obj>
 
 <obj class="ReadoutMap" id="dummyRoMap">
  <rel name="groups">
-  <ref class="ReadoutGroup" id="dummyRog"/>
+  <ref class="ReadoutGroup" id="rog-1"/>
+  <ref class="ReadoutGroup" id="rog-2"/>
+  <ref class="ReadoutGroup" id="rog-3"/>
  </rel>
 </obj>
 
