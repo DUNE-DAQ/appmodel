@@ -156,7 +156,7 @@
 </obj>
 
 <obj class="NetworkConnectionRule" id="hsi-rule">
- <attr name="endpoint_class" type="class" val="TimingTriggerCandidateMaker"/>
+ <attr name="endpoint_class" type="class" val="DataSubscriber"/>
  <rel name="descriptor" class="NetworkConnectionDescriptor" id="hsi-desc"/>
 </obj>
 

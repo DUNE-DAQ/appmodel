@@ -317,7 +317,6 @@
   <attribute name="request_timeout" description="Request timeout in milliseconds" type="u32" init-value="10000" is-not-null="yes"/>
   <attribute name="pop_limit_pct" description="Latency buffer occupancy percentage to issue an auto-pop" type="float" init-value="0.5" is-not-null="yes"/>
   <attribute name="pop_size_pct" description="Percentage of current occupancy to pop from the latency buffer" type="float" init-value="0.8" is-not-null="yes"/>
-  <attribute name="min_latency_ticks" description="Number of ticks by which the post processing should be delayed. Important for data that arrive unordered, to allow them to get reordered." type="u32" init-value="0" is-not-null="yes"/>
   <attribute name="warn_on_timeout" type="bool" init-value="true" is-not-null="yes"/>
   <attribute name="warn_on_empty_buffer" type="bool" init-value="true" is-not-null="yes"/>
   <attribute name="periodic_data_transmission_ms" description="Period at which data are sent out, optionally. 0 means never" type="u32" init-value="0" is-not-null="yes"/>

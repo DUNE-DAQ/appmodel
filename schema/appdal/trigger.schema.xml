@@ -302,7 +302,7 @@
   <relationship name="channel_filter_conf" class-type="TPChannelFilterConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="TPHandlerModule">
+ <class name="TriggerDataHandler">
   <superclass name="ReadoutModule"/>
  </class>
 
