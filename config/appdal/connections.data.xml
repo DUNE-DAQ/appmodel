@@ -105,6 +105,13 @@
  <rel name="associated_service" class="Service" id="HSIEvents"/>
 </obj>
 
+<obj class="NetworkConnectionDescriptor" id="tc-desc">
+ <attr name="uid_base" type="string" val="tcs_"/>
+ <attr name="connection_type" type="enum" val="kSendRecv"/>
+ <attr name="data_type" type="string" val="TriggerCandidate"/>
+ <rel name="associated_service" class="Service" id="triggerCandidates"/>
+</obj>
+
 <obj class="NetworkConnectionDescriptor" id="timesync-publisher">
  <attr name="uid_base" type="string" val="time_sync_"/>
  <attr name="connection_type" type="enum" val="kPubSub"/>
@@ -158,6 +165,11 @@
 <obj class="NetworkConnectionRule" id="hsi-rule">
  <attr name="endpoint_class" type="class" val="DataSubscriber"/>
  <rel name="descriptor" class="NetworkConnectionDescriptor" id="hsi-desc"/>
+</obj>
+
+<obj class="NetworkConnectionRule" id="tc-mlt-rule">
+ <attr name="endpoint_class" type="class" val="ModuleLevelTrigger"/>
+ <rel name="descriptor" class="NetworkConnectionDescriptor" id="tc-desc"/>
 </obj>
 
 <obj class="NetworkConnectionRule" id="td-dfo-net-rule">
@@ -293,6 +305,11 @@
 </obj>
 
 <obj class="Service" id="triggerPrimitives">
+ <attr name="protocol" type="string" val="tcp"/>
+ <attr name="port" type="u16" val="0"/>
+</obj>
+
+<obj class="Service" id="triggerCandidates">
  <attr name="protocol" type="string" val="tcp"/>
  <attr name="port" type="u16" val="0"/>
 </obj>

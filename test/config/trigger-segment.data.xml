@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="5" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240217T180526"/>
+<info name="" type="" num-of-items="6" oks-format="data" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240217T203726"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -77,22 +77,36 @@
  <comment creation-time="20240208T095451" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="reformat"/>
  <comment creation-time="20240217T180317" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="added MLT application"/>
  <comment creation-time="20240217T180526" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="added MLTApplication"/>
+ <comment creation-time="20240217T203115" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="glehmann" text="c"/>
+ <comment creation-time="20240217T203726" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="glehmann" text="c"/>
 </comments>
 
+
+<obj class="CustomTriggerCandidateMakerConf" id="cstm-tc-generator">
+ <attr name="timestamp_method" type="enum" val="kTimeSync"/>
+ <attr name="template_for" type="class" val="CustomTriggerCandidateMaker"/>
+ <attr name="trigger_types" type="u32">
+  <data val="3"/>
+  <data val="7"/>
+ </attr>
+ <attr name="trigger_intervals" type="u32">
+  <data val="62500000"/>
+  <data val="62500000"/>
+ </attr>
+ <attr name="clock_frequency_hz" type="u32" val="62500000"/>
+</obj>
 
 <obj class="MLTApplication" id="mlt">
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
- <rel name="queue_rules">
-  <ref class="QueueConnectionRule" id="tcQueueRule"/>
- </rel>
  <rel name="network_rules">
+  <ref class="NetworkConnectionRule" id="tc-mlt-rule"/>
   <ref class="NetworkConnectionRule" id="ti-net-rule"/>
   <ref class="NetworkConnectionRule" id="td-dfo-net-rule"/>
  </rel>
  <rel name="mlt_conf" class="ModuleLevelTriggerConf" id="mlt-conf"/>
  <rel name="standalone_candidate_maker_confs">
-  <ref class="RandomTriggerCandidateMakerConf" id="random-tc-generator"/>
+  <ref class="CustomTriggerCandidateMakerConf" id="cstm-tc-generator"/>
  </rel>
 </obj>
 

@@ -161,7 +161,7 @@ MLTApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
      oksdbinterfaces::ConfigObject genObj;
      confdb->create(dbfile, gen_conf->get_template_for(), gen_conf->UID(), genObj);
      genObj.set_obj("configuration", &(gen_conf->config_object()));
-     genObj.set_objs("outputs", {&tdMLTNetObj});
+     genObj.set_objs("outputs", {&tcMLTNetObj});
      if (gen_conf->get_timestamp_method() == "kTimeSync" && timesyncNetObj != nullptr) {
 	genObj.set_objs("inputs", {timesyncNetObj});
      }
@@ -173,7 +173,7 @@ MLTApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   
   std::vector<const dunedaq::coredal::Application*> apps = session->get_all_applications();
 
-  std::vector<oksdbinterfaces::ConfigObject> sourceIds;
+  std::vector<const oksdbinterfaces::ConfigObject*> sourceIds;
 
   for (auto app : apps) {
     auto ro_app = app->cast<appdal::ReadoutApplication>();
@@ -222,47 +222,47 @@ MLTApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
             // Create SourceIDConf object for the MLT
             auto id = stream->get_source_id();
-            oksdbinterfaces::ConfigObject sourceIdConf;
+            oksdbinterfaces::ConfigObject* sourceIdConf = new oksdbinterfaces::ConfigObject();
             std::string sourceIdConfUID = "dro-mlt-stream-config-" + std::to_string(id);
-            confdb->create(dbfile, "SourceIDConf", sourceIdConfUID, sourceIdConf);
-            sourceIdConf.set_by_val<uint32_t>("id", id);
+            confdb->create(dbfile, "SourceIDConf", sourceIdConfUID, *sourceIdConf);
+            sourceIdConf->set_by_val<uint32_t>("id", id);
             // https://github.com/DUNE-DAQ/daqdataformats/blob/5b99506675a586c8a09123900e224f2371d96df9/include/daqdataformats/detail/SourceID.hxx#L108
-            sourceIdConf.set_by_val<std::string>("subsystem", "kDetectorReadout");
+            sourceIdConf->set_by_val<std::string>("subsystem", "kDetectorReadout");
             sourceIds.push_back(sourceIdConf);
           }
         }
       }
-      oksdbinterfaces::ConfigObject tpSourceIdConf;
-      confdb->create(dbfile, "SourceIDConf", ro_app->UID()+"-"+ std::to_string(ro_app->get_tp_source_id()), tpSourceIdConf);
-      tpSourceIdConf.set_by_val<uint32_t>("id", ro_app->get_tp_source_id());
-      tpSourceIdConf.set_by_val<std::string>("subsystem", "kTrigger");
+      oksdbinterfaces::ConfigObject* tpSourceIdConf = new oksdbinterfaces::ConfigObject();
+      confdb->create(dbfile, "SourceIDConf", ro_app->UID()+"-"+ std::to_string(ro_app->get_tp_source_id()), *tpSourceIdConf);
+      tpSourceIdConf->set_by_val<uint32_t>("id", ro_app->get_tp_source_id());
+      tpSourceIdConf->set_by_val<std::string>("subsystem", "kTrigger");
       sourceIds.push_back(tpSourceIdConf);
 
-      oksdbinterfaces::ConfigObject taSourceIdConf;
-      confdb->create(dbfile, "SourceIDConf", ro_app->UID()+"-"+ std::to_string(ro_app->get_ta_source_id()), taSourceIdConf);
-      taSourceIdConf.set_by_val<uint32_t>("id", ro_app->get_ta_source_id());
-      taSourceIdConf.set_by_val<std::string>("subsystem", "kTrigger");
+      oksdbinterfaces::ConfigObject* taSourceIdConf = new oksdbinterfaces::ConfigObject();
+      confdb->create(dbfile, "SourceIDConf", ro_app->UID()+"-"+ std::to_string(ro_app->get_ta_source_id()), *taSourceIdConf);
+      taSourceIdConf->set_by_val<uint32_t>("id", ro_app->get_ta_source_id());
+      taSourceIdConf->set_by_val<std::string>("subsystem", "kTrigger");
       sourceIds.push_back(taSourceIdConf);
     }
 
     auto trg_app = app->cast<appdal::TriggerApplication>();
     if(trg_app != nullptr) {
-      oksdbinterfaces::ConfigObject tcSourceIdConf;
-      confdb->create(dbfile, "SourceIDConf", trg_app->UID()+"-"+ std::to_string(trg_app->get_source_id()), tcSourceIdConf);
-      tcSourceIdConf.set_by_val<uint32_t>("id", trg_app->get_source_id());
-      tcSourceIdConf.set_by_val<std::string>("subsystem", "kTrigger");
+      oksdbinterfaces::ConfigObject* tcSourceIdConf = new oksdbinterfaces::ConfigObject();
+      confdb->create(dbfile, "SourceIDConf", trg_app->UID()+"-"+ std::to_string(trg_app->get_source_id()), *tcSourceIdConf);
+      tcSourceIdConf->set_by_val<uint32_t>("id", trg_app->get_source_id());
+      tcSourceIdConf->set_by_val<std::string>("subsystem", "kTrigger");
       sourceIds.push_back(tcSourceIdConf);
     }
 
     // FIXME: add here same logics for HSI application(s)
   }
-
+/*
   std::vector<const oksdbinterfaces::ConfigObject*> sourceIdConfs;
   for (auto sid : sourceIds)
   {
     sourceIdConfs.push_back(&sid);
   }
-
+*/
   /**************************************************************
    * Get the MLT
    **************************************************************/
@@ -273,8 +273,8 @@ MLTApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   std::string mltUid("mlt-" + UID());
   confdb->create(dbfile, "ModuleLevelTrigger", mltUid, mltObj);
   mltObj.set_obj("configuration", &mlt_conf_obj);
-  TLOG_DEBUG(3) << "Number of mandatory readout links: " << sourceIdConfs.size();
-  mltObj.set_objs("mandatory_links", sourceIdConfs);
+  TLOG_DEBUG(3) << "Number of mandatory readout links: " << sourceIds.size();
+  mltObj.set_objs("mandatory_links", sourceIds);
   mltObj.set_objs("inputs", {&tiMLTNetObj, &tcMLTNetObj});
   mltObj.set_objs("outputs", {&tdMLTNetObj});
 
