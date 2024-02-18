@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="6" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105615" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240208T092918"/>
+<info name="" type="" num-of-items="6" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105615" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240218T161506"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -81,6 +81,7 @@
  <comment creation-time="20240207T131311" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="d"/>
  <comment creation-time="20240207T131321" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="d"/>
  <comment creation-time="20240208T092918" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="a"/>
+ <comment creation-time="20240218T161506" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="added queue of TAs between subsciber and handler"/>
 </comments>
 
 
@@ -92,6 +93,7 @@
 
 <obj class="ReadoutApplication" id="ru-01">
  <attr name="tp_source_id" type="u32" val="100"/>
+ <attr name="ta_source_id" type="u32" val="1000"/>
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="contains">
   <ref class="ReadoutGroup" id="rog-1"/>
@@ -107,14 +109,17 @@
   <ref class="NetworkConnectionRule" id="data-req-net-rule"/>
   <ref class="NetworkConnectionRule" id="tp-net-rule"/>
   <ref class="NetworkConnectionRule" id="ts-net-rule"/>
+  <ref class="NetworkConnectionRule" id="ta-net-rule"/>
  </rel>
  <rel name="uses" class="RoHwConfig" id="rohw-1"/>
  <rel name="link_handler" class="ReadoutModuleConf" id="def-link-handler"/>
+ <rel name="tp_handler" class="ReadoutModuleConf" id="def-tp-handler"/>
  <rel name="data_reader" class="NICReceiverConf" id="def-nic-receiver-conf"/>
 </obj>
 
 <obj class="ReadoutApplication" id="ru-02">
  <attr name="tp_source_id" type="u32" val="200"/>
+ <attr name="ta_source_id" type="u32" val="2000"/>
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="contains">
   <ref class="ReadoutGroup" id="rog-2"/>
@@ -130,14 +135,17 @@
   <ref class="NetworkConnectionRule" id="data-req-net-rule"/>
   <ref class="NetworkConnectionRule" id="tp-net-rule"/>
   <ref class="NetworkConnectionRule" id="ts-net-rule"/>
+  <ref class="NetworkConnectionRule" id="ta-net-rule"/>
  </rel>
  <rel name="uses" class="RoHwConfig" id="rohw-1"/>
  <rel name="link_handler" class="ReadoutModuleConf" id="def-link-handler"/>
+ <rel name="tp_handler" class="ReadoutModuleConf" id="def-tp-handler"/>
  <rel name="data_reader" class="NICReceiverConf" id="def-nic-receiver-conf"/>
 </obj>
 
 <obj class="ReadoutApplication" id="ru-03">
  <attr name="tp_source_id" type="u32" val="300"/>
+ <attr name="ta_source_id" type="u32" val="3000"/>
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="contains">
   <ref class="ReadoutGroup" id="rog-3"/>
@@ -153,9 +161,11 @@
   <ref class="NetworkConnectionRule" id="data-req-net-rule"/>
   <ref class="NetworkConnectionRule" id="tp-net-rule"/>
   <ref class="NetworkConnectionRule" id="ts-net-rule"/>
+  <ref class="NetworkConnectionRule" id="ta-net-rule"/>
  </rel>
  <rel name="uses" class="RoHwConfig" id="rohw-1"/>
  <rel name="link_handler" class="ReadoutModuleConf" id="def-link-handler"/>
+ <rel name="tp_handler" class="ReadoutModuleConf" id="def-tp-handler"/>
  <rel name="data_reader" class="NICReceiverConf" id="def-nic-receiver-conf"/>
 </obj>
 
@@ -169,6 +179,6 @@
   <ref class="ReadoutApplication" id="ru-03"/>
  </rel>
  <rel name="controller" class="RCApplication" id="ru-controller"/>
- </rel></obj>
+</obj>
 
 </oks-data>

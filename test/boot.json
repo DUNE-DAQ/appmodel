@@ -35,10 +35,15 @@
       "host": "local",
       "port": 3339
     },
-    "mlt": {
+    "tc-maker-1": {
       "exec": "daq_application_ssh",
       "host": "local",
       "port": 3340
+    },
+    "mlt": {
+      "exec": "daq_application_ssh",
+      "host": "local",
+      "port": 3341
     }
   },
   "env": {

@@ -66,6 +66,12 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   auto dlhConf = get_link_handler();
   auto dlhClass = dlhConf->get_template_for();
 
+  auto tphConf = get_tp_handler();
+  std::string tphClass = "";
+  if (tphConf!=nullptr) {
+	tphClass = tphConf->get_template_for();
+  }
+
   // Process the queue rules looking for inputs to our DL/TP handler modules
   const QueueDescriptor* dlhInputQDesc = nullptr;
   const QueueDescriptor* dlhReqInputQDesc = nullptr;
@@ -76,7 +82,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   for (auto rule : get_queue_rules()) {
     auto destination_class = rule->get_destination_class();
     auto data_type = rule->get_descriptor()->get_data_type();
-    if (destination_class == "ReadoutModule" || destination_class == dlhClass) {
+    if (destination_class == "ReadoutModule" || destination_class == dlhClass || destination_class == tphClass) {
       if (data_type == "DataRequest") {
         dlhReqInputQDesc = rule->get_descriptor();
       } else if (data_type == "TriggerPrimitive") {
@@ -91,6 +97,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   // Process the network rules looking for the Fragment Aggregator and TP handler data reuest inputs
   const NetworkConnectionDescriptor* faNetDesc = nullptr;
   const NetworkConnectionDescriptor* tpNetDesc = nullptr;
+  const NetworkConnectionDescriptor* taNetDesc = nullptr;
   const NetworkConnectionDescriptor* tsNetDesc = nullptr;
   for (auto rule : get_network_rules()) {
     auto endpoint_class = rule->get_endpoint_class();
@@ -98,13 +105,17 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
     if (endpoint_class == "FragmentAggregator") {
       faNetDesc = rule->get_descriptor();
-    } else if (endpoint_class == "ReadoutModule" || endpoint_class == dlhClass) {
-      if (data_type == "TPSet") {
-        tpNetDesc = rule->get_descriptor();
-      } else if (data_type == "TimeSync") {
-        tsNetDesc = rule->get_descriptor();
-      }
     }
+    else if (data_type == "TPSet") {
+        tpNetDesc = rule->get_descriptor();
+    } 
+    else if (data_type == "TriggerActivity") {
+        taNetDesc = rule->get_descriptor();
+    }
+    else if (data_type == "TimeSync") {
+        tsNetDesc = rule->get_descriptor();
+    }
+    
   }
 
   // Create here the Queue on which all data fragments are forwarded to the fragment aggregator
@@ -126,12 +137,15 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   oksdbinterfaces::ConfigObject tpReqQueueObj;
   oksdbinterfaces::ConfigObject tpQueueObj;
   oksdbinterfaces::ConfigObject tpNetObj;
-  auto tpHandlerConf = get_tp_handler();
-  if (tpHandlerConf) {
-    auto tphClass = tpHandlerConf->get_template_for();
+  oksdbinterfaces::ConfigObject taNetObj;
+  if (tphConf) {
     if (tpNetDesc == nullptr) {
-      throw(BadConf(ERS_HERE, "No tpHandler network descriptor given"));
+      throw(BadConf(ERS_HERE, "No tpHandler network descriptor for TPSets  given"));
     }
+    if (taNetDesc == nullptr) {
+      throw(BadConf(ERS_HERE, "No tpHandler network descriptor for TriggerActivities  given"));
+    }
+
     if (tpInputQDesc == nullptr) {
       throw(BadConf(ERS_HERE, "No tpHandler data input queue descriptor given"));
     }
@@ -167,14 +181,21 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     tpNetObj.set_by_val<std::string>("connection_type", tpNetDesc->get_connection_type());
     tpNetObj.set_obj("associated_service", &tpServiceObj);
 
-    auto tphConfObj = tpHandlerConf->config_object();
+    auto taServiceObj = taNetDesc->get_associated_service()->config_object();
+    std::string taStreamUid = taNetDesc->get_uid_base() + UID();
+    confdb->create(dbfile, "NetworkConnection", taStreamUid, taNetObj);
+    taNetObj.set_by_val<std::string>("data_type", taNetDesc->get_data_type());
+    taNetObj.set_by_val<std::string>("connection_type", taNetDesc->get_connection_type());
+    taNetObj.set_obj("associated_service", &taServiceObj);
+
+    auto tphConfObj = tphConf->config_object();
     oksdbinterfaces::ConfigObject tpObj;
     std::string tpUid("tphandler-" + std::to_string(tpsrc));
     confdb->create(dbfile, tphClass, tpUid, tpObj);
     tpObj.set_by_val<uint32_t>("source_id", tpsrc);
     tpObj.set_obj("module_configuration", &tphConfObj);
     tpObj.set_objs("inputs", { &tpQueueObj, &tpReqQueueObj });
-    tpObj.set_objs("outputs", { &tpNetObj, &faQueueObj });
+    tpObj.set_objs("outputs", { &tpNetObj, &taNetObj, &faQueueObj });
 
     // Add to our list of modules to return
     modules.push_back(confdb->get<ReadoutModule>(tpUid));
@@ -257,13 +278,13 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
           tsNetObj.set_by_val<std::string>("data_type", tsNetDesc->get_data_type());
           tsNetObj.set_obj("associated_service", &tsServiceObj);
 
-          if (tpHandlerConf) {
+          if (tphConf) {
             dlhObj.set_objs("outputs", { &tpQueueObj, &faQueueObj, &tsNetObj });
           } else {
             dlhObj.set_objs("outputs", { &faQueueObj, &tsNetObj });
           }
         } else {
-          if (tpHandlerConf) {
+          if (tphConf) {
             dlhObj.set_objs("outputs", { &tpQueueObj, &faQueueObj });
           } else {
             dlhObj.set_objs("outputs", { &faQueueObj });

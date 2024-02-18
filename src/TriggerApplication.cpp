@@ -103,6 +103,7 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   }
   // Process the network rules looking for the Fragment Aggregator and TP handler data reuest inputs
   const NetworkConnectionDescriptor* req_net_desc = nullptr;
+  const NetworkConnectionDescriptor* tin_net_desc = nullptr;
   const NetworkConnectionDescriptor* tout_net_desc = nullptr;
   const NetworkConnectionDescriptor* tset_out_net_desc = nullptr;
   for (auto rule : get_network_rules()) {
@@ -115,6 +116,9 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     else if (data_type == "TASet" || data_type == "TCSet"){
 	tset_out_net_desc = rule->get_descriptor();
     }
+    else if (endpoint_class == "DataSubscriber") {
+        tin_net_desc =  rule->get_descriptor();
+    }
     else {
 	tout_net_desc = rule->get_descriptor();
     }
@@ -124,18 +128,19 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   // connections
   oksdbinterfaces::ConfigObject input_queue_obj;
   oksdbinterfaces::ConfigObject req_net_obj;
+  oksdbinterfaces::ConfigObject tin_net_obj;
   oksdbinterfaces::ConfigObject tout_net_obj;
   oksdbinterfaces::ConfigObject tset_out_net_obj;
   auto handlerConf = get_trigger_inputs_handler();
   
-  if ( req_net_obj== nullptr) {
+  if ( req_net_desc== nullptr) {
       throw (BadConf(ERS_HERE, "No network descriptor given to receive request and send data was set"));
   }
-  if ( tout_net_obj== nullptr) {
-      throw (BadConf(ERS_HERE, "No network descriptor given to publish trigger objects"));
+  if ( tin_net_desc== nullptr) {
+      throw (BadConf(ERS_HERE, "No network descriptor given to receive trigger objects"));
   }
-  if ( tset_out_net_obj== nullptr) {
-      throw (BadConf(ERS_HERE, "No network descriptor given to publish trigger set objects"));
+  if ( tout_net_desc== nullptr) {
+      throw (BadConf(ERS_HERE, "No network descriptor given to publish trigger objects"));
   }
   if (ti_inputq_desc == nullptr) {
       throw (BadConf(ERS_HERE, "No data input queue descriptor given"));
@@ -154,13 +159,20 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   req_net_obj.set_by_val<std::string>("data_type", req_net_desc->get_data_type());
   req_net_obj.set_obj("associated_service", &req_service_obj);
 
+  auto tin_service_obj = tin_net_desc->get_associated_service()->config_object();
+  std::string t_in_stream_uid(tin_net_desc->get_uid_base()+UID());
+  confdb->create(dbfile, "NetworkConnection", t_in_stream_uid, tin_net_obj);
+  tin_net_obj.set_by_val<std::string>("data_type", tin_net_desc->get_data_type());
+  tin_net_obj.set_by_val<std::string>("connection_type", tin_net_desc->get_connection_type());
+  tin_net_obj.set_obj("associated_service", &tin_service_obj);
+ 
   auto tout_service_obj = tout_net_desc->get_associated_service()->config_object();
   std::string t_stream_uid(tout_net_desc->get_uid_base()+UID());
   confdb->create(dbfile, "NetworkConnection", t_stream_uid, tout_net_obj);
   tout_net_obj.set_by_val<std::string>("data_type", tout_net_desc->get_data_type());
   tout_net_obj.set_by_val<std::string>("connection_type", tout_net_desc->get_connection_type());
   tout_net_obj.set_obj("associated_service", &tout_service_obj);
- 
+
 
 
   if (tset_out_net_desc) {
@@ -202,6 +214,7 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   oksdbinterfaces::ConfigObject reader_obj;
   TLOG_DEBUG(7) <<  "creating OKS configuration object for Data subscriber class " << reader_class;
   confdb->create(dbfile, reader_class, reader_uid, reader_obj);
+  reader_obj.set_objs("inputs", {&tin_net_obj} );
   reader_obj.set_objs("outputs", {&input_queue_obj} );
   reader_obj.set_obj("configuration", &rdr_conf->config_object());
 
