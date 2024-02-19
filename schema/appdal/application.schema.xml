@@ -126,6 +126,7 @@
  <class name="DataProcessor">
   <attribute name="queue_sizes" type="u32" init-value="10000"/>
   <attribute name="thread_names_prefix" type="string" init-value="postproc-"/>
+  <attribute name="mask_processing" description="Flag to comment out post processing in a data processor" type="bool" init-value="false"/>
  </class>
 
  <class name="DataReader" is-abstract="yes">
