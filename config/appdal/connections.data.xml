@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="45" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240218T174147"/>
+<info name="" type="" num-of-items="45" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240220T132034"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -77,6 +77,8 @@
  <comment creation-time="20240218T160307" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="added TA network connection"/>
  <comment creation-time="20240218T161506" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="added queue of TAs between subsciber and handler"/>
  <comment creation-time="20240218T164229" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="added data request connection for trigger apps"/>
+ <comment creation-time="20240220T094213" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="updated configuration to use a dedicated app for TA making"/>
+ <comment creation-time="20240220T132034" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="direct send/rec instead of pub/sub on trigger path"/>
 </comments>
 
 
@@ -110,7 +112,7 @@
 
 <obj class="NetworkConnectionDescriptor" id="ta-publisher">
  <attr name="uid_base" type="string" val="ta_"/>
- <attr name="connection_type" type="enum" val="kPubSub"/>
+ <attr name="connection_type" type="enum" val="kSendRecv"/>
  <attr name="data_type" type="string" val="TriggerActivity"/>
  <rel name="associated_service" class="Service" id="triggerActivities"/>
 </obj>
@@ -131,7 +133,7 @@
 
 <obj class="NetworkConnectionDescriptor" id="tp-publisher">
  <attr name="uid_base" type="string" val="trigger_primitives_"/>
- <attr name="connection_type" type="enum" val="kPubSub"/>
+ <attr name="connection_type" type="enum" val="kSendRecv"/>
  <attr name="data_type" type="string" val="TPSet"/>
  <rel name="associated_service" class="Service" id="triggerPrimitives"/>
 </obj>
@@ -233,7 +235,7 @@
 </obj>
 
 <obj class="QueueConnectionRule" id="tp-queue-rule">
- <attr name="destination_class" type="class" val="FDDataLinkHandler"/>
+ <attr name="destination_class" type="class" val="TriggerDataHandler"/>
  <rel name="descriptor" class="QueueDescriptor" id="tp-input"/>
 </obj>
 

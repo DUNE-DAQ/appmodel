@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="8" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240218T155644"/>
+<info name="" type="" num-of-items="8" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240220T094213"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -80,6 +80,7 @@
  <comment creation-time="20240112T170242" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="Add queue"/>
  <comment creation-time="20240112T170541" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="Add network connections"/>
  <comment creation-time="20240208T092804" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="reorder"/>
+ <comment creation-time="20240220T094213" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="updated configuration to use a dedicated app for TA making"/>
 </comments>
 
 
@@ -163,8 +164,6 @@
 <obj class="Segment" id="df-segment">
  <rel name="applications">
   <ref class="DFApplication" id="df-01"/>
-  <ref class="DFApplication" id="df-02"/>
-  <ref class="DFApplication" id="df-03"/>
   <ref class="DFOApplication" id="dfo-01"/>
  </rel>
  <rel name="controller" class="RCApplication" id="df-controller"/>

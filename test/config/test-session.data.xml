@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="4" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240218T155644"/>
+<info name="" type="" num-of-items="4" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240220T094213"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -82,6 +82,7 @@
  <comment creation-time="20231207T112252" created-by="gjc" created-on="thinkpad" author="gjc" text="g"/>
  <comment creation-time="20231207T113214" created-by="gjc" created-on="thinkpad" author="gjc" text="u"/>
  <comment creation-time="20240208T095535" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="reformat"/>
+ <comment creation-time="20240220T094213" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="updated configuration to use a dedicated app for TA making"/>
 </comments>
 
 
@@ -111,6 +112,10 @@
  <attr name="connectivity_service_interval_ms" type="u32" val="2000"/>
  <attr name="data_request_timeout_ms" type="u32" val="1000"/>
  <attr name="data_rate_slowdown_factor" type="u32" val="1"/>
+ <rel name="disabled">
+  <ref class="ReadoutGroup" id="rog-3"/>
+  <ref class="ReadoutGroup" id="rog-2"/>
+ </rel>
  <rel name="segment" class="Segment" id="root-segment"/>
  <rel name="detector_configuration" class="DetectorConfig" id="dummy-detector"/>
  <rel name="readout_map" class="ReadoutMap" id="dummyRoMap"/>

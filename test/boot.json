@@ -5,45 +5,20 @@
       "host": "local",
       "port": 3333
     },
-    "ru-02": {
-      "exec": "daq_application_ssh",
-      "host": "local",
-      "port": 3334
-    },
-    "ru-03": {
-      "exec": "daq_application_ssh",
-      "host": "local",
-      "port": 3335
-    },
     "df-01": {
       "exec": "daq_application_ssh",
       "host": "local",
       "port": 3336
-    },
-    "df-02": {
-      "exec": "daq_application_ssh",
-      "host": "local",
-      "port": 3337
-    },
-    "df-03": {
-      "exec": "daq_application_ssh",
-      "host": "local",
-      "port": 3338
     },
     "dfo-01": {
       "exec": "daq_application_ssh",
       "host": "local",
       "port": 3339
     },
-    "tc-maker-1": {
-      "exec": "daq_application_ssh",
-      "host": "local",
-      "port": 3340
-    },
     "mlt": {
       "exec": "daq_application_ssh",
       "host": "local",
-      "port": 3341
+      "port": 3352
     }
   },
   "env": {
