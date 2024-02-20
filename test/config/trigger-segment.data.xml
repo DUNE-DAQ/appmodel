@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="13" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240220T140016"/>
+<info name="" type="" num-of-items="13" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240220T171615"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -115,7 +115,7 @@
  </rel>
  <rel name="mlt_conf" class="ModuleLevelTriggerConf" id="mlt-conf"/>
  <rel name="standalone_candidate_maker_confs">
-  <ref class="CustomTriggerCandidateMakerConf" id="cstm-tc-generator"/>
+  <ref class="RandomTriggerCandidateMakerConf" id="random-tc-generator"/>
  </rel>
 </obj>
 
@@ -138,9 +138,9 @@
 </obj>
 
 <obj class="RandomTriggerCandidateMakerConf" id="random-tc-generator">
- <attr name="timestamp_method" type="enum" val="kTimeSync"/>
+ <attr name="timestamp_method" type="enum" val="kSystemClock"/>
  <attr name="template_for" type="class" val="RandomTriggerCandidateMaker"/>
- <attr name="trigger_interval_ticks" type="u32" val="64000000"/>
+ <attr name="trigger_interval_ticks" type="u32" val="62500000"/>
  <attr name="clock_frequency_hz" type="u32" val="62500000"/>
  <attr name="time_distribution" type="enum" val="kUniform"/>
 </obj>

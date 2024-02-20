@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="4" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240220T094213"/>
+<info name="" type="" num-of-items="4" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240220T145012"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -115,6 +115,7 @@
  <rel name="disabled">
   <ref class="ReadoutGroup" id="rog-3"/>
   <ref class="ReadoutGroup" id="rog-2"/>
+  <ref class="DROStreamConf" id="dummyStream-1"/>
  </rel>
  <rel name="segment" class="Segment" id="root-segment"/>
  <rel name="detector_configuration" class="DetectorConfig" id="dummy-detector"/>
