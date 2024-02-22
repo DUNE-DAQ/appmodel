@@ -143,7 +143,7 @@ FakeHSIApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   modules.push_back(confdb->get<ReadoutModule>(uid));
 
   auto hsiServiceObj = hsiNetDesc->get_associated_service()->config_object();
-  std::string hsiNetUid = hsiNetDesc->get_uid_base() + UID();
+  std::string hsiNetUid = hsiNetDesc->get_uid_base();
   oksdbinterfaces::ConfigObject hsiNetObj;
   confdb->create(dbfile, "NetworkConnection", hsiNetUid, hsiNetObj);
   hsiNetObj.set_by_val<std::string>("connection_type", hsiNetDesc->get_connection_type());
