@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="267" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="glehmann" created-on="lxplus928.cern.ch" creation-time="20240107T175431" last-modified-by="glehmann" last-modified-on="lxplus928.cern.ch" last-modification-time="20240107T175431"/>
+<info name="" type="" num-of-items="303" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="glehmann" created-on="lxplus924.cern.ch" creation-time="20240126T113333" last-modified-by="glehmann" last-modified-on="lxplus924.cern.ch" last-modification-time="20240126T113333"/>
 
 <obj class="ALink" id="DROStreamConf-2-GeoId-via-geo_id">
  <attr name="Name" type="string" val="geo_id"/>
@@ -146,6 +146,18 @@
   <ref class="Point" id="2 DataReader-2-ReadoutInterface-via-interfaces"/>
   <ref class="Point" id="3 DataReader-2-ReadoutInterface-via-interfaces"/>
   <ref class="Point" id="4 DataReader-2-ReadoutInterface-via-interfaces"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="DataReaderConf-2-StreamEmulationParameters-via-emulation_conf">
+ <attr name="Name" type="string" val="emulation_conf"/>
+ <rel name="From" class="Class" id="DataReaderConf"/>
+ <rel name="To" class="Class" id="StreamEmulationParameters"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf"/>
+  <ref class="Point" id="2 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf"/>
+  <ref class="Point" id="3 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf"/>
+  <ref class="Point" id="4 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf"/>
  </rel>
 </obj>
 
@@ -401,26 +413,33 @@
  </rel>
 </obj>
 
-<obj class="ALink" id="StreamParameters-2-StreamEmulationParameters-via-emulation_conf">
- <attr name="Name" type="string" val="emulation_conf"/>
- <rel name="From" class="Class" id="StreamParameters"/>
- <rel name="To" class="Class" id="StreamEmulationParameters"/>
+<obj class="ALink" id="TPDataProcessor-2-TAAlgorithm-via-algorithms">
+ <attr name="Name" type="string" val="algorithms"/>
+ <rel name="From" class="Class" id="TPDataProcessor"/>
+ <rel name="To" class="Class" id="TAAlgorithm"/>
  <rel name="Points">
-  <ref class="Point" id="1 StreamParameters-2-StreamEmulationParameters-via-emulation_conf"/>
-  <ref class="Point" id="2 StreamParameters-2-StreamEmulationParameters-via-emulation_conf"/>
-  <ref class="Point" id="3 StreamParameters-2-StreamEmulationParameters-via-emulation_conf"/>
-  <ref class="Point" id="4 StreamParameters-2-StreamEmulationParameters-via-emulation_conf"/>
+  <ref class="Point" id="1 TPDataProcessor-2-TAAlgorithm-via-algorithms"/>
+  <ref class="Point" id="2 TPDataProcessor-2-TAAlgorithm-via-algorithms"/>
+  <ref class="Point" id="3 TPDataProcessor-2-TAAlgorithm-via-algorithms"/>
+  <ref class="Point" id="4 TPDataProcessor-2-TAAlgorithm-via-algorithms"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="TPDataProcessor-2-TPChannelFilterConf-via-channel_filter_conf">
+ <attr name="Name" type="string" val="channel_filter_conf"/>
+ <rel name="From" class="Class" id="TPDataProcessor"/>
+ <rel name="To" class="Class" id="TPChannelFilterConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 TPDataProcessor-2-TPChannelFilterConf-via-channel_filter_conf"/>
+  <ref class="Point" id="2 TPDataProcessor-2-TPChannelFilterConf-via-channel_filter_conf"/>
+  <ref class="Point" id="3 TPDataProcessor-2-TPChannelFilterConf-via-channel_filter_conf"/>
+  <ref class="Point" id="4 TPDataProcessor-2-TPChannelFilterConf-via-channel_filter_conf"/>
  </rel>
 </obj>
 
 <obj class="Class" id="Connection">
  <attr name="x" type="s16" val="408"/>
  <attr name="y" type="s16" val="112"/>
-</obj>
-
-<obj class="Class" id="DLH">
- <attr name="x" type="s16" val="1234"/>
- <attr name="y" type="s16" val="326"/>
 </obj>
 
 <obj class="Class" id="DROStreamConf">
@@ -513,6 +532,11 @@
  <attr name="y" type="s16" val="373"/>
 </obj>
 
+<obj class="Class" id="RawDataProcessor">
+ <attr name="x" type="s16" val="1696"/>
+ <attr name="y" type="s16" val="356"/>
+</obj>
+
 <obj class="Class" id="ReadoutApplication">
  <attr name="x" type="s16" val="605"/>
  <attr name="y" type="s16" val="473"/>
@@ -588,9 +612,39 @@
  <attr name="y" type="s16" val="156"/>
 </obj>
 
+<obj class="Class" id="TAAlgorithm">
+ <attr name="x" type="s16" val="1583"/>
+ <attr name="y" type="s16" val="660"/>
+</obj>
+
+<obj class="Class" id="TAHorizontalMuon">
+ <attr name="x" type="s16" val="1560"/>
+ <attr name="y" type="s16" val="788"/>
+</obj>
+
+<obj class="Class" id="TAPassThrough">
+ <attr name="x" type="s16" val="1796"/>
+ <attr name="y" type="s16" val="789"/>
+</obj>
+
+<obj class="Class" id="TPChannelFilterConf">
+ <attr name="x" type="s16" val="1731"/>
+ <attr name="y" type="s16" val="598"/>
+</obj>
+
+<obj class="Class" id="TPDataProcessor">
+ <attr name="x" type="s16" val="1558"/>
+ <attr name="y" type="s16" val="560"/>
+</obj>
+
 <obj class="Class" id="TPHandlerModule">
  <attr name="x" type="s16" val="1235"/>
  <attr name="y" type="s16" val="369"/>
+</obj>
+
+<obj class="Class" id="TriggerRequestHandler">
+ <attr name="x" type="s16" val="1239"/>
+ <attr name="y" type="s16" val="881"/>
 </obj>
 
 <obj class="GLink" id="Connection-2-NetworkConnection">
@@ -648,6 +702,28 @@
  </rel>
 </obj>
 
+<obj class="GLink" id="DataProcessor-2-RawDataProcessor">
+ <rel name="From" class="Class" id="DataProcessor"/>
+ <rel name="To" class="Class" id="RawDataProcessor"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DataProcessor-2-RawDataProcessor"/>
+  <ref class="Point" id="2 DataProcessor-2-RawDataProcessor"/>
+  <ref class="Point" id="3 DataProcessor-2-RawDataProcessor"/>
+  <ref class="Point" id="4 DataProcessor-2-RawDataProcessor"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="DataProcessor-2-TPDataProcessor">
+ <rel name="From" class="Class" id="DataProcessor"/>
+ <rel name="To" class="Class" id="TPDataProcessor"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DataProcessor-2-TPDataProcessor"/>
+  <ref class="Point" id="2 DataProcessor-2-TPDataProcessor"/>
+  <ref class="Point" id="3 DataProcessor-2-TPDataProcessor"/>
+  <ref class="Point" id="4 DataProcessor-2-TPDataProcessor"/>
+ </rel>
+</obj>
+
 <obj class="GLink" id="HostComponent-2-NetworkDevice">
  <rel name="From" class="Class" id="HostComponent"/>
  <rel name="To" class="Class" id="NetworkDevice"/>
@@ -681,17 +757,6 @@
  </rel>
 </obj>
 
-<obj class="GLink" id="ReadoutModule-2-DLH">
- <rel name="From" class="Class" id="ReadoutModule"/>
- <rel name="To" class="Class" id="DLH"/>
- <rel name="Points">
-  <ref class="Point" id="1 ReadoutModule-2-DLH"/>
-  <ref class="Point" id="2 ReadoutModule-2-DLH"/>
-  <ref class="Point" id="3 ReadoutModule-2-DLH"/>
-  <ref class="Point" id="4 ReadoutModule-2-DLH"/>
- </rel>
-</obj>
-
 <obj class="GLink" id="ReadoutModule-2-TPHandlerModule">
  <rel name="From" class="Class" id="ReadoutModule"/>
  <rel name="To" class="Class" id="TPHandlerModule"/>
@@ -700,6 +765,17 @@
   <ref class="Point" id="2 ReadoutModule-2-TPHandlerModule"/>
   <ref class="Point" id="3 ReadoutModule-2-TPHandlerModule"/>
   <ref class="Point" id="4 ReadoutModule-2-TPHandlerModule"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="RequestHandler-2-TriggerRequestHandler">
+ <rel name="From" class="Class" id="RequestHandler"/>
+ <rel name="To" class="Class" id="TriggerRequestHandler"/>
+ <rel name="Points">
+  <ref class="Point" id="1 RequestHandler-2-TriggerRequestHandler"/>
+  <ref class="Point" id="2 RequestHandler-2-TriggerRequestHandler"/>
+  <ref class="Point" id="3 RequestHandler-2-TriggerRequestHandler"/>
+  <ref class="Point" id="4 RequestHandler-2-TriggerRequestHandler"/>
  </rel>
 </obj>
 
@@ -780,6 +856,28 @@
  </rel>
 </obj>
 
+<obj class="GLink" id="TAAlgorithm-2-TAHorizontalMuon">
+ <rel name="From" class="Class" id="TAAlgorithm"/>
+ <rel name="To" class="Class" id="TAHorizontalMuon"/>
+ <rel name="Points">
+  <ref class="Point" id="1 TAAlgorithm-2-TAHorizontalMuon"/>
+  <ref class="Point" id="2 TAAlgorithm-2-TAHorizontalMuon"/>
+  <ref class="Point" id="3 TAAlgorithm-2-TAHorizontalMuon"/>
+  <ref class="Point" id="4 TAAlgorithm-2-TAHorizontalMuon"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="TAAlgorithm-2-TAPassThrough">
+ <rel name="From" class="Class" id="TAAlgorithm"/>
+ <rel name="To" class="Class" id="TAPassThrough"/>
+ <rel name="Points">
+  <ref class="Point" id="1 TAAlgorithm-2-TAPassThrough"/>
+  <ref class="Point" id="2 TAAlgorithm-2-TAPassThrough"/>
+  <ref class="Point" id="3 TAAlgorithm-2-TAPassThrough"/>
+  <ref class="Point" id="4 TAAlgorithm-2-TAPassThrough"/>
+ </rel>
+</obj>
+
 <obj class="Point" id="1 Connection-2-NetworkConnection">
  <attr name="x" type="s16" val="84"/>
  <attr name="y" type="s16" val="38"/>
@@ -830,6 +928,16 @@
  <attr name="y" type="s16" val="24"/>
 </obj>
 
+<obj class="Point" id="1 DataProcessor-2-RawDataProcessor">
+ <attr name="x" type="s16" val="177"/>
+ <attr name="y" type="s16" val="51"/>
+</obj>
+
+<obj class="Point" id="1 DataProcessor-2-TPDataProcessor">
+ <attr name="x" type="s16" val="177"/>
+ <attr name="y" type="s16" val="51"/>
+</obj>
+
 <obj class="Point" id="1 DataReader-2-DataReaderConf-via-configuration">
  <attr name="x" type="s16" val="25"/>
  <attr name="y" type="s16" val="32"/>
@@ -838,6 +946,11 @@
 <obj class="Point" id="1 DataReader-2-ReadoutInterface-via-interfaces">
  <attr name="x" type="s16" val="33"/>
  <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf">
+ <attr name="x" type="s16" val="150"/>
+ <attr name="y" type="s16" val="51"/>
 </obj>
 
 <obj class="Point" id="1 DataRecorder-2-DataRecorderConf-via-configuration">
@@ -900,11 +1013,6 @@
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 ReadoutModule-2-DLH">
- <attr name="x" type="s16" val="36"/>
- <attr name="y" type="s16" val="38"/>
-</obj>
-
 <obj class="Point" id="1 ReadoutModule-2-ReadoutModuleConf-via-module_configuration">
  <attr name="x" type="s16" val="75"/>
  <attr name="y" type="s16" val="51"/>
@@ -933,6 +1041,11 @@
 <obj class="Point" id="1 RequestHandler-2-DataRecorderConf-via-data_recorder">
  <attr name="x" type="s16" val="156"/>
  <attr name="y" type="s16" val="105"/>
+</obj>
+
+<obj class="Point" id="1 RequestHandler-2-TriggerRequestHandler">
+ <attr name="x" type="s16" val="156"/>
+ <attr name="y" type="s16" val="119"/>
 </obj>
 
 <obj class="Point" id="1 ResourceBase-2-DROStreamConf">
@@ -1005,8 +1118,23 @@
  <attr name="y" type="s16" val="38"/>
 </obj>
 
-<obj class="Point" id="1 StreamParameters-2-StreamEmulationParameters-via-emulation_conf">
- <attr name="x" type="s16" val="64"/>
+<obj class="Point" id="1 TAAlgorithm-2-TAHorizontalMuon">
+ <attr name="x" type="s16" val="85"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 TAAlgorithm-2-TAPassThrough">
+ <attr name="x" type="s16" val="85"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 TPDataProcessor-2-TAAlgorithm-via-algorithms">
+ <attr name="x" type="s16" val="117"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 TPDataProcessor-2-TPChannelFilterConf-via-channel_filter_conf">
+ <attr name="x" type="s16" val="117"/>
  <attr name="y" type="s16" val="38"/>
 </obj>
 
@@ -1060,6 +1188,16 @@
  <attr name="y" type="s16" val="437"/>
 </obj>
 
+<obj class="Point" id="2 DataProcessor-2-RawDataProcessor">
+ <attr name="x" type="s16" val="177"/>
+ <attr name="y" type="s16" val="452"/>
+</obj>
+
+<obj class="Point" id="2 DataProcessor-2-TPDataProcessor">
+ <attr name="x" type="s16" val="177"/>
+ <attr name="y" type="s16" val="485"/>
+</obj>
+
 <obj class="Point" id="2 DataReader-2-DataReaderConf-via-configuration">
  <attr name="x" type="s16" val="25"/>
  <attr name="y" type="s16" val="316"/>
@@ -1068,6 +1206,11 @@
 <obj class="Point" id="2 DataReader-2-ReadoutInterface-via-interfaces">
  <attr name="x" type="s16" val="33"/>
  <attr name="y" type="s16" val="238"/>
+</obj>
+
+<obj class="Point" id="2 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf">
+ <attr name="x" type="s16" val="150"/>
+ <attr name="y" type="s16" val="266"/>
 </obj>
 
 <obj class="Point" id="2 DataRecorder-2-DataRecorderConf-via-configuration">
@@ -1130,11 +1273,6 @@
  <attr name="y" type="s16" val="140"/>
 </obj>
 
-<obj class="Point" id="2 ReadoutModule-2-DLH">
- <attr name="x" type="s16" val="36"/>
- <attr name="y" type="s16" val="341"/>
-</obj>
-
 <obj class="Point" id="2 ReadoutModule-2-ReadoutModuleConf-via-module_configuration">
  <attr name="x" type="s16" val="75"/>
  <attr name="y" type="s16" val="475"/>
@@ -1157,12 +1295,17 @@
 
 <obj class="Point" id="2 ReadoutModuleConf-2-RequestHandler-via-request_handler">
  <attr name="x" type="s16" val="174"/>
- <attr name="y" type="s16" val="657"/>
+ <attr name="y" type="s16" val="667"/>
 </obj>
 
 <obj class="Point" id="2 RequestHandler-2-DataRecorderConf-via-data_recorder">
  <attr name="x" type="s16" val="156"/>
  <attr name="y" type="s16" val="691"/>
+</obj>
+
+<obj class="Point" id="2 RequestHandler-2-TriggerRequestHandler">
+ <attr name="x" type="s16" val="156"/>
+ <attr name="y" type="s16" val="787"/>
 </obj>
 
 <obj class="Point" id="2 ResourceBase-2-DROStreamConf">
@@ -1235,9 +1378,24 @@
  <attr name="y" type="s16" val="488"/>
 </obj>
 
-<obj class="Point" id="2 StreamParameters-2-StreamEmulationParameters-via-emulation_conf">
- <attr name="x" type="s16" val="64"/>
- <attr name="y" type="s16" val="228"/>
+<obj class="Point" id="2 TAAlgorithm-2-TAHorizontalMuon">
+ <attr name="x" type="s16" val="85"/>
+ <attr name="y" type="s16" val="759"/>
+</obj>
+
+<obj class="Point" id="2 TAAlgorithm-2-TAPassThrough">
+ <attr name="x" type="s16" val="85"/>
+ <attr name="y" type="s16" val="759"/>
+</obj>
+
+<obj class="Point" id="2 TPDataProcessor-2-TAAlgorithm-via-algorithms">
+ <attr name="x" type="s16" val="117"/>
+ <attr name="y" type="s16" val="579"/>
+</obj>
+
+<obj class="Point" id="2 TPDataProcessor-2-TPChannelFilterConf-via-channel_filter_conf">
+ <attr name="x" type="s16" val="117"/>
+ <attr name="y" type="s16" val="573"/>
 </obj>
 
 <obj class="Point" id="3 Connection-2-NetworkConnection">
@@ -1289,6 +1447,16 @@
  <attr name="y" type="s16" val="437"/>
 </obj>
 
+<obj class="Point" id="3 DataProcessor-2-RawDataProcessor">
+ <attr name="x" type="s16" val="40"/>
+ <attr name="y" type="s16" val="452"/>
+</obj>
+
+<obj class="Point" id="3 DataProcessor-2-TPDataProcessor">
+ <attr name="x" type="s16" val="40"/>
+ <attr name="y" type="s16" val="485"/>
+</obj>
+
 <obj class="Point" id="3 DataReader-2-DataReaderConf-via-configuration">
  <attr name="x" type="s16" val="151"/>
  <attr name="y" type="s16" val="316"/>
@@ -1297,6 +1465,11 @@
 <obj class="Point" id="3 DataReader-2-ReadoutInterface-via-interfaces">
  <attr name="x" type="s16" val="26"/>
  <attr name="y" type="s16" val="238"/>
+</obj>
+
+<obj class="Point" id="3 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf">
+ <attr name="x" type="s16" val="65"/>
+ <attr name="y" type="s16" val="266"/>
 </obj>
 
 <obj class="Point" id="3 DataRecorder-2-DataRecorderConf-via-configuration">
@@ -1359,11 +1532,6 @@
  <attr name="y" type="s16" val="140"/>
 </obj>
 
-<obj class="Point" id="3 ReadoutModule-2-DLH">
- <attr name="x" type="s16" val="8"/>
- <attr name="y" type="s16" val="341"/>
-</obj>
-
 <obj class="Point" id="3 ReadoutModule-2-ReadoutModuleConf-via-module_configuration">
  <attr name="x" type="s16" val="58"/>
  <attr name="y" type="s16" val="475"/>
@@ -1386,12 +1554,17 @@
 
 <obj class="Point" id="3 ReadoutModuleConf-2-RequestHandler-via-request_handler">
  <attr name="x" type="s16" val="52"/>
- <attr name="y" type="s16" val="657"/>
+ <attr name="y" type="s16" val="667"/>
 </obj>
 
 <obj class="Point" id="3 RequestHandler-2-DataRecorderConf-via-data_recorder">
  <attr name="x" type="s16" val="56"/>
  <attr name="y" type="s16" val="691"/>
+</obj>
+
+<obj class="Point" id="3 RequestHandler-2-TriggerRequestHandler">
+ <attr name="x" type="s16" val="58"/>
+ <attr name="y" type="s16" val="787"/>
 </obj>
 
 <obj class="Point" id="3 ResourceBase-2-DROStreamConf">
@@ -1463,9 +1636,24 @@
  <attr name="y" type="s16" val="488"/>
 </obj>
 
-<obj class="Point" id="3 StreamParameters-2-StreamEmulationParameters-via-emulation_conf">
- <attr name="x" type="s16" val="146"/>
- <attr name="y" type="s16" val="228"/>
+<obj class="Point" id="3 TAAlgorithm-2-TAHorizontalMuon">
+ <attr name="x" type="s16" val="54"/>
+ <attr name="y" type="s16" val="759"/>
+</obj>
+
+<obj class="Point" id="3 TAAlgorithm-2-TAPassThrough">
+ <attr name="x" type="s16" val="24"/>
+ <attr name="y" type="s16" val="759"/>
+</obj>
+
+<obj class="Point" id="3 TPDataProcessor-2-TAAlgorithm-via-algorithms">
+ <attr name="x" type="s16" val="28"/>
+ <attr name="y" type="s16" val="579"/>
+</obj>
+
+<obj class="Point" id="3 TPDataProcessor-2-TPChannelFilterConf-via-channel_filter_conf">
+ <attr name="x" type="s16" val="42"/>
+ <attr name="y" type="s16" val="573"/>
 </obj>
 
 <obj class="Point" id="4 Connection-2-NetworkConnection">
@@ -1517,6 +1705,16 @@
  <attr name="y" type="s16" val="12"/>
 </obj>
 
+<obj class="Point" id="4 DataProcessor-2-RawDataProcessor">
+ <attr name="x" type="s16" val="40"/>
+ <attr name="y" type="s16" val="35"/>
+</obj>
+
+<obj class="Point" id="4 DataProcessor-2-TPDataProcessor">
+ <attr name="x" type="s16" val="40"/>
+ <attr name="y" type="s16" val="35"/>
+</obj>
+
 <obj class="Point" id="4 DataReader-2-DataReaderConf-via-configuration">
  <attr name="x" type="s16" val="151"/>
  <attr name="y" type="s16" val="12"/>
@@ -1525,6 +1723,11 @@
 <obj class="Point" id="4 DataReader-2-ReadoutInterface-via-interfaces">
  <attr name="x" type="s16" val="26"/>
  <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf">
+ <attr name="x" type="s16" val="65"/>
+ <attr name="y" type="s16" val="44"/>
 </obj>
 
 <obj class="Point" id="4 DataRecorder-2-DataRecorderConf-via-configuration">
@@ -1587,11 +1790,6 @@
  <attr name="y" type="s16" val="8"/>
 </obj>
 
-<obj class="Point" id="4 ReadoutModule-2-DLH">
- <attr name="x" type="s16" val="8"/>
- <attr name="y" type="s16" val="8"/>
-</obj>
-
 <obj class="Point" id="4 ReadoutModule-2-ReadoutModuleConf-via-module_configuration">
  <attr name="x" type="s16" val="58"/>
  <attr name="y" type="s16" val="21"/>
@@ -1620,6 +1818,11 @@
 <obj class="Point" id="4 RequestHandler-2-DataRecorderConf-via-data_recorder">
  <attr name="x" type="s16" val="56"/>
  <attr name="y" type="s16" val="26"/>
+</obj>
+
+<obj class="Point" id="4 RequestHandler-2-TriggerRequestHandler">
+ <attr name="x" type="s16" val="58"/>
+ <attr name="y" type="s16" val="12"/>
 </obj>
 
 <obj class="Point" id="4 ResourceBase-2-DROStreamConf">
@@ -1691,9 +1894,24 @@
  <attr name="y" type="s16" val="21"/>
 </obj>
 
-<obj class="Point" id="4 StreamParameters-2-StreamEmulationParameters-via-emulation_conf">
- <attr name="x" type="s16" val="146"/>
- <attr name="y" type="s16" val="44"/>
+<obj class="Point" id="4 TAAlgorithm-2-TAHorizontalMuon">
+ <attr name="x" type="s16" val="54"/>
+ <attr name="y" type="s16" val="39"/>
+</obj>
+
+<obj class="Point" id="4 TAAlgorithm-2-TAPassThrough">
+ <attr name="x" type="s16" val="24"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 TPDataProcessor-2-TAAlgorithm-via-algorithms">
+ <attr name="x" type="s16" val="28"/>
+ <attr name="y" type="s16" val="12"/>
+</obj>
+
+<obj class="Point" id="4 TPDataProcessor-2-TPChannelFilterConf-via-channel_filter_conf">
+ <attr name="x" type="s16" val="42"/>
+ <attr name="y" type="s16" val="21"/>
 </obj>
 
 <obj class="View" id="ReadoutApplication">

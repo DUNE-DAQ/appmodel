@@ -10,11 +10,9 @@
 
 #include "ModuleFactory.hpp"
 
-#include "oks/kernel.hpp"
 #include "oksdbinterfaces/Configuration.hpp"
 
 #include "coredal/Connection.hpp"
-#include "coredal/DROStreamConf.hpp"
 #include "coredal/NetworkConnection.hpp"
 #include "coredal/ReadoutGroup.hpp"
 #include "coredal/ReadoutInterface.hpp"
@@ -22,39 +20,22 @@
 #include "coredal/Service.hpp"
 #include "coredal/Session.hpp"
 
-#include "appdal/NetworkConnectionDescriptor.hpp"
+#include "appdal/DataSubscriber.hpp"
+#include "appdal/DataReaderConf.hpp"
+#include "appdal/DataRecorderConf.hpp"
+
+#include "appdal/ReadoutModule.hpp"
+#include "appdal/ReadoutModuleConf.hpp"
+
 #include "appdal/NetworkConnectionRule.hpp"
 #include "appdal/QueueConnectionRule.hpp"
+
 #include "appdal/QueueDescriptor.hpp"
-#include "appdal/ReadoutModule.hpp"
+#include "appdal/NetworkConnectionDescriptor.hpp"
+
 #include "appdal/SourceIDConf.hpp"
 
-#include "appdal/LatencyBuffer.hpp"
-#include "appdal/RequestHandler.hpp"
-
-#include "appdal/ModuleLevelTrigger.hpp"
-#include "appdal/ModuleLevelTriggerConf.hpp"
-
-#include "appdal/StandaloneCandidateMaker.hpp"
-#include "appdal/StandaloneCandidateMakerConf.hpp"
-
-#include "appdal/TimingTriggerCandidateMaker.hpp"
-#include "appdal/TimingTriggerCandidateMakerConf.hpp"
-
-#include "appdal/CustomTriggerCandidateMaker.hpp"
-#include "appdal/CustomTriggerCandidateMakerConf.hpp"
-
-#include "appdal/TCBuffer.hpp"
-#include "appdal/TCBufferConf.hpp"
-#include "appdal/TCSetTee.hpp"
-
-#include "appdal/RandomTriggerCandidateMaker.hpp"
-#include "appdal/RandomTriggerCandidateMakerConf.hpp"
-#include "appdal/TPChannelFilterConf.hpp"
-#include "appdal/TriggeringAlgorithms.hpp"
-
 #include "appdal/TriggerApplication.hpp"
-
 #include "appdal/appdalIssues.hpp"
 
 #include "logging/Logging.hpp"
@@ -107,289 +88,137 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 {
   std::vector<const coredal::DaqModule*> modules;
 
-  // Trigger Interrupt network descriptor
-  const NetworkConnectionDescriptor* tiMLTNetDesc = nullptr;
-  // TriggerDecisions network descriptor
-  const NetworkConnectionDescriptor* tdMLTNetDesc = nullptr;
-  // Timing trigger network descriptor
-  const NetworkConnectionDescriptor* tmgTrgNetDesc = nullptr;
+  auto ti_conf = get_trigger_inputs_handler();
+  auto ti_class = ti_conf->get_template_for();
 
-  // Generic TC queue descriptor
-  const QueueDescriptor* tcQueueDesc;
+  // Process the queue rules looking for inputs to our trigger handler modules
+  const QueueDescriptor* ti_inputq_desc = nullptr;
 
-  /**************************************************************
-   * Get all the queue connection descriptions
-   **************************************************************/
   for (auto rule : get_queue_rules()) {
-    std::string destination_class = rule->get_destination_class();
-    std::string data_type = rule->get_descriptor()->get_data_type();
-    if ((destination_class == "ModuleLevelTrigger") && (data_type == "TriggerCandidate")) {
-      tcQueueDesc = rule->get_descriptor();
+    auto destination_class = rule->get_destination_class();
+    auto data_type = rule->get_descriptor()->get_data_type();
+    if (destination_class == "ReadoutModule" || destination_class == ti_class) {
+      ti_inputq_desc = rule->get_descriptor();
     }
   }
-  if (!tcQueueDesc) {
-    throw(BadConf(ERS_HERE, "No description for the queue of TCs going tinto the MLT given"));
-  }
-
-  /**************************************************************
-   * Get all the network connections
-   **************************************************************/
-  size_t nReadoutLinks = 0;
+  // Process the network rules looking for the Fragment Aggregator and TP handler data reuest inputs
+  const NetworkConnectionDescriptor* req_net_desc = nullptr;
+  const NetworkConnectionDescriptor* tin_net_desc = nullptr;
+  const NetworkConnectionDescriptor* tout_net_desc = nullptr;
+  const NetworkConnectionDescriptor* tset_out_net_desc = nullptr;
   for (auto rule : get_network_rules()) {
-    std::string endpoint_class = rule->get_endpoint_class();
-    std::string data_type = rule->get_descriptor()->get_data_type();
+    auto endpoint_class = rule->get_endpoint_class();
+    auto data_type = rule->get_descriptor()->get_data_type();
 
-    // Network connections for the MLT
-    if (data_type == "TriggerInhibit") {
-      tiMLTNetDesc = rule->get_descriptor();
+    if (data_type == "DataRequest") { 
+      req_net_desc = rule->get_descriptor();
     }
-    if (data_type == "TriggerDecision") {
-      tdMLTNetDesc = rule->get_descriptor();
+    else if (data_type == "TASet" || data_type == "TCSet"){
+	tset_out_net_desc = rule->get_descriptor();
     }
-    if (data_type == "HSIEvent") {
-      tmgTrgNetDesc = rule->get_descriptor();
+    else if (endpoint_class == "DataSubscriber") {
+        tin_net_desc =  rule->get_descriptor();
     }
-
-    TLOG_DEBUG(3) << "Endpoint class (currently not used in for networkconnections): " << endpoint_class
-                  << " data_type: " << data_type;
-  }
-
-  if (!tdMLTNetDesc) {
-    throw(BadConf(ERS_HERE, "No MLT network connection for the output TriggerDecision given"));
-  }
-
-  /**************************************************************
-   * Get the MLT
-   **************************************************************/
-  auto mlt_conf = get_mlt_conf();
-  // Don't build the rest if we have no MLT
-  if (!mlt_conf) {
-    throw(BadConf(ERS_HERE, "No MLT configuration in TriggerApplication given"));
-  }
-
-  // Vector of MLT inputs and output connections
-  std::vector<oksdbinterfaces::ConfigObject> mlt_inputs_copies;
-  std::vector<const oksdbinterfaces::ConfigObject*> mlt_inputs;
-  std::vector<const oksdbinterfaces::ConfigObject*> mlt_outputs;
-
-  // Create MLT config object
-  auto mlt_conf_obj = mlt_conf->config_object();
-  oksdbinterfaces::ConfigObject mltObj;
-  std::string mltUid("mlt-" + UID());
-  confdb->create(dbfile, "ModuleLevelTrigger", mltUid, mltObj);
-  mltObj.set_obj("configuration", &mlt_conf_obj);
-
-  // Create TC queue to the MLT
-  std::string tcQueueToMLTID(tcQueueDesc->get_uid_base() + UID());
-  oksdbinterfaces::ConfigObject tcQueueToMLTObj;
-  confdb->create(dbfile, "Queue", tcQueueToMLTID, tcQueueToMLTObj);
-  tcQueueToMLTObj.set_by_val<std::string>("data_type", tcQueueDesc->get_data_type());
-  tcQueueToMLTObj.set_by_val<std::string>("queue_type", tcQueueDesc->get_queue_type());
-  tcQueueToMLTObj.set_by_val<uint32_t>("capacity", tcQueueDesc->get_capacity());
-  // rndTCMakerObj.set_objs("outputs", {&tcQueueToMLTObj});
-  mlt_inputs.push_back(&tcQueueToMLTObj);
-
-  /**************************************************************
-   * Create the readout map for MLT
-   **************************************************************/
-  auto resources = get_contains();
-  if (resources.size() == 0) {
-    throw(BadConf(ERS_HERE, "No ReadoutGroups contained in application"));
-  }
-
-  std::vector<const appdal::SourceIDConf*> sourceIds;
-  TLOG_DEBUG(7) << "Number of ReadoutGroups in the application: " << resources.size();
-  // Interate over all the readout groups
-  for (auto roGroup : resources) {
-    if (roGroup->disabled(*session)) {
-      TLOG_DEBUG(7) << "Ignoring disabled ReadoutGroup " << roGroup->UID();
-      continue;
-    }
-
-    auto group_rset = roGroup->cast<coredal::ReadoutGroup>();
-    if (group_rset == nullptr) {
-      throw(BadConf(ERS_HERE, "TriggerApplication's readoutgroup list contains something other than ReadoutGroup"));
-    }
-    if (group_rset->get_contains().empty()) {
-      throw(BadConf(ERS_HERE, "ReadoutGroup does not contain interfaces"));
-    }
-
-    // Iterate over each interface in per group
-    auto interfaces = group_rset->get_contains();
-    TLOG_DEBUG(7) << "Number of ReadoutInterfaces in that group : " << interfaces.size();
-    for (auto interface_rset : interfaces) {
-      if (interface_rset->disabled(*session)) {
-        TLOG_DEBUG(7) << "Ignoring disabled ReadoutInterface " << interface_rset->UID();
-        continue;
-      }
-      auto interface = interface_rset->cast<coredal::ReadoutInterface>();
-      if (interface == nullptr) {
-        throw(BadConf(ERS_HERE, "ReadoutGroup contains something othen than ReadoutInterface"));
-      }
-      auto streams = interface->get_contains();
-      TLOG_DEBUG(7) << "Number of streams in that interface: " << streams.size();
-
-      // Interate over all the streams
-      for (auto link : streams) {
-        // TODO: In the future need to check if this is DROStreamConf, or some other e.g. TCBufferLink, etc
-        // TODO: For now we only have DROStreamConf!
-        auto stream = link->cast<coredal::DROStreamConf>();
-        if (stream == nullptr) {
-          throw(BadConf(ERS_HERE, "ReadoutInterface contains something other than DROStreamConf"));
-        }
-        if (stream->disabled(*session)) {
-          TLOG_DEBUG(7) << "Ignoring disabled DROStreamConf " << stream->UID();
-          continue;
-        }
-
-        // Create SourceIDConf object for the MLT
-        auto id = stream->get_source_id();
-        oksdbinterfaces::ConfigObject sourceIdConf;
-        std::string sourceIdConfUID = "dro-mlt-stream-config-" + std::to_string(id);
-        confdb->create(dbfile, "SourceIDConf", sourceIdConfUID, sourceIdConf);
-        sourceIdConf.set_by_val<uint32_t>("id", id);
-        // https://github.com/DUNE-DAQ/daqdataformats/blob/5b99506675a586c8a09123900e224f2371d96df9/include/daqdataformats/detail/SourceID.hxx#L108
-        sourceIdConf.set_by_val<std::string>("subsystem", "Detector_Readout");
-        sourceIds.push_back(confdb->get<appdal::SourceIDConf>(sourceIdConfUID));
-      }
+    else if (data_type == "TriggerActivity" || data_type == "TriggerCandidate"){
+	tout_net_desc = rule->get_descriptor();
     }
   }
 
-  std::vector<const oksdbinterfaces::ConfigObject*> sourceIdConfs;
-  for (auto sid : sourceIds)
-  {
-    sourceIdConfs.push_back(&sid->config_object());
+  // Now create the Data Handler and its associated queue and network
+  // connections
+  oksdbinterfaces::ConfigObject input_queue_obj;
+  oksdbinterfaces::ConfigObject req_net_obj;
+  oksdbinterfaces::ConfigObject tin_net_obj;
+  oksdbinterfaces::ConfigObject tout_net_obj;
+  oksdbinterfaces::ConfigObject tset_out_net_obj;
+  auto handlerConf = get_trigger_inputs_handler();
+  
+  if ( req_net_desc== nullptr) {
+      throw (BadConf(ERS_HERE, "No network descriptor given to receive request and send data was set"));
   }
-  TLOG_DEBUG(3) << "Number of mandatory readout links: " << sourceIdConfs.size();
-  mltObj.set_objs("mandatory_links", sourceIdConfs);
-
-  // Network connection for the MLT: input TriggerInhibit
-  if (!tiMLTNetDesc) {
-    throw(BadConf(ERS_HERE, "No TriggerInhibit network connection provided for the MLT"));
+  if ( tin_net_desc== nullptr) {
+      throw (BadConf(ERS_HERE, "No network descriptor given to receive trigger objects"));
   }
+  if ( tout_net_desc== nullptr) {
+      throw (BadConf(ERS_HERE, "No network descriptor given to publish trigger objects"));
+  }
+  if (ti_inputq_desc == nullptr) {
+      throw (BadConf(ERS_HERE, "No data input queue descriptor given"));
+  }
+    
+  std::string queue_uid(ti_inputq_desc->get_uid_base());
+  confdb->create(dbfile, "Queue", queue_uid, input_queue_obj);
+  input_queue_obj.set_by_val<std::string>("data_type", ti_inputq_desc->get_data_type());
+  input_queue_obj.set_by_val<std::string>("queue_type", ti_inputq_desc->get_queue_type());
+  input_queue_obj.set_by_val<uint32_t>("capacity", ti_inputq_desc->get_capacity());
 
-  oksdbinterfaces::ConfigObject tiMLTNetObj =
-    create_network_connection(tiMLTNetDesc->get_uid_base(), tiMLTNetDesc, confdb, dbfile);
-  mlt_inputs.push_back(&tiMLTNetObj);
-  // Network connection for the MLT: output TriggerDecision
-  oksdbinterfaces::ConfigObject tdMLTNetObj =
-    create_network_connection(tdMLTNetDesc->get_uid_base(), tdMLTNetDesc, confdb, dbfile);
-  mlt_outputs.push_back(&tdMLTNetObj);
+  auto req_service_obj = req_net_desc->get_associated_service()->config_object();
+  std::string req_net_uid(req_net_desc->get_uid_base()+UID());;
+  confdb->create(dbfile, "NetworkConnection", req_net_uid, req_net_obj);
+  req_net_obj.set_by_val<std::string>("connection_type", req_net_desc->get_connection_type());
+  req_net_obj.set_by_val<std::string>("data_type", req_net_desc->get_data_type());
+  req_net_obj.set_obj("associated_service", &req_service_obj);
 
-  /**************************************************************
-   * Get all the standalone trigger candidate makers
-   **************************************************************/
-  // TODO: Either add all the tees & buffers, or create new readout-like modules
-  int nStandaloneMakers = 0;
-  for (auto tcmaker_conf : get_standalone_candidate_maker_confs()) {
-    // Get the name of the underlying class
-    std::string tcmaker_class = tcmaker_conf->get_template_for();
-    if (tcmaker_class == "StandaloneCandidateMaker") {
-      throw(BadConf(ERS_HERE, "\"template_for\" option not provided for one of the StandaloneCandidateMakerConf"));
-    }
-    TLOG_DEBUG(3) << "Adding standalone TCMaker class of type: " << tcmaker_class;
+  auto tin_service_obj = tin_net_desc->get_associated_service()->config_object();
+  std::string t_in_stream_uid(tin_net_desc->get_uid_base()+UID());
+  confdb->create(dbfile, "NetworkConnection", t_in_stream_uid, tin_net_obj);
+  tin_net_obj.set_by_val<std::string>("data_type", tin_net_desc->get_data_type());
+  tin_net_obj.set_by_val<std::string>("connection_type", tin_net_desc->get_connection_type());
+  tin_net_obj.set_obj("associated_service", &tin_service_obj);
+ 
+  auto tout_service_obj = tout_net_desc->get_associated_service()->config_object();
+  std::string t_stream_uid(tout_net_desc->get_uid_base()+UID());
+  confdb->create(dbfile, "NetworkConnection", t_stream_uid, tout_net_obj);
+  tout_net_obj.set_by_val<std::string>("data_type", tout_net_desc->get_data_type());
+  tout_net_obj.set_by_val<std::string>("connection_type", tout_net_desc->get_connection_type());
+  tout_net_obj.set_obj("associated_service", &tout_service_obj);
 
-    // Make object
-    auto tcmakerConfObj = tcmaker_conf->config_object();
-    oksdbinterfaces::ConfigObject tcmakerObj;
-    std::string uniqueUid = std::to_string(nStandaloneMakers) + UID();
-    std::string tcmakerUid("standalone_maker-" + uniqueUid);
-    confdb->create(dbfile, tcmaker_class.c_str(), tcmakerUid, tcmakerObj);
 
-    // Configure the TCMaker
-    tcmakerObj.set_obj("configuration", &tcmakerConfObj);
-    tcmakerObj.set_objs("outputs", { &tcQueueToMLTObj });
 
-    // Add HSI network connection if it's the TimingTrigger
-    if (tcmaker_class == "TimingTriggerCandidateMaker") {
-      if (!tmgTrgNetDesc) {
-        throw(BadConf(ERS_HERE, "No timing trigger input network connection given"));
-      }
-      oksdbinterfaces::ConfigObject tmgNetObj =
-        create_network_connection(tmgTrgNetDesc->get_uid_base(), tmgTrgNetDesc, confdb, dbfile);
-      tcmakerObj.set_objs("inputs", { &tmgNetObj });
-    }
-
-    //// Create the queue to the tee
-    // std::string tcmakerToTeeQueueUid("tcmaker-to-tee-" + uniqueUid);
-    // oksdbinterfaces::ConfigObject queueTCMakerTeeObj;
-    // confdb->create(dbfile, "Queue", tcmakerToTeeQueueUid + UID(), queueTCMakerTeeObj);
-    // queueTCMakerTeeObj.set_by_val<std::string>("data_type", tcQueueDesc->get_data_type());
-    // queueTCMakerTeeObj.set_by_val<std::string>("queue_type", tcQueueDesc->get_queue_type());
-    // queueTCMakerTeeObj.set_by_val<uint32_t>("capacity", tcQueueDesc->get_capacity());
-    // tcmakerObj.set_objs("outputs", {&queueTCMakerTeeObj});
-
-    //// Create the tee itself
-    // std::string tcmTCTeeUid("tcmaker-TCSetTee-");
-    // oksdbinterfaces::ConfigObject tcTeeTCMakerObj;
-    // confdb->create(dbfile, "TCSetTee", tcmakerTCTeeUid + UID(), tcTeeTCMakerObj);
-    // tcTeeTCMakerObj.set_objs("inputs", {&queueTCMakerTeeObj});
-
-    //// Queue to the buffer
-    // std::string tcmakerTeeToBufferQueueUid("tcmaker-tctee-to-buffer-");
-    // oksdbinterfaces::ConfigObject queueTCMakerTeeToBufferObj;
-    // confdb->create(dbfile, "Queue", tcmakerTeeToBufferQueueUid + UID(), queueTCMakerTeeToBufferObj);
-    // queueTCMakerTeeToBufferObj.set_by_val<std::string>("data_type", tcQueueDesc->get_data_type());
-    // queueTCMakerTeeToBufferObj.set_by_val<std::string>("queue_type", tcQueueDesc->get_queue_type());
-    // queueTCMakerTeeToBufferObj.set_by_val<uint32_t>("capacity", tcQueueDesc->get_capacity());
-
-    //// Queue to the MLT
-    // std::string tcmakerTeeToMLTQueueUid("tcmaker-tctee-to-mlt-");
-    // oksdbinterfaces::ConfigObject queueTCMakerTeeToMLTObj;
-    // confdb->create(dbfile, "Queue", tcmakerTeeToMLTQueueUid + UID(), queueTCMakerTeeToMLTObj);
-    // queueTCMakerTeeToMLTObj.set_by_val<std::string>("data_type", tcQueueDesc->get_data_type());
-    // queueTCMakerTeeToMLTObj.set_by_val<std::string>("queue_type", tcQueueDesc->get_queue_type());
-    // queueTCMakerTeeToMLTObj.set_by_val<uint32_t>("capacity", tcQueueDesc->get_capacity());
-
-    //// The TCBuffer
-    // std::string tcmakerBufferUid("tcmaker-tcbuffer");
-    // oksdbinterfaces::ConfigObject tcBuffetcmakerakerObj;
-    // confdb->create(dbfile, "TCBuffer", tcmakerBufferUid + UID(), tcBuffetcmakerakerObj);
-
-    // auto tcBufferConf       = rndTCMakerConf->get_tcbuffer_conf();
-    // auto tc_buffer_conf_obj = tcBufferConf->config_object();
-
-    // tcBuffetcmakerakerObj.set_obj("configuration", &tc_buffer_conf_obj);
-    // tcBuffetcmakerakerObj.set_objs("inputs", {&queueTCMakerTeeToBufferObj});
-    // modules.push_back(confdb->get<TCBuffer>(tcmakerBufferUid + UID()));
-
-    // tcTeeTCMakerObj.set_objs("outputs", {&queueTCMakerTeeToBufferObj, &queueTCMakerTeeToMLTObj});
-    // mlt_inputs.push_back(std::move(&queueTCMakerTeeToMLTObj));
-
-    //// Push all the modules related with the TCMaker
-    modules.push_back(confdb->get<StandaloneCandidateMaker>(tcmakerUid));
-    // modules.push_back(confdb->get<TCSetTee>(tcmakerTCTeeUid + UID()));
-    nStandaloneMakers++;
+  if (tset_out_net_desc) {
+    auto tset_out_service_obj = tset_out_net_desc->get_associated_service()->config_object();
+    std::string tset_stream_uid(tset_out_net_desc->get_uid_base()+UID());
+    confdb->create(dbfile, "NetworkConnection", tset_stream_uid, tset_out_net_obj);
+    tset_out_net_obj.set_by_val<std::string>("data_type", tset_out_net_desc->get_data_type());
+    tset_out_net_obj.set_by_val<std::string>("connection_type", tset_out_net_desc->get_connection_type());
+    tset_out_net_obj.set_obj("associated_service", &tset_out_service_obj);
   }
 
-  // TODO: Warning! Not finished yet, remove and move down.
-  mltObj.set_objs("inputs", mlt_inputs);
-  mltObj.set_objs("outputs", mlt_outputs);
+  auto ti_conf_obj = ti_conf->config_object();
+  oksdbinterfaces::ConfigObject ti_obj;
+  std::string ti_uid("tihandler-"+std::to_string(get_source_id()));
+  confdb->create(dbfile, ti_class, ti_uid, ti_obj);
+  ti_obj.set_by_val<uint32_t>("source_id", get_source_id());
+  ti_obj.set_obj("module_configuration", &ti_conf_obj);
+  ti_obj.set_objs("inputs", {&input_queue_obj, &req_net_obj});
+  if (tset_out_net_desc!= nullptr) {
+    ti_obj.set_objs("outputs", {&tout_net_obj, &tset_out_net_obj});
+  }
+  else {
+    ti_obj.set_objs("outputs", {&tout_net_obj});
+  }
+  // Add to our list of modules to return
+   modules.push_back(confdb->get<ReadoutModule>(ti_uid));
+  
 
-  modules.push_back(confdb->get<ModuleLevelTrigger>(mltUid));
-
-  /**************************************************************
-   * Get the trigger graph
-   **************************************************************/
-  // Don't bother building the entire trigger graph if we have no tpstreams in.
-  if (!nReadoutLinks) {
-    return modules;
+  // Now create the DataSubscriber object
+  auto rdr_conf = get_data_subscriber();
+  if (rdr_conf == nullptr) {
+    throw (BadConf(ERS_HERE, "No DataReader configuration given"));
   }
 
-  // Get the triggering algos handler
-  auto trigger_algs = get_trigger_algs();
-  // Don't build the rest if we don't have triggering algs
-  if (trigger_algs.size() == 0) {
-    return modules;
-  }
+  // Create a DataReader 
 
-  // Make the TPChannelFilters
-  auto tpChannelFilterConf = get_tpchannelfilter_conf();
-  for (size_t tpLinkId = 0; tpLinkId < nReadoutLinks; ++tpLinkId) {
-    auto tpChannelFilterConfObj = tpChannelFilterConf->config_object();
-  }
+  std::string reader_uid("data-reader-"+UID());
+  std::string reader_class = rdr_conf->get_template_for();
+  oksdbinterfaces::ConfigObject reader_obj;
+  TLOG_DEBUG(7) <<  "creating OKS configuration object for Data subscriber class " << reader_class;
+  confdb->create(dbfile, reader_class, reader_uid, reader_obj);
+  reader_obj.set_objs("inputs", {&tin_net_obj} );
+  reader_obj.set_objs("outputs", {&input_queue_obj} );
+  reader_obj.set_obj("configuration", &rdr_conf->config_object());
 
-  // <Trigger algorithms code goes here>
+  modules.push_back(confdb->get<DataSubscriber>(reader_uid));
 
   return modules;
 }

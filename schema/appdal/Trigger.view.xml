@@ -1,0 +1,921 @@
+<?xml version="1.0" encoding="ASCII"?>
+
+<!-- oks-data version 2.2 -->
+
+
+<!DOCTYPE oks-data [
+  <!ELEMENT oks-data (info, (include)?, (comments)?, (obj)+)>
+  <!ELEMENT info EMPTY>
+  <!ATTLIST info
+      name CDATA #IMPLIED
+      type CDATA #IMPLIED
+      num-of-items CDATA #REQUIRED
+      oks-format CDATA #FIXED "data"
+      oks-version CDATA #REQUIRED
+      created-by CDATA #IMPLIED
+      created-on CDATA #IMPLIED
+      creation-time CDATA #IMPLIED
+      last-modified-by CDATA #IMPLIED
+      last-modified-on CDATA #IMPLIED
+      last-modification-time CDATA #IMPLIED
+  >
+  <!ELEMENT include (file)*>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+      path CDATA #REQUIRED
+  >
+  <!ELEMENT comments (comment)*>
+  <!ELEMENT comment EMPTY>
+  <!ATTLIST comment
+      creation-time CDATA #REQUIRED
+      created-by CDATA #REQUIRED
+      created-on CDATA #REQUIRED
+      author CDATA #REQUIRED
+      text CDATA #REQUIRED
+  >
+  <!ELEMENT obj (attr | rel)*>
+  <!ATTLIST obj
+      class CDATA #REQUIRED
+      id CDATA #REQUIRED
+  >
+  <!ELEMENT attr (data)*>
+  <!ATTLIST attr
+      name CDATA #REQUIRED
+      type (bool|s8|u8|s16|u16|s32|u32|s64|u64|float|double|date|time|string|uid|enum|class|-) "-"
+      val CDATA ""
+  >
+  <!ELEMENT data EMPTY>
+  <!ATTLIST data
+      val CDATA #REQUIRED
+  >
+  <!ELEMENT rel (ref)*>
+  <!ATTLIST rel
+      name CDATA #REQUIRED
+      class CDATA ""
+      id CDATA ""
+  >
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref
+      class CDATA #REQUIRED
+      id CDATA #REQUIRED
+  >
+]>
+
+<oks-data>
+
+<info name="" type="" num-of-items="140" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="glehmann" created-on="lxplus924.cern.ch" creation-time="20240126T113022" last-modified-by="glehmann" last-modified-on="lxplus924.cern.ch" last-modification-time="20240126T113022"/>
+
+<obj class="ALink" id="DataReaderConf-2-StreamEmulationParameters-via-emulation_conf">
+ <attr name="Name" type="string" val="emulation_conf"/>
+ <rel name="From" class="Class" id="DataReaderConf"/>
+ <rel name="To" class="Class" id="StreamEmulationParameters"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf"/>
+  <ref class="Point" id="2 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf"/>
+  <ref class="Point" id="3 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf"/>
+  <ref class="Point" id="4 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="DataSubscriber-2-DataReaderConf-via-configuration">
+ <attr name="Name" type="string" val="configuration"/>
+ <rel name="From" class="Class" id="DataSubscriber"/>
+ <rel name="To" class="Class" id="DataReaderConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DataSubscriber-2-DataReaderConf-via-configuration"/>
+  <ref class="Point" id="2 DataSubscriber-2-DataReaderConf-via-configuration"/>
+  <ref class="Point" id="3 DataSubscriber-2-DataReaderConf-via-configuration"/>
+  <ref class="Point" id="4 DataSubscriber-2-DataReaderConf-via-configuration"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="MLTAlgorithm-2-ROIGroupConf-via-roi_group_conf">
+ <attr name="Name" type="string" val="roi_group_conf"/>
+ <rel name="From" class="Class" id="MLTAlgorithm"/>
+ <rel name="To" class="Class" id="ROIGroupConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 MLTAlgorithm-2-ROIGroupConf-via-roi_group_conf"/>
+  <ref class="Point" id="2 MLTAlgorithm-2-ROIGroupConf-via-roi_group_conf"/>
+  <ref class="Point" id="3 MLTAlgorithm-2-ROIGroupConf-via-roi_group_conf"/>
+  <ref class="Point" id="4 MLTAlgorithm-2-ROIGroupConf-via-roi_group_conf"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="MLTAlgorithm-2-SourceIDConf-via-mandatory_links">
+ <attr name="Name" type="string" val="mandatory_links"/>
+ <rel name="From" class="Class" id="MLTAlgorithm"/>
+ <rel name="To" class="Class" id="SourceIDConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 MLTAlgorithm-2-SourceIDConf-via-mandatory_links"/>
+  <ref class="Point" id="2 MLTAlgorithm-2-SourceIDConf-via-mandatory_links"/>
+  <ref class="Point" id="3 MLTAlgorithm-2-SourceIDConf-via-mandatory_links"/>
+  <ref class="Point" id="4 MLTAlgorithm-2-SourceIDConf-via-mandatory_links"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="MLTAlgorithm-2-TCReadoutMap-via-tc_readout_map">
+ <attr name="Name" type="string" val="tc_readout_map"/>
+ <rel name="From" class="Class" id="MLTAlgorithm"/>
+ <rel name="To" class="Class" id="TCReadoutMap"/>
+ <rel name="Points">
+  <ref class="Point" id="1 MLTAlgorithm-2-TCReadoutMap-via-tc_readout_map"/>
+  <ref class="Point" id="2 MLTAlgorithm-2-TCReadoutMap-via-tc_readout_map"/>
+  <ref class="Point" id="3 MLTAlgorithm-2-TCReadoutMap-via-tc_readout_map"/>
+  <ref class="Point" id="4 MLTAlgorithm-2-TCReadoutMap-via-tc_readout_map"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="ReadoutModuleConf-2-DataProcessor-via-data_processor">
+ <attr name="Name" type="string" val="data_processor"/>
+ <rel name="From" class="Class" id="ReadoutModuleConf"/>
+ <rel name="To" class="Class" id="DataProcessor"/>
+ <rel name="Points">
+  <ref class="Point" id="1 ReadoutModuleConf-2-DataProcessor-via-data_processor"/>
+  <ref class="Point" id="2 ReadoutModuleConf-2-DataProcessor-via-data_processor"/>
+  <ref class="Point" id="3 ReadoutModuleConf-2-DataProcessor-via-data_processor"/>
+  <ref class="Point" id="4 ReadoutModuleConf-2-DataProcessor-via-data_processor"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="ReadoutModuleConf-2-LatencyBuffer-via-latency_buffer">
+ <attr name="Name" type="string" val="latency_buffer"/>
+ <rel name="From" class="Class" id="ReadoutModuleConf"/>
+ <rel name="To" class="Class" id="LatencyBuffer"/>
+ <rel name="Points">
+  <ref class="Point" id="1 ReadoutModuleConf-2-LatencyBuffer-via-latency_buffer"/>
+  <ref class="Point" id="2 ReadoutModuleConf-2-LatencyBuffer-via-latency_buffer"/>
+  <ref class="Point" id="3 ReadoutModuleConf-2-LatencyBuffer-via-latency_buffer"/>
+  <ref class="Point" id="4 ReadoutModuleConf-2-LatencyBuffer-via-latency_buffer"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="ReadoutModuleConf-2-RequestHandler-via-request_handler">
+ <attr name="Name" type="string" val="request_handler"/>
+ <rel name="From" class="Class" id="ReadoutModuleConf"/>
+ <rel name="To" class="Class" id="RequestHandler"/>
+ <rel name="Points">
+  <ref class="Point" id="1 ReadoutModuleConf-2-RequestHandler-via-request_handler"/>
+  <ref class="Point" id="2 ReadoutModuleConf-2-RequestHandler-via-request_handler"/>
+  <ref class="Point" id="3 ReadoutModuleConf-2-RequestHandler-via-request_handler"/>
+  <ref class="Point" id="4 ReadoutModuleConf-2-RequestHandler-via-request_handler"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="RequestHandler-2-DataRecorderConf-via-data_recorder">
+ <attr name="Name" type="string" val="data_recorder"/>
+ <rel name="From" class="Class" id="RequestHandler"/>
+ <rel name="To" class="Class" id="DataRecorderConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 RequestHandler-2-DataRecorderConf-via-data_recorder"/>
+  <ref class="Point" id="2 RequestHandler-2-DataRecorderConf-via-data_recorder"/>
+  <ref class="Point" id="3 RequestHandler-2-DataRecorderConf-via-data_recorder"/>
+  <ref class="Point" id="4 RequestHandler-2-DataRecorderConf-via-data_recorder"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="TADataProcessor-2-TCAlgorithm-via-algorithms">
+ <attr name="Name" type="string" val="algorithms"/>
+ <rel name="From" class="Class" id="TADataProcessor"/>
+ <rel name="To" class="Class" id="TCAlgorithm"/>
+ <rel name="Points">
+  <ref class="Point" id="1 TADataProcessor-2-TCAlgorithm-via-algorithms"/>
+  <ref class="Point" id="2 TADataProcessor-2-TCAlgorithm-via-algorithms"/>
+  <ref class="Point" id="3 TADataProcessor-2-TCAlgorithm-via-algorithms"/>
+  <ref class="Point" id="4 TADataProcessor-2-TCAlgorithm-via-algorithms"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="TCDataProcessor-2-MLTAlgorithm-via-algorithm">
+ <attr name="Name" type="string" val="algorithm"/>
+ <rel name="From" class="Class" id="TCDataProcessor"/>
+ <rel name="To" class="Class" id="MLTAlgorithm"/>
+ <rel name="Points">
+  <ref class="Point" id="1 TCDataProcessor-2-MLTAlgorithm-via-algorithm"/>
+  <ref class="Point" id="2 TCDataProcessor-2-MLTAlgorithm-via-algorithm"/>
+  <ref class="Point" id="3 TCDataProcessor-2-MLTAlgorithm-via-algorithm"/>
+  <ref class="Point" id="4 TCDataProcessor-2-MLTAlgorithm-via-algorithm"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="TCHSI-2-HSISignalWindow-via-signals">
+ <attr name="Name" type="string" val="signals"/>
+ <rel name="From" class="Class" id="TCHSI"/>
+ <rel name="To" class="Class" id="HSISignalWindow"/>
+ <rel name="Points">
+  <ref class="Point" id="1 TCHSI-2-HSISignalWindow-via-signals"/>
+  <ref class="Point" id="2 TCHSI-2-HSISignalWindow-via-signals"/>
+  <ref class="Point" id="3 TCHSI-2-HSISignalWindow-via-signals"/>
+  <ref class="Point" id="4 TCHSI-2-HSISignalWindow-via-signals"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="TriggerApplication-2-DataReaderConf-via-data_subscriber">
+ <attr name="Name" type="string" val="data_subscriber"/>
+ <rel name="From" class="Class" id="TriggerApplication"/>
+ <rel name="To" class="Class" id="DataReaderConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 TriggerApplication-2-DataReaderConf-via-data_subscriber"/>
+  <ref class="Point" id="2 TriggerApplication-2-DataReaderConf-via-data_subscriber"/>
+  <ref class="Point" id="3 TriggerApplication-2-DataReaderConf-via-data_subscriber"/>
+  <ref class="Point" id="4 TriggerApplication-2-DataReaderConf-via-data_subscriber"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="TriggerApplication-2-ReadoutModuleConf-via-trigger_inputs_handler">
+ <attr name="Name" type="string" val="trigger_inputs_handler"/>
+ <rel name="From" class="Class" id="TriggerApplication"/>
+ <rel name="To" class="Class" id="ReadoutModuleConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 TriggerApplication-2-ReadoutModuleConf-via-trigger_inputs_handler"/>
+  <ref class="Point" id="2 TriggerApplication-2-ReadoutModuleConf-via-trigger_inputs_handler"/>
+  <ref class="Point" id="3 TriggerApplication-2-ReadoutModuleConf-via-trigger_inputs_handler"/>
+  <ref class="Point" id="4 TriggerApplication-2-ReadoutModuleConf-via-trigger_inputs_handler"/>
+ </rel>
+</obj>
+
+<obj class="Class" id="DataProcessor">
+ <attr name="x" type="s16" val="542"/>
+ <attr name="y" type="s16" val="608"/>
+</obj>
+
+<obj class="Class" id="DataReaderConf">
+ <attr name="x" type="s16" val="478"/>
+ <attr name="y" type="s16" val="224"/>
+</obj>
+
+<obj class="Class" id="DataRecorderConf">
+ <attr name="x" type="s16" val="970"/>
+ <attr name="y" type="s16" val="91"/>
+</obj>
+
+<obj class="Class" id="DataSubscriber">
+ <attr name="x" type="s16" val="456"/>
+ <attr name="y" type="s16" val="66"/>
+</obj>
+
+<obj class="Class" id="HSISignalWindow">
+ <attr name="x" type="s16" val="1481"/>
+ <attr name="y" type="s16" val="769"/>
+</obj>
+
+<obj class="Class" id="LatencyBuffer">
+ <attr name="x" type="s16" val="864"/>
+ <attr name="y" type="s16" val="453"/>
+</obj>
+
+<obj class="Class" id="MLTAlgorithm">
+ <attr name="x" type="s16" val="387"/>
+ <attr name="y" type="s16" val="777"/>
+</obj>
+
+<obj class="Class" id="ROIGroupConf">
+ <attr name="x" type="s16" val="713"/>
+ <attr name="y" type="s16" val="854"/>
+</obj>
+
+<obj class="Class" id="ReadoutModuleConf">
+ <attr name="x" type="s16" val="573"/>
+ <attr name="y" type="s16" val="394"/>
+</obj>
+
+<obj class="Class" id="RequestHandler">
+ <attr name="x" type="s16" val="967"/>
+ <attr name="y" type="s16" val="267"/>
+</obj>
+
+<obj class="Class" id="SmartDaqApplication">
+ <attr name="x" type="s16" val="50"/>
+ <attr name="y" type="s16" val="50"/>
+</obj>
+
+<obj class="Class" id="SourceIDConf">
+ <attr name="x" type="s16" val="107"/>
+ <attr name="y" type="s16" val="953"/>
+</obj>
+
+<obj class="Class" id="StreamEmulationParameters">
+ <attr name="x" type="s16" val="589"/>
+ <attr name="y" type="s16" val="4"/>
+</obj>
+
+<obj class="Class" id="TADataProcessor">
+ <attr name="x" type="s16" val="615"/>
+ <attr name="y" type="s16" val="705"/>
+</obj>
+
+<obj class="Class" id="TCAlgorithm">
+ <attr name="x" type="s16" val="937"/>
+ <attr name="y" type="s16" val="723"/>
+</obj>
+
+<obj class="Class" id="TCCustom">
+ <attr name="x" type="s16" val="1164"/>
+ <attr name="y" type="s16" val="539"/>
+</obj>
+
+<obj class="Class" id="TCDataProcessor">
+ <attr name="x" type="s16" val="183"/>
+ <attr name="y" type="s16" val="728"/>
+</obj>
+
+<obj class="Class" id="TCHSI">
+ <attr name="x" type="s16" val="1166"/>
+ <attr name="y" type="s16" val="772"/>
+</obj>
+
+<obj class="Class" id="TCHorizontalMuon">
+ <attr name="x" type="s16" val="1166"/>
+ <attr name="y" type="s16" val="637"/>
+</obj>
+
+<obj class="Class" id="TCPassThrough">
+ <attr name="x" type="s16" val="1166"/>
+ <attr name="y" type="s16" val="835"/>
+</obj>
+
+<obj class="Class" id="TCRandom">
+ <attr name="x" type="s16" val="1165"/>
+ <attr name="y" type="s16" val="883"/>
+</obj>
+
+<obj class="Class" id="TCReadoutMap">
+ <attr name="x" type="s16" val="106"/>
+ <attr name="y" type="s16" val="815"/>
+</obj>
+
+<obj class="Class" id="TriggerApplication">
+ <attr name="x" type="s16" val="80"/>
+ <attr name="y" type="s16" val="241"/>
+</obj>
+
+<obj class="Class" id="TriggerRequestHandler">
+ <attr name="x" type="s16" val="1068"/>
+ <attr name="y" type="s16" val="471"/>
+</obj>
+
+<obj class="GLink" id="DataProcessor-2-TADataProcessor">
+ <rel name="From" class="Class" id="DataProcessor"/>
+ <rel name="To" class="Class" id="TADataProcessor"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DataProcessor-2-TADataProcessor"/>
+  <ref class="Point" id="2 DataProcessor-2-TADataProcessor"/>
+  <ref class="Point" id="3 DataProcessor-2-TADataProcessor"/>
+  <ref class="Point" id="4 DataProcessor-2-TADataProcessor"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="DataProcessor-2-TCDataProcessor">
+ <rel name="From" class="Class" id="DataProcessor"/>
+ <rel name="To" class="Class" id="TCDataProcessor"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DataProcessor-2-TCDataProcessor"/>
+  <ref class="Point" id="2 DataProcessor-2-TCDataProcessor"/>
+  <ref class="Point" id="3 DataProcessor-2-TCDataProcessor"/>
+  <ref class="Point" id="4 DataProcessor-2-TCDataProcessor"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="RequestHandler-2-TriggerRequestHandler">
+ <rel name="From" class="Class" id="RequestHandler"/>
+ <rel name="To" class="Class" id="TriggerRequestHandler"/>
+ <rel name="Points">
+  <ref class="Point" id="1 RequestHandler-2-TriggerRequestHandler"/>
+  <ref class="Point" id="2 RequestHandler-2-TriggerRequestHandler"/>
+  <ref class="Point" id="3 RequestHandler-2-TriggerRequestHandler"/>
+  <ref class="Point" id="4 RequestHandler-2-TriggerRequestHandler"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="SmartDaqApplication-2-TriggerApplication">
+ <rel name="From" class="Class" id="SmartDaqApplication"/>
+ <rel name="To" class="Class" id="TriggerApplication"/>
+ <rel name="Points">
+  <ref class="Point" id="1 SmartDaqApplication-2-TriggerApplication"/>
+  <ref class="Point" id="2 SmartDaqApplication-2-TriggerApplication"/>
+  <ref class="Point" id="3 SmartDaqApplication-2-TriggerApplication"/>
+  <ref class="Point" id="4 SmartDaqApplication-2-TriggerApplication"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="TCAlgorithm-2-TCCustom">
+ <rel name="From" class="Class" id="TCAlgorithm"/>
+ <rel name="To" class="Class" id="TCCustom"/>
+ <rel name="Points">
+  <ref class="Point" id="1 TCAlgorithm-2-TCCustom"/>
+  <ref class="Point" id="2 TCAlgorithm-2-TCCustom"/>
+  <ref class="Point" id="3 TCAlgorithm-2-TCCustom"/>
+  <ref class="Point" id="4 TCAlgorithm-2-TCCustom"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="TCAlgorithm-2-TCHSI">
+ <rel name="From" class="Class" id="TCAlgorithm"/>
+ <rel name="To" class="Class" id="TCHSI"/>
+ <rel name="Points">
+  <ref class="Point" id="1 TCAlgorithm-2-TCHSI"/>
+  <ref class="Point" id="2 TCAlgorithm-2-TCHSI"/>
+  <ref class="Point" id="3 TCAlgorithm-2-TCHSI"/>
+  <ref class="Point" id="4 TCAlgorithm-2-TCHSI"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="TCAlgorithm-2-TCHorizontalMuon">
+ <rel name="From" class="Class" id="TCAlgorithm"/>
+ <rel name="To" class="Class" id="TCHorizontalMuon"/>
+ <rel name="Points">
+  <ref class="Point" id="1 TCAlgorithm-2-TCHorizontalMuon"/>
+  <ref class="Point" id="2 TCAlgorithm-2-TCHorizontalMuon"/>
+  <ref class="Point" id="3 TCAlgorithm-2-TCHorizontalMuon"/>
+  <ref class="Point" id="4 TCAlgorithm-2-TCHorizontalMuon"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="TCAlgorithm-2-TCPassThrough">
+ <rel name="From" class="Class" id="TCAlgorithm"/>
+ <rel name="To" class="Class" id="TCPassThrough"/>
+ <rel name="Points">
+  <ref class="Point" id="1 TCAlgorithm-2-TCPassThrough"/>
+  <ref class="Point" id="2 TCAlgorithm-2-TCPassThrough"/>
+  <ref class="Point" id="3 TCAlgorithm-2-TCPassThrough"/>
+  <ref class="Point" id="4 TCAlgorithm-2-TCPassThrough"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="TCAlgorithm-2-TCRandom">
+ <rel name="From" class="Class" id="TCAlgorithm"/>
+ <rel name="To" class="Class" id="TCRandom"/>
+ <rel name="Points">
+  <ref class="Point" id="1 TCAlgorithm-2-TCRandom"/>
+  <ref class="Point" id="2 TCAlgorithm-2-TCRandom"/>
+  <ref class="Point" id="3 TCAlgorithm-2-TCRandom"/>
+  <ref class="Point" id="4 TCAlgorithm-2-TCRandom"/>
+ </rel>
+</obj>
+
+<obj class="Point" id="1 DataProcessor-2-TADataProcessor">
+ <attr name="x" type="s16" val="177"/>
+ <attr name="y" type="s16" val="51"/>
+</obj>
+
+<obj class="Point" id="1 DataProcessor-2-TCDataProcessor">
+ <attr name="x" type="s16" val="177"/>
+ <attr name="y" type="s16" val="51"/>
+</obj>
+
+<obj class="Point" id="1 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf">
+ <attr name="x" type="s16" val="150"/>
+ <attr name="y" type="s16" val="51"/>
+</obj>
+
+<obj class="Point" id="1 DataSubscriber-2-DataReaderConf-via-configuration">
+ <attr name="x" type="s16" val="72"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 MLTAlgorithm-2-ROIGroupConf-via-roi_group_conf">
+ <attr name="x" type="s16" val="189"/>
+ <attr name="y" type="s16" val="200"/>
+</obj>
+
+<obj class="Point" id="1 MLTAlgorithm-2-SourceIDConf-via-mandatory_links">
+ <attr name="x" type="s16" val="189"/>
+ <attr name="y" type="s16" val="200"/>
+</obj>
+
+<obj class="Point" id="1 MLTAlgorithm-2-TCReadoutMap-via-tc_readout_map">
+ <attr name="x" type="s16" val="189"/>
+ <attr name="y" type="s16" val="200"/>
+</obj>
+
+<obj class="Point" id="1 ReadoutModuleConf-2-DataProcessor-via-data_processor">
+ <attr name="x" type="s16" val="174"/>
+ <attr name="y" type="s16" val="78"/>
+</obj>
+
+<obj class="Point" id="1 ReadoutModuleConf-2-LatencyBuffer-via-latency_buffer">
+ <attr name="x" type="s16" val="174"/>
+ <attr name="y" type="s16" val="78"/>
+</obj>
+
+<obj class="Point" id="1 ReadoutModuleConf-2-RequestHandler-via-request_handler">
+ <attr name="x" type="s16" val="174"/>
+ <attr name="y" type="s16" val="78"/>
+</obj>
+
+<obj class="Point" id="1 RequestHandler-2-DataRecorderConf-via-data_recorder">
+ <attr name="x" type="s16" val="156"/>
+ <attr name="y" type="s16" val="119"/>
+</obj>
+
+<obj class="Point" id="1 RequestHandler-2-TriggerRequestHandler">
+ <attr name="x" type="s16" val="156"/>
+ <attr name="y" type="s16" val="119"/>
+</obj>
+
+<obj class="Point" id="1 SmartDaqApplication-2-TriggerApplication">
+ <attr name="x" type="s16" val="95"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 TADataProcessor-2-TCAlgorithm-via-algorithms">
+ <attr name="x" type="s16" val="117"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 TCAlgorithm-2-TCCustom">
+ <attr name="x" type="s16" val="85"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 TCAlgorithm-2-TCHSI">
+ <attr name="x" type="s16" val="85"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 TCAlgorithm-2-TCHorizontalMuon">
+ <attr name="x" type="s16" val="85"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 TCAlgorithm-2-TCPassThrough">
+ <attr name="x" type="s16" val="85"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 TCAlgorithm-2-TCRandom">
+ <attr name="x" type="s16" val="59"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 TCDataProcessor-2-MLTAlgorithm-via-algorithm">
+ <attr name="x" type="s16" val="117"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 TCHSI-2-HSISignalWindow-via-signals">
+ <attr name="x" type="s16" val="189"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 TriggerApplication-2-DataReaderConf-via-data_subscriber">
+ <attr name="x" type="s16" val="191"/>
+ <attr name="y" type="s16" val="65"/>
+</obj>
+
+<obj class="Point" id="1 TriggerApplication-2-ReadoutModuleConf-via-trigger_inputs_handler">
+ <attr name="x" type="s16" val="191"/>
+ <attr name="y" type="s16" val="65"/>
+</obj>
+
+<obj class="Point" id="2 DataProcessor-2-TADataProcessor">
+ <attr name="x" type="s16" val="177"/>
+ <attr name="y" type="s16" val="666"/>
+</obj>
+
+<obj class="Point" id="2 DataProcessor-2-TCDataProcessor">
+ <attr name="x" type="s16" val="177"/>
+ <attr name="y" type="s16" val="644"/>
+</obj>
+
+<obj class="Point" id="2 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf">
+ <attr name="x" type="s16" val="150"/>
+ <attr name="y" type="s16" val="157"/>
+</obj>
+
+<obj class="Point" id="2 DataSubscriber-2-DataReaderConf-via-configuration">
+ <attr name="x" type="s16" val="72"/>
+ <attr name="y" type="s16" val="138"/>
+</obj>
+
+<obj class="Point" id="2 MLTAlgorithm-2-ROIGroupConf-via-roi_group_conf">
+ <attr name="x" type="s16" val="189"/>
+ <attr name="y" type="s16" val="830"/>
+</obj>
+
+<obj class="Point" id="2 MLTAlgorithm-2-SourceIDConf-via-mandatory_links">
+ <attr name="x" type="s16" val="189"/>
+ <attr name="y" type="s16" val="927"/>
+</obj>
+
+<obj class="Point" id="2 MLTAlgorithm-2-TCReadoutMap-via-tc_readout_map">
+ <attr name="x" type="s16" val="189"/>
+ <attr name="y" type="s16" val="859"/>
+</obj>
+
+<obj class="Point" id="2 ReadoutModuleConf-2-DataProcessor-via-data_processor">
+ <attr name="x" type="s16" val="174"/>
+ <attr name="y" type="s16" val="470"/>
+</obj>
+
+<obj class="Point" id="2 ReadoutModuleConf-2-LatencyBuffer-via-latency_buffer">
+ <attr name="x" type="s16" val="174"/>
+ <attr name="y" type="s16" val="544"/>
+</obj>
+
+<obj class="Point" id="2 ReadoutModuleConf-2-RequestHandler-via-request_handler">
+ <attr name="x" type="s16" val="174"/>
+ <attr name="y" type="s16" val="328"/>
+</obj>
+
+<obj class="Point" id="2 RequestHandler-2-DataRecorderConf-via-data_recorder">
+ <attr name="x" type="s16" val="156"/>
+ <attr name="y" type="s16" val="316"/>
+</obj>
+
+<obj class="Point" id="2 RequestHandler-2-TriggerRequestHandler">
+ <attr name="x" type="s16" val="156"/>
+ <attr name="y" type="s16" val="369"/>
+</obj>
+
+<obj class="Point" id="2 SmartDaqApplication-2-TriggerApplication">
+ <attr name="x" type="s16" val="95"/>
+ <attr name="y" type="s16" val="296"/>
+</obj>
+
+<obj class="Point" id="2 TADataProcessor-2-TCAlgorithm-via-algorithms">
+ <attr name="x" type="s16" val="117"/>
+ <attr name="y" type="s16" val="739"/>
+</obj>
+
+<obj class="Point" id="2 TCAlgorithm-2-TCCustom">
+ <attr name="x" type="s16" val="85"/>
+ <attr name="y" type="s16" val="610"/>
+</obj>
+
+<obj class="Point" id="2 TCAlgorithm-2-TCHSI">
+ <attr name="x" type="s16" val="85"/>
+ <attr name="y" type="s16" val="810"/>
+</obj>
+
+<obj class="Point" id="2 TCAlgorithm-2-TCHorizontalMuon">
+ <attr name="x" type="s16" val="85"/>
+ <attr name="y" type="s16" val="681"/>
+</obj>
+
+<obj class="Point" id="2 TCAlgorithm-2-TCPassThrough">
+ <attr name="x" type="s16" val="85"/>
+ <attr name="y" type="s16" val="844"/>
+</obj>
+
+<obj class="Point" id="2 TCAlgorithm-2-TCRandom">
+ <attr name="x" type="s16" val="59"/>
+ <attr name="y" type="s16" val="922"/>
+</obj>
+
+<obj class="Point" id="2 TCDataProcessor-2-MLTAlgorithm-via-algorithm">
+ <attr name="x" type="s16" val="117"/>
+ <attr name="y" type="s16" val="796"/>
+</obj>
+
+<obj class="Point" id="2 TCHSI-2-HSISignalWindow-via-signals">
+ <attr name="x" type="s16" val="189"/>
+ <attr name="y" type="s16" val="792"/>
+</obj>
+
+<obj class="Point" id="2 TriggerApplication-2-DataReaderConf-via-data_subscriber">
+ <attr name="x" type="s16" val="191"/>
+ <attr name="y" type="s16" val="267"/>
+</obj>
+
+<obj class="Point" id="2 TriggerApplication-2-ReadoutModuleConf-via-trigger_inputs_handler">
+ <attr name="x" type="s16" val="191"/>
+ <attr name="y" type="s16" val="317"/>
+</obj>
+
+<obj class="Point" id="3 DataProcessor-2-TADataProcessor">
+ <attr name="x" type="s16" val="39"/>
+ <attr name="y" type="s16" val="666"/>
+</obj>
+
+<obj class="Point" id="3 DataProcessor-2-TCDataProcessor">
+ <attr name="x" type="s16" val="39"/>
+ <attr name="y" type="s16" val="644"/>
+</obj>
+
+<obj class="Point" id="3 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf">
+ <attr name="x" type="s16" val="65"/>
+ <attr name="y" type="s16" val="157"/>
+</obj>
+
+<obj class="Point" id="3 DataSubscriber-2-DataReaderConf-via-configuration">
+ <attr name="x" type="s16" val="50"/>
+ <attr name="y" type="s16" val="138"/>
+</obj>
+
+<obj class="Point" id="3 MLTAlgorithm-2-ROIGroupConf-via-roi_group_conf">
+ <attr name="x" type="s16" val="62"/>
+ <attr name="y" type="s16" val="830"/>
+</obj>
+
+<obj class="Point" id="3 MLTAlgorithm-2-SourceIDConf-via-mandatory_links">
+ <attr name="x" type="s16" val="45"/>
+ <attr name="y" type="s16" val="927"/>
+</obj>
+
+<obj class="Point" id="3 MLTAlgorithm-2-TCReadoutMap-via-tc_readout_map">
+ <attr name="x" type="s16" val="38"/>
+ <attr name="y" type="s16" val="859"/>
+</obj>
+
+<obj class="Point" id="3 ReadoutModuleConf-2-DataProcessor-via-data_processor">
+ <attr name="x" type="s16" val="59"/>
+ <attr name="y" type="s16" val="470"/>
+</obj>
+
+<obj class="Point" id="3 ReadoutModuleConf-2-LatencyBuffer-via-latency_buffer">
+ <attr name="x" type="s16" val="45"/>
+ <attr name="y" type="s16" val="544"/>
+</obj>
+
+<obj class="Point" id="3 ReadoutModuleConf-2-RequestHandler-via-request_handler">
+ <attr name="x" type="s16" val="52"/>
+ <attr name="y" type="s16" val="328"/>
+</obj>
+
+<obj class="Point" id="3 RequestHandler-2-DataRecorderConf-via-data_recorder">
+ <attr name="x" type="s16" val="56"/>
+ <attr name="y" type="s16" val="316"/>
+</obj>
+
+<obj class="Point" id="3 RequestHandler-2-TriggerRequestHandler">
+ <attr name="x" type="s16" val="58"/>
+ <attr name="y" type="s16" val="369"/>
+</obj>
+
+<obj class="Point" id="3 SmartDaqApplication-2-TriggerApplication">
+ <attr name="x" type="s16" val="63"/>
+ <attr name="y" type="s16" val="296"/>
+</obj>
+
+<obj class="Point" id="3 TADataProcessor-2-TCAlgorithm-via-algorithms">
+ <attr name="x" type="s16" val="28"/>
+ <attr name="y" type="s16" val="739"/>
+</obj>
+
+<obj class="Point" id="3 TCAlgorithm-2-TCCustom">
+ <attr name="y" type="s16" val="610"/>
+</obj>
+
+<obj class="Point" id="3 TCAlgorithm-2-TCHSI">
+ <attr name="x" type="s16" val="63"/>
+ <attr name="y" type="s16" val="810"/>
+</obj>
+
+<obj class="Point" id="3 TCAlgorithm-2-TCHorizontalMuon">
+ <attr name="x" type="s16" val="54"/>
+ <attr name="y" type="s16" val="681"/>
+</obj>
+
+<obj class="Point" id="3 TCAlgorithm-2-TCPassThrough">
+ <attr name="x" type="s16" val="24"/>
+ <attr name="y" type="s16" val="844"/>
+</obj>
+
+<obj class="Point" id="3 TCAlgorithm-2-TCRandom">
+ <attr name="y" type="s16" val="922"/>
+</obj>
+
+<obj class="Point" id="3 TCDataProcessor-2-MLTAlgorithm-via-algorithm">
+ <attr name="x" type="s16" val="63"/>
+ <attr name="y" type="s16" val="796"/>
+</obj>
+
+<obj class="Point" id="3 TCHSI-2-HSISignalWindow-via-signals">
+ <attr name="x" type="s16" val="39"/>
+ <attr name="y" type="s16" val="792"/>
+</obj>
+
+<obj class="Point" id="3 TriggerApplication-2-DataReaderConf-via-data_subscriber">
+ <attr name="x" type="s16" val="50"/>
+ <attr name="y" type="s16" val="267"/>
+</obj>
+
+<obj class="Point" id="3 TriggerApplication-2-ReadoutModuleConf-via-trigger_inputs_handler">
+ <attr name="x" type="s16" val="58"/>
+ <attr name="y" type="s16" val="317"/>
+</obj>
+
+<obj class="Point" id="4 DataProcessor-2-TADataProcessor">
+ <attr name="x" type="s16" val="39"/>
+ <attr name="y" type="s16" val="12"/>
+</obj>
+
+<obj class="Point" id="4 DataProcessor-2-TCDataProcessor">
+ <attr name="x" type="s16" val="39"/>
+ <attr name="y" type="s16" val="12"/>
+</obj>
+
+<obj class="Point" id="4 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf">
+ <attr name="x" type="s16" val="65"/>
+ <attr name="y" type="s16" val="44"/>
+</obj>
+
+<obj class="Point" id="4 DataSubscriber-2-DataReaderConf-via-configuration">
+ <attr name="x" type="s16" val="50"/>
+ <attr name="y" type="s16" val="17"/>
+</obj>
+
+<obj class="Point" id="4 MLTAlgorithm-2-ROIGroupConf-via-roi_group_conf">
+ <attr name="x" type="s16" val="62"/>
+ <attr name="y" type="s16" val="26"/>
+</obj>
+
+<obj class="Point" id="4 MLTAlgorithm-2-SourceIDConf-via-mandatory_links">
+ <attr name="x" type="s16" val="45"/>
+ <attr name="y" type="s16" val="17"/>
+</obj>
+
+<obj class="Point" id="4 MLTAlgorithm-2-TCReadoutMap-via-tc_readout_map">
+ <attr name="x" type="s16" val="38"/>
+ <attr name="y" type="s16" val="21"/>
+</obj>
+
+<obj class="Point" id="4 ReadoutModuleConf-2-DataProcessor-via-data_processor">
+ <attr name="x" type="s16" val="59"/>
+ <attr name="y" type="s16" val="17"/>
+</obj>
+
+<obj class="Point" id="4 ReadoutModuleConf-2-LatencyBuffer-via-latency_buffer">
+ <attr name="x" type="s16" val="45"/>
+ <attr name="y" type="s16" val="35"/>
+</obj>
+
+<obj class="Point" id="4 ReadoutModuleConf-2-RequestHandler-via-request_handler">
+ <attr name="x" type="s16" val="52"/>
+ <attr name="y" type="s16" val="39"/>
+</obj>
+
+<obj class="Point" id="4 RequestHandler-2-DataRecorderConf-via-data_recorder">
+ <attr name="x" type="s16" val="56"/>
+ <attr name="y" type="s16" val="26"/>
+</obj>
+
+<obj class="Point" id="4 RequestHandler-2-TriggerRequestHandler">
+ <attr name="x" type="s16" val="58"/>
+ <attr name="y" type="s16" val="12"/>
+</obj>
+
+<obj class="Point" id="4 SmartDaqApplication-2-TriggerApplication">
+ <attr name="x" type="s16" val="63"/>
+ <attr name="y" type="s16" val="21"/>
+</obj>
+
+<obj class="Point" id="4 TADataProcessor-2-TCAlgorithm-via-algorithms">
+ <attr name="x" type="s16" val="28"/>
+ <attr name="y" type="s16" val="12"/>
+</obj>
+
+<obj class="Point" id="4 TCAlgorithm-2-TCCustom">
+ <attr name="y" type="s16" val="21"/>
+</obj>
+
+<obj class="Point" id="4 TCAlgorithm-2-TCHSI">
+ <attr name="x" type="s16" val="63"/>
+ <attr name="y" type="s16" val="12"/>
+</obj>
+
+<obj class="Point" id="4 TCAlgorithm-2-TCHorizontalMuon">
+ <attr name="x" type="s16" val="54"/>
+ <attr name="y" type="s16" val="30"/>
+</obj>
+
+<obj class="Point" id="4 TCAlgorithm-2-TCPassThrough">
+ <attr name="x" type="s16" val="24"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 TCAlgorithm-2-TCRandom">
+ <attr name="y" type="s16" val="26"/>
+</obj>
+
+<obj class="Point" id="4 TCDataProcessor-2-MLTAlgorithm-via-algorithm">
+ <attr name="x" type="s16" val="63"/>
+ <attr name="y" type="s16" val="66"/>
+</obj>
+
+<obj class="Point" id="4 TCHSI-2-HSISignalWindow-via-signals">
+ <attr name="x" type="s16" val="39"/>
+ <attr name="y" type="s16" val="21"/>
+</obj>
+
+<obj class="Point" id="4 TriggerApplication-2-DataReaderConf-via-data_subscriber">
+ <attr name="x" type="s16" val="50"/>
+ <attr name="y" type="s16" val="17"/>
+</obj>
+
+<obj class="Point" id="4 TriggerApplication-2-ReadoutModuleConf-via-trigger_inputs_handler">
+ <attr name="x" type="s16" val="58"/>
+ <attr name="y" type="s16" val="26"/>
+</obj>
+
+<obj class="View" id="Unknown">
+ <attr name="drawing area x margin" type="u16" val="6"/>
+ <attr name="drawing area y margin" type="u16" val="4"/>
+ <attr name="font x margin" type="u16" val="3"/>
+ <attr name="font y margin" type="u16" val="2"/>
+ <attr name="font name" type="string" val="-adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1"/>
+ <attr name="aggregation sign size" type="u16" val="18"/>
+ <attr name="generalization sign size" type="u16" val="16"/>
+</obj>
+
+</oks-data>
