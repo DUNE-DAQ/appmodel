@@ -149,7 +149,7 @@ MLTApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   oksdbinterfaces::ConfigObject tdMLTNetObj =
     create_mlt_network_connection(tdMLTNetDesc->get_uid_base(), tdMLTNetDesc, confdb, dbfile);
 
-  oksdbinterfaces::ConfigObject* timesyncNetObj;
+  oksdbinterfaces::ConfigObject* timesyncNetObj = nullptr;;
   if (timesyncNetDesc != nullptr) {
      *timesyncNetObj = create_mlt_network_connection(timesyncNetDesc->get_uid_base(), timesyncNetDesc, confdb, dbfile); 
   }
