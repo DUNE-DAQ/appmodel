@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="15" oks-format="schema" oks-version="cf3a4f0 built &quot;Aug 18 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="21d162e26c87" last-modification-time="20240223T150347"/>
+<info name="" type="" num-of-items="15" oks-format="schema" oks-version="cf3a4f0 built &quot;Aug 18 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="21d162e26c87" last-modification-time="20240227T145500"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -143,9 +143,8 @@
  <class name="HermesLinkConf">
   <attribute name="id" type="u32" is-not-null="yes"/>
   <attribute name="enabled" type="bool" is-not-null="yes"/>
-  <attribute name="source_mac" type="string" init-value="00:00:00:00:00:00" is-not-null="yes"/>
-  <attribute name="source_ip" type="string" init-value="0.0.0.0" is-not-null="yes"/>
-  <relationship name="dest_nic" description="Destination NIC" class-type="NICInterface" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="destination" description="Destination NIC" class-type="NICInterface" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="source" class-type="EthStreamParameters" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="IpbusAddressTable">
