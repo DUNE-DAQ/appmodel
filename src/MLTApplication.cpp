@@ -38,6 +38,7 @@
 #include "appdal/appdalIssues.hpp"
 
 #include "appdal/StandaloneCandidateMakerConf.hpp"
+#include "appdal/StandaloneCandidateMaker.hpp"
 
 #include "logging/Logging.hpp"
 
@@ -165,6 +166,7 @@ MLTApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
      if (gen_conf->get_timestamp_method() == "kTimeSync" && timesyncNetObj != nullptr) {
 	genObj.set_objs("inputs", {timesyncNetObj});
      }
+   modules.push_back(confdb->get<StandaloneCandidateMaker>(gen_conf->UID()));
    }
 
   /**************************************************************
@@ -227,42 +229,38 @@ MLTApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
             confdb->create(dbfile, "SourceIDConf", sourceIdConfUID, *sourceIdConf);
             sourceIdConf->set_by_val<uint32_t>("id", id);
             // https://github.com/DUNE-DAQ/daqdataformats/blob/5b99506675a586c8a09123900e224f2371d96df9/include/daqdataformats/detail/SourceID.hxx#L108
-            sourceIdConf->set_by_val<std::string>("subsystem", "kDetectorReadout");
+            sourceIdConf->set_by_val<std::string>("subsystem", "Detector_Readout");
             sourceIds.push_back(sourceIdConf);
           }
         }
       }
+
       oksdbinterfaces::ConfigObject* tpSourceIdConf = new oksdbinterfaces::ConfigObject();
       confdb->create(dbfile, "SourceIDConf", ro_app->UID()+"-"+ std::to_string(ro_app->get_tp_source_id()), *tpSourceIdConf);
       tpSourceIdConf->set_by_val<uint32_t>("id", ro_app->get_tp_source_id());
-      tpSourceIdConf->set_by_val<std::string>("subsystem", "kTrigger");
+      tpSourceIdConf->set_by_val<std::string>("subsystem", "Trigger");
       sourceIds.push_back(tpSourceIdConf);
-
+      /*
       oksdbinterfaces::ConfigObject* taSourceIdConf = new oksdbinterfaces::ConfigObject();
       confdb->create(dbfile, "SourceIDConf", ro_app->UID()+"-"+ std::to_string(ro_app->get_ta_source_id()), *taSourceIdConf);
       taSourceIdConf->set_by_val<uint32_t>("id", ro_app->get_ta_source_id());
-      taSourceIdConf->set_by_val<std::string>("subsystem", "kTrigger");
+      taSourceIdConf->set_by_val<std::string>("subsystem", "Trigger");
       sourceIds.push_back(taSourceIdConf);
+      */
     }
+
 
     auto trg_app = app->cast<appdal::TriggerApplication>();
     if(trg_app != nullptr) {
       oksdbinterfaces::ConfigObject* tcSourceIdConf = new oksdbinterfaces::ConfigObject();
       confdb->create(dbfile, "SourceIDConf", trg_app->UID()+"-"+ std::to_string(trg_app->get_source_id()), *tcSourceIdConf);
       tcSourceIdConf->set_by_val<uint32_t>("id", trg_app->get_source_id());
-      tcSourceIdConf->set_by_val<std::string>("subsystem", "kTrigger");
+      tcSourceIdConf->set_by_val<std::string>("subsystem", "Trigger");
       sourceIds.push_back(tcSourceIdConf);
     }
 
     // FIXME: add here same logics for HSI application(s)
   }
-/*
-  std::vector<const oksdbinterfaces::ConfigObject*> sourceIdConfs;
-  for (auto sid : sourceIds)
-  {
-    sourceIdConfs.push_back(&sid);
-  }
-*/
   /**************************************************************
    * Get the MLT
    **************************************************************/

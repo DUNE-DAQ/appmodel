@@ -119,7 +119,7 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     else if (endpoint_class == "DataSubscriber") {
         tin_net_desc =  rule->get_descriptor();
     }
-    else {
+    else if (data_type == "TriggerActivity" || data_type == "TriggerCandidate"){
 	tout_net_desc = rule->get_descriptor();
     }
   }

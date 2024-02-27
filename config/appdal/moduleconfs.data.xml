@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="17" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240220T094213"/>
+<info name="" type="" num-of-items="17" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240227T150808"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -87,6 +87,7 @@
  <comment creation-time="20240218T153939" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="added TP generator"/>
  <comment creation-time="20240218T204323" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="now adc pattern generation"/>
  <comment creation-time="20240220T094213" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="updated configuration to use a dedicated app for TA making"/>
+ <comment creation-time="20240221T081353" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="change wib file"/>
 </comments>
 
 
@@ -136,11 +137,12 @@
 <obj class="RawDataProcessor" id="def-wib-processor">
  <attr name="queue_sizes" type="u32" val="10000"/>
  <attr name="thread_names_prefix" type="string" val="tp"/>
- <attr name="mask_processing" type="bool" val="1"/>
+ <attr name="mask_processing" type="bool" val="0"/>
  <attr name="max_ticks_tot" type="u32" val="10000"/>
- <attr name="tpg_enabled" type="bool" val="0"/>
+ <attr name="tpg_enabled" type="bool" val="1"/>
  <attr name="algorithm" type="string" val="SimpleThreshold"/>
  <attr name="threshold" type="u16" val="60"/>
+ <attr name="channel_map" type="string" val="PD2HDChannelMap"/>
 </obj>
 
 <obj class="ReadoutModuleConf" id="def-link-handler">
@@ -156,7 +158,7 @@
  <attr name="template_for" type="class" val="TriggerDataHandler"/>
  <attr name="input_data_type" type="string" val="TriggerPrimitive"/>
  <attr name="generate_timesync" type="bool" val="0"/>
- <attr name="post_processing_delay_ticks" type="u64" val="0"/>
+ <attr name="post_processing_delay_ticks" type="u64" val="6250000"/>
  <rel name="request_handler" class="RequestHandler" id="def-data-request-handler"/>
  <rel name="latency_buffer" class="LatencyBuffer" id="def-latency-buf"/>
  <rel name="data_processor" class="TPDataProcessor" id="dummy-tp-processor"/>
@@ -192,17 +194,13 @@
 </obj>
 
 <obj class="StreamEmulationParameters" id="stream-emu">
- <attr name="data_file_name" type="string" val="/cvmfs/dunedaq.opensciencegrid.org/assets/files/e/9/6/wibethframes.bin"/>
+ <attr name="data_file_name" type="string" val="/cvmfs/dunedaq.opensciencegrid.org/assets/files/d/d/1/wibeth_output_all_zeros.bin"/>
  <attr name="input_file_size_limit" type="u32" val="1000000"/>
  <attr name="set_t0" type="bool" val="1"/>
  <attr name="random_population_size" type="u32" val="0"/>
  <attr name="frame_error_rate_hz" type="float" val="0"/>
- <attr name="generate_periodic_adc_pattern" type="bool" val="0"/>
+ <attr name="generate_periodic_adc_pattern" type="bool" val="1"/>
  <attr name="TP_rate_per_channel" type="float" val="0.1"/>
-</obj>
-
-<obj class="TriggerActivityMakerPrescalePlugin" id="dummy-ta-maker">
- <attr name="prescale" type="u32" val="100"/>
 </obj>
 
 <obj class="TPDataProcessor" id="dummy-tp-processor">
@@ -218,7 +216,7 @@
 <obj class="TPDataProcessor" id="tp-processor">
  <attr name="queue_sizes" type="u32" val="10000"/>
  <attr name="thread_names_prefix" type="string" val="postproc-"/>
- <attr name="mask_processing" type="bool" val="1"/>
+ <attr name="mask_processing" type="bool" val="0"/>
  <attr name="print_tp_info" type="bool" val="0"/>
  <rel name="algorithms">
   <ref class="TriggerActivityMakerPrescalePlugin" id="dummy-ta-maker"/>
@@ -228,6 +226,10 @@
 <obj class="TRBConf" id="trb-01">
  <attr name="queues_timeout" type="u32" val="100"/>
  <attr name="trigger_record_timeout_ms" type="u32" val="2858"/>
+</obj>
+
+<obj class="TriggerActivityMakerPrescalePlugin" id="dummy-ta-maker">
+ <attr name="prescale" type="u32" val="10000"/>
 </obj>
 
 </oks-data>

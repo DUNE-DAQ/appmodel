@@ -344,7 +344,7 @@
 
  <class name="SourceIDConf">
   <attribute name="id" type="u32" init-value="0" is-not-null="yes"/>
-  <attribute name="subsystem" type="enum" range="kUnknown,kDetectorReadout,kHwSignalsInterface,kTrigger,kTRBuilder" init-value="kUnknown" is-not-null="yes"/>
+  <attribute name="subsystem" type="enum" range="Unknown,Detector_Readout,HW_Signals_Interface,Trigger,TR_Builder" init-value="Unknown" is-not-null="yes"/>
  </class>
 
  <class name="StreamEmulationParameters">

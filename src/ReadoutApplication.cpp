@@ -212,6 +212,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   if (dlhReqInputQDesc == nullptr) {
     throw(BadConf(ERS_HERE, "No DLH request input queue descriptor given"));
   }
+  bool emulation_mode = rdrConf->get_emulation_mode();
 
   int rnum = 0;
   // Create a DataReader for each (non-disabled) group and a Data Link
@@ -259,13 +260,13 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
         TLOG() << "Processing stream " << stream->UID() << ", id " << stream->get_source_id() << ", det_id "
                << stream->get_geo_id()->get_detector_id();
         auto id = stream->get_source_id();
-        auto det_id = stream->get_geo_id()->get_detector_id();
         std::string uid("DLH-" + std::to_string(id));
         oksdbinterfaces::ConfigObject dlhObj;
         TLOG_DEBUG(7) << "creating OKS configuration object for Data Link Handler class " << dlhClass << ", id " << id;
         confdb->create(dbfile, dlhClass, uid, dlhObj);
         dlhObj.set_by_val<uint32_t>("source_id", id);
-        dlhObj.set_by_val<uint32_t>("detector_id", det_id);
+        dlhObj.set_by_val<bool>("emulation_mode", emulation_mode);
+	dlhObj.set_obj("geo_id", &stream->get_geo_id()->config_object());
         dlhObj.set_obj("module_configuration", &dlhConf->config_object());
 
         // Time Sync network connection

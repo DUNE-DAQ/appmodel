@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="13" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240220T171615"/>
+<info name="" type="" num-of-items="13" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240227T150808"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -124,8 +124,8 @@
  <attr name="hsi_trigger_type_passthrough" type="bool" val="0"/>
  <attr name="merge_overlapping_tcs" type="bool" val="1"/>
  <attr name="td_out_of_timeout" type="bool" val="1"/>
- <attr name="buffer_timeout" type="u32" val="100"/>
- <attr name="td_readout_limit" type="u32" val="1000"/>
+ <attr name="buffer_timeout" type="u32" val="1"/>
+ <attr name="td_readout_limit" type="u32" val="1"/>
  <attr name="use_bitwords" type="bool" val="0"/>
  <attr name="use_roi_readout" type="bool" val="0"/>
  <attr name="use_readout_map" type="bool" val="0"/>
@@ -138,7 +138,7 @@
 </obj>
 
 <obj class="RandomTriggerCandidateMakerConf" id="random-tc-generator">
- <attr name="timestamp_method" type="enum" val="kSystemClock"/>
+ <attr name="timestamp_method" type="enum" val="kTimeSync"/>
  <attr name="template_for" type="class" val="RandomTriggerCandidateMaker"/>
  <attr name="trigger_interval_ticks" type="u32" val="62500000"/>
  <attr name="clock_frequency_hz" type="u32" val="62500000"/>
