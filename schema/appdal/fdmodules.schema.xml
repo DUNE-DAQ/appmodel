@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="15" oks-format="schema" oks-version="cf3a4f0 built &quot;Aug 18 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="21d162e26c87" last-modification-time="20240227T173223"/>
+<info name="" type="" num-of-items="15" oks-format="schema" oks-version="cf3a4f0 built &quot;Aug 18 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="21d162e26c87" last-modification-time="20240228T123917"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -136,15 +136,13 @@
   <superclass name="DaqModule"/>
   <superclass name="IpbusDevice"/>
   <attribute name="port" type="u32" init-value="17476" is-not-null="yes"/>
-  <relationship name="geo_info" class-type="GeoId" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="links" class-type="HermesLinkConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="yes"/>
+  <relationship name="links" class-type="HermesLinkConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="HermesLinkConf">
   <attribute name="id" type="u32" is-not-null="yes"/>
-  <attribute name="enabled" type="bool" is-not-null="yes"/>
   <relationship name="destination" description="Destination NIC" class-type="NICInterface" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="source" class-type="EthStreamParameters" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="source" class-type="DROStreamConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="IpbusAddressTable">
