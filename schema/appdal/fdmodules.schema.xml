@@ -135,6 +135,7 @@
  <class name="NICInterface" description="Specialization of the ReadoutInterface for a NIC.">
   <superclass name="ReadoutInterface"/>
   <attribute name="rx_iface" type="s16" init-value="0" is-not-null="yes"/>
+  <attribute name="rx_pcie_addr" description="PCIe address of NIC on readout host" type="string" init-value="0" is-not-null="yes"/>
   <attribute name="rx_mac" description="Destination MAC address on readout host" type="string" init-value="00:00:00:00:00:00" is-not-null="yes"/>
   <attribute name="rx_ip" type="string" init-value="192.168.1.1" is-not-null="yes"/>
   <attribute name="rx_hostname" type="string" init-value="localhost"/>
