@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="45" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240220T132034"/>
+<info name="" type="" num-of-items="45" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240303T202748"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -79,6 +79,7 @@
  <comment creation-time="20240218T164229" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="added data request connection for trigger apps"/>
  <comment creation-time="20240220T094213" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="updated configuration to use a dedicated app for TA making"/>
  <comment creation-time="20240220T132034" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="direct send/rec instead of pub/sub on trigger path"/>
+ <comment creation-time="20240301T165850" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="add eth_device_name for Services"/>
 </comments>
 
 
@@ -105,13 +106,13 @@
 
 <obj class="NetworkConnectionDescriptor" id="hsi-desc">
  <attr name="uid_base" type="string" val="hsi_event"/>
- <attr name="connection_type" type="enum" val="kSendRecv"/>
+ <attr name="connection_type" type="enum" val="kPubSub"/>
  <attr name="data_type" type="string" val="HSIEvent"/>
  <rel name="associated_service" class="Service" id="HSIEvents"/>
 </obj>
 
 <obj class="NetworkConnectionDescriptor" id="ta-publisher">
- <attr name="uid_base" type="string" val="ta_"/>
+ <attr name="uid_base" type="string" val="tas_"/>
  <attr name="connection_type" type="enum" val="kPubSub"/>
  <attr name="data_type" type="string" val="TriggerActivity"/>
  <rel name="associated_service" class="Service" id="triggerActivities"/>
@@ -131,8 +132,8 @@
  <rel name="associated_service" class="Service" id="timeSyncs"/>
 </obj>
 
-<obj class="NetworkConnectionDescriptor" id="tp-publisher">
- <attr name="uid_base" type="string" val="trigger_primitives_"/>
+<obj class="NetworkConnectionDescriptor" id="tpset-publisher">
+ <attr name="uid_base" type="string" val="tps_"/>
  <attr name="connection_type" type="enum" val="kPubSub"/>
  <attr name="data_type" type="string" val="TPSet"/>
  <rel name="associated_service" class="Service" id="triggerPrimitives"/>
@@ -211,7 +212,7 @@
 
 <obj class="NetworkConnectionRule" id="tp-net-rule">
  <attr name="endpoint_class" type="class" val="TriggerDataHandler"/>
- <rel name="descriptor" class="NetworkConnectionDescriptor" id="tp-publisher"/>
+ <rel name="descriptor" class="NetworkConnectionDescriptor" id="tpset-publisher"/>
 </obj>
 
 <obj class="NetworkConnectionRule" id="ts-net-rule">
@@ -273,7 +274,7 @@
 <obj class="QueueDescriptor" id="tp-input">
  <attr name="uid_base" type="string" val="tp_input_"/>
  <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>
- <attr name="capacity" type="u32" val="100000"/>
+ <attr name="capacity" type="u32" val="10000"/>
  <attr name="data_type" type="string" val="TriggerPrimitive"/>
 </obj>
 
@@ -294,51 +295,61 @@
 <obj class="Service" id="HSIEvents">
  <attr name="protocol" type="string" val="tcp"/>
  <attr name="port" type="u16" val="0"/>
+ <attr name="eth_device_name" type="string" val="eno1"/>
 </obj>
 
 <obj class="Service" id="dataFragments">
  <attr name="protocol" type="string" val="tcp"/>
  <attr name="port" type="u16" val="0"/>
+ <attr name="eth_device_name" type="string" val="eno1"/>
 </obj>
 
 <obj class="Service" id="dataRequests">
  <attr name="protocol" type="string" val="tcp"/>
  <attr name="port" type="u16" val="0"/>
+ <attr name="eth_device_name" type="string" val="eno1"/>
 </obj>
 
 <obj class="Service" id="dfTokens">
  <attr name="protocol" type="string" val="tcp"/>
  <attr name="port" type="u16" val="0"/>
+ <attr name="eth_device_name" type="string" val="eno1"/>
 </obj>
 
 <obj class="Service" id="timeSyncs">
  <attr name="protocol" type="string" val="tcp"/>
  <attr name="port" type="u16" val="0"/>
+ <attr name="eth_device_name" type="string" val="eno1"/>
 </obj>
 
 <obj class="Service" id="triggerActivities">
  <attr name="protocol" type="string" val="tcp"/>
  <attr name="port" type="u16" val="0"/>
+ <attr name="eth_device_name" type="string" val="eno1"/>
 </obj>
 
 <obj class="Service" id="triggerCandidates">
  <attr name="protocol" type="string" val="tcp"/>
  <attr name="port" type="u16" val="0"/>
+ <attr name="eth_device_name" type="string" val="eno1"/>
 </obj>
 
 <obj class="Service" id="triggerDecisions">
  <attr name="protocol" type="string" val="tcp"/>
  <attr name="port" type="u16" val="0"/>
+ <attr name="eth_device_name" type="string" val="eno1"/>
 </obj>
 
 <obj class="Service" id="triggerInhibits">
  <attr name="protocol" type="string" val="tcp"/>
  <attr name="port" type="u16" val="0"/>
+ <attr name="eth_device_name" type="string" val="eno1"/>
 </obj>
 
 <obj class="Service" id="triggerPrimitives">
  <attr name="protocol" type="string" val="tcp"/>
  <attr name="port" type="u16" val="0"/>
+ <attr name="eth_device_name" type="string" val="eno1"/>
 </obj>
 
 </oks-data>

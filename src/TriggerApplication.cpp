@@ -160,7 +160,7 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   req_net_obj.set_obj("associated_service", &req_service_obj);
 
   auto tin_service_obj = tin_net_desc->get_associated_service()->config_object();
-  std::string t_in_stream_uid(tin_net_desc->get_uid_base()+UID());
+  std::string t_in_stream_uid(tin_net_desc->get_uid_base()+"*");
   confdb->create(dbfile, "NetworkConnection", t_in_stream_uid, tin_net_obj);
   tin_net_obj.set_by_val<std::string>("data_type", tin_net_desc->get_data_type());
   tin_net_obj.set_by_val<std::string>("connection_type", tin_net_desc->get_connection_type());
