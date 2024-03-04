@@ -140,13 +140,13 @@
  </class>
 
  <class name="HermesLinkConf">
-  <attribute name="id" type="u32" is-not-null="yes"/>
+  <attribute name="link_id" type="u32" is-not-null="yes"/>
   <relationship name="destination" description="Destination NIC" class-type="NICInterface" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="source" class-type="DROStreamConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="IpbusAddressTable">
-  <attribute name="uri" type="string" init-value="file://${HERMESMODULES_SHARE}/config/hermes_wib_v0.9.1/tx_mux_wib.xml" is-not-null="yes"/>
+  <attribute name="uri" type="string" init-value="file://${HERMESMODULES_SHARE}/config/hermes_wib_v0.9.3/wib_eth_readout.xml" is-not-null="yes"/>
  </class>
 
  <class name="IpbusDevice">
