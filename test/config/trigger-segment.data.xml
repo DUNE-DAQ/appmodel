@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="13" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240302T162952"/>
+<info name="" type="" num-of-items="13" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240305T172944"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -215,7 +215,7 @@
 </obj>
 
 <obj class="TriggerCandidateMakerPrescalePlugin" id="tc-pass-through-algo">
- <attr name="prescale" type="u32" val="10"/>
+ <attr name="prescale" type="u32" val="2"/>
 </obj>
 
 </oks-data>

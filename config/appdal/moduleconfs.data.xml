@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="17" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240302T162952"/>
+<info name="" type="" num-of-items="17" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240305T172822"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -89,6 +89,9 @@
  <comment creation-time="20240220T094213" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="updated configuration to use a dedicated app for TA making"/>
  <comment creation-time="20240221T081353" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="change wib file"/>
  <comment creation-time="20240302T162952" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="debug TP flow"/>
+ <comment creation-time="20240305T085052" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="no delays"/>
+ <comment creation-time="20240305T162137" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="add delay"/>
+ <comment creation-time="20240305T172822" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text=" adjust TA prescaling&#xA;"/>
 </comments>
 
 
@@ -159,7 +162,7 @@
  <attr name="template_for" type="class" val="TriggerDataHandler"/>
  <attr name="input_data_type" type="string" val="TriggerPrimitive"/>
  <attr name="generate_timesync" type="bool" val="0"/>
- <attr name="post_processing_delay_ticks" type="u64" val="625000"/>
+ <attr name="post_processing_delay_ticks" type="u64" val="650000"/>
  <rel name="request_handler" class="RequestHandler" id="def-tp-request-handler"/>
  <rel name="latency_buffer" class="LatencyBuffer" id="def-latency-buf"/>
  <rel name="data_processor" class="TPDataProcessor" id="tp-processor"/>
@@ -214,7 +217,7 @@
 </obj>
 
 <obj class="TPDataProcessor" id="tp-processor">
- <attr name="queue_sizes" type="u32" val="10000"/>
+ <attr name="queue_sizes" type="u32" val="6000"/>
  <attr name="thread_names_prefix" type="string" val="proc-"/>
  <attr name="mask_processing" type="bool" val="0"/>
  <attr name="print_tp_info" type="bool" val="0"/>
