@@ -360,11 +360,13 @@
 
  <class name="TPStreamWriter">
   <superclass name="DaqModule"/>
+  <attribute name="source_id" type="u32" is-not-null="yes"/>
   <relationship name="configuration" class-type="TPStreamWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="TPStreamWriterApplication">
   <superclass name="SmartDaqApplication"/>
+  <attribute name="source_id" type="u32" is-not-null="yes"/>
   <relationship name="tp_writer" class-type="TPStreamWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate dal objects for streams of thie ReadoutApplication on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
@@ -373,7 +375,6 @@
 
  <class name="TPStreamWriterConf">
   <attribute name="tp_accumulation_interval" type="u64" init-value="0" is-not-null="yes"/>
-  <attribute name="source_id" type="u32" is-not-null="yes"/>
   <relationship name="data_store_params" class-type="DataStoreConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
