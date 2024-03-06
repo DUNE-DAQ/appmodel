@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="13" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240305T172944"/>
+<info name="" type="" num-of-items="13" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240306T101658"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -161,7 +161,7 @@
  <attr name="pop_limit_pct" type="float" val="0.5"/>
  <attr name="pop_size_pct" type="float" val="0.8"/>
  <attr name="warn_on_timeout" type="bool" val="1"/>
- <attr name="warn_on_empty_buffer" type="bool" val="0"/>
+ <attr name="warn_on_empty_buffer" type="bool" val="1"/>
 </obj>
 
 <obj class="Segment" id="trg-segment">
