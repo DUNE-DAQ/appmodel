@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="8" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240220T094213"/>
+<info name="" type="" num-of-items="13" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240306T200438"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -81,6 +81,7 @@
  <comment creation-time="20240112T170541" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="Add network connections"/>
  <comment creation-time="20240208T092804" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="reorder"/>
  <comment creation-time="20240220T094213" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="updated configuration to use a dedicated app for TA making"/>
+ <comment creation-time="20240306T200127" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="added TP stream writer"/>
 </comments>
 
 
@@ -155,6 +156,38 @@
  <rel name="dfo" class="DFOConf" id="dfoconf-01"/>
 </obj>
 
+<obj class="DataStoreConf" id="default_tp_store_conf">
+ <attr name="type" type="string" val="HDF5DataStore"/>
+ <attr name="directory_path" type="string" val="./"/>
+ <attr name="mode" type="enum" val="all-per-file"/>
+ <attr name="max_file_size" type="u64" val="4294967296"/>
+ <attr name="disable_unique_filename_suffix" type="bool" val="0"/>
+ <attr name="free_space_safety_factor" type="s32" val="5"/>
+ <rel name="file_layout_params" class="HDF5FileLayoutParams" id="tp_file_layout"/>
+ <rel name="filename_params" class="FilenameParams" id="tp-file-params"/>
+</obj>
+
+<obj class="FilenameParams" id="tp-file-params">
+ <attr name="overall_prefix" type="string" val="tpstream"/>
+ <attr name="run_number_prefix" type="string" val="run"/>
+ <attr name="digits_for_run_number" type="s32" val="6"/>
+ <attr name="digits_for_file_index" type="s32" val="4"/>
+ <attr name="writer_identifier" type="string" val="tp_writer"/>
+ <attr name="digits_for_trigger_number" type="s32" val="6"/>
+</obj>
+
+<obj class="HDF5FileLayoutParams" id="tp_file_layout">
+ <attr name="record_name_prefix" type="string" val="TimeSlice"/>
+ <attr name="digits_for_record_number" type="s32" val="6"/>
+ <attr name="digits_for_sequence_number" type="s32" val="0"/>
+ <attr name="record_header_dataset_name" type="string" val="TimeSliceHeader"/>
+ <attr name="raw_data_group_name" type="string" val="RawData"/>
+ <attr name="view_group_name" type="string" val="Views"/>
+ <rel name="path_params_list">
+  <ref class="HDF5PathParams" id="TPC"/>
+ </rel>
+</obj>
+
 <obj class="RCApplication" id="df-controller">
  <attr name="application_name" type="string" val="controller"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
@@ -165,12 +198,28 @@
  <rel name="applications">
   <ref class="DFApplication" id="df-01"/>
   <ref class="DFOApplication" id="dfo-01"/>
+  <ref class="TPStreamWriterApplication" id="tp-stream-writer"/>
  </rel>
  <rel name="controller" class="RCApplication" id="df-controller"/>
 </obj>
 
 <obj class="StorageDevice" id="storage-01">
  <attr name="storage" type="u32" val="1000"/>
+</obj>
+
+<obj class="TPStreamWriterApplication" id="tp-stream-writer">
+ <attr name="application_name" type="string" val="daq_application"/>
+ <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="network_rules">
+  <ref class="NetworkConnectionRule" id="tp-net-rule"/>
+ </rel>
+ <rel name="tp_writer" class="TPStreamWriterConf" id="tp-stream-writer-conf"/>
+</obj>
+
+<obj class="TPStreamWriterConf" id="tp-stream-writer-conf">
+ <attr name="tp_accumulation_interval" type="u64" val="62500000"/>
+ <attr name="source_id" type="u32" val="66"/>
+ <rel name="data_store_params" class="DataStoreConf" id="default_tp_store_conf"/>
 </obj>
 
 </oks-data>

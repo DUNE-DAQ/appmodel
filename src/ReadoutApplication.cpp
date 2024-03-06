@@ -165,6 +165,8 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     tpQueueObj.set_by_val<std::string>("data_type", tpInputQDesc->get_data_type());
     tpQueueObj.set_by_val<std::string>("queue_type", tpInputQDesc->get_queue_type());
     tpQueueObj.set_by_val<uint32_t>("capacity", tpInputQDesc->get_capacity());
+    tpQueueObj.set_by_val<uint32_t>("recv_timeout_ms", 1);
+    tpQueueObj.set_by_val<uint32_t>("send_timeout_ms", 1);
 
     std::string tpReqQueueUid(dlhReqInputQDesc->get_uid_base() + std::to_string(tpsrc));
     confdb->create(dbfile, "QueueWithId", tpReqQueueUid, tpReqQueueObj);

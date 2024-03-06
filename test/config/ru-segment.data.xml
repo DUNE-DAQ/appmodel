@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="6" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105615" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240220T094213"/>
+<info name="" type="" num-of-items="6" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105615" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240301T164311"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -83,6 +83,7 @@
  <comment creation-time="20240208T092918" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="a"/>
  <comment creation-time="20240218T161506" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="added queue of TAs between subsciber and handler"/>
  <comment creation-time="20240220T094213" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="updated configuration to use a dedicated app for TA making"/>
+ <comment creation-time="20240301T164311" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="activate TA"/>
 </comments>
 
 
