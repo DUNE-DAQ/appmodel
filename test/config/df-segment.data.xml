@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="13" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240306T200438"/>
+<info name="" type="" num-of-items="13" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240307T084519"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -82,6 +82,7 @@
  <comment creation-time="20240208T092804" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="reorder"/>
  <comment creation-time="20240220T094213" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="updated configuration to use a dedicated app for TA making"/>
  <comment creation-time="20240306T200127" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="added TP stream writer"/>
+ <comment creation-time="20240307T084519" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="added dataflow"/>
 </comments>
 
 
@@ -218,7 +219,6 @@
 
 <obj class="TPStreamWriterConf" id="tp-stream-writer-conf">
  <attr name="tp_accumulation_interval" type="u64" val="62500000"/>
- <attr name="source_id" type="u32" val="66"/>
  <rel name="data_store_params" class="DataStoreConf" id="default_tp_store_conf"/>
 </obj>
 
