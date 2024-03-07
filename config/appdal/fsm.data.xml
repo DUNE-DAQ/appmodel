@@ -141,6 +141,9 @@
   <ref class="FSMsequence" id="start_run"/>
   <ref class="FSMsequence" id="stop_run"/>
  </rel>
+ <rel name="interfaces">
+  <ref class="FSMinterface" id="user-provided-run-number">
+ </rel>
  <rel name="pre_transitions">
   <ref class="FSMxTransition" id="start"/>
  </rel>
