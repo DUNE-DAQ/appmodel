@@ -93,14 +93,15 @@
 
 <obj class="RCApplication" id="root-controller">
  <attr name="commandline_parameters" type="string">
-  <data val="oksconfig:///nfs/home/plasorak/NAFD24-02-08-OKS/swdir/sourcecode/appdal/test/config/test-session.data.xml"/>
-  <data val="3333"/>
-  <data val="root-controller"/>
+  <data val="oksconfig:///nfs/home/plasorak/NAFD24-02-08-OKS/swdir/sourcecode/appdal/test/config/test-session.data.xml"/><!-- ALTER_ME -->
+  <data val="grpc://np04-srv-019:3333"/><!-- ALTER_ME -->
+  <data val="root-segment"/>
   <data val="test-session"/>
  </attr>
  <attr name="application_name" type="string" val="drunc-controller"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="fsm" class="FSMconfiguration" id="fsmConf-1"/>
+ <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
 </obj>
 
 <obj class="Segment" id="root-segment">
@@ -112,12 +113,13 @@
  <rel name="controller" class="RCApplication" id="root-controller"/>
 </obj>
 
+
 <obj class="Session" id="test-session">
  <attr name="use_connectivity_server" type="bool" val="1"/>
  <attr name="connectivity_service_interval_ms" type="u32" val="2000"/>
  <attr name="data_request_timeout_ms" type="u32" val="1000"/>
  <attr name="data_rate_slowdown_factor" type="u32" val="1"/>
- <attr name="rte_script" type="string" val="/nfs/home/plasorak/NAFD24-02-08-OKS/swdir/install/daq_app_rte.sh">
+ <attr name="rte_script" type="string" val="/nfs/home/plasorak/NAFD24-02-08-OKS/swdir/install/daq_app_rte.sh"><!-- ALTER_ME -->
  <rel name="environment">
   <ref class="Variable" id="session-env-session-name-0"/>
   <ref class="Variable" id="session-env-session-name-1"/>
@@ -153,7 +155,7 @@
 <obj class="Variable" id="session-env-info-svc">
  <attr name="name" type="string" val="INFO_SVC"/>
  <attr name="value" type="string" val="kafka://monkafka.cern.ch:30092/opmon"/>
- </obj>
+</obj>
 
 
 <obj class="Variable" id="session-env-ers-info">

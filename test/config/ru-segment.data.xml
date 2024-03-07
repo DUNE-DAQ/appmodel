@@ -83,17 +83,23 @@
  <comment creation-time="20240208T092918" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="a"/>
 </comments>
 
+<obj class="RCBroadcaster" id="broadcaster-root">
+    <attr name="type" type="enum" val="kafka"/>
+    <attr name="address" type="string" val="monkafka.cern.ch:30092"/>
+    <attr name="publish_timeout" type="u32" val="2"/>
+</obj>
 
 <obj class="RCApplication" id="ru-controller">
  <attr name="application_name" type="string" val="drunc-controller"/>
  <attr name="commandline_parameters" type="string">
-  <data val="oksconfig:///nfs/home/plasorak/NAFD24-02-08-OKS/swdir/sourcecode/appdal/test/config/test-session.data.xml"/>
-  <data val="3334"/>
-  <data val="ru-controller"/>
+  <data val="oksconfig:///nfs/home/plasorak/NAFD24-02-08-OKS/swdir/sourcecode/appdal/test/config/test-session.data.xml"/><!-- ALTER_ME -->
+  <data val="grpc://np04-srv-019:3334"/><!-- ALTER_ME -->
+  <data val="ru-segment"/>
   <data val="test-session"/>
  </attr>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="fsm" class="FSMconfiguration" id="fsmConf-1"/>
+ <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
 </obj>
 
 <obj class="ReadoutApplication" id="ru-01">
@@ -103,11 +109,11 @@
   <data val="--name"/>
   <data val="ru-01"/>
   <data val="-c"/>
-  <data val="rest://localhost:3335"/>
+  <data val="rest://localhost:3335"/><!-- ALTER_ME -->
   <data val="-i"/>
   <data val="kafka://monkafka.cern.ch:30092/opmon"/>
   <data val="--configurationService"/>
-  <data val="oksconfig:///nfs/home/plasorak/NAFD24-02-08-OKS/swdir/sourcecode/appdal/test/config/test-session.data.xml"/>
+  <data val="oksconfig:///nfs/home/plasorak/NAFD24-02-08-OKS/swdir/sourcecode/appdal/test/config/test-session.data.xml"/><!-- ALTER_ME -->
  </attr>
  <rel name="contains">
   <ref class="ReadoutGroup" id="rog-1"/>
@@ -136,11 +142,11 @@
   <data val="--name"/>
   <data val="ru-02"/>
   <data val="-c"/>
-  <data val="rest://localhost:3335"/>
+  <data val="rest://localhost:3335"/><!-- ALTER_ME -->
   <data val="-i"/>
   <data val="kafka://monkafka.cern.ch:30092/opmon"/>
   <data val="--configurationService"/>
-  <data val="oksconfig:///nfs/home/plasorak/NAFD24-02-08-OKS/swdir/sourcecode/appdal/test/config/test-session.data.xml"/>
+  <data val="oksconfig:///nfs/home/plasorak/NAFD24-02-08-OKS/swdir/sourcecode/appdal/test/config/test-session.data.xml"/><!-- ALTER_ME -->
  </attr>
  <rel name="contains">
   <ref class="ReadoutGroup" id="rog-2"/>
@@ -169,11 +175,11 @@
   <data val="--name"/>
   <data val="ru-03"/>
   <data val="-c"/>
-  <data val="rest://localhost:3335"/>
+  <data val="rest://localhost:3335"/><!-- ALTER_ME -->
   <data val="-i"/>
   <data val="kafka://monkafka.cern.ch:30092/opmon"/>
   <data val="--configurationService"/>
-  <data val="oksconfig:///nfs/home/plasorak/NAFD24-02-08-OKS/swdir/sourcecode/appdal/test/config/test-session.data.xml"/>
+  <data val="oksconfig:///nfs/home/plasorak/NAFD24-02-08-OKS/swdir/sourcecode/appdal/test/config/test-session.data.xml"/><!-- ALTER_ME -->
  </attr>
  <rel name="contains">
   <ref class="ReadoutGroup" id="rog-3"/>
