@@ -167,6 +167,7 @@
 <obj class="Segment" id="trg-segment">
  <rel name="applications">
   <ref class="MLTApplication" id="mlt"/>
+  <ref class="TriggerApplication" id="tc-maker-1"/>
  </rel>
  <rel name="controller" class="RCApplication" id="trg-controller"/>
 </obj>
@@ -214,7 +215,7 @@
 </obj>
 
 <obj class="TriggerCandidateMakerPrescalePlugin" id="tc-pass-through-algo">
- <attr name="prescale" type="u32" val="2"/>
+ <attr name="prescale" type="u32" val="20"/>
 </obj>
 
 </oks-data>
