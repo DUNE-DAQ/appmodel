@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="13" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240306T211245"/>
+<info name="" type="" num-of-items="14" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240307T214516"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -130,6 +130,9 @@
  <attr name="use_bitwords" type="bool" val="0"/>
  <attr name="use_roi_readout" type="bool" val="0"/>
  <attr name="use_readout_map" type="bool" val="0"/>
+ <rel name="tc_readout_map">
+  <ref class="TCReadoutMap" id="def-tc-map"/>
+ </rel>
 </obj>
 
 <obj class="RCApplication" id="trg-controller">
@@ -141,7 +144,7 @@
 <obj class="RandomTriggerCandidateMakerConf" id="random-tc-generator">
  <attr name="timestamp_method" type="enum" val="kTimeSync"/>
  <attr name="template_for" type="class" val="RandomTriggerCandidateMaker"/>
- <attr name="trigger_interval_ticks" type="u32" val="31250000"/>
+ <attr name="trigger_interval_ticks" type="u32" val="125000000"/>
  <attr name="clock_frequency_hz" type="u32" val="62500000"/>
  <attr name="time_distribution" type="enum" val="kUniform"/>
 </obj>
@@ -167,6 +170,7 @@
 <obj class="Segment" id="trg-segment">
  <rel name="applications">
   <ref class="MLTApplication" id="mlt"/>
+  <ref class="TriggerApplication" id="tc-maker-1"/>
  </rel>
  <rel name="controller" class="RCApplication" id="trg-controller"/>
 </obj>
@@ -179,6 +183,11 @@
  <rel name="algorithms">
   <ref class="TriggerCandidateMakerPrescalePlugin" id="tc-pass-through-algo"/>
  </rel>
+</obj>
+
+<obj class="TCReadoutMap" id="def-tc-map">
+ <attr name="time_before" type="u32" val="3000"/>
+ <attr name="time_after" type="u32" val="1001"/>
 </obj>
 
 <obj class="TriggerApplication" id="ta-maker-1">
