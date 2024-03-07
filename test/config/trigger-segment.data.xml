@@ -181,14 +181,6 @@
  </rel>
 </obj>
 
-<obj class="TimingTriggerCandidateMakerConf" id="ttcm-conf-1">
- <attr name="template_for" type="class" val="TimingTriggerCandidateMaker"/>
- <attr name="hsi_trigger_type_passthrough" type="bool" val="0"/>
- <rel name="s0" class="TimingTriggerOffsetMap" id="ttcm-off-0"/>
- <rel name="s1" class="TimingTriggerOffsetMap" id="ttcm-off-1"/>
- <rel name="s2" class="TimingTriggerOffsetMap" id="ttcm-off-2"/>
-</obj>
-
 <obj class="TimingTriggerOffsetMap" id="ttcm-off-0">
  <attr name="time_before" type="u32" val="1000"/>
  <attr name="time_after" type="u32" val="1000"/>
