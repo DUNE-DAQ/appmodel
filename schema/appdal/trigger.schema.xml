@@ -99,19 +99,32 @@
   <attribute name="trigger_types" type="u32" is-multi-value="yes" init-value="3,7" is-not-null="yes"/>
   <attribute name="trigger_intervals" type="u32" is-multi-value="yes" init-value="62500000,62500000" is-not-null="yes"/>
   <attribute name="clock_frequency_hz" type="u32" init-value="62500000"/>
-  <attribute name="timestamp_method" type="enum" range="kTimeSync,kSystemClock" init-value="kTimeSync" is-not-null="yes"/>
+ </class>
+
+ <class name="DataSubscriber" is-abstract="no">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+ 
+ <class name="HSI2TCTranslatorConf">
+  <superclass name="DataReaderConf"/>
+  <relationship name="signals" class-type="HSISignalWindow" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+  <class name="HSISignalWindow">
+  <attribute name="signal_type" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="time_before" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="time_after" type="u32" init-value="20000" is-not-null="yes"/>
  </class>
 
  <class name="ModuleLevelTrigger">
   <superclass name="DaqModule"/>
-  <attribute name="trigger_candidate_input" type="string" is-not-null="yes"/>
-  <attribute name="dfo_inhibit_input" type="string" is-not-null="yes"/>
-  <attribute name="td_output" type="string" is-not-null="yes"/>
   <relationship name="configuration" class-type="ModuleLevelTriggerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="mandatory_links" class-type="SourceIDConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="ModuleLevelTriggerConf">
+  <attribute name="template_for" type="class" init-value="ModuleLevelTrigger"/>
   <attribute name="hsi_trigger_type_passthrough" type="bool" init-value="false" is-not-null="yes"/>
   <attribute name="merge_overlapping_tcs" type="bool" init-value="true" is-not-null="yes"/>
   <attribute name="td_out_of_timeout" type="bool" init-value="true" is-not-null="yes"/>
@@ -144,13 +157,7 @@
   <attribute name="template_for" type="class" init-value="RandomTriggerCandidateMaker"/>
   <attribute name="trigger_interval_ticks" type="u32" init-value="64000000" is-not-null="yes"/>
   <attribute name="clock_frequency_hz" type="u32" init-value="62500000" is-not-null="yes"/>
-  <attribute name="timestamp_method" type="enum" range="kTimeSync,kSystemClock" init-value="kTimeSync" is-not-null="yes"/>
   <attribute name="time_distribution" type="enum" range="kUniform,kPoisson" init-value="kUniform" is-not-null="yes"/>
- </class>
-
- <class name="SourceIDConf" description="Represents a SourceID object with both id and subsystem fields.">
-  <attribute name="id" type="u32" init-value="0" is-not-null="yes"/>
-  <attribute name="subsystem" type="enum" range="kUnknown,Detector_Readout,HW_Signals_Interface,Trigger,TR_Builder" init-value="kUnknown" is-not-null="yes"/>
  </class>
 
  <class name="StandaloneCandidateMaker">
@@ -159,99 +166,53 @@
 
  <class name="StandaloneCandidateMakerConf" is-abstract="yes">
   <attribute name="template_for" type="class" init-value="StandaloneCandidateMaker" is-not-null="yes"/>
+  <attribute name="timestamp_method" type="enum" range="kTimeSync,kSystemClock" init-value="kTimeSync" is-not-null="yes"/>
  </class>
 
- <class name="TABuffer">
-  <superclass name="DaqModule"/>
+<class name="TimingTriggerOffsetMap">
+<attribute name="signal_type" type="u32" init-value="0" is-not-null="yes"/>
+<attribute name="time_before" type="u32" init-value="10000" is-not-null="yes"/>
+<attribute name="time_after" type="u32" init-value="20000" is-not-null="yes"/>
+</class>
+
+ <class name="MLTApplication">
+  <superclass name="SmartDaqApplication"/>
+  <superclass name="ResourceSetAND"/>
+  <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
+  <relationship name="mlt_conf" class-type="ModuleLevelTriggerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="standalone_candidate_maker_confs" class-type="StandaloneCandidateMakerConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <method name="generate_modules" description="Generate daq module dal objects for MLTApplication on the fly">
+
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
+  </method>
  </class>
 
- <class name="TASetTee">
-  <superclass name="DaqModule"/>
+  <class name="TriggerApplication">
+  <superclass name="ResourceSetAND"/>
+  <superclass name="SmartDaqApplication"/>
+  <attribute name="source_id" description="Source ID if Trigger sets are being generated" type="u32"/>
+  <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
+  <relationship name="data_subscriber" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="trigger_inputs_handler" class-type="ReadoutModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <method name="generate_modules" description="Generate daq module dal objects for streams of thie TriggerApplication on the fly">
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
+  </method>
  </class>
 
- <class name="TAZipper">
-  <superclass name="DaqModule"/>
+
+ <class name="TAAlgorithm" description="Base class for TA algorithms">
+  <superclass name="Jsonable"/>
+  <attribute name="prescale" description="Prescale factor to apply to algorithm output" type="u32" init-value="1" is-not-null="yes"/>
  </class>
 
- <class name="TCBuffer">
-  <superclass name="DaqModule"/>
-  <relationship name="configuration" class-type="TCBufferConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ <class name="TADataProcessor">
+  <superclass name="DataProcessor"/>
+  <attribute name="print_ta_info" description="Whether to print TP information in the TA processor" type="bool" init-value="false"/>
+  <relationship name="algorithms" class-type="TCAlgorithm" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="TCBufferConf">
-  <relationship name="latencybuffer" class-type="LatencyBuffer" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="requesthandler" class-type="RequestHandler" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="TCReadoutMap">
-  <attribute name="candidate_type" type="u32" init-value="0" is-not-null="yes"/>
-  <attribute name="time_before" type="u32" init-value="1000" is-not-null="yes"/>
-  <attribute name="time_after" type="u32" init-value="1001" is-not-null="yes"/>
- </class>
-
- <class name="TCSetTee">
-  <superclass name="DaqModule"/>
- </class>
-
- <class name="TCZipper">
-  <superclass name="DaqModule"/>
- </class>
-
- <class name="TPBuffer">
-  <superclass name="DaqModule"/>
- </class>
-
- <class name="TPChannelFilter">
-  <superclass name="DaqModule"/>
-  <attribute name="tpset_source" type="string" is-not-null="yes"/>
-  <attribute name="tpset_sink" type="string" is-not-null="yes"/>
-  <relationship name="configuration" class-type="TPChannelFilterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="TPChannelFilterConf">
-  <attribute name="keep_collection" description="Whether to keep the collection channel TPs." type="bool" init-value="true" is-not-null="yes"/>
-  <attribute name="keep_induction" description="Whether to keep the induction channel TPs." type="bool" init-value="true" is-not-null="yes"/>
-  <attribute name="channel_map_name" description="Name of the channel map." type="string" is-not-null="yes"/>
- </class>
-
- <class name="TPSetTee">
-  <superclass name="DaqModule"/>
- </class>
-
- <class name="TPZipper">
-  <superclass name="DaqModule"/>
- </class>
-
- <class name="TimingTriggerCandidateMaker">
-  <superclass name="StandaloneCandidateMaker"/>
-  <relationship name="configuration" class-type="TimingTriggerCandidateMakerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="TimingTriggerCandidateMakerConf">
-  <superclass name="StandaloneCandidateMakerConf"/>
-  <attribute name="template_for" type="class" init-value="TimingTriggerCandidateMaker"/>
-  <attribute name="hsi_trigger_type_passthrough" type="bool" init-value="false" is-not-null="yes"/>
-  <relationship name="s0" class-type="TimingTriggerOffsetMap" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="s1" class-type="TimingTriggerOffsetMap" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="s2" class-type="TimingTriggerOffsetMap" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="TimingTriggerOffsetMap">
-  <attribute name="signal_type" type="u32" init-value="0" is-not-null="yes"/>
-  <attribute name="time_before" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="time_after" type="u32" init-value="20000" is-not-null="yes"/>
- </class>
-
- <class name="TriggerActivityMaker" is-abstract="yes">
-  <attribute name="tpset_source" type="u32" is-not-null="yes"/>
-  <attribute name="prescale" description="Prescale for the algorithm (output one every n TAs)" type="u32" init-value="1" is-not-null="yes"/>
-  <attribute name="algorithm" description="Name of the algorithm" type="string" init-value="Prescale"/>
-  <attribute name="print_tp_info" description="Whether to print the TP info inside each TAM" type="bool" init-value="false" is-not-null="yes"/>
- </class>
-
- <class name="TriggerActivityMakerHorizontalMuon">
-  <superclass name="DaqModule"/>
-  <superclass name="TriggerActivityMaker"/>
+ <class name="TriggerActivityMakerHorizontalMuonPlugin">
+  <superclass name="TAAlgorithm"/>
   <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
   <attribute name="trigger_on_n_channels" description="Whether to trigger on N Channels" type="bool" init-value="false" is-not-null="yes"/>
   <attribute name="trigger_on_adjacency" description="Whether to trigger on adjacency" type="bool" init-value="false" is-not-null="yes"/>
@@ -261,48 +222,56 @@
   <attribute name="adjacency_tolerance" description="Tolerance for the number of allowed gaps for the adjacency algorithm" type="u32" init-value="4" is-not-null="yes"/>
  </class>
 
- <class name="TriggerActivityMakerPrescale">
-  <superclass name="DaqModule"/>
-  <superclass name="TriggerActivityMaker"/>
+ <class name="TriggerActivityMakerPrescalePlugin">
+  <superclass name="TAAlgorithm"/>
  </class>
 
- <class name="TriggerApplication">
-  <superclass name="SmartDaqApplication"/>
-  <superclass name="ResourceSetAND"/>
-  <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
-  <relationship name="trigger_algs" class-type="TriggeringAlgorithms" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="mlt_conf" class-type="ModuleLevelTriggerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="tpchannelfilter_conf" class-type="TPChannelFilterConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="tctee" class-type="TCSetTee" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="standalone_candidate_maker_confs" class-type="StandaloneCandidateMakerConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <method name="generate_modules" description="Generate daq module dal objects for streams of the TriggerApplication on the fly">
-   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
-  </method>
+ <class name="TCAlgorithm" description="Base class for TC algorithms">
+  <superclass name="Jsonable"/>
+  <attribute name="prescale" description="Prescale factor to apply to algorithm output" type="u32" init-value="1" is-not-null="yes"/>
  </class>
 
- <class name="TriggerCandidateMaker" is-abstract="yes">
-  <attribute name="taset_source" type="u32" is-not-null="yes"/>
-  <attribute name="prescale" description="Prescale for the algorithm (output one every n TCs)" type="u32" init-value="1" is-not-null="yes"/>
-  <attribute name="algorithm" description="Name of the algorithm" type="string" init-value="Prescale"/>
+ <class name="TCCustom">
+  <superclass name="TCAlgorithm"/>
+  <attribute name="trigger_types" type="u32" is-multi-value="yes"/>
+  <attribute name="trigger_intervals" type="u32" is-multi-value="yes"/>
+  <attribute name="timestamp_method" type="enum" range="kTimeSync,kSystemClock" init-value="kTimeSync" is-not-null="yes"/>
  </class>
 
- <class name="TriggerCandidateMakerHorizontalMuon">
-  <superclass name="DaqModule"/>
-  <superclass name="TriggerCandidateMaker"/>
+  <class name="TriggerCandidateMakerHorizontalMuonPlugin">
+  <superclass name="TCAlgorithm"/>
   <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
   <attribute name="trigger_on_n_channels" description="Whether to trigger on N Channels" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="trigger_on_adjacency" description="Whether to trigger on adjacency" type="bool" init-value="false" is-not-null="yes"/>
   <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
   <attribute name="n_channels_threshold" description="Threshold for the N Channels algorithm" type="u32" init-value="8" is-not-null="yes"/>
  </class>
 
- <class name="TriggerCandidateMakerPrescale">
-  <superclass name="DaqModule"/>
-  <superclass name="TriggerCandidateMaker"/>
+ <class name="TriggerCandidateMakerPrescalePlugin">
+  <superclass name="TCAlgorithm"/>
  </class>
 
- <class name="TriggeringAlgorithms">
-  <relationship name="tam" class-type="TriggerActivityMaker" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="tcm" class-type="TriggerCandidateMaker" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ <class name="TCReadoutMap">
+  <attribute name="candidate_type" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="time_before" type="u32" init-value="1000" is-not-null="yes"/>
+  <attribute name="time_after" type="u32" init-value="1001" is-not-null="yes"/>
+ </class>
+
+ <class name="TPChannelFilterConf">
+  <attribute name="keep_collection" description="Whether to keep the collection channel TPs." type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="keep_induction" description="Whether to keep the induction channel TPs." type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="channel_map_name" description="Name of the channel map." type="string" is-not-null="yes"/>
+ </class>
+
+ <class name="TPDataProcessor">
+  <superclass name="DataProcessor"/>
+  <attribute name="print_tp_info" description="Whether to print TP information in the TA processor" type="bool" init-value="false"/>
+  <relationship name="algorithms" class-type="TAAlgorithm" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="channel_filter_conf" class-type="TPChannelFilterConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="TriggerDataHandler">
+  <superclass name="ReadoutModule"/>
  </class>
 
 </oks-schema>

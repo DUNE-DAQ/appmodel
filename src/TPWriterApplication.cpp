@@ -13,14 +13,14 @@
 #include "oksdbinterfaces/Configuration.hpp"
 #include "oks/kernel.hpp"
 #include "coredal/Connection.hpp"
+#include "coredal/Service.hpp"
 #include "coredal/NetworkConnection.hpp"
 #include "appdal/TPStreamWriterApplication.hpp"
-#include "appdal/TPStreamWriterConf.hpp"
 #include "appdal/TPStreamWriter.hpp"
+#include "appdal/TPStreamWriterConf.hpp"
 #include "appdal/NetworkConnectionRule.hpp"
 #include "appdal/NetworkConnectionDescriptor.hpp"
-#include "appdal/QueueConnectionRule.hpp"
-#include "appdal/QueueDescriptor.hpp"
+#include "appdal/ReadoutApplication.hpp"
 #include "appdal/appdalIssues.hpp"
 #include "logging/Logging.hpp"
 
@@ -54,44 +54,52 @@ TPStreamWriterApplication::generate_modules(oksdbinterfaces::Configuration* conf
     throw (BadConf(ERS_HERE, "No TPStreamWriter configuration given"));
   }
   auto tpwriterConfObj = tpwriterConf->config_object();
-  auto dataStoreParams = tpwriterConf->get_data_store_params();
 
-  // Get TPSet sources
-/*
-  auto roMap = session->get_readout_map();
-  for (auto roGroup : roMap->get_groups()) {
-    if (roGroup->disabled(*session)) {
-      TLOG() << "Ignoring disabled ReadoutGroup " << roGroup->UID();
-      continue; 
-    }
-    auto rset = roGroup->cast<coredal::ReadoutGroup>();
-    if (rset == nullptr) {
-      throw (BadConf(ERS_HERE, "TPStreamWriterApplication contains something other than ReadoutGroup"));
+  const NetworkConnectionDescriptor* tset_in_net_desc = nullptr;
+  for (auto rule : get_network_rules()) {
+    auto endpoint_class = rule->get_endpoint_class();
+    auto data_type = rule->get_descriptor()->get_data_type();
+    if (data_type == "TPSet") {
+      tset_in_net_desc = rule->get_descriptor();
     }
   }
-*/
+  if ( tset_in_net_desc== nullptr) {
+      throw (BadConf(ERS_HERE, "No network descriptor given to receive TPSets"));
+  }
+  // Create Network Connection
+  oksdbinterfaces::ConfigObject tset_in_net_obj;
+  auto tset_in_service_obj = tset_in_net_desc->get_associated_service()->config_object();
+  std::string tset_stream_uid(tset_in_net_desc->get_uid_base()+".*");
+  confdb->create(dbfile, "NetworkConnection", tset_stream_uid, tset_in_net_obj);
+  tset_in_net_obj.set_by_val<std::string>("data_type", tset_in_net_desc->get_data_type());
+  tset_in_net_obj.set_by_val<std::string>("connection_type", tset_in_net_desc->get_connection_type());
+  tset_in_net_obj.set_obj("associated_service", &tset_in_service_obj);
 
-  //oksdbinterfaces::ConfigObject 
-  std::string tpNetUid("SubToTPH-"+std::to_string(1));
+  /* Get TPSet sources
+
+  std::vector<const dunedaq::coredal::Application*> apps = session->get_all_applications();
+  std::vector<const oksdbinterfaces::ConfigObject*> sourceIds;
+
+  for (auto app : apps) {
+    auto ro_app = app->cast<appdal::ReadoutApplication>();
+    if (ro_app != nullptr && !ro_app->disabled(*session)) {
+      oksdbinterfaces::ConfigObject* tpSourceIdConf = new oksdbinterfaces::ConfigObject();
+      confdb->create(dbfile, "SourceIDConf", ro_app->UID()+"-"+ std::to_string(ro_app->get_tp_source_id()), *tpSourceIdConf);
+      tpSourceIdConf->set_by_val<uint32_t>("id", ro_app->get_tp_source_id());
+      tpSourceIdConf->set_by_val<std::string>("subsystem", "Trigger");
+      sourceIds.push_back(tpSourceIdConf);
+    }
+  }
+  */
 
   oksdbinterfaces::ConfigObject tpwrObj;
-  std::string tpwrUid("tpwriter-"+std::to_string(100));
+  std::string tpwrUid("tpwriter-"+std::to_string(get_source_id()));
   confdb->create(dbfile, "TPStreamWriter", tpwrUid, tpwrObj);
+  tpwrObj.set_by_val<uint32_t>("source_id", get_source_id() ) ;
   tpwrObj.set_obj("configuration", &tpwriterConf->config_object());
-  //tpwrObj.set_obj("inputs", {&} );
-
+  tpwrObj.set_objs("inputs", {&tset_in_net_obj} );
 
   modules.push_back(confdb->get<TPStreamWriter>(tpwrUid));
-
-  // Process the queue rules looking for inputs to our TPStreamWriter module
-  const QueueDescriptor *tpwrInputQDesc = nullptr;
-  for (auto rule : get_queue_rules()) {
-    //auto destination_class = rule->get_destination_class();
-    // if (destination_class)
-    std::cout << "RULE is: " << rule << '\n'; 
-  }
-
-  
 
   return modules;
 }
