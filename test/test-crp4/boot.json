@@ -1,0 +1,127 @@
+{
+  "apps": {
+    "df-01": {
+      "exec": "daq_application_ssh",
+      "host": "hermes",
+      "port": 3336
+    },
+    "dfo-01": {
+      "exec": "daq_application_ssh",
+      "host": "hermes",
+      "port": 3339
+    },
+    "tp-stream-writer": {
+      "exec": "daq_application_ssh",
+      "host": "hermes",
+      "port": 3351
+    },
+    "tc-maker-1": {
+      "exec": "daq_application_ssh",
+      "host": "hermes",
+      "port": 3353
+    },	  
+    "mlt": {
+      "exec": "daq_application_ssh",
+      "host": "hermes",
+      "port": 3352
+    },	  
+    "runp02srv003eth0": {
+      "exec": "daq_application_ssh",
+      "host": "crp4",
+      "port": 3333
+    },
+    "hermes-CRP4": {
+      "exec": "daq_application_ssh",
+      "host": "hermes",
+      "port": 3334
+    }
+  },
+  "env": {
+    "DUNEDAQ_ERS_STREAM_LIBS": "erskafka",
+    "DUNEDAQ_ERS_DEBUG_LEVEL": "getenv_ifset",
+    "DUNEDAQ_ERS_ERROR": "erstrace,throttle,lstdout,protobufstream(monkafka.cern.ch:30092)",
+    "DUNEDAQ_ERS_FATAL": "erstrace,lstdout,protobufstream(monkafka.cern.ch:30092)",
+    "DUNEDAQ_ERS_INFO": "erstrace,throttle,lstdout,protobufstream(monkafka.cern.ch:30092)",
+    "DUNEDAQ_ERS_VERBOSITY_LEVEL": "getenv:1",
+    "DUNEDAQ_ERS_WARNING": "erstrace,throttle,lstdout,protobufstream(monkafka.cern.ch:30092)"
+  },
+  "exec": {
+    "daq_application_ssh": {
+      "args": [
+        "--name",
+        "{APP_NAME}",
+        "-c",
+        "{CMD_FAC}",
+        "-i",
+        "{INFO_SVC}",
+        "--configurationService",
+        "oksconfig:test/config/CRP4-session.data.xml"
+      ],
+      "cmd": "daq_application",
+      "comment": "Application profile using PATH variables (lower start time)",
+      "env": {
+        "CET_PLUGIN_PATH": "getenv",
+        "CMD_FAC": "rest://localhost:{APP_PORT}",
+        "CONNECTION_SERVER": "np04-srv-017",
+	"CONNECTION_PORT": "30005",
+        "DETCHANNELMAPS_SHARE": "getenv",
+        "DUNEDAQ_SHARE_PATH": "getenv",
+        "INFO_SVC": "kafka://monkafka.cern.ch:30092/opmon",
+        "LD_LIBRARY_PATH": "getenv",
+        "PATH": "getenv",
+        "TIMING_SHARE": "getenv",
+	"HERMESMODULES_SHARE": "getenv",
+        "TRACE_FILE": "getenv:/tmp/trace_buffer_{APP_HOST}_{DUNEDAQ_PARTITION}"
+      }
+    }
+  },
+  "external_connections": [],
+  "hosts-ctrl": {
+    "crp4": "np02-srv-003",
+    "hermes": "np04-srv-024"
+  },
+  "hosts-data": {
+    "crp4": "np02-srv-003",
+    "hermes": "np04-srv-024"
+  },
+  "response_listener": {
+    "port": 56789
+  },
+      "scripts": {
+        "thread_pinning_0": {
+            "after": "boot",
+            "cmd": [
+                "readout-affinity.py --pinfile ${DUNEDAQ_THREAD_PIN_FILE}"
+            ],
+            "env": {
+                "DUNEDAQ_THREAD_PIN_FILE": "/nfs/sw/dunedaq/dunedaq-fddaq-v4.3.0-rc3-dev/np04daq-configs/cpupin_files/cpupin-all.json",
+                "LD_LIBRARY_PATH": "getenv",
+                "PATH": "getenv"
+            }
+        },
+        "thread_pinning_1": {
+            "after": "conf",
+            "cmd": [
+                "readout-affinity.py --pinfile ${DUNEDAQ_THREAD_PIN_FILE}"
+            ],
+            "env": {
+                "DUNEDAQ_THREAD_PIN_FILE": "/nfs/sw/dunedaq/dunedaq-fddaq-v4.3.0-rc3-dev/np04daq-configs/cpupin_files/cpupin-all.json",
+                "LD_LIBRARY_PATH": "getenv",
+                "PATH": "getenv"
+            }
+        },
+        "thread_pinning_2": {
+            "after": "start",
+            "cmd": [
+                "readout-affinity.py --pinfile ${DUNEDAQ_THREAD_PIN_FILE}"
+            ],
+            "env": {
+                "DUNEDAQ_THREAD_PIN_FILE": "/nfs/sw/dunedaq/dunedaq-fddaq-v4.3.0-rc3-dev/np04daq-configs/cpupin_files/cpupin-all-running.json",
+                "LD_LIBRARY_PATH": "getenv",
+                "PATH": "getenv"
+            }
+        }
+    }
+
+}
+

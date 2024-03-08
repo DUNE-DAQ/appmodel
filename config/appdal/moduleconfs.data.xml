@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="17" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240306T101651"/>
+<info name="" type="" num-of-items="17" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240307T202444"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -92,6 +92,7 @@
  <comment creation-time="20240305T085052" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="no delays"/>
  <comment creation-time="20240305T162137" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="add delay"/>
  <comment creation-time="20240305T172822" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text=" adjust TA prescaling&#xA;"/>
+ <comment creation-time="20240307T133917" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="disable TPG"/>
 </comments>
 
 
@@ -118,10 +119,11 @@
 
 <obj class="LatencyBuffer" id="def-latency-buf">
  <attr name="size" type="u32" val="139008"/>
- <attr name="numa_aware" type="bool" val="0"/>
+ <attr name="numa_aware" type="bool" val="1"/>
+ <attr name="numa_node" type="s16" val="1"/>
  <attr name="intrinsic_allocator" type="bool" val="1"/>
  <attr name="alignment_size" type="u32" val="4096"/>
- <attr name="preallocation" type="bool" val="0"/>
+ <attr name="preallocation" type="bool" val="1"/>
 </obj>
 
 <obj class="NICReceiverConf" id="def-nic-receiver-conf">
@@ -140,12 +142,12 @@
 
 <obj class="RawDataProcessor" id="def-wib-processor">
  <attr name="queue_sizes" type="u32" val="10000"/>
- <attr name="thread_names_prefix" type="string" val="tp"/>
+ <attr name="thread_names_prefix" type="string" val="postproc-"/>
  <attr name="mask_processing" type="bool" val="0"/>
  <attr name="max_ticks_tot" type="u32" val="10000"/>
  <attr name="tpg_enabled" type="bool" val="1"/>
  <attr name="algorithm" type="string" val="SimpleThreshold"/>
- <attr name="threshold" type="u16" val="60"/>
+ <attr name="threshold" type="u16" val="1900"/>
  <attr name="channel_map" type="string" val="PD2HDChannelMap"/>
 </obj>
 
@@ -162,7 +164,6 @@
  <attr name="template_for" type="class" val="TriggerDataHandler"/>
  <attr name="input_data_type" type="string" val="TriggerPrimitive"/>
  <attr name="generate_timesync" type="bool" val="0"/>
- <attr name="post_processing_delay_ticks" type="u64" val="650000"/>
  <rel name="request_handler" class="RequestHandler" id="def-tp-request-handler"/>
  <rel name="latency_buffer" class="LatencyBuffer" id="def-latency-buf"/>
  <rel name="data_processor" class="TPDataProcessor" id="tp-processor"/>

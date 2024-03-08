@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="45" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240303T202748"/>
+<info name="" type="" num-of-items="45" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240307T183731"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -322,7 +322,7 @@
 <obj class="QueueDescriptor" id="wib-eth-raw-input">
  <attr name="uid_base" type="string" val="raw_input_"/>
  <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
- <attr name="capacity" type="u32" val="1000"/>
+ <attr name="capacity" type="u32" val="10000"/>
  <attr name="data_type" type="string" val="WIBEthFrame"/>
 </obj>
 
