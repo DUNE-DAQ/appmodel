@@ -185,6 +185,23 @@
  </rel>
 </obj>
 
+<obj class="TimingTriggerOffsetMap" id="ttcm-off-0">
+ <attr name="time_before" type="u32" val="1000"/>
+ <attr name="time_after" type="u32" val="1000"/>
+</obj>
+
+<obj class="TimingTriggerOffsetMap" id="ttcm-off-1">
+ <attr name="signal_type" type="u32" val="1"/>
+ <attr name="time_before" type="u32" val="1000"/>
+ <attr name="time_after" type="u32" val="1000"/>
+</obj>
+
+<obj class="TimingTriggerOffsetMap" id="ttcm-off-2">
+ <attr name="signal_type" type="u32" val="2"/>
+ <attr name="time_before" type="u32" val="1000"/>
+ <attr name="time_after" type="u32" val="1000"/>
+</obj>
+  
 <obj class="TCReadoutMap" id="def-tc-map">
  <attr name="time_before" type="u32" val="3000"/>
  <attr name="time_after" type="u32" val="1001"/>

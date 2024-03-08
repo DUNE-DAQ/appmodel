@@ -180,9 +180,19 @@
  <rel name="descriptor" class="NetworkConnectionDescriptor" id="fragments"/>
 </obj>
 
+<obj class="NetworkConnectionRule" id="hsi-data-req-net-rule">
+ <attr name="endpoint_class" type="class" val="HSIDataLinkHandler"/>
+ <rel name="descriptor" class="NetworkConnectionDescriptor" id="data-req-net-input"/>
+</obj>
+
 <obj class="NetworkConnectionRule" id="hsi-rule">
  <attr name="endpoint_class" type="class" val="DataSubscriber"/>
  <rel name="descriptor" class="NetworkConnectionDescriptor" id="hsi-desc"/>
+</obj>
+
+<obj class="NetworkConnectionRule" id="hsi-ts-net-rule">
+ <attr name="endpoint_class" type="class" val="HSIDataLinkHandler"/>
+ <rel name="descriptor" class="NetworkConnectionDescriptor" id="timesync-publisher"/>
 </obj>
 
 <obj class="NetworkConnectionRule" id="ta-net-rule">
@@ -230,7 +240,17 @@
  <rel name="descriptor" class="QueueDescriptor" id="fa-input"/>
 </obj>
 
-<obj class="QueueConnectionRule" id="ta-queue-rule">
+<obj class="QueueConnectionRule" id="hsi-raw-data-rule">
+ <attr name="destination_class" type="class" val="HSIDataLinkHandler"/>
+ <rel name="descriptor" class="QueueDescriptor" id="hsi-raw-input"/>
+</obj>
+
+<obj class="QueueConnectionRule" id="tcQueueRule">
+ <attr name="destination_class" type="class" val="ModuleLevelTrigger"/>
+ <rel name="descriptor" class="QueueDescriptor" id="tcQueueRuleDescriptor"/>
+</obj>
+
+ <obj class="QueueConnectionRule" id="ta-queue-rule">
  <attr name="destination_class" type="class" val="TriggerDataHandler"/>
  <rel name="descriptor" class="QueueDescriptor" id="ta-input"/>
 </obj>
@@ -262,6 +282,20 @@
  <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>
  <attr name="capacity" type="u32" val="1000"/>
  <attr name="data_type" type="string" val="Fragment"/>
+</obj>
+
+<obj class="QueueDescriptor" id="hsi-raw-input">
+ <attr name="uid_base" type="string" val="hsi_link_"/>
+ <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
+ <attr name="capacity" type="u32" val="100000"/>
+ <attr name="data_type" type="string" val="HSIFrame"/>
+</obj>
+
+<obj class="QueueDescriptor" id="tcQueueRuleDescriptor">
+ <attr name="uid_base" type="string" val="trigger_candidates_"/>
+ <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>
+ <attr name="capacity" type="u32" val="1000"/>
+ <attr name="data_type" type="string" val="TriggerActivity"/>
 </obj>
 
 <obj class="QueueDescriptor" id="ta-input">
