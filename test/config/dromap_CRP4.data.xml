@@ -63,17 +63,13 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="168" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20240306T135243" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240307T093451"/>
+<info name="" type="" num-of-items="131" oks-format="data" oks-version="862f2957270" created-by="crone" created-on="np04-srv-011.cern.ch" creation-time="20240308T134124" last-modified-by="crone" last-modified-on="np04-srv-011.cern.ch" last-modification-time="20240308T134124"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
  <file path="schema/appdal/application.schema.xml"/>
  <file path="schema/appdal/fdmodules.schema.xml"/>
 </include>
-
-<comments>
- <comment creation-time="20240307T091700" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="set lcore to 1"/>
-</comments>
 
 
 <obj class="DROStreamConf" id="DROStream-200">
@@ -371,7 +367,6 @@
  <attr name="tx_ip" type="string" val="10.73.139.59"/>
  <attr name="tx_hostname" type="string" val="np02-wib-1001"/>
  <attr name="lcore" type="u32" val="3"/>
-  <attr name="rx_queue" type="u32" val="0"/>
 </obj>
 
 <obj class="EthStreamParameters" id="pars-204">
@@ -411,7 +406,7 @@
  <attr name="tx_ip" type="string" val="10.73.139.62"/>
  <attr name="tx_hostname" type="string" val="np02-wib-1003"/>
  <attr name="lcore" type="u32" val="7"/>
-  <attr name="rx_queue" type="u32" val="4"/>
+ <attr name="rx_queue" type="u32" val="4"/>
 </obj>
 
 <obj class="EthStreamParameters" id="pars-220">
@@ -421,7 +416,7 @@
  <attr name="tx_ip" type="string" val="10.73.139.63"/>
  <attr name="tx_hostname" type="string" val="np02-wib-1003"/>
  <attr name="lcore" type="u32" val="63"/>
-  <attr name="rx_queue" type="u32" val="5"/>
+ <attr name="rx_queue" type="u32" val="5"/>
 </obj>
 
 <obj class="EthStreamParameters" id="pars-224">
@@ -431,7 +426,7 @@
  <attr name="tx_ip" type="string" val="10.73.139.65"/>
  <attr name="tx_hostname" type="string" val="np02-wib-1004"/>
  <attr name="lcore" type="u32" val="3"/>
-  <attr name="rx_queue" type="u32" val="6"/>
+ <attr name="rx_queue" type="u32" val="6"/>
 </obj>
 
 <obj class="EthStreamParameters" id="pars-228">
@@ -441,7 +436,7 @@
  <attr name="tx_ip" type="string" val="10.73.139.64"/>
  <attr name="tx_hostname" type="string" val="np02-wib-1004"/>
  <attr name="lcore" type="u32" val="59"/>
-  <attr name="rx_queue" type="u32" val="7"/>
+ <attr name="rx_queue" type="u32" val="7"/>
 </obj>
 
 <obj class="EthStreamParameters" id="pars-232">
@@ -451,7 +446,7 @@
  <attr name="tx_ip" type="string" val="10.73.139.66"/>
  <attr name="tx_hostname" type="string" val="np02-wib-1005"/>
  <attr name="lcore" type="u32" val="5"/>
-  <attr name="rx_queue" type="u32" val="8"/>
+ <attr name="rx_queue" type="u32" val="8"/>
 </obj>
 
 <obj class="EthStreamParameters" id="pars-236">
@@ -461,7 +456,7 @@
  <attr name="tx_ip" type="string" val="10.73.139.67"/>
  <attr name="tx_hostname" type="string" val="np02-wib-1005"/>
  <attr name="lcore" type="u32" val="61"/>
-  <attr name="rx_queue" type="u32" val="9"/>
+ <attr name="rx_queue" type="u32" val="9"/>
 </obj>
 
 <obj class="EthStreamParameters" id="pars-240">
@@ -471,7 +466,7 @@
  <attr name="tx_ip" type="string" val="10.73.139.68"/>
  <attr name="tx_hostname" type="string" val="np02-wib-1006"/>
  <attr name="lcore" type="u32" val="7"/>
-  <attr name="rx_queue" type="u32" val="10"/>
+ <attr name="rx_queue" type="u32" val="10"/>
 </obj>
 
 <obj class="EthStreamParameters" id="pars-244">
@@ -481,7 +476,7 @@
  <attr name="tx_ip" type="string" val="10.73.139.69"/>
  <attr name="tx_hostname" type="string" val="np02-wib-1006"/>
  <attr name="lcore" type="u32" val="63"/>
-  <attr name="rx_queue" type="u32" val="11"/>
+ <attr name="rx_queue" type="u32" val="11"/>
 </obj>
 
 <obj class="GeoId" id="geoId-200">
@@ -856,61 +851,15 @@
  </rel>
 </obj>
 
-<obj class="HermesController" id="hermes_10_10_5">
- <attr name="uri" type="string" val="ipbusudp-2.0://np02-wib-1006:50001"/>
- <attr name="port" type="u32" val="17476"/>
- <rel name="address_table" class="IpbusAddressTable" id="Hermes-addrtab"/>
- <rel name="links">
-  <ref class="HermesLinkConf" id="hermes_10_10_5-0"/>
-  <ref class="HermesLinkConf" id="hermes_10_10_5-1"/>
- </rel>
-</obj>
-
 <obj class="HermesLinkConf" id="hermes_10_10_0-0">
  <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
  <rel name="source" class="DROStreamConf" id="DROStream-200"/>
 </obj>
 
 <obj class="HermesLinkConf" id="hermes_10_10_0-1">
- <attr name="id" type="u32" val="1"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-201"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_0-2">
- <attr name="id" type="u32" val="2"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-202"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_0-3">
- <attr name="id" type="u32" val="3"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-203"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_0-4">
- <attr name="id" type="u32" val="4"/>
+ <attr name="link_id" type="u32" val="1"/>
  <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
  <rel name="source" class="DROStreamConf" id="DROStream-204"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_0-5">
- <attr name="id" type="u32" val="5"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-205"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_0-6">
- <attr name="id" type="u32" val="6"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-206"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_0-7">
- <attr name="id" type="u32" val="7"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-207"/>
 </obj>
 
 <obj class="HermesLinkConf" id="hermes_10_10_1-0">
@@ -919,45 +868,9 @@
 </obj>
 
 <obj class="HermesLinkConf" id="hermes_10_10_1-1">
- <attr name="id" type="u32" val="1"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-209"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_1-2">
- <attr name="id" type="u32" val="2"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-210"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_1-3">
- <attr name="id" type="u32" val="3"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-211"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_1-4">
- <attr name="id" type="u32" val="4"/>
+ <attr name="link_id" type="u32" val="1"/>
  <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
  <rel name="source" class="DROStreamConf" id="DROStream-212"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_1-5">
- <attr name="id" type="u32" val="5"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-213"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_1-6">
- <attr name="id" type="u32" val="6"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-214"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_1-7">
- <attr name="id" type="u32" val="7"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-215"/>
 </obj>
 
 <obj class="HermesLinkConf" id="hermes_10_10_2-0">
@@ -966,45 +879,9 @@
 </obj>
 
 <obj class="HermesLinkConf" id="hermes_10_10_2-1">
- <attr name="id" type="u32" val="1"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-217"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_2-2">
- <attr name="id" type="u32" val="2"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-218"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_2-3">
- <attr name="id" type="u32" val="3"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-219"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_2-4">
- <attr name="id" type="u32" val="4"/>
+ <attr name="link_id" type="u32" val="1"/>
  <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
  <rel name="source" class="DROStreamConf" id="DROStream-220"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_2-5">
- <attr name="id" type="u32" val="5"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-221"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_2-6">
- <attr name="id" type="u32" val="6"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-222"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_2-7">
- <attr name="id" type="u32" val="7"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-223"/>
 </obj>
 
 <obj class="HermesLinkConf" id="hermes_10_10_3-0">
@@ -1013,45 +890,9 @@
 </obj>
 
 <obj class="HermesLinkConf" id="hermes_10_10_3-1">
- <attr name="id" type="u32" val="1"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-225"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_3-2">
- <attr name="id" type="u32" val="2"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-226"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_3-3">
- <attr name="id" type="u32" val="3"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-227"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_3-4">
- <attr name="id" type="u32" val="4"/>
+ <attr name="link_id" type="u32" val="1"/>
  <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
  <rel name="source" class="DROStreamConf" id="DROStream-228"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_3-5">
- <attr name="id" type="u32" val="5"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-229"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_3-6">
- <attr name="id" type="u32" val="6"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-230"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_3-7">
- <attr name="id" type="u32" val="7"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-231"/>
 </obj>
 
 <obj class="HermesLinkConf" id="hermes_10_10_4-0">
@@ -1060,45 +901,9 @@
 </obj>
 
 <obj class="HermesLinkConf" id="hermes_10_10_4-1">
- <attr name="id" type="u32" val="1"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-233"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_4-2">
- <attr name="id" type="u32" val="2"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-234"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_4-3">
- <attr name="id" type="u32" val="3"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-235"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_4-4">
- <attr name="id" type="u32" val="4"/>
+ <attr name="link_id" type="u32" val="1"/>
  <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
  <rel name="source" class="DROStreamConf" id="DROStream-236"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_4-5">
- <attr name="id" type="u32" val="5"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-237"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_4-6">
- <attr name="id" type="u32" val="6"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-238"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_4-7">
- <attr name="id" type="u32" val="7"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-239"/>
 </obj>
 
 <obj class="HermesLinkConf" id="hermes_10_10_5-0">
@@ -1107,45 +912,9 @@
 </obj>
 
 <obj class="HermesLinkConf" id="hermes_10_10_5-1">
- <attr name="id" type="u32" val="1"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-241"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_5-2">
- <attr name="id" type="u32" val="2"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-242"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_5-3">
- <attr name="id" type="u32" val="3"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-243"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_5-4">
- <attr name="id" type="u32" val="4"/>
+ <attr name="link_id" type="u32" val="1"/>
  <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
  <rel name="source" class="DROStreamConf" id="DROStream-244"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_5-5">
- <attr name="id" type="u32" val="5"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-245"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_5-6">
- <attr name="id" type="u32" val="6"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-246"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_5-7">
- <attr name="id" type="u32" val="7"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-247"/>
 </obj>
 
 <obj class="IpbusAddressTable" id="Hermes-addrtab">
