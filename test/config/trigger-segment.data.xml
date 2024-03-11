@@ -117,7 +117,7 @@
   <data val="-i"/>
   <data val="kafka://monkafka.cern.ch:30092/opmon"/>
   <data val="--configurationService"/>
-  <data val="oksconfig://test/config/test-session.data.xml"/><!-- ALTER_ME -->
+  <data val="oksconfig:test/config/test-session.data.xml"/><!-- ALTER_ME -->
  </attr>
  <rel name="network_rules">
   <ref class="NetworkConnectionRule" id="tc-mlt-rule"/>
@@ -147,11 +147,12 @@
  <attr name="commandline_parameters" type="string">
   <data val="oksconfig://test/config/test-session.data.xml"/><!-- ALTER_ME -->
   <data val="grpc://np04-srv-019:3335"/><!-- ALTER_ME -->
-  <data val="root-controller"/>
+  <data val="trg-segment"/>
   <data val="test-session"/>
  </attr>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="fsm" class="FSMconfiguration" id="fsmConf-1"/>
+ <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
 </obj>
 
 <obj class="RandomTriggerCandidateMakerConf" id="random-tc-generator">
@@ -208,7 +209,7 @@
   <data val="-i"/>
   <data val="kafka://monkafka.cern.ch:30092/opmon"/>
   <data val="--configurationService"/>
-  <data val="oksconfig://test/config/test-session.data.xml"/><!-- ALTER_ME -->
+  <data val="oksconfig:test/config/test-session.data.xml"/><!-- ALTER_ME -->
  </attr>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="queue_rules">
@@ -234,7 +235,7 @@
   <data val="-i"/>
   <data val="kafka://monkafka.cern.ch:30092/opmon"/>
   <data val="--configurationService"/>
-  <data val="oksconfig://test/config/test-session.data.xml"/><!-- ALTER_ME -->
+  <data val="oksconfig:test/config/test-session.data.xml"/><!-- ALTER_ME -->
  </attr>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="queue_rules">

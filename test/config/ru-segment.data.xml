@@ -117,7 +117,7 @@
   <data val="-i"/>
   <data val="kafka://monkafka.cern.ch:30092/opmon"/>
   <data val="--configurationService"/>
-  <data val="oksconfig://test/config/test-session.data.xml"/><!-- ALTER_ME -->
+  <data val="oksconfig:test/config/test-session.data.xml"/><!-- ALTER_ME -->
  </attr>
  <rel name="contains">
   <ref class="ReadoutGroup" id="rog-1"/>
@@ -153,7 +153,7 @@
   <data val="-i"/>
   <data val="kafka://monkafka.cern.ch:30092/opmon"/>
   <data val="--configurationService"/>
-  <data val="oksconfig://test/config/test-session.data.xml"/><!-- ALTER_ME -->
+  <data val="oksconfig:test/config/test-session.data.xml"/><!-- ALTER_ME -->
  </attr>
  <rel name="contains">
   <ref class="ReadoutGroup" id="rog-2"/>
@@ -189,7 +189,8 @@
   <data val="-i"/>
   <data val="kafka://monkafka.cern.ch:30092/opmon"/>
   <data val="--configurationService"/>
-  <data val="oksconfig://test/config/test-session.data.xml"/><!-- ALTER_ME -->
+  <data val="oksconfig:test/config/test-session.data.xml"/><!-- ALTER_ME -->
+
  </attr>
  <rel name="contains">
   <ref class="ReadoutGroup" id="rog-3"/>
