@@ -125,6 +125,13 @@
  <rel name="associated_service" class="Service" id="triggerCandidates"/>
 </obj>
 
+<obj class="NetworkConnectionDescriptor" id="tc-mlt-desc">
+ <attr name="uid_base" type="string" val="tcs_mlt_"/>
+ <attr name="connection_type" type="enum" val="kPubSub"/>
+ <attr name="data_type" type="string" val="TriggerCandidate"/>
+ <rel name="associated_service" class="Service" id="triggerCandidates"/>
+</obj>
+
 <obj class="NetworkConnectionDescriptor" id="timesync-publisher">
  <attr name="uid_base" type="string" val="time_sync_"/>
  <attr name="connection_type" type="enum" val="kPubSub"/>
@@ -202,6 +209,11 @@
 
 <obj class="NetworkConnectionRule" id="tc-mlt-rule">
  <attr name="endpoint_class" type="class" val="ModuleLevelTrigger"/>
+ <rel name="descriptor" class="NetworkConnectionDescriptor" id="tc-mlt-desc"/>
+</obj>
+
+<obj class="NetworkConnectionRule" id="tc-net-rule">
+ <attr name="endpoint_class" type="class" val="DataSubscriber"/>
  <rel name="descriptor" class="NetworkConnectionDescriptor" id="tc-desc"/>
 </obj>
 
@@ -255,6 +267,11 @@
  <rel name="descriptor" class="QueueDescriptor" id="ta-input"/>
 </obj>
 
+ <obj class="QueueConnectionRule" id="tc-queue-rule">
+ <attr name="destination_class" type="class" val="TriggerDataHandler"/>
+ <rel name="descriptor" class="QueueDescriptor" id="tc-input"/>
+</obj>
+
 <obj class="QueueConnectionRule" id="tp-queue-rule">
  <attr name="destination_class" type="class" val="TriggerDataHandler"/>
  <rel name="descriptor" class="QueueDescriptor" id="tp-input"/>
@@ -303,6 +320,13 @@
  <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
  <attr name="capacity" type="u32" val="1000"/>
  <attr name="data_type" type="string" val="TriggerActivity"/>
+</obj>
+
+<obj class="QueueDescriptor" id="tc-input">
+ <attr name="uid_base" type="string" val="tc_input_"/>
+ <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
+ <attr name="capacity" type="u32" val="1000"/>
+ <attr name="data_type" type="string" val="TriggerCandidate"/>
 </obj>
 
 <obj class="QueueDescriptor" id="tp-input">
