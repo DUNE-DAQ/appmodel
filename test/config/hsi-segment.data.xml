@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="8" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240312T175939"/>
+<info name="" type="" num-of-items="9" oks-format="data" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240312T203031"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -77,12 +77,15 @@
  <comment creation-time="20240208T095451" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="reformat"/>
  <comment creation-time="20240208T144137" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="s"/>
  <comment creation-time="20240208T150252" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="Build FakeHSI application"/>
+ <comment creation-time="20240312T202936" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="Add hsi-01 source id"/>
+ <comment creation-time="20240312T203031" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="Apply source_id..."/>
 </comments>
 
 
 <obj class="FakeHSIApplication" id="hsi-01">
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="source_id" class="SourceIDConf" id="hsi-srcid-01"/>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="hsi-raw-data-rule"/>
  </rel>
@@ -145,6 +148,11 @@
   <ref class="FakeHSIApplication" id="hsi-01"/>
  </rel>
  <rel name="controller" class="RCApplication" id="hsi-controller"/>
+</obj>
+
+<obj class="SourceIDConf" id="hsi-srcid-01">
+ <attr name="id" type="u32" val="1"/>
+ <attr name="subsystem" type="enum" val="HW_Signals_Interface"/>
 </obj>
 
 </oks-data>

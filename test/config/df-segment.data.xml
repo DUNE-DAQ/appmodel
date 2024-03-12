@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="13" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240312T171140"/>
+<info name="" type="" num-of-items="16" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240312T202726"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -83,13 +83,14 @@
  <comment creation-time="20240220T094213" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="updated configuration to use a dedicated app for TA making"/>
  <comment creation-time="20240306T200127" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="added TP stream writer"/>
  <comment creation-time="20240307T084519" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="added dataflow"/>
+ <comment creation-time="20240312T202726" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="Trivial edit to reorder objects"/>
 </comments>
 
 
 <obj class="DFApplication" id="df-01">
  <attr name="application_name" type="string" val="daq_application"/>
- <attr name="source_id" type="u32" val="1"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="source_id" class="SourceIDConf" id="srcid-df-01"/>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="trigger-record-q-rule"/>
  </rel>
@@ -107,8 +108,8 @@
 
 <obj class="DFApplication" id="df-02">
  <attr name="application_name" type="string" val="daq_application"/>
- <attr name="source_id" type="u32" val="2"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="source_id" class="SourceIDConf" id="srcid-df-02"/>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="trigger-record-q-rule"/>
  </rel>
@@ -125,8 +126,8 @@
 
 <obj class="DFApplication" id="df-03">
  <attr name="application_name" type="string" val="daq_application"/>
- <attr name="source_id" type="u32" val="3"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="source_id" class="SourceIDConf" id="srcid-df-03"/>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="trigger-record-q-rule"/>
  </rel>
@@ -203,6 +204,21 @@
   <ref class="TPStreamWriterApplication" id="tp-stream-writer"/>
  </rel>
  <rel name="controller" class="RCApplication" id="df-controller"/>
+</obj>
+
+<obj class="SourceIDConf" id="srcid-df-01">
+ <attr name="id" type="u32" val="1"/>
+ <attr name="subsystem" type="enum" val="TR_Builder"/>
+</obj>
+
+<obj class="SourceIDConf" id="srcid-df-02">
+ <attr name="id" type="u32" val="2"/>
+ <attr name="subsystem" type="enum" val="TR_Builder"/>
+</obj>
+
+<obj class="SourceIDConf" id="srcid-df-03">
+ <attr name="id" type="u32" val="3"/>
+ <attr name="subsystem" type="enum" val="TR_Builder"/>
 </obj>
 
 <obj class="StorageDevice" id="storage-01">

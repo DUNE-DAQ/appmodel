@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="21" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240312T175714"/>
+<info name="" type="" num-of-items="25" oks-format="data" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240312T203446"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -86,6 +86,7 @@
  <comment creation-time="20240302T162952" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="debug TP flow"/>
  <comment creation-time="20240312T115725" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="added hsi-to-tc-app"/>
  <comment creation-time="20240312T122552" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="added information about services exposed by app; used to infer whether an app responds to data reuqests."/>
+ <comment creation-time="20240312T203446" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="Add application source_id entries"/>
 </comments>
 
 
@@ -119,6 +120,7 @@
 <obj class="HSIEventToTCApplication" id="hsi-to-tc-app">
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="source_id" class="SourceIDConf" id="hsi-tc-srcid-1"/>
  <rel name="network_rules">
   <ref class="NetworkConnectionRule" id="hsi-rule"/>
   <ref class="NetworkConnectionRule" id="tc-mlt-rule"/>
@@ -135,6 +137,7 @@
 <obj class="MLTApplication" id="mlt">
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="source_id" class="SourceIDConf" id="mlt-srcid-01"/>
  <rel name="network_rules">
   <ref class="NetworkConnectionRule" id="tc-mlt-rule"/>
   <ref class="NetworkConnectionRule" id="ti-net-rule"/>
@@ -203,6 +206,26 @@
  <rel name="controller" class="RCApplication" id="trg-controller"/>
 </obj>
 
+<obj class="SourceIDConf" id="hsi-tc-srcid-1">
+ <attr name="id" type="u32" val="2"/>
+ <attr name="subsystem" type="enum" val="Trigger"/>
+</obj>
+
+<obj class="SourceIDConf" id="mlt-srcid-01">
+ <attr name="id" type="u32" val="1"/>
+ <attr name="subsystem" type="enum" val="Trigger"/>
+</obj>
+
+<obj class="SourceIDConf" id="ta-srcid-1">
+ <attr name="id" type="u32" val="100"/>
+ <attr name="subsystem" type="enum" val="Trigger"/>
+</obj>
+
+<obj class="SourceIDConf" id="tc-srcid-1">
+ <attr name="id" type="u32" val="10000"/>
+ <attr name="subsystem" type="enum" val="Trigger"/>
+</obj>
+
 <obj class="TADataProcessor" id="def-ta-processor">
  <attr name="queue_sizes" type="u32" val="10000"/>
  <attr name="thread_names_prefix" type="string" val="proc-"/>
@@ -242,12 +265,12 @@
 </obj>
 
 <obj class="TriggerApplication" id="ta-maker-1">
- <attr name="source_id" type="u32" val="100"/>
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="exposes_service">
   <ref class="Service" id="triggerActivities"/>
  </rel>
+ <rel name="source_id" class="SourceIDConf" id="ta-srcid-1"/>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="tp-queue-rule"/>
  </rel>
@@ -261,13 +284,13 @@
 </obj>
 
 <obj class="TriggerApplication" id="tc-maker-1">
- <attr name="source_id" type="u32" val="10000"/>
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="exposes_service">
   <ref class="Service" id="dataRequests"/>
   <ref class="Service" id="triggerCandidates"/>
  </rel>
+ <rel name="source_id" class="SourceIDConf" id="tc-srcid-1"/>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="ta-queue-rule"/>
  </rel>
