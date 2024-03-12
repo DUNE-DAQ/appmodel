@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="46" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240208T144253"/>
+<info name="" type="" num-of-items="45" oks-format="schema" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240312T114125"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -203,6 +203,7 @@
 
  <class name="FakeHSIApplication">
   <superclass name="SmartDaqApplication"/>
+  <attribute name="source_id" description="The SourceID of this element" type="u32" is-not-null="yes"/>
   <relationship name="link_handler" class-type="ReadoutModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="generator" class-type="FakeHSIEventGeneratorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
@@ -261,9 +262,9 @@
   <superclass name="ReadoutModule"/>
  </class>
 
-<class name="HSIFrameProcessor">
- <superclass name="DataProcessor"/>
-</class>
+ <class name="HSIFrameProcessor">
+  <superclass name="DataProcessor"/>
+ </class>
 
  <class name="LatencyBuffer">
   <attribute name="size" type="u32" init-value="100000" is-not-null="yes"/>

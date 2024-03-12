@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="34" oks-format="schema" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231211T133151" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240207T103110"/>
+<info name="" type="" num-of-items="28" oks-format="schema" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231211T133151" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240312T114127"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -101,20 +101,40 @@
   <attribute name="clock_frequency_hz" type="u32" init-value="62500000"/>
  </class>
 
- <class name="DataSubscriber" is-abstract="no">
+ <class name="DataSubscriber">
   <superclass name="DaqModule"/>
   <relationship name="configuration" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
- 
+
+ <class name="HSIEventToTCApplication">
+  <superclass name="SmartDaqApplication"/>
+  <relationship name="hsevent_to_tc_conf" class-type="HSI2TCTranslatorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <method name="generate_modules" description="Generate daq module dal objects for HSIEventToTCApplication on the fly">
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
+  </method>
+
+</class>
+
  <class name="HSI2TCTranslatorConf">
   <superclass name="DataReaderConf"/>
   <relationship name="signals" class-type="HSISignalWindow" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
-  <class name="HSISignalWindow">
+ <class name="HSISignalWindow">
   <attribute name="signal_type" type="u32" init-value="0" is-not-null="yes"/>
   <attribute name="time_before" type="u32" init-value="10000" is-not-null="yes"/>
   <attribute name="time_after" type="u32" init-value="20000" is-not-null="yes"/>
+ </class>
+
+ <class name="MLTApplication">
+  <superclass name="SmartDaqApplication"/>
+  <superclass name="ResourceSetAND"/>
+  <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
+  <relationship name="mlt_conf" class-type="ModuleLevelTriggerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="standalone_candidate_maker_confs" class-type="StandaloneCandidateMakerConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <method name="generate_modules" description="Generate daq module dal objects for MLTApplication on the fly">
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
+  </method>
  </class>
 
  <class name="ModuleLevelTrigger">
@@ -169,37 +189,6 @@
   <attribute name="timestamp_method" type="enum" range="kTimeSync,kSystemClock" init-value="kTimeSync" is-not-null="yes"/>
  </class>
 
-<class name="TimingTriggerOffsetMap">
-<attribute name="signal_type" type="u32" init-value="0" is-not-null="yes"/>
-<attribute name="time_before" type="u32" init-value="10000" is-not-null="yes"/>
-<attribute name="time_after" type="u32" init-value="20000" is-not-null="yes"/>
-</class>
-
- <class name="MLTApplication">
-  <superclass name="SmartDaqApplication"/>
-  <superclass name="ResourceSetAND"/>
-  <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
-  <relationship name="mlt_conf" class-type="ModuleLevelTriggerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="standalone_candidate_maker_confs" class-type="StandaloneCandidateMakerConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <method name="generate_modules" description="Generate daq module dal objects for MLTApplication on the fly">
-
-   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
-  </method>
- </class>
-
-  <class name="TriggerApplication">
-  <superclass name="ResourceSetAND"/>
-  <superclass name="SmartDaqApplication"/>
-  <attribute name="source_id" description="Source ID if Trigger sets are being generated" type="u32"/>
-  <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
-  <relationship name="data_subscriber" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="trigger_inputs_handler" class-type="ReadoutModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <method name="generate_modules" description="Generate daq module dal objects for streams of thie TriggerApplication on the fly">
-   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
-  </method>
- </class>
-
-
  <class name="TAAlgorithm" description="Base class for TA algorithms">
   <superclass name="Jsonable"/>
   <attribute name="prescale" description="Prescale factor to apply to algorithm output" type="u32" init-value="1" is-not-null="yes"/>
@@ -209,21 +198,6 @@
   <superclass name="DataProcessor"/>
   <attribute name="print_ta_info" description="Whether to print TP information in the TA processor" type="bool" init-value="false"/>
   <relationship name="algorithms" class-type="TCAlgorithm" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="TriggerActivityMakerHorizontalMuonPlugin">
-  <superclass name="TAAlgorithm"/>
-  <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="trigger_on_n_channels" description="Whether to trigger on N Channels" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="trigger_on_adjacency" description="Whether to trigger on adjacency" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="n_channels_threshold" description="Threshold for the N Channels algorithm" type="u32" init-value="8" is-not-null="yes"/>
-  <attribute name="adjacency_threshold" description="Threshold for the adjacency algorithm" type="u32" init-value="6" is-not-null="yes"/>
-  <attribute name="adjacency_tolerance" description="Tolerance for the number of allowed gaps for the adjacency algorithm" type="u32" init-value="4" is-not-null="yes"/>
- </class>
-
- <class name="TriggerActivityMakerPrescalePlugin">
-  <superclass name="TAAlgorithm"/>
  </class>
 
  <class name="TCAlgorithm" description="Base class for TC algorithms">
@@ -236,19 +210,6 @@
   <attribute name="trigger_types" type="u32" is-multi-value="yes"/>
   <attribute name="trigger_intervals" type="u32" is-multi-value="yes"/>
   <attribute name="timestamp_method" type="enum" range="kTimeSync,kSystemClock" init-value="kTimeSync" is-not-null="yes"/>
- </class>
-
-  <class name="TriggerCandidateMakerHorizontalMuonPlugin">
-  <superclass name="TCAlgorithm"/>
-  <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="trigger_on_n_channels" description="Whether to trigger on N Channels" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="trigger_on_adjacency" description="Whether to trigger on adjacency" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="n_channels_threshold" description="Threshold for the N Channels algorithm" type="u32" init-value="8" is-not-null="yes"/>
- </class>
-
- <class name="TriggerCandidateMakerPrescalePlugin">
-  <superclass name="TCAlgorithm"/>
  </class>
 
  <class name="TCReadoutMap">
@@ -268,6 +229,52 @@
   <attribute name="print_tp_info" description="Whether to print TP information in the TA processor" type="bool" init-value="false"/>
   <relationship name="algorithms" class-type="TAAlgorithm" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="channel_filter_conf" class-type="TPChannelFilterConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="TimingTriggerOffsetMap">
+  <attribute name="signal_type" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="time_before" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="time_after" type="u32" init-value="20000" is-not-null="yes"/>
+ </class>
+
+ <class name="TriggerActivityMakerHorizontalMuonPlugin">
+  <superclass name="TAAlgorithm"/>
+  <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="trigger_on_n_channels" description="Whether to trigger on N Channels" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="trigger_on_adjacency" description="Whether to trigger on adjacency" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="n_channels_threshold" description="Threshold for the N Channels algorithm" type="u32" init-value="8" is-not-null="yes"/>
+  <attribute name="adjacency_threshold" description="Threshold for the adjacency algorithm" type="u32" init-value="6" is-not-null="yes"/>
+  <attribute name="adjacency_tolerance" description="Tolerance for the number of allowed gaps for the adjacency algorithm" type="u32" init-value="4" is-not-null="yes"/>
+ </class>
+
+ <class name="TriggerActivityMakerPrescalePlugin">
+  <superclass name="TAAlgorithm"/>
+ </class>
+
+ <class name="TriggerApplication">
+  <superclass name="ResourceSetAND"/>
+  <superclass name="SmartDaqApplication"/>
+  <attribute name="source_id" description="Source ID if Trigger sets are being generated" type="u32"/>
+  <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
+  <relationship name="data_subscriber" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="trigger_inputs_handler" class-type="ReadoutModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <method name="generate_modules" description="Generate daq module dal objects for streams of thie TriggerApplication on the fly">
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
+  </method>
+ </class>
+
+ <class name="TriggerCandidateMakerHorizontalMuonPlugin">
+  <superclass name="TCAlgorithm"/>
+  <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="trigger_on_n_channels" description="Whether to trigger on N Channels" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="trigger_on_adjacency" description="Whether to trigger on adjacency" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="n_channels_threshold" description="Threshold for the N Channels algorithm" type="u32" init-value="8" is-not-null="yes"/>
+ </class>
+
+ <class name="TriggerCandidateMakerPrescalePlugin">
+  <superclass name="TCAlgorithm"/>
  </class>
 
  <class name="TriggerDataHandler">

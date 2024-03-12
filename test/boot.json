@@ -15,6 +15,16 @@
       "host": "local",
       "port": 3339
     },
+    "hsi-to-tc-app": {
+      "exec": "daq_application_ssh",
+      "host": "local",
+      "port": 3360
+    },
+    "hsi-01": {
+      "exec": "daq_application_ssh",
+      "host": "local",
+      "port": 3361
+    },
     "tc-maker-1": {
       "exec": "daq_application_ssh",
       "host": "local",
