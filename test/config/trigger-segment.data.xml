@@ -106,11 +106,16 @@
  <attr name="emulation_mode" type="bool" val="0"/>
 </obj>
 
+<obj class="DataReaderConf" id="tc-subscriber-1">
+ <attr name="template_for" type="class" val="DataSubscriber"/>
+ <attr name="emulation_mode" type="bool" val="0"/>
+</obj>
+
 <obj class="MLTApplication" id="mlt">
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="network_rules">
-  <ref class="NetworkConnectionRule" id="tc-mlt-rule"/>
+  <ref class="NetworkConnectionRule" id="tc-net-rule"/>
   <ref class="NetworkConnectionRule" id="ti-net-rule"/>
   <ref class="NetworkConnectionRule" id="td-dfo-net-rule"/>
  </rel>
@@ -158,7 +163,25 @@
  <rel name="data_processor" class="TADataProcessor" id="def-ta-processor"/>
 </obj>
 
+<obj class="ReadoutModuleConf" id="dummy-tc-handler">
+ <attr name="template_for" type="class" val="TriggerDataHandler"/>
+ <attr name="input_data_type" type="string" val="TriggerCandidate"/>
+ <attr name="generate_timesync" type="bool" val="0"/>
+ <rel name="request_handler" class="RequestHandler" id="def-tc-request-handler"/>
+ <rel name="latency_buffer" class="LatencyBuffer" id="def-latency-buf"/>
+ <rel name="data_processor" class="DataProcessor" id="dummy-tc-processor"/>
+</obj>
+
 <obj class="RequestHandler" id="def-ta-request-handler">
+ <attr name="handler_threads" type="u16" val="1"/>
+ <attr name="request_timeout" type="u32" val="10000"/>
+ <attr name="pop_limit_pct" type="float" val="0.5"/>
+ <attr name="pop_size_pct" type="float" val="0.8"/>
+ <attr name="warn_on_timeout" type="bool" val="1"/>
+ <attr name="warn_on_empty_buffer" type="bool" val="1"/>
+</obj>
+
+<obj class="RequestHandler" id="def-tc-request-handler">
  <attr name="handler_threads" type="u16" val="1"/>
  <attr name="request_timeout" type="u32" val="10000"/>
  <attr name="pop_limit_pct" type="float" val="0.5"/>
@@ -171,6 +194,7 @@
  <rel name="applications">
   <ref class="MLTApplication" id="mlt"/>
   <ref class="TriggerApplication" id="tc-maker-1"/>
+  <ref class="TriggerApplication" id="tc-buffer-1"/>
  </rel>
  <rel name="controller" class="RCApplication" id="trg-controller"/>
 </obj>
@@ -183,6 +207,12 @@
  <rel name="algorithms">
   <ref class="TriggerCandidateMakerPrescalePlugin" id="tc-pass-through-algo"/>
  </rel>
+</obj>
+
+<obj class="DataProcessor" id="dummy-tc-processor">
+ <attr name="queue_sizes" type="u32" val="10000"/>
+ <attr name="thread_names_prefix" type="string" val="proc-"/>
+ <attr name="mask_processing" type="bool" val="0"/>
 </obj>
 
 <obj class="TimingTriggerOffsetMap" id="ttcm-off-0">
@@ -204,23 +234,7 @@
   
 <obj class="TCReadoutMap" id="def-tc-map">
  <attr name="time_before" type="u32" val="3000"/>
- <attr name="time_after" type="u32" val="1001"/>
-</obj>
-
-<obj class="TriggerApplication" id="ta-maker-1">
- <attr name="source_id" type="u32" val="100"/>
- <attr name="application_name" type="string" val="daq_application"/>
- <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
- <rel name="queue_rules">
-  <ref class="QueueConnectionRule" id="tp-queue-rule"/>
- </rel>
- <rel name="network_rules">
-  <ref class="NetworkConnectionRule" id="ta-net-rule"/>
-  <ref class="NetworkConnectionRule" id="tp-net-rule"/>
-  <ref class="NetworkConnectionRule" id="data-req-trig-net-rule"/>
- </rel>
- <rel name="data_subscriber" class="DataReaderConf" id="ta-subscriber-1"/>
- <rel name="trigger_inputs_handler" class="ReadoutModuleConf" id="trg-tp-handler"/>
+ <attr name="time_after" type="u32" val="1000"/>
 </obj>
 
 <obj class="TriggerApplication" id="tc-maker-1">
@@ -232,11 +246,27 @@
  </rel>
  <rel name="network_rules">
   <ref class="NetworkConnectionRule" id="ta-net-rule"/>
+  <ref class="NetworkConnectionRule" id="tc-net-rule"/>
+  <ref class="NetworkConnectionRule" id="data-req-trig-net-rule"/>
+ </rel>
+ <rel name="data_subscriber" class="DataReaderConf" id="tc-subscriber-1"/>
+ <rel name="trigger_inputs_handler" class="ReadoutModuleConf" id="def-ta-handler"/>
+</obj>
+
+<obj class="TriggerApplication" id="tc-buffer-1">
+ <attr name="source_id" type="u32" val="11000"/>
+ <attr name="application_name" type="string" val="daq_application"/>
+ <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="queue_rules">
+  <ref class="QueueConnectionRule" id="tc-queue-rule"/>
+ </rel>
+ <rel name="network_rules">
+  <ref class="NetworkConnectionRule" id="tc-net-rule"/>
   <ref class="NetworkConnectionRule" id="tc-mlt-rule"/>
   <ref class="NetworkConnectionRule" id="data-req-trig-net-rule"/>
  </rel>
- <rel name="data_subscriber" class="DataReaderConf" id="ta-subscriber-1"/>
- <rel name="trigger_inputs_handler" class="ReadoutModuleConf" id="def-ta-handler"/>
+ <rel name="data_subscriber" class="DataReaderConf" id="tc-subscriber-1"/>
+ <rel name="trigger_inputs_handler" class="ReadoutModuleConf" id="dummy-tc-handler"/>
 </obj>
 
 <obj class="TriggerCandidateMakerPrescalePlugin" id="tc-pass-through-algo">
