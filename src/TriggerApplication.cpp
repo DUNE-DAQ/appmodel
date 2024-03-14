@@ -114,13 +114,34 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
       req_net_desc = rule->get_descriptor();
     }
     else if (data_type == "TASet" || data_type == "TCSet"){
-	tset_out_net_desc = rule->get_descriptor();
+      tset_out_net_desc = rule->get_descriptor();
     }
     else if (endpoint_class == "DataSubscriber") {
+      if (!tin_net_desc) {
         tin_net_desc =  rule->get_descriptor();
+      }
+      else if (rule->get_descriptor()->get_data_type() == tin_net_desc->get_data_type()) {
+        // For now endpoint_class of DataSubscriber for both input and output
+        // with the same data type is not possible.
+        throw (BadConf(ERS_HERE, "Have two network connections of the same data_type and the same endpoint_class"));
+      }
+      else if (tin_net_desc->get_data_type() == "TriggerActivity" &&
+          rule->get_descriptor()->get_data_type() == "TriggerCandidate") {
+        // For TA->TC
+        tout_net_desc = rule->get_descriptor();
+      }
+      else if (tin_net_desc->get_data_type() == "TriggerCandidate" &&
+          rule->get_descriptor()->get_data_type() == "TriggerActivity") {
+        // For TA->TC if we saved TC network connection as input first...
+        tout_net_desc = tin_net_desc;
+        tin_net_desc = rule->get_descriptor();
+      }
+      else {
+        throw (BadConf(ERS_HERE, "Unexpected input & output network connection descriptors provided"));
+      }
     }
     else if (data_type == "TriggerActivity" || data_type == "TriggerCandidate"){
-	tout_net_desc = rule->get_descriptor();
+      tout_net_desc = rule->get_descriptor();
     }
   }
 
