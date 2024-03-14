@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="25" oks-format="data" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240312T203446"/>
+<info name="" type="" num-of-items="25" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240314T134835"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -104,11 +104,21 @@
  <attr name="clock_frequency_hz" type="u32" val="62500000"/>
 </obj>
 
+<obj class="DataProcessor" id="dummy-tc-processor">
+ <attr name="queue_sizes" type="u32" val="10000"/>
+ <attr name="thread_names_prefix" type="string" val="proc-"/>
+ <attr name="mask_processing" type="bool" val="1"/>
+</obj>
+
 <obj class="DataReaderConf" id="ta-subscriber-1">
  <attr name="template_for" type="class" val="DataSubscriber"/>
  <attr name="emulation_mode" type="bool" val="0"/>
 </obj>
 
+<obj class="DataReaderConf" id="tc-subscriber-1">
+ <attr name="template_for" type="class" val="DataSubscriber"/>
+ <attr name="emulation_mode" type="bool" val="0"/>
+</obj>
 
 <obj class="HSI2TCTranslatorConf" id="hsi-to-tc-conf">
  <attr name="template_for" type="class" val="DataReader"/>
@@ -133,10 +143,6 @@
  <attr name="signal_type" type="u32" val="1"/>
  <attr name="time_before" type="u32" val="10000"/>
  <attr name="time_after" type="u32" val="20000"/>
-
-<obj class="DataReaderConf" id="tc-subscriber-1">
- <attr name="template_for" type="class" val="DataSubscriber"/>
- <attr name="emulation_mode" type="bool" val="0"/>
 </obj>
 
 <obj class="MLTApplication" id="mlt">
@@ -222,10 +228,10 @@
 
 <obj class="Segment" id="trg-segment">
  <rel name="applications">
-  <ref class="MLTApplication" id="mlt"/>
-  <ref class="TriggerApplication" id="tc-maker-1"/>
   <ref class="HSIEventToTCApplication" id="hsi-to-tc-app"/>
+  <ref class="TriggerApplication" id="tc-maker-1"/>
   <ref class="TriggerApplication" id="tc-buffer-1"/>
+  <ref class="MLTApplication" id="mlt"/>
  </rel>
  <rel name="controller" class="RCApplication" id="trg-controller"/>
 </obj>
@@ -260,7 +266,6 @@
  </rel>
 </obj>
 
-
 <obj class="TCReadoutMap" id="def-hsi-tc-map">
  <attr name="candidate_type" type="u32" val="1"/>
  <attr name="time_before" type="u32" val="3000"/>
@@ -270,11 +275,6 @@
 <obj class="TCReadoutMap" id="def-tc-map">
  <attr name="time_before" type="u32" val="3000"/>
  <attr name="time_after" type="u32" val="1001"/>
-
-<obj class="DataProcessor" id="dummy-tc-processor">
- <attr name="queue_sizes" type="u32" val="10000"/>
- <attr name="thread_names_prefix" type="string" val="proc-"/>
- <attr name="mask_processing" type="bool" val="1"/>
 </obj>
 
 <obj class="TimingTriggerOffsetMap" id="ttcm-off-0">
@@ -292,25 +292,6 @@
  <attr name="signal_type" type="u32" val="2"/>
  <attr name="time_before" type="u32" val="1000"/>
  <attr name="time_after" type="u32" val="1000"/>
-</obj>
-
-<obj class="TriggerApplication" id="tc-maker-1">
- <attr name="application_name" type="string" val="daq_application"/>
- <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
- <rel name="exposes_service">
-  <ref class="Service" id="triggerActivities"/>
- </rel>
- <rel name="source_id" class="SourceIDConf" id="tc-srcid-1"/>
- <rel name="queue_rules">
-  <ref class="QueueConnectionRule" id="ta-queue-rule"/>
- </rel>
- <rel name="network_rules">
-  <ref class="NetworkConnectionRule" id="ta-net-rule"/>
-  <ref class="NetworkConnectionRule" id="tc-net-rule"/>
-  <ref class="NetworkConnectionRule" id="data-req-trig-net-rule"/>
- </rel>
- <rel name="data_subscriber" class="DataReaderConf" id="tc-subscriber-1"/>
- <rel name="trigger_inputs_handler" class="ReadoutModuleConf" id="def-ta-handler"/>
 </obj>
 
 <obj class="TriggerApplication" id="tc-buffer-1">
@@ -331,6 +312,25 @@
  </rel>
  <rel name="data_subscriber" class="DataReaderConf" id="tc-subscriber-1"/>
  <rel name="trigger_inputs_handler" class="ReadoutModuleConf" id="dummy-tc-handler"/>
+</obj>
+
+<obj class="TriggerApplication" id="tc-maker-1">
+ <attr name="application_name" type="string" val="daq_application"/>
+ <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="exposes_service">
+  <ref class="Service" id="triggerActivities"/>
+ </rel>
+ <rel name="source_id" class="SourceIDConf" id="tc-srcid-1"/>
+ <rel name="queue_rules">
+  <ref class="QueueConnectionRule" id="ta-queue-rule"/>
+ </rel>
+ <rel name="network_rules">
+  <ref class="NetworkConnectionRule" id="ta-net-rule"/>
+  <ref class="NetworkConnectionRule" id="tc-net-rule"/>
+  <ref class="NetworkConnectionRule" id="data-req-trig-net-rule"/>
+ </rel>
+ <rel name="data_subscriber" class="DataReaderConf" id="tc-subscriber-1"/>
+ <rel name="trigger_inputs_handler" class="ReadoutModuleConf" id="def-ta-handler"/>
 </obj>
 
 <obj class="TriggerCandidateMakerPrescalePlugin" id="tc-pass-through-algo">
