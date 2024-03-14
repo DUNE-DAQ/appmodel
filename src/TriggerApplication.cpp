@@ -90,7 +90,7 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
   auto ti_conf = get_trigger_inputs_handler();
   auto ti_class = ti_conf->get_template_for();
-
+  std::string handler_name("");
   // Process the queue rules looking for inputs to our trigger handler modules
   const QueueDescriptor* ti_inputq_desc = nullptr;
 
@@ -114,13 +114,40 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
       req_net_desc = rule->get_descriptor();
     }
     else if (data_type == "TASet" || data_type == "TCSet"){
-	tset_out_net_desc = rule->get_descriptor();
+      tset_out_net_desc = rule->get_descriptor();
     }
     else if (endpoint_class == "DataSubscriber") {
+      if (!tin_net_desc) {
         tin_net_desc =  rule->get_descriptor();
+      }
+      else if (rule->get_descriptor()->get_data_type() == tin_net_desc->get_data_type()) {
+        // For now endpoint_class of DataSubscriber for both input and output
+        // with the same data type is not possible.
+        throw (BadConf(ERS_HERE, "Have two network connections of the same data_type and the same endpoint_class"));
+      }
+      else if (tin_net_desc->get_data_type() == "TriggerActivity" &&
+          rule->get_descriptor()->get_data_type() == "TriggerCandidate") {
+        // For TA->TC
+        tout_net_desc = rule->get_descriptor();
+	handler_name = "tahandler";
+      }
+      else if (tin_net_desc->get_data_type() == "TriggerCandidate" &&
+          rule->get_descriptor()->get_data_type() == "TriggerActivity") {
+        // For TA->TC if we saved TC network connection as input first...
+        tout_net_desc = tin_net_desc;
+        tin_net_desc = rule->get_descriptor();
+	handler_name = "tahandler";
+      }
+      else {
+        throw (BadConf(ERS_HERE, "Unexpected input & output network connection descriptors provided"));
+      }
     }
     else if (data_type == "TriggerActivity" || data_type == "TriggerCandidate"){
-	tout_net_desc = rule->get_descriptor();
+      tout_net_desc = rule->get_descriptor();
+      if (data_type == "TriggerActivity") 
+	      handler_name = "tphandler";
+      else
+	      handler_name = "tahandler";
     }
   }
 
@@ -190,7 +217,7 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     throw(BadConf(ERS_HERE, "No source_id associated with this TriggerApplication!"));
   }
   uint32_t source_id = get_source_id()->get_id();
-  std::string ti_uid("tihandler-"+std::to_string(source_id));
+  std::string ti_uid(handler_name + std::to_string(source_id));
   confdb->create(dbfile, ti_class, ti_uid, ti_obj);
   ti_obj.set_by_val<uint32_t>("source_id", source_id);
   ti_obj.set_obj("module_configuration", &ti_conf_obj);
