@@ -262,7 +262,7 @@ MLTApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
         oksdbinterfaces::ConfigObject* hsEventSourceIdConf = new oksdbinterfaces::ConfigObject();
         confdb->create(dbfile, "SourceIDConf", hsi_app->UID()+"-"+ std::to_string(hsi_app->get_source_id()->get_id()), *hsEventSourceIdConf);
         hsEventSourceIdConf->set_by_val<uint32_t>("id", hsi_app->get_source_id()->get_id());
-        hsEventSourceIdConf->set_by_val<std::string>("subsystem", trg_app->get_source_id()->get_subsystem());
+        hsEventSourceIdConf->set_by_val<std::string>("subsystem", hsi_app->get_source_id()->get_subsystem());
         sourceIds.push_back(hsEventSourceIdConf);
     }
 
