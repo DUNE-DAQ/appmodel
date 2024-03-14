@@ -90,7 +90,7 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
   auto ti_conf = get_trigger_inputs_handler();
   auto ti_class = ti_conf->get_template_for();
-
+  std::string handler_name("");
   // Process the queue rules looking for inputs to our trigger handler modules
   const QueueDescriptor* ti_inputq_desc = nullptr;
 
@@ -129,12 +129,14 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
           rule->get_descriptor()->get_data_type() == "TriggerCandidate") {
         // For TA->TC
         tout_net_desc = rule->get_descriptor();
+	handler_name = "tahandler";
       }
       else if (tin_net_desc->get_data_type() == "TriggerCandidate" &&
           rule->get_descriptor()->get_data_type() == "TriggerActivity") {
         // For TA->TC if we saved TC network connection as input first...
         tout_net_desc = tin_net_desc;
         tin_net_desc = rule->get_descriptor();
+	handler_name = "tahandler";
       }
       else {
         throw (BadConf(ERS_HERE, "Unexpected input & output network connection descriptors provided"));
@@ -142,6 +144,10 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     }
     else if (data_type == "TriggerActivity" || data_type == "TriggerCandidate"){
       tout_net_desc = rule->get_descriptor();
+      if (data_type == "TriggerActivity") 
+	      handler_name = "tphandler";
+      else
+	      handler_name = "tahandler";
     }
   }
 
@@ -207,7 +213,7 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
   auto ti_conf_obj = ti_conf->config_object();
   oksdbinterfaces::ConfigObject ti_obj;
-  std::string ti_uid("tihandler-"+std::to_string(get_source_id()));
+  std::string ti_uid(handler_name + std::to_string(get_source_id()));
   confdb->create(dbfile, ti_class, ti_uid, ti_obj);
   ti_obj.set_by_val<uint32_t>("source_id", get_source_id());
   ti_obj.set_obj("module_configuration", &ti_conf_obj);
