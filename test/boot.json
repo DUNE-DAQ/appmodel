@@ -8,12 +8,22 @@
     "df-01": {
       "exec": "daq_application_ssh",
       "host": "local",
-      "port": 3336
+      "port": 3341
+    },
+    "df-02": {
+      "exec": "daq_application_ssh",
+      "host": "local",
+      "port": 3342
+    },
+    "tp-stream-writer": {
+      "exec": "daq_application_ssh",
+      "host": "local",
+      "port": 3349
     },
     "dfo-01": {
       "exec": "daq_application_ssh",
       "host": "local",
-      "port": 3339
+      "port": 3340
     },
     "hsi-to-tc-app": {
       "exec": "daq_application_ssh",
@@ -42,6 +52,7 @@
     }
   },
   "env": {
+    "DUNEDAQ_ERS_STREAM_LIBS": "erskafka",
     "DUNEDAQ_ERS_DEBUG_LEVEL": "getenv_ifset",
     "DUNEDAQ_ERS_ERROR": "erstrace,throttle,lstdout",
     "DUNEDAQ_ERS_FATAL": "erstrace,lstdout",
@@ -87,7 +98,8 @@
         "DETCHANNELMAPS_SHARE": "getenv",
         "DUNEDAQ_SHARE_PATH": "getenv",
         "INFO_SVC": "file://info_{APP_NAME}_{APP_PORT}.json",
-        "LD_LIBRARY_PATH": "getenv",
+        "TIMING_SHARE": "disabled",
+	"LD_LIBRARY_PATH": "getenv",
         "PATH": "getenv",
         "TRACE_FILE": "getenv:/tmp/trace_buffer_{APP_HOST}_{DUNEDAQ_PARTITION}"
       }

@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="13" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240312T171140"/>
+<info name="" type="" num-of-items="13" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240314T134835"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -198,9 +198,10 @@
 
 <obj class="Segment" id="df-segment">
  <rel name="applications">
-  <ref class="DFApplication" id="df-01"/>
-  <ref class="DFOApplication" id="dfo-01"/>
   <ref class="TPStreamWriterApplication" id="tp-stream-writer"/>
+  <ref class="DFOApplication" id="dfo-01"/>
+  <ref class="DFApplication" id="df-01"/>
+  <ref class="DFApplication" id="df-02"/>
  </rel>
  <rel name="controller" class="RCApplication" id="df-controller"/>
 </obj>
