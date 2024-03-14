@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="13" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240307T084519"/>
+<info name="" type="" num-of-items="13" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240312T171140"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -98,6 +98,7 @@
   <ref class="NetworkConnectionRule" id="data-req-net-rule"/>
   <ref class="NetworkConnectionRule" id="frag-net-rule"/>
   <ref class="NetworkConnectionRule" id="df-token-net-rule"/>
+  <ref class="NetworkConnectionRule" id="hsi-data-req-net-rule"/>
  </rel>
  <rel name="trb" class="TRBConf" id="trb-01"/>
  <rel name="data_writer" class="DataWriterConf" id="dw-01"/>

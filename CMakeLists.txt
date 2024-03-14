@@ -20,7 +20,7 @@ daq_oks_codegen(application.schema.xml fdmodules.schema.xml trigger.schema.xml
   NAMESPACE dunedaq::appdal DEP_PKGS coredal)
 
 daq_add_library(ReadoutApplication.cpp SmartDaqApplication.cpp
- 	DFApplication.cpp DFOApplication.cpp TPWriterApplication.cpp FakeDataApplication.cpp FakeHSIApplication.cpp TriggerApplication.cpp MLTApplication.cpp
+	DFApplication.cpp DFOApplication.cpp TPWriterApplication.cpp FakeDataApplication.cpp FakeHSIApplication.cpp TriggerApplication.cpp MLTApplication.cpp HSIEventToTCApplication.cpp 
  LINK_LIBRARIES oksdbinterfaces::oksdbinterfaces okssystem::okssystem
   logging::logging coredal::coredal oks::oks ers::ers)
 

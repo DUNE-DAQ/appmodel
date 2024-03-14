@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="7" oks-format="data" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240208T150252"/>
+<info name="" type="" num-of-items="8" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240312T175939"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -103,6 +103,12 @@
  <attr name="enabled_signals" type="u32" val="1"/>
 </obj>
 
+<obj class="HSIFrameProcessor" id="def-hsi-processor">
+ <attr name="queue_sizes" type="u32" val="10000"/>
+ <attr name="thread_names_prefix" type="string" val="hsip"/>
+ <attr name="mask_processing" type="bool" val="0"/>
+</obj>
+
 <obj class="LatencyBuffer" id="hsilatencybuffer-generic">
  <attr name="size" type="u32" val="100000"/>
  <attr name="numa_aware" type="bool" val="0"/>
@@ -132,11 +138,6 @@
  <attr name="pop_size_pct" type="float" val="0.1"/>
  <attr name="warn_on_timeout" type="bool" val="1"/>
  <attr name="warn_on_empty_buffer" type="bool" val="0"/>
-</obj>
-
-<obj class="HSIFrameProcessor" id="def-hsi-processor">
- <attr name="queue_sizes" type="u32" val="10000"/>
- <attr name="thread_names_prefix" type="string" val="hsip"/>
 </obj>
 
 <obj class="Segment" id="hsi-segment">
