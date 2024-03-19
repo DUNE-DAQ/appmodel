@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="26" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="glehmann" created-on="lxplus928.cern.ch" creation-time="20240107T174859" last-modified-by="glehmann" last-modified-on="lxplus928.cern.ch" last-modification-time="20240107T174859"/>
+<info name="" type="" num-of-items="26" oks-format="data" oks-version="oks-08-04-00-2-g4949f80 built &quot;Dec  6 2023&quot;" created-by="root" created-on="f1c9af75d018" creation-time="20240319T090125" last-modified-by="root" last-modified-on="f1c9af75d018" last-modification-time="20240319T090125"/>
 
 <obj class="Class" id="Application">
  <attr name="x" type="s16" val="8"/>
@@ -71,18 +71,18 @@
 </obj>
 
 <obj class="Class" id="DFApplication">
- <attr name="x" type="s16" val="316"/>
- <attr name="y" type="s16" val="121"/>
+ <attr name="x" type="s16" val="269"/>
+ <attr name="y" type="s16" val="123"/>
 </obj>
 
 <obj class="Class" id="DFOApplication">
- <attr name="x" type="s16" val="188"/>
- <attr name="y" type="s16" val="120"/>
+ <attr name="x" type="s16" val="133"/>
+ <attr name="y" type="s16" val="124"/>
 </obj>
 
 <obj class="Class" id="ReadoutApplication">
- <attr name="x" type="s16" val="440"/>
- <attr name="y" type="s16" val="120"/>
+ <attr name="x" type="s16" val="411"/>
+ <attr name="y" type="s16" val="119"/>
 </obj>
 
 <obj class="Class" id="SmartDaqApplication">
@@ -140,17 +140,17 @@
 </obj>
 
 <obj class="Point" id="1 SmartDaqApplication-2-DFApplication">
- <attr name="x" type="s16" val="95"/>
+ <attr name="x" type="s16" val="52"/>
  <attr name="y" type="s16" val="38"/>
 </obj>
 
 <obj class="Point" id="1 SmartDaqApplication-2-DFOApplication">
- <attr name="x" type="s16" val="95"/>
+ <attr name="x" type="s16" val="52"/>
  <attr name="y" type="s16" val="38"/>
 </obj>
 
 <obj class="Point" id="1 SmartDaqApplication-2-ReadoutApplication">
- <attr name="x" type="s16" val="95"/>
+ <attr name="x" type="s16" val="52"/>
  <attr name="y" type="s16" val="38"/>
 </obj>
 
@@ -160,17 +160,17 @@
 </obj>
 
 <obj class="Point" id="2 SmartDaqApplication-2-DFApplication">
- <attr name="x" type="s16" val="95"/>
+ <attr name="x" type="s16" val="52"/>
  <attr name="y" type="s16" val="131"/>
 </obj>
 
 <obj class="Point" id="2 SmartDaqApplication-2-DFOApplication">
- <attr name="x" type="s16" val="95"/>
+ <attr name="x" type="s16" val="52"/>
  <attr name="y" type="s16" val="100"/>
 </obj>
 
 <obj class="Point" id="2 SmartDaqApplication-2-ReadoutApplication">
- <attr name="x" type="s16" val="95"/>
+ <attr name="x" type="s16" val="52"/>
  <attr name="y" type="s16" val="100"/>
 </obj>
 

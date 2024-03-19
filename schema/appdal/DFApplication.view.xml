@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="165" oks-format="data" oks-version="oks-08-03-04-1-gf920aa4 built &quot;May 12 2022&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230829T080535" last-modified-by="gjc" last-modified-on="thinkpad" last-modification-time="20230829T080535"/>
+<info name="" type="" num-of-items="165" oks-format="data" oks-version="oks-08-04-00-2-g4949f80 built &quot;Dec  6 2023&quot;" created-by="root" created-on="f1c9af75d018" creation-time="20240319T095119" last-modified-by="root" last-modified-on="f1c9af75d018" last-modification-time="20240319T095119"/>
 
 <obj class="ALink" id="DFApplication-2-DFHWConf-via-uses">
  <attr name="Name" type="string" val="uses"/>
@@ -125,18 +125,6 @@
  </rel>
 </obj>
 
-<obj class="ALink" id="DataFlowOrchestrator-2-DFOConf-via-configuration">
- <attr name="Name" type="string" val="configuration"/>
- <rel name="From" class="Class" id="DataFlowOrchestrator"/>
- <rel name="To" class="Class" id="DFOConf"/>
- <rel name="Points">
-  <ref class="Point" id="1 DataFlowOrchestrator-2-DFOConf-via-configuration"/>
-  <ref class="Point" id="2 DataFlowOrchestrator-2-DFOConf-via-configuration"/>
-  <ref class="Point" id="3 DataFlowOrchestrator-2-DFOConf-via-configuration"/>
-  <ref class="Point" id="4 DataFlowOrchestrator-2-DFOConf-via-configuration"/>
- </rel>
-</obj>
-
 <obj class="ALink" id="DaqModule-2-Connection-via-inputs">
  <attr name="Name" type="string" val="inputs"/>
  <rel name="From" class="Class" id="DaqModule"/>
@@ -158,6 +146,18 @@
   <ref class="Point" id="2 DaqModule-2-Connection-via-outputs"/>
   <ref class="Point" id="3 DaqModule-2-Connection-via-outputs"/>
   <ref class="Point" id="4 DaqModule-2-Connection-via-outputs"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="DataFlowOrchestrator-2-DFOConf-via-configuration">
+ <attr name="Name" type="string" val="configuration"/>
+ <rel name="From" class="Class" id="DataFlowOrchestrator"/>
+ <rel name="To" class="Class" id="DFOConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DataFlowOrchestrator-2-DFOConf-via-configuration"/>
+  <ref class="Point" id="2 DataFlowOrchestrator-2-DFOConf-via-configuration"/>
+  <ref class="Point" id="3 DataFlowOrchestrator-2-DFOConf-via-configuration"/>
+  <ref class="Point" id="4 DataFlowOrchestrator-2-DFOConf-via-configuration"/>
  </rel>
 </obj>
 
@@ -318,8 +318,8 @@
 </obj>
 
 <obj class="Class" id="Connection">
- <attr name="x" type="s16" val="933"/>
- <attr name="y" type="s16" val="16"/>
+ <attr name="x" type="s16" val="882"/>
+ <attr name="y" type="s16" val="6"/>
 </obj>
 
 <obj class="Class" id="DFApplication">
@@ -342,14 +342,14 @@
  <attr name="y" type="s16" val="648"/>
 </obj>
 
-<obj class="Class" id="DataFlowOrchestrator">
- <attr name="x" type="s16" val="1163"/>
- <attr name="y" type="s16" val="697"/>
-</obj>
-
 <obj class="Class" id="DaqModule">
  <attr name="x" type="s16" val="1156"/>
  <attr name="y" type="s16" val="20"/>
+</obj>
+
+<obj class="Class" id="DataFlowOrchestrator">
+ <attr name="x" type="s16" val="1120"/>
+ <attr name="y" type="s16" val="696"/>
 </obj>
 
 <obj class="Class" id="DataStoreConf">
@@ -373,7 +373,7 @@
 </obj>
 
 <obj class="Class" id="HDF5FileLayoutParams">
- <attr name="x" type="s16" val="669"/>
+ <attr name="x" type="s16" val="658"/>
  <attr name="y" type="s16" val="295"/>
 </obj>
 
@@ -383,23 +383,23 @@
 </obj>
 
 <obj class="Class" id="NetworkConnectionDescriptor">
- <attr name="x" type="s16" val="862"/>
- <attr name="y" type="s16" val="83"/>
+ <attr name="x" type="s16" val="692"/>
+ <attr name="y" type="s16" val="115"/>
 </obj>
 
 <obj class="Class" id="NetworkConnectionRule">
- <attr name="x" type="s16" val="344"/>
- <attr name="y" type="s16" val="88"/>
+ <attr name="x" type="s16" val="295"/>
+ <attr name="y" type="s16" val="83"/>
 </obj>
 
 <obj class="Class" id="QueueConnectionRule">
- <attr name="x" type="s16" val="293"/>
- <attr name="y" type="s16" val="28"/>
+ <attr name="x" type="s16" val="294"/>
+ <attr name="y" type="s16" val="21"/>
 </obj>
 
 <obj class="Class" id="QueueDescriptor">
- <attr name="x" type="s16" val="605"/>
- <attr name="y" type="s16" val="13"/>
+ <attr name="x" type="s16" val="604"/>
+ <attr name="y" type="s16" val="4"/>
 </obj>
 
 <obj class="Class" id="SmartDaqApplication">
@@ -413,28 +413,28 @@
 </obj>
 
 <obj class="Class" id="TPStreamWriter">
- <attr name="x" type="s16" val="1160"/>
- <attr name="y" type="s16" val="620"/>
+ <attr name="x" type="s16" val="1123"/>
+ <attr name="y" type="s16" val="617"/>
 </obj>
 
 <obj class="Class" id="TPStreamWriterApplication">
  <attr name="x" type="s16" val="53"/>
- <attr name="y" type="s16" val="604"/>
+ <attr name="y" type="s16" val="593"/>
 </obj>
 
 <obj class="Class" id="TPStreamWriterConf">
- <attr name="x" type="s16" val="284"/>
- <attr name="y" type="s16" val="615"/>
+ <attr name="x" type="s16" val="282"/>
+ <attr name="y" type="s16" val="623"/>
 </obj>
 
 <obj class="Class" id="TRBConf">
- <attr name="x" type="s16" val="257"/>
- <attr name="y" type="s16" val="158"/>
+ <attr name="x" type="s16" val="403"/>
+ <attr name="y" type="s16" val="140"/>
 </obj>
 
 <obj class="Class" id="TriggerRecordBuilder">
- <attr name="x" type="s16" val="1112"/>
- <attr name="y" type="s16" val="197"/>
+ <attr name="x" type="s16" val="1033"/>
+ <attr name="y" type="s16" val="206"/>
 </obj>
 
 <obj class="GLink" id="DaqModule-2-DataFlowOrchestrator">
@@ -539,11 +539,6 @@
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 DataFlowOrchestrator-2-DFOConf-via-configuration">
- <attr name="x" type="s16" val="59"/>
- <attr name="y" type="s16" val="24"/>
-</obj>
-
 <obj class="Point" id="1 DaqModule-2-Connection-via-inputs">
  <attr name="x" type="s16" val="56"/>
  <attr name="y" type="s16" val="24"/>
@@ -574,6 +569,11 @@
  <attr name="y" type="s16" val="24"/>
 </obj>
 
+<obj class="Point" id="1 DataFlowOrchestrator-2-DFOConf-via-configuration">
+ <attr name="x" type="s16" val="59"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
 <obj class="Point" id="1 DataStoreConf-2-FilenameParams-via-filename_params">
  <attr name="x" type="s16" val="195"/>
  <attr name="y" type="s16" val="105"/>
@@ -590,7 +590,7 @@
 </obj>
 
 <obj class="Point" id="1 DataWriterConf-2-DataStoreConf-via-data_store_params">
- <attr name="x" type="s16" val="150"/>
+ <attr name="x" type="s16" val="73"/>
  <attr name="y" type="s16" val="51"/>
 </obj>
 
@@ -645,7 +645,7 @@
 </obj>
 
 <obj class="Point" id="1 TPStreamWriterConf-2-DataStoreConf-via-data_store_params">
- <attr name="x" type="s16" val="67"/>
+ <attr name="x" type="s16" val="122"/>
  <attr name="y" type="s16" val="38"/>
 </obj>
 
@@ -679,11 +679,6 @@
  <attr name="y" type="s16" val="713"/>
 </obj>
 
-<obj class="Point" id="2 DataFlowOrchestrator-2-DFOConf-via-configuration">
- <attr name="x" type="s16" val="59"/>
- <attr name="y" type="s16" val="716"/>
-</obj>
-
 <obj class="Point" id="2 DaqModule-2-Connection-via-inputs">
  <attr name="x" type="s16" val="56"/>
  <attr name="y" type="s16" val="25"/>
@@ -706,12 +701,17 @@
 
 <obj class="Point" id="2 DaqModule-2-TPStreamWriter">
  <attr name="x" type="s16" val="49"/>
- <attr name="y" type="s16" val="265"/>
+ <attr name="y" type="s16" val="327"/>
 </obj>
 
 <obj class="Point" id="2 DaqModule-2-TriggerRecordBuilder">
  <attr name="x" type="s16" val="4"/>
  <attr name="y" type="s16" val="109"/>
+</obj>
+
+<obj class="Point" id="2 DataFlowOrchestrator-2-DFOConf-via-configuration">
+ <attr name="x" type="s16" val="59"/>
+ <attr name="y" type="s16" val="716"/>
 </obj>
 
 <obj class="Point" id="2 DataStoreConf-2-FilenameParams-via-filename_params">
@@ -721,7 +721,7 @@
 
 <obj class="Point" id="2 DataStoreConf-2-HDF5FileLayoutParams-via-file_layout_params">
  <attr name="x" type="s16" val="244"/>
- <attr name="y" type="s16" val="348"/>
+ <attr name="y" type="s16" val="386"/>
 </obj>
 
 <obj class="Point" id="2 DataWriter-2-DataWriterConf-via-configuration">
@@ -730,8 +730,8 @@
 </obj>
 
 <obj class="Point" id="2 DataWriterConf-2-DataStoreConf-via-data_store_params">
- <attr name="x" type="s16" val="150"/>
- <attr name="y" type="s16" val="324"/>
+ <attr name="x" type="s16" val="73"/>
+ <attr name="y" type="s16" val="369"/>
 </obj>
 
 <obj class="Point" id="2 HDF5FileLayoutParams-2-HDF5PathParams-via-path_params_list">
@@ -781,12 +781,12 @@
 
 <obj class="Point" id="2 TPStreamWriterApplication-2-TPStreamWriterConf-via-tp_writer">
  <attr name="x" type="s16" val="90"/>
- <attr name="y" type="s16" val="635"/>
+ <attr name="y" type="s16" val="644"/>
 </obj>
 
 <obj class="Point" id="2 TPStreamWriterConf-2-DataStoreConf-via-data_store_params">
- <attr name="x" type="s16" val="67"/>
- <attr name="y" type="s16" val="443"/>
+ <attr name="x" type="s16" val="122"/>
+ <attr name="y" type="s16" val="597"/>
 </obj>
 
 <obj class="Point" id="2 TriggerRecordBuilder-2-TRBConf-via-configuration">
@@ -819,11 +819,6 @@
  <attr name="y" type="s16" val="713"/>
 </obj>
 
-<obj class="Point" id="3 DataFlowOrchestrator-2-DFOConf-via-configuration">
- <attr name="x" type="s16" val="15"/>
- <attr name="y" type="s16" val="716"/>
-</obj>
-
 <obj class="Point" id="3 DaqModule-2-Connection-via-inputs">
  <attr name="x" type="s16" val="25"/>
  <attr name="y" type="s16" val="25"/>
@@ -835,7 +830,7 @@
 </obj>
 
 <obj class="Point" id="3 DaqModule-2-DataFlowOrchestrator">
- <attr name="x" type="s16" val="65"/>
+ <attr name="x" type="s16" val="108"/>
  <attr name="y" type="s16" val="298"/>
 </obj>
 
@@ -845,13 +840,18 @@
 </obj>
 
 <obj class="Point" id="3 DaqModule-2-TPStreamWriter">
- <attr name="x" type="s16" val="45"/>
- <attr name="y" type="s16" val="265"/>
+ <attr name="x" type="s16" val="82"/>
+ <attr name="y" type="s16" val="327"/>
 </obj>
 
 <obj class="Point" id="3 DaqModule-2-TriggerRecordBuilder">
  <attr name="x" type="s16" val="48"/>
  <attr name="y" type="s16" val="109"/>
+</obj>
+
+<obj class="Point" id="3 DataFlowOrchestrator-2-DFOConf-via-configuration">
+ <attr name="x" type="s16" val="15"/>
+ <attr name="y" type="s16" val="716"/>
 </obj>
 
 <obj class="Point" id="3 DataStoreConf-2-FilenameParams-via-filename_params">
@@ -861,7 +861,7 @@
 
 <obj class="Point" id="3 DataStoreConf-2-HDF5FileLayoutParams-via-file_layout_params">
  <attr name="x" type="s16" val="83"/>
- <attr name="y" type="s16" val="348"/>
+ <attr name="y" type="s16" val="386"/>
 </obj>
 
 <obj class="Point" id="3 DataWriter-2-DataWriterConf-via-configuration">
@@ -870,8 +870,8 @@
 </obj>
 
 <obj class="Point" id="3 DataWriterConf-2-DataStoreConf-via-data_store_params">
- <attr name="x" type="s16" val="21"/>
- <attr name="y" type="s16" val="324"/>
+ <attr name="x" type="s16" val="34"/>
+ <attr name="y" type="s16" val="369"/>
 </obj>
 
 <obj class="Point" id="3 HDF5FileLayoutParams-2-HDF5PathParams-via-path_params_list">
@@ -921,12 +921,12 @@
 
 <obj class="Point" id="3 TPStreamWriterApplication-2-TPStreamWriterConf-via-tp_writer">
  <attr name="x" type="s16" val="20"/>
- <attr name="y" type="s16" val="635"/>
+ <attr name="y" type="s16" val="644"/>
 </obj>
 
 <obj class="Point" id="3 TPStreamWriterConf-2-DataStoreConf-via-data_store_params">
- <attr name="x" type="s16" val="65"/>
- <attr name="y" type="s16" val="443"/>
+ <attr name="x" type="s16" val="94"/>
+ <attr name="y" type="s16" val="597"/>
 </obj>
 
 <obj class="Point" id="3 TriggerRecordBuilder-2-TRBConf-via-configuration">
@@ -959,11 +959,6 @@
  <attr name="y" type="s16" val="8"/>
 </obj>
 
-<obj class="Point" id="4 DataFlowOrchestrator-2-DFOConf-via-configuration">
- <attr name="x" type="s16" val="15"/>
- <attr name="y" type="s16" val="8"/>
-</obj>
-
 <obj class="Point" id="4 DaqModule-2-Connection-via-inputs">
  <attr name="x" type="s16" val="25"/>
  <attr name="y" type="s16" val="12"/>
@@ -975,7 +970,7 @@
 </obj>
 
 <obj class="Point" id="4 DaqModule-2-DataFlowOrchestrator">
- <attr name="x" type="s16" val="65"/>
+ <attr name="x" type="s16" val="108"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
 
@@ -985,12 +980,17 @@
 </obj>
 
 <obj class="Point" id="4 DaqModule-2-TPStreamWriter">
- <attr name="x" type="s16" val="45"/>
+ <attr name="x" type="s16" val="82"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
 
 <obj class="Point" id="4 DaqModule-2-TriggerRecordBuilder">
  <attr name="x" type="s16" val="48"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 DataFlowOrchestrator-2-DFOConf-via-configuration">
+ <attr name="x" type="s16" val="15"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
 
@@ -1010,7 +1010,7 @@
 </obj>
 
 <obj class="Point" id="4 DataWriterConf-2-DataStoreConf-via-data_store_params">
- <attr name="x" type="s16" val="21"/>
+ <attr name="x" type="s16" val="34"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
 
@@ -1065,7 +1065,7 @@
 </obj>
 
 <obj class="Point" id="4 TPStreamWriterConf-2-DataStoreConf-via-data_store_params">
- <attr name="x" type="s16" val="65"/>
+ <attr name="x" type="s16" val="94"/>
  <attr name="y" type="s16" val="35"/>
 </obj>
 
