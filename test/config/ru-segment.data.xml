@@ -87,17 +87,39 @@
  <comment creation-time="20240312T122552" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="added information about services exposed by app; used to infer whether an app responds to data reuqests."/>
 </comments>
 
+<obj class="RCBroadcaster" id="broadcaster-root">
+    <attr name="type" type="enum" val="kafka"/>
+    <attr name="address" type="string" val="monkafka.cern.ch:30092"/>
+    <attr name="publish_timeout" type="u32" val="2"/>
+</obj>
 
 <obj class="RCApplication" id="ru-controller">
- <attr name="application_name" type="string" val="controller"/>
+ <attr name="application_name" type="string" val="drunc-controller"/>
+ <attr name="commandline_parameters" type="string">
+  <data val="oksconfig://test/config/test-session.data.xml"/><!-- ALTER_ME -->
+  <data val="grpc://np04-srv-019:3334"/><!-- ALTER_ME -->
+  <data val="ru-segment"/>
+  <data val="test-session"/>
+ </attr>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="fsm" class="FSMconfiguration" id="fsmConf-1"/>
+ <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
 </obj>
 
 <obj class="ReadoutApplication" id="ru-01">
  <attr name="tp_source_id" type="u32" val="100"/>
  <attr name="ta_source_id" type="u32" val="1000"/>
  <attr name="application_name" type="string" val="daq_application"/>
+ <attr name="commandline_parameters" type="string">
+  <data val="--name"/>
+  <data val="ru-01"/>
+  <data val="-c"/>
+  <data val="rest://localhost:3335"/><!-- ALTER_ME -->
+  <data val="-i"/>
+  <data val="kafka://monkafka.cern.ch:30092/opmon"/>
+  <data val="--configurationService"/>
+  <data val="oksconfig:test/config/test-session.data.xml"/><!-- ALTER_ME -->
+ </attr>
  <rel name="contains">
   <ref class="ReadoutGroup" id="rog-1"/>
  </rel>
@@ -130,6 +152,16 @@
  <attr name="tp_source_id" type="u32" val="200"/>
  <attr name="ta_source_id" type="u32" val="2000"/>
  <attr name="application_name" type="string" val="daq_application"/>
+ <attr name="commandline_parameters" type="string">
+  <data val="--name"/>
+  <data val="ru-02"/>
+  <data val="-c"/>
+  <data val="rest://localhost:3335"/><!-- ALTER_ME -->
+  <data val="-i"/>
+  <data val="kafka://monkafka.cern.ch:30092/opmon"/>
+  <data val="--configurationService"/>
+  <data val="oksconfig:test/config/test-session.data.xml"/><!-- ALTER_ME -->
+ </attr>
  <rel name="contains">
   <ref class="ReadoutGroup" id="rog-2"/>
  </rel>
@@ -156,6 +188,17 @@
  <attr name="tp_source_id" type="u32" val="300"/>
  <attr name="ta_source_id" type="u32" val="3000"/>
  <attr name="application_name" type="string" val="daq_application"/>
+ <attr name="commandline_parameters" type="string">
+  <data val="--name"/>
+  <data val="ru-03"/>
+  <data val="-c"/>
+  <data val="rest://localhost:3335"/><!-- ALTER_ME -->
+  <data val="-i"/>
+  <data val="kafka://monkafka.cern.ch:30092/opmon"/>
+  <data val="--configurationService"/>
+  <data val="oksconfig:test/config/test-session.data.xml"/><!-- ALTER_ME -->
+
+ </attr>
  <rel name="contains">
   <ref class="ReadoutGroup" id="rog-3"/>
  </rel>
