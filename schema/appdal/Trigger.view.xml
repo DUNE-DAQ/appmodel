@@ -63,7 +63,19 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="140" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="glehmann" created-on="lxplus924.cern.ch" creation-time="20240126T113022" last-modified-by="glehmann" last-modified-on="lxplus924.cern.ch" last-modification-time="20240126T113022"/>
+<info name="" type="" num-of-items="233" oks-format="data" oks-version="oks-08-04-00-2-g4949f80 built &quot;Dec  6 2023&quot;" created-by="root" created-on="f1c9af75d018" creation-time="20240319T114528" last-modified-by="root" last-modified-on="f1c9af75d018" last-modification-time="20240319T114528"/>
+
+<obj class="ALink" id="CustomTriggerCandidateMaker-2-CustomTriggerCandidateMakerConf-via-configuration">
+ <attr name="Name" type="string" val="configuration"/>
+ <rel name="From" class="Class" id="CustomTriggerCandidateMaker"/>
+ <rel name="To" class="Class" id="CustomTriggerCandidateMakerConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 CustomTriggerCandidateMaker-2-CustomTriggerCandidateMakerConf-via-configuration"/>
+  <ref class="Point" id="2 CustomTriggerCandidateMaker-2-CustomTriggerCandidateMakerConf-via-configuration"/>
+  <ref class="Point" id="3 CustomTriggerCandidateMaker-2-CustomTriggerCandidateMakerConf-via-configuration"/>
+  <ref class="Point" id="4 CustomTriggerCandidateMaker-2-CustomTriggerCandidateMakerConf-via-configuration"/>
+ </rel>
+</obj>
 
 <obj class="ALink" id="DataReaderConf-2-StreamEmulationParameters-via-emulation_conf">
  <attr name="Name" type="string" val="emulation_conf"/>
@@ -89,39 +101,135 @@
  </rel>
 </obj>
 
-<obj class="ALink" id="MLTAlgorithm-2-ROIGroupConf-via-roi_group_conf">
- <attr name="Name" type="string" val="roi_group_conf"/>
- <rel name="From" class="Class" id="MLTAlgorithm"/>
- <rel name="To" class="Class" id="ROIGroupConf"/>
+<obj class="ALink" id="FakeHSIApplication-2-FakeHSIEventGeneratorConf-via-generator">
+ <attr name="Name" type="string" val="generator"/>
+ <rel name="From" class="Class" id="FakeHSIApplication"/>
+ <rel name="To" class="Class" id="FakeHSIEventGeneratorConf"/>
  <rel name="Points">
-  <ref class="Point" id="1 MLTAlgorithm-2-ROIGroupConf-via-roi_group_conf"/>
-  <ref class="Point" id="2 MLTAlgorithm-2-ROIGroupConf-via-roi_group_conf"/>
-  <ref class="Point" id="3 MLTAlgorithm-2-ROIGroupConf-via-roi_group_conf"/>
-  <ref class="Point" id="4 MLTAlgorithm-2-ROIGroupConf-via-roi_group_conf"/>
+  <ref class="Point" id="1 FakeHSIApplication-2-FakeHSIEventGeneratorConf-via-generator"/>
+  <ref class="Point" id="2 FakeHSIApplication-2-FakeHSIEventGeneratorConf-via-generator"/>
+  <ref class="Point" id="3 FakeHSIApplication-2-FakeHSIEventGeneratorConf-via-generator"/>
+  <ref class="Point" id="4 FakeHSIApplication-2-FakeHSIEventGeneratorConf-via-generator"/>
  </rel>
 </obj>
 
-<obj class="ALink" id="MLTAlgorithm-2-SourceIDConf-via-mandatory_links">
+<obj class="ALink" id="FakeHSIApplication-2-ReadoutModuleConf-via-link_handler">
+ <attr name="Name" type="string" val="link_handler"/>
+ <rel name="From" class="Class" id="FakeHSIApplication"/>
+ <rel name="To" class="Class" id="ReadoutModuleConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 FakeHSIApplication-2-ReadoutModuleConf-via-link_handler"/>
+  <ref class="Point" id="2 FakeHSIApplication-2-ReadoutModuleConf-via-link_handler"/>
+  <ref class="Point" id="3 FakeHSIApplication-2-ReadoutModuleConf-via-link_handler"/>
+  <ref class="Point" id="4 FakeHSIApplication-2-ReadoutModuleConf-via-link_handler"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="HSI2TCTranslatorConf-2-HSISignalWindow-via-signals">
+ <attr name="Name" type="string" val="signals"/>
+ <rel name="From" class="Class" id="HSI2TCTranslatorConf"/>
+ <rel name="To" class="Class" id="HSISignalWindow"/>
+ <rel name="Points">
+  <ref class="Point" id="1 HSI2TCTranslatorConf-2-HSISignalWindow-via-signals"/>
+  <ref class="Point" id="2 HSI2TCTranslatorConf-2-HSISignalWindow-via-signals"/>
+  <ref class="Point" id="3 HSI2TCTranslatorConf-2-HSISignalWindow-via-signals"/>
+  <ref class="Point" id="4 HSI2TCTranslatorConf-2-HSISignalWindow-via-signals"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="HSIEventToTCApplication-2-HSI2TCTranslatorConf-via-hsevent_to_tc_conf">
+ <attr name="Name" type="string" val="hsevent_to_tc_conf"/>
+ <rel name="From" class="Class" id="HSIEventToTCApplication"/>
+ <rel name="To" class="Class" id="HSI2TCTranslatorConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 HSIEventToTCApplication-2-HSI2TCTranslatorConf-via-hsevent_to_tc_conf"/>
+  <ref class="Point" id="2 HSIEventToTCApplication-2-HSI2TCTranslatorConf-via-hsevent_to_tc_conf"/>
+  <ref class="Point" id="3 HSIEventToTCApplication-2-HSI2TCTranslatorConf-via-hsevent_to_tc_conf"/>
+  <ref class="Point" id="4 HSIEventToTCApplication-2-HSI2TCTranslatorConf-via-hsevent_to_tc_conf"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="MLTApplication-2-ModuleLevelTriggerConf-via-mlt_conf">
+ <attr name="Name" type="string" val="mlt_conf"/>
+ <rel name="From" class="Class" id="MLTApplication"/>
+ <rel name="To" class="Class" id="ModuleLevelTriggerConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 MLTApplication-2-ModuleLevelTriggerConf-via-mlt_conf"/>
+  <ref class="Point" id="2 MLTApplication-2-ModuleLevelTriggerConf-via-mlt_conf"/>
+  <ref class="Point" id="3 MLTApplication-2-ModuleLevelTriggerConf-via-mlt_conf"/>
+  <ref class="Point" id="4 MLTApplication-2-ModuleLevelTriggerConf-via-mlt_conf"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="MLTApplication-2-StandaloneCandidateMakerConf-via-standalone_candidate_maker_confs">
+ <attr name="Name" type="string" val="standalone_candidate_maker_confs"/>
+ <rel name="From" class="Class" id="MLTApplication"/>
+ <rel name="To" class="Class" id="StandaloneCandidateMakerConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 MLTApplication-2-StandaloneCandidateMakerConf-via-standalone_candidate_maker_confs"/>
+  <ref class="Point" id="2 MLTApplication-2-StandaloneCandidateMakerConf-via-standalone_candidate_maker_confs"/>
+  <ref class="Point" id="3 MLTApplication-2-StandaloneCandidateMakerConf-via-standalone_candidate_maker_confs"/>
+  <ref class="Point" id="4 MLTApplication-2-StandaloneCandidateMakerConf-via-standalone_candidate_maker_confs"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="ModuleLevelTrigger-2-ModuleLevelTriggerConf-via-configuration">
+ <attr name="Name" type="string" val="configuration"/>
+ <rel name="From" class="Class" id="ModuleLevelTrigger"/>
+ <rel name="To" class="Class" id="ModuleLevelTriggerConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 ModuleLevelTrigger-2-ModuleLevelTriggerConf-via-configuration"/>
+  <ref class="Point" id="2 ModuleLevelTrigger-2-ModuleLevelTriggerConf-via-configuration"/>
+  <ref class="Point" id="3 ModuleLevelTrigger-2-ModuleLevelTriggerConf-via-configuration"/>
+  <ref class="Point" id="4 ModuleLevelTrigger-2-ModuleLevelTriggerConf-via-configuration"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="ModuleLevelTrigger-2-SourceIDConf-via-mandatory_links">
  <attr name="Name" type="string" val="mandatory_links"/>
- <rel name="From" class="Class" id="MLTAlgorithm"/>
+ <rel name="From" class="Class" id="ModuleLevelTrigger"/>
  <rel name="To" class="Class" id="SourceIDConf"/>
  <rel name="Points">
-  <ref class="Point" id="1 MLTAlgorithm-2-SourceIDConf-via-mandatory_links"/>
-  <ref class="Point" id="2 MLTAlgorithm-2-SourceIDConf-via-mandatory_links"/>
-  <ref class="Point" id="3 MLTAlgorithm-2-SourceIDConf-via-mandatory_links"/>
-  <ref class="Point" id="4 MLTAlgorithm-2-SourceIDConf-via-mandatory_links"/>
+  <ref class="Point" id="1 ModuleLevelTrigger-2-SourceIDConf-via-mandatory_links"/>
+  <ref class="Point" id="2 ModuleLevelTrigger-2-SourceIDConf-via-mandatory_links"/>
+  <ref class="Point" id="3 ModuleLevelTrigger-2-SourceIDConf-via-mandatory_links"/>
+  <ref class="Point" id="4 ModuleLevelTrigger-2-SourceIDConf-via-mandatory_links"/>
  </rel>
 </obj>
 
-<obj class="ALink" id="MLTAlgorithm-2-TCReadoutMap-via-tc_readout_map">
+<obj class="ALink" id="ModuleLevelTriggerConf-2-ROIGroupConf-via-roi_group_conf">
+ <attr name="Name" type="string" val="roi_group_conf"/>
+ <rel name="From" class="Class" id="ModuleLevelTriggerConf"/>
+ <rel name="To" class="Class" id="ROIGroupConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 ModuleLevelTriggerConf-2-ROIGroupConf-via-roi_group_conf"/>
+  <ref class="Point" id="2 ModuleLevelTriggerConf-2-ROIGroupConf-via-roi_group_conf"/>
+  <ref class="Point" id="3 ModuleLevelTriggerConf-2-ROIGroupConf-via-roi_group_conf"/>
+  <ref class="Point" id="4 ModuleLevelTriggerConf-2-ROIGroupConf-via-roi_group_conf"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="ModuleLevelTriggerConf-2-TCReadoutMap-via-tc_readout_map">
  <attr name="Name" type="string" val="tc_readout_map"/>
- <rel name="From" class="Class" id="MLTAlgorithm"/>
+ <rel name="From" class="Class" id="ModuleLevelTriggerConf"/>
  <rel name="To" class="Class" id="TCReadoutMap"/>
  <rel name="Points">
-  <ref class="Point" id="1 MLTAlgorithm-2-TCReadoutMap-via-tc_readout_map"/>
-  <ref class="Point" id="2 MLTAlgorithm-2-TCReadoutMap-via-tc_readout_map"/>
-  <ref class="Point" id="3 MLTAlgorithm-2-TCReadoutMap-via-tc_readout_map"/>
-  <ref class="Point" id="4 MLTAlgorithm-2-TCReadoutMap-via-tc_readout_map"/>
+  <ref class="Point" id="1 ModuleLevelTriggerConf-2-TCReadoutMap-via-tc_readout_map"/>
+  <ref class="Point" id="2 ModuleLevelTriggerConf-2-TCReadoutMap-via-tc_readout_map"/>
+  <ref class="Point" id="3 ModuleLevelTriggerConf-2-TCReadoutMap-via-tc_readout_map"/>
+  <ref class="Point" id="4 ModuleLevelTriggerConf-2-TCReadoutMap-via-tc_readout_map"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="RandomTriggerCandidateMaker-2-RandomTriggerCandidateMakerConf-via-configuration">
+ <attr name="Name" type="string" val="configuration"/>
+ <rel name="From" class="Class" id="RandomTriggerCandidateMaker"/>
+ <rel name="To" class="Class" id="RandomTriggerCandidateMakerConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 RandomTriggerCandidateMaker-2-RandomTriggerCandidateMakerConf-via-configuration"/>
+  <ref class="Point" id="2 RandomTriggerCandidateMaker-2-RandomTriggerCandidateMakerConf-via-configuration"/>
+  <ref class="Point" id="3 RandomTriggerCandidateMaker-2-RandomTriggerCandidateMakerConf-via-configuration"/>
+  <ref class="Point" id="4 RandomTriggerCandidateMaker-2-RandomTriggerCandidateMakerConf-via-configuration"/>
  </rel>
 </obj>
 
@@ -185,27 +293,27 @@
  </rel>
 </obj>
 
-<obj class="ALink" id="TCDataProcessor-2-MLTAlgorithm-via-algorithm">
- <attr name="Name" type="string" val="algorithm"/>
- <rel name="From" class="Class" id="TCDataProcessor"/>
- <rel name="To" class="Class" id="MLTAlgorithm"/>
+<obj class="ALink" id="TPDataProcessor-2-TAAlgorithm-via-algorithms">
+ <attr name="Name" type="string" val="algorithms"/>
+ <rel name="From" class="Class" id="TPDataProcessor"/>
+ <rel name="To" class="Class" id="TAAlgorithm"/>
  <rel name="Points">
-  <ref class="Point" id="1 TCDataProcessor-2-MLTAlgorithm-via-algorithm"/>
-  <ref class="Point" id="2 TCDataProcessor-2-MLTAlgorithm-via-algorithm"/>
-  <ref class="Point" id="3 TCDataProcessor-2-MLTAlgorithm-via-algorithm"/>
-  <ref class="Point" id="4 TCDataProcessor-2-MLTAlgorithm-via-algorithm"/>
+  <ref class="Point" id="1 TPDataProcessor-2-TAAlgorithm-via-algorithms"/>
+  <ref class="Point" id="2 TPDataProcessor-2-TAAlgorithm-via-algorithms"/>
+  <ref class="Point" id="3 TPDataProcessor-2-TAAlgorithm-via-algorithms"/>
+  <ref class="Point" id="4 TPDataProcessor-2-TAAlgorithm-via-algorithms"/>
  </rel>
 </obj>
 
-<obj class="ALink" id="TCHSI-2-HSISignalWindow-via-signals">
- <attr name="Name" type="string" val="signals"/>
- <rel name="From" class="Class" id="TCHSI"/>
- <rel name="To" class="Class" id="HSISignalWindow"/>
+<obj class="ALink" id="TPDataProcessor-2-TPChannelFilterConf-via-channel_filter_conf">
+ <attr name="Name" type="string" val="channel_filter_conf"/>
+ <rel name="From" class="Class" id="TPDataProcessor"/>
+ <rel name="To" class="Class" id="TPChannelFilterConf"/>
  <rel name="Points">
-  <ref class="Point" id="1 TCHSI-2-HSISignalWindow-via-signals"/>
-  <ref class="Point" id="2 TCHSI-2-HSISignalWindow-via-signals"/>
-  <ref class="Point" id="3 TCHSI-2-HSISignalWindow-via-signals"/>
-  <ref class="Point" id="4 TCHSI-2-HSISignalWindow-via-signals"/>
+  <ref class="Point" id="1 TPDataProcessor-2-TPChannelFilterConf-via-channel_filter_conf"/>
+  <ref class="Point" id="2 TPDataProcessor-2-TPChannelFilterConf-via-channel_filter_conf"/>
+  <ref class="Point" id="3 TPDataProcessor-2-TPChannelFilterConf-via-channel_filter_conf"/>
+  <ref class="Point" id="4 TPDataProcessor-2-TPChannelFilterConf-via-channel_filter_conf"/>
  </rel>
 </obj>
 
@@ -233,124 +341,211 @@
  </rel>
 </obj>
 
+<obj class="Class" id="CustomTriggerCandidateMaker">
+ <attr name="x" type="s16" val="1011"/>
+ <attr name="y" type="s16" val="922"/>
+</obj>
+
+<obj class="Class" id="CustomTriggerCandidateMakerConf">
+ <attr name="x" type="s16" val="69"/>
+ <attr name="y" type="s16" val="847"/>
+</obj>
+
 <obj class="Class" id="DataProcessor">
- <attr name="x" type="s16" val="542"/>
- <attr name="y" type="s16" val="608"/>
+ <attr name="x" type="s16" val="1068"/>
+ <attr name="y" type="s16" val="334"/>
 </obj>
 
 <obj class="Class" id="DataReaderConf">
- <attr name="x" type="s16" val="478"/>
- <attr name="y" type="s16" val="224"/>
+ <attr name="x" type="s16" val="1162"/>
+ <attr name="y" type="s16" val="137"/>
 </obj>
 
 <obj class="Class" id="DataRecorderConf">
- <attr name="x" type="s16" val="970"/>
- <attr name="y" type="s16" val="91"/>
+ <attr name="x" type="s16" val="1754"/>
+ <attr name="y" type="s16" val="15"/>
 </obj>
 
 <obj class="Class" id="DataSubscriber">
- <attr name="x" type="s16" val="456"/>
- <attr name="y" type="s16" val="66"/>
+ <attr name="x" type="s16" val="1140"/>
+ <attr name="y" type="s16" val="46"/>
+</obj>
+
+<obj class="Class" id="FakeHSIApplication">
+ <attr name="x" type="s16" val="466"/>
+ <attr name="y" type="s16" val="147"/>
+</obj>
+
+<obj class="Class" id="FakeHSIEventGeneratorConf">
+ <attr name="x" type="s16" val="493"/>
+ <attr name="y" type="s16" val="304"/>
+</obj>
+
+<obj class="Class" id="HSI2TCTranslatorConf">
+ <attr name="x" type="s16" val="742"/>
+ <attr name="y" type="s16" val="354"/>
+</obj>
+
+<obj class="Class" id="HSIEventToTCApplication">
+ <attr name="x" type="s16" val="620"/>
+ <attr name="y" type="s16" val="159"/>
+</obj>
+
+<obj class="Class" id="HSIFrameProcessor">
+ <attr name="x" type="s16" val="1232"/>
+ <attr name="y" type="s16" val="556"/>
 </obj>
 
 <obj class="Class" id="HSISignalWindow">
- <attr name="x" type="s16" val="1481"/>
- <attr name="y" type="s16" val="769"/>
+ <attr name="x" type="s16" val="900"/>
+ <attr name="y" type="s16" val="417"/>
 </obj>
 
 <obj class="Class" id="LatencyBuffer">
- <attr name="x" type="s16" val="864"/>
- <attr name="y" type="s16" val="453"/>
+ <attr name="x" type="s16" val="1808"/>
+ <attr name="y" type="s16" val="338"/>
 </obj>
 
-<obj class="Class" id="MLTAlgorithm">
- <attr name="x" type="s16" val="387"/>
- <attr name="y" type="s16" val="777"/>
+<obj class="Class" id="MLTApplication">
+ <attr name="x" type="s16" val="171"/>
+ <attr name="y" type="s16" val="147"/>
+</obj>
+
+<obj class="Class" id="ModuleLevelTrigger">
+ <attr name="x" type="s16" val="646"/>
+ <attr name="y" type="s16" val="488"/>
+</obj>
+
+<obj class="Class" id="ModuleLevelTriggerConf">
+ <attr name="x" type="s16" val="222"/>
+ <attr name="y" type="s16" val="275"/>
 </obj>
 
 <obj class="Class" id="ROIGroupConf">
- <attr name="x" type="s16" val="713"/>
- <attr name="y" type="s16" val="854"/>
+ <attr name="x" type="s16" val="265"/>
+ <attr name="y" type="s16" val="666"/>
+</obj>
+
+<obj class="Class" id="RandomTriggerCandidateMaker">
+ <attr name="x" type="s16" val="813"/>
+ <attr name="y" type="s16" val="846"/>
+</obj>
+
+<obj class="Class" id="RandomTriggerCandidateMakerConf">
+ <attr name="x" type="s16" val="401"/>
+ <attr name="y" type="s16" val="808"/>
+</obj>
+
+<obj class="Class" id="RawDataProcessor">
+ <attr name="x" type="s16" val="1036"/>
+ <attr name="y" type="s16" val="537"/>
 </obj>
 
 <obj class="Class" id="ReadoutModuleConf">
- <attr name="x" type="s16" val="573"/>
- <attr name="y" type="s16" val="394"/>
+ <attr name="x" type="s16" val="1403"/>
+ <attr name="y" type="s16" val="265"/>
 </obj>
 
 <obj class="Class" id="RequestHandler">
- <attr name="x" type="s16" val="967"/>
- <attr name="y" type="s16" val="267"/>
+ <attr name="x" type="s16" val="1761"/>
+ <attr name="y" type="s16" val="169"/>
 </obj>
 
 <obj class="Class" id="SmartDaqApplication">
- <attr name="x" type="s16" val="50"/>
- <attr name="y" type="s16" val="50"/>
+ <attr name="x" type="s16" val="766"/>
+ <attr name="y" type="s16" val="8"/>
 </obj>
 
 <obj class="Class" id="SourceIDConf">
- <attr name="x" type="s16" val="107"/>
- <attr name="y" type="s16" val="953"/>
+ <attr name="x" type="s16" val="644"/>
+ <attr name="y" type="s16" val="604"/>
+</obj>
+
+<obj class="Class" id="StandaloneCandidateMaker">
+ <attr name="x" type="s16" val="801"/>
+ <attr name="y" type="s16" val="752"/>
+</obj>
+
+<obj class="Class" id="StandaloneCandidateMakerConf">
+ <attr name="x" type="s16" val="66"/>
+ <attr name="y" type="s16" val="564"/>
 </obj>
 
 <obj class="Class" id="StreamEmulationParameters">
- <attr name="x" type="s16" val="589"/>
- <attr name="y" type="s16" val="4"/>
+ <attr name="x" type="s16" val="1456"/>
+ <attr name="y" type="s16" val="50"/>
+</obj>
+
+<obj class="Class" id="TAAlgorithm">
+ <attr name="x" type="s16" val="1522"/>
+ <attr name="y" type="s16" val="659"/>
 </obj>
 
 <obj class="Class" id="TADataProcessor">
- <attr name="x" type="s16" val="615"/>
- <attr name="y" type="s16" val="705"/>
+ <attr name="x" type="s16" val="1442"/>
+ <attr name="y" type="s16" val="553"/>
 </obj>
 
 <obj class="Class" id="TCAlgorithm">
- <attr name="x" type="s16" val="937"/>
- <attr name="y" type="s16" val="723"/>
+ <attr name="x" type="s16" val="1734"/>
+ <attr name="y" type="s16" val="560"/>
 </obj>
 
 <obj class="Class" id="TCCustom">
- <attr name="x" type="s16" val="1164"/>
- <attr name="y" type="s16" val="539"/>
-</obj>
-
-<obj class="Class" id="TCDataProcessor">
- <attr name="x" type="s16" val="183"/>
- <attr name="y" type="s16" val="728"/>
-</obj>
-
-<obj class="Class" id="TCHSI">
- <attr name="x" type="s16" val="1166"/>
- <attr name="y" type="s16" val="772"/>
-</obj>
-
-<obj class="Class" id="TCHorizontalMuon">
- <attr name="x" type="s16" val="1166"/>
- <attr name="y" type="s16" val="637"/>
-</obj>
-
-<obj class="Class" id="TCPassThrough">
- <attr name="x" type="s16" val="1166"/>
- <attr name="y" type="s16" val="835"/>
-</obj>
-
-<obj class="Class" id="TCRandom">
- <attr name="x" type="s16" val="1165"/>
- <attr name="y" type="s16" val="883"/>
+ <attr name="x" type="s16" val="1699"/>
+ <attr name="y" type="s16" val="649"/>
 </obj>
 
 <obj class="Class" id="TCReadoutMap">
- <attr name="x" type="s16" val="106"/>
- <attr name="y" type="s16" val="815"/>
+ <attr name="x" type="s16" val="396"/>
+ <attr name="y" type="s16" val="563"/>
+</obj>
+
+<obj class="Class" id="TPChannelFilterConf">
+ <attr name="x" type="s16" val="1008"/>
+ <attr name="y" type="s16" val="701"/>
+</obj>
+
+<obj class="Class" id="TPDataProcessor">
+ <attr name="x" type="s16" val="1297"/>
+ <attr name="y" type="s16" val="678"/>
+</obj>
+
+<obj class="Class" id="TriggerActivityMakerHorizontalMuonPlugin">
+ <attr name="x" type="s16" val="1359"/>
+ <attr name="y" type="s16" val="780"/>
+</obj>
+
+<obj class="Class" id="TriggerActivityMakerPrescalePlugin">
+ <attr name="x" type="s16" val="1627"/>
+ <attr name="y" type="s16" val="783"/>
 </obj>
 
 <obj class="Class" id="TriggerApplication">
- <attr name="x" type="s16" val="80"/>
- <attr name="y" type="s16" val="241"/>
+ <attr name="x" type="s16" val="804"/>
+ <attr name="y" type="s16" val="152"/>
 </obj>
 
-<obj class="Class" id="TriggerRequestHandler">
- <attr name="x" type="s16" val="1068"/>
- <attr name="y" type="s16" val="471"/>
+<obj class="GLink" id="DataProcessor-2-HSIFrameProcessor">
+ <rel name="From" class="Class" id="DataProcessor"/>
+ <rel name="To" class="Class" id="HSIFrameProcessor"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DataProcessor-2-HSIFrameProcessor"/>
+  <ref class="Point" id="2 DataProcessor-2-HSIFrameProcessor"/>
+  <ref class="Point" id="3 DataProcessor-2-HSIFrameProcessor"/>
+  <ref class="Point" id="4 DataProcessor-2-HSIFrameProcessor"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="DataProcessor-2-RawDataProcessor">
+ <rel name="From" class="Class" id="DataProcessor"/>
+ <rel name="To" class="Class" id="RawDataProcessor"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DataProcessor-2-RawDataProcessor"/>
+  <ref class="Point" id="2 DataProcessor-2-RawDataProcessor"/>
+  <ref class="Point" id="3 DataProcessor-2-RawDataProcessor"/>
+  <ref class="Point" id="4 DataProcessor-2-RawDataProcessor"/>
+ </rel>
 </obj>
 
 <obj class="GLink" id="DataProcessor-2-TADataProcessor">
@@ -364,25 +559,58 @@
  </rel>
 </obj>
 
-<obj class="GLink" id="DataProcessor-2-TCDataProcessor">
+<obj class="GLink" id="DataProcessor-2-TPDataProcessor">
  <rel name="From" class="Class" id="DataProcessor"/>
- <rel name="To" class="Class" id="TCDataProcessor"/>
+ <rel name="To" class="Class" id="TPDataProcessor"/>
  <rel name="Points">
-  <ref class="Point" id="1 DataProcessor-2-TCDataProcessor"/>
-  <ref class="Point" id="2 DataProcessor-2-TCDataProcessor"/>
-  <ref class="Point" id="3 DataProcessor-2-TCDataProcessor"/>
-  <ref class="Point" id="4 DataProcessor-2-TCDataProcessor"/>
+  <ref class="Point" id="1 DataProcessor-2-TPDataProcessor"/>
+  <ref class="Point" id="2 DataProcessor-2-TPDataProcessor"/>
+  <ref class="Point" id="3 DataProcessor-2-TPDataProcessor"/>
+  <ref class="Point" id="4 DataProcessor-2-TPDataProcessor"/>
  </rel>
 </obj>
 
-<obj class="GLink" id="RequestHandler-2-TriggerRequestHandler">
- <rel name="From" class="Class" id="RequestHandler"/>
- <rel name="To" class="Class" id="TriggerRequestHandler"/>
+<obj class="GLink" id="DataReaderConf-2-HSI2TCTranslatorConf">
+ <rel name="From" class="Class" id="DataReaderConf"/>
+ <rel name="To" class="Class" id="HSI2TCTranslatorConf"/>
  <rel name="Points">
-  <ref class="Point" id="1 RequestHandler-2-TriggerRequestHandler"/>
-  <ref class="Point" id="2 RequestHandler-2-TriggerRequestHandler"/>
-  <ref class="Point" id="3 RequestHandler-2-TriggerRequestHandler"/>
-  <ref class="Point" id="4 RequestHandler-2-TriggerRequestHandler"/>
+  <ref class="Point" id="1 DataReaderConf-2-HSI2TCTranslatorConf"/>
+  <ref class="Point" id="2 DataReaderConf-2-HSI2TCTranslatorConf"/>
+  <ref class="Point" id="3 DataReaderConf-2-HSI2TCTranslatorConf"/>
+  <ref class="Point" id="4 DataReaderConf-2-HSI2TCTranslatorConf"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="SmartDaqApplication-2-FakeHSIApplication">
+ <rel name="From" class="Class" id="SmartDaqApplication"/>
+ <rel name="To" class="Class" id="FakeHSIApplication"/>
+ <rel name="Points">
+  <ref class="Point" id="1 SmartDaqApplication-2-FakeHSIApplication"/>
+  <ref class="Point" id="2 SmartDaqApplication-2-FakeHSIApplication"/>
+  <ref class="Point" id="3 SmartDaqApplication-2-FakeHSIApplication"/>
+  <ref class="Point" id="4 SmartDaqApplication-2-FakeHSIApplication"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="SmartDaqApplication-2-HSIEventToTCApplication">
+ <rel name="From" class="Class" id="SmartDaqApplication"/>
+ <rel name="To" class="Class" id="HSIEventToTCApplication"/>
+ <rel name="Points">
+  <ref class="Point" id="1 SmartDaqApplication-2-HSIEventToTCApplication"/>
+  <ref class="Point" id="2 SmartDaqApplication-2-HSIEventToTCApplication"/>
+  <ref class="Point" id="3 SmartDaqApplication-2-HSIEventToTCApplication"/>
+  <ref class="Point" id="4 SmartDaqApplication-2-HSIEventToTCApplication"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="SmartDaqApplication-2-MLTApplication">
+ <rel name="From" class="Class" id="SmartDaqApplication"/>
+ <rel name="To" class="Class" id="MLTApplication"/>
+ <rel name="Points">
+  <ref class="Point" id="1 SmartDaqApplication-2-MLTApplication"/>
+  <ref class="Point" id="2 SmartDaqApplication-2-MLTApplication"/>
+  <ref class="Point" id="3 SmartDaqApplication-2-MLTApplication"/>
+  <ref class="Point" id="4 SmartDaqApplication-2-MLTApplication"/>
  </rel>
 </obj>
 
@@ -397,6 +625,72 @@
  </rel>
 </obj>
 
+<obj class="GLink" id="StandaloneCandidateMaker-2-CustomTriggerCandidateMaker">
+ <rel name="From" class="Class" id="StandaloneCandidateMaker"/>
+ <rel name="To" class="Class" id="CustomTriggerCandidateMaker"/>
+ <rel name="Points">
+  <ref class="Point" id="1 StandaloneCandidateMaker-2-CustomTriggerCandidateMaker"/>
+  <ref class="Point" id="2 StandaloneCandidateMaker-2-CustomTriggerCandidateMaker"/>
+  <ref class="Point" id="3 StandaloneCandidateMaker-2-CustomTriggerCandidateMaker"/>
+  <ref class="Point" id="4 StandaloneCandidateMaker-2-CustomTriggerCandidateMaker"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="StandaloneCandidateMaker-2-RandomTriggerCandidateMaker">
+ <rel name="From" class="Class" id="StandaloneCandidateMaker"/>
+ <rel name="To" class="Class" id="RandomTriggerCandidateMaker"/>
+ <rel name="Points">
+  <ref class="Point" id="1 StandaloneCandidateMaker-2-RandomTriggerCandidateMaker"/>
+  <ref class="Point" id="2 StandaloneCandidateMaker-2-RandomTriggerCandidateMaker"/>
+  <ref class="Point" id="3 StandaloneCandidateMaker-2-RandomTriggerCandidateMaker"/>
+  <ref class="Point" id="4 StandaloneCandidateMaker-2-RandomTriggerCandidateMaker"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="StandaloneCandidateMakerConf-2-CustomTriggerCandidateMakerConf">
+ <rel name="From" class="Class" id="StandaloneCandidateMakerConf"/>
+ <rel name="To" class="Class" id="CustomTriggerCandidateMakerConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 StandaloneCandidateMakerConf-2-CustomTriggerCandidateMakerConf"/>
+  <ref class="Point" id="2 StandaloneCandidateMakerConf-2-CustomTriggerCandidateMakerConf"/>
+  <ref class="Point" id="3 StandaloneCandidateMakerConf-2-CustomTriggerCandidateMakerConf"/>
+  <ref class="Point" id="4 StandaloneCandidateMakerConf-2-CustomTriggerCandidateMakerConf"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="StandaloneCandidateMakerConf-2-RandomTriggerCandidateMakerConf">
+ <rel name="From" class="Class" id="StandaloneCandidateMakerConf"/>
+ <rel name="To" class="Class" id="RandomTriggerCandidateMakerConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 StandaloneCandidateMakerConf-2-RandomTriggerCandidateMakerConf"/>
+  <ref class="Point" id="2 StandaloneCandidateMakerConf-2-RandomTriggerCandidateMakerConf"/>
+  <ref class="Point" id="3 StandaloneCandidateMakerConf-2-RandomTriggerCandidateMakerConf"/>
+  <ref class="Point" id="4 StandaloneCandidateMakerConf-2-RandomTriggerCandidateMakerConf"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="TAAlgorithm-2-TriggerActivityMakerHorizontalMuonPlugin">
+ <rel name="From" class="Class" id="TAAlgorithm"/>
+ <rel name="To" class="Class" id="TriggerActivityMakerHorizontalMuonPlugin"/>
+ <rel name="Points">
+  <ref class="Point" id="1 TAAlgorithm-2-TriggerActivityMakerHorizontalMuonPlugin"/>
+  <ref class="Point" id="2 TAAlgorithm-2-TriggerActivityMakerHorizontalMuonPlugin"/>
+  <ref class="Point" id="3 TAAlgorithm-2-TriggerActivityMakerHorizontalMuonPlugin"/>
+  <ref class="Point" id="4 TAAlgorithm-2-TriggerActivityMakerHorizontalMuonPlugin"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="TAAlgorithm-2-TriggerActivityMakerPrescalePlugin">
+ <rel name="From" class="Class" id="TAAlgorithm"/>
+ <rel name="To" class="Class" id="TriggerActivityMakerPrescalePlugin"/>
+ <rel name="Points">
+  <ref class="Point" id="1 TAAlgorithm-2-TriggerActivityMakerPrescalePlugin"/>
+  <ref class="Point" id="2 TAAlgorithm-2-TriggerActivityMakerPrescalePlugin"/>
+  <ref class="Point" id="3 TAAlgorithm-2-TriggerActivityMakerPrescalePlugin"/>
+  <ref class="Point" id="4 TAAlgorithm-2-TriggerActivityMakerPrescalePlugin"/>
+ </rel>
+</obj>
+
 <obj class="GLink" id="TCAlgorithm-2-TCCustom">
  <rel name="From" class="Class" id="TCAlgorithm"/>
  <rel name="To" class="Class" id="TCCustom"/>
@@ -408,62 +702,38 @@
  </rel>
 </obj>
 
-<obj class="GLink" id="TCAlgorithm-2-TCHSI">
- <rel name="From" class="Class" id="TCAlgorithm"/>
- <rel name="To" class="Class" id="TCHSI"/>
- <rel name="Points">
-  <ref class="Point" id="1 TCAlgorithm-2-TCHSI"/>
-  <ref class="Point" id="2 TCAlgorithm-2-TCHSI"/>
-  <ref class="Point" id="3 TCAlgorithm-2-TCHSI"/>
-  <ref class="Point" id="4 TCAlgorithm-2-TCHSI"/>
- </rel>
+<obj class="Point" id="1 CustomTriggerCandidateMaker-2-CustomTriggerCandidateMakerConf-via-configuration">
+ <attr name="x" type="s16" val="136"/>
+ <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="GLink" id="TCAlgorithm-2-TCHorizontalMuon">
- <rel name="From" class="Class" id="TCAlgorithm"/>
- <rel name="To" class="Class" id="TCHorizontalMuon"/>
- <rel name="Points">
-  <ref class="Point" id="1 TCAlgorithm-2-TCHorizontalMuon"/>
-  <ref class="Point" id="2 TCAlgorithm-2-TCHorizontalMuon"/>
-  <ref class="Point" id="3 TCAlgorithm-2-TCHorizontalMuon"/>
-  <ref class="Point" id="4 TCAlgorithm-2-TCHorizontalMuon"/>
- </rel>
+<obj class="Point" id="1 DataProcessor-2-HSIFrameProcessor">
+ <attr name="x" type="s16" val="116"/>
+ <attr name="y" type="s16" val="65"/>
 </obj>
 
-<obj class="GLink" id="TCAlgorithm-2-TCPassThrough">
- <rel name="From" class="Class" id="TCAlgorithm"/>
- <rel name="To" class="Class" id="TCPassThrough"/>
- <rel name="Points">
-  <ref class="Point" id="1 TCAlgorithm-2-TCPassThrough"/>
-  <ref class="Point" id="2 TCAlgorithm-2-TCPassThrough"/>
-  <ref class="Point" id="3 TCAlgorithm-2-TCPassThrough"/>
-  <ref class="Point" id="4 TCAlgorithm-2-TCPassThrough"/>
- </rel>
-</obj>
-
-<obj class="GLink" id="TCAlgorithm-2-TCRandom">
- <rel name="From" class="Class" id="TCAlgorithm"/>
- <rel name="To" class="Class" id="TCRandom"/>
- <rel name="Points">
-  <ref class="Point" id="1 TCAlgorithm-2-TCRandom"/>
-  <ref class="Point" id="2 TCAlgorithm-2-TCRandom"/>
-  <ref class="Point" id="3 TCAlgorithm-2-TCRandom"/>
-  <ref class="Point" id="4 TCAlgorithm-2-TCRandom"/>
- </rel>
+<obj class="Point" id="1 DataProcessor-2-RawDataProcessor">
+ <attr name="x" type="s16" val="116"/>
+ <attr name="y" type="s16" val="65"/>
 </obj>
 
 <obj class="Point" id="1 DataProcessor-2-TADataProcessor">
- <attr name="x" type="s16" val="177"/>
+ <attr name="x" type="s16" val="116"/>
  <attr name="y" type="s16" val="51"/>
 </obj>
 
-<obj class="Point" id="1 DataProcessor-2-TCDataProcessor">
- <attr name="x" type="s16" val="177"/>
+<obj class="Point" id="1 DataProcessor-2-TPDataProcessor">
+ <attr name="x" type="s16" val="116"/>
+ <attr name="y" type="s16" val="65"/>
+</obj>
+
+<obj class="Point" id="1 DataReaderConf-2-HSI2TCTranslatorConf">
+ <attr name="x" type="s16" val="12"/>
  <attr name="y" type="s16" val="51"/>
 </obj>
 
 <obj class="Point" id="1 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf">
- <attr name="x" type="s16" val="150"/>
+ <attr name="x" type="s16" val="200"/>
  <attr name="y" type="s16" val="51"/>
 </obj>
 
@@ -472,19 +742,59 @@
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 MLTAlgorithm-2-ROIGroupConf-via-roi_group_conf">
- <attr name="x" type="s16" val="189"/>
- <attr name="y" type="s16" val="200"/>
+<obj class="Point" id="1 FakeHSIApplication-2-FakeHSIEventGeneratorConf-via-generator">
+ <attr name="x" type="s16" val="79"/>
+ <attr name="y" type="s16" val="51"/>
 </obj>
 
-<obj class="Point" id="1 MLTAlgorithm-2-SourceIDConf-via-mandatory_links">
- <attr name="x" type="s16" val="189"/>
- <attr name="y" type="s16" val="200"/>
+<obj class="Point" id="1 FakeHSIApplication-2-ReadoutModuleConf-via-link_handler">
+ <attr name="x" type="s16" val="99"/>
+ <attr name="y" type="s16" val="51"/>
 </obj>
 
-<obj class="Point" id="1 MLTAlgorithm-2-TCReadoutMap-via-tc_readout_map">
- <attr name="x" type="s16" val="189"/>
- <attr name="y" type="s16" val="200"/>
+<obj class="Point" id="1 HSI2TCTranslatorConf-2-HSISignalWindow-via-signals">
+ <attr name="x" type="s16" val="100"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 HSIEventToTCApplication-2-HSI2TCTranslatorConf-via-hsevent_to_tc_conf">
+ <attr name="x" type="s16" val="134"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 MLTApplication-2-ModuleLevelTriggerConf-via-mlt_conf">
+ <attr name="x" type="s16" val="188"/>
+ <attr name="y" type="s16" val="51"/>
+</obj>
+
+<obj class="Point" id="1 MLTApplication-2-StandaloneCandidateMakerConf-via-standalone_candidate_maker_confs">
+ <attr name="x" type="s16" val="40"/>
+ <attr name="y" type="s16" val="51"/>
+</obj>
+
+<obj class="Point" id="1 ModuleLevelTrigger-2-ModuleLevelTriggerConf-via-configuration">
+ <attr name="x" type="s16" val="91"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 ModuleLevelTrigger-2-SourceIDConf-via-mandatory_links">
+ <attr name="x" type="s16" val="42"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 ModuleLevelTriggerConf-2-ROIGroupConf-via-roi_group_conf">
+ <attr name="x" type="s16" val="139"/>
+ <attr name="y" type="s16" val="173"/>
+</obj>
+
+<obj class="Point" id="1 ModuleLevelTriggerConf-2-TCReadoutMap-via-tc_readout_map">
+ <attr name="x" type="s16" val="238"/>
+ <attr name="y" type="s16" val="173"/>
+</obj>
+
+<obj class="Point" id="1 RandomTriggerCandidateMaker-2-RandomTriggerCandidateMakerConf-via-configuration">
+ <attr name="x" type="s16" val="139"/>
+ <attr name="y" type="s16" val="38"/>
 </obj>
 
 <obj class="Point" id="1 ReadoutModuleConf-2-DataProcessor-via-data_processor">
@@ -507,13 +817,53 @@
  <attr name="y" type="s16" val="119"/>
 </obj>
 
-<obj class="Point" id="1 RequestHandler-2-TriggerRequestHandler">
- <attr name="x" type="s16" val="156"/>
- <attr name="y" type="s16" val="119"/>
+<obj class="Point" id="1 SmartDaqApplication-2-FakeHSIApplication">
+ <attr name="x" type="s16" val="54"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 SmartDaqApplication-2-HSIEventToTCApplication">
+ <attr name="x" type="s16" val="54"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 SmartDaqApplication-2-MLTApplication">
+ <attr name="x" type="s16" val="54"/>
+ <attr name="y" type="s16" val="38"/>
 </obj>
 
 <obj class="Point" id="1 SmartDaqApplication-2-TriggerApplication">
- <attr name="x" type="s16" val="95"/>
+ <attr name="x" type="s16" val="54"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 StandaloneCandidateMaker-2-CustomTriggerCandidateMaker">
+ <attr name="x" type="s16" val="113"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 StandaloneCandidateMaker-2-RandomTriggerCandidateMaker">
+ <attr name="x" type="s16" val="113"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 StandaloneCandidateMakerConf-2-CustomTriggerCandidateMakerConf">
+ <attr name="x" type="s16" val="141"/>
+ <attr name="y" type="s16" val="51"/>
+</obj>
+
+<obj class="Point" id="1 StandaloneCandidateMakerConf-2-RandomTriggerCandidateMakerConf">
+ <attr name="x" type="s16" val="141"/>
+ <attr name="y" type="s16" val="51"/>
+</obj>
+
+<obj class="Point" id="1 TAAlgorithm-2-TriggerActivityMakerHorizontalMuonPlugin">
+ <attr name="x" type="s16" val="85"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 TAAlgorithm-2-TriggerActivityMakerPrescalePlugin">
+ <attr name="x" type="s16" val="85"/>
  <attr name="y" type="s16" val="38"/>
 </obj>
 
@@ -527,33 +877,13 @@
  <attr name="y" type="s16" val="38"/>
 </obj>
 
-<obj class="Point" id="1 TCAlgorithm-2-TCHSI">
- <attr name="x" type="s16" val="85"/>
- <attr name="y" type="s16" val="38"/>
-</obj>
-
-<obj class="Point" id="1 TCAlgorithm-2-TCHorizontalMuon">
- <attr name="x" type="s16" val="85"/>
- <attr name="y" type="s16" val="38"/>
-</obj>
-
-<obj class="Point" id="1 TCAlgorithm-2-TCPassThrough">
- <attr name="x" type="s16" val="85"/>
- <attr name="y" type="s16" val="38"/>
-</obj>
-
-<obj class="Point" id="1 TCAlgorithm-2-TCRandom">
- <attr name="x" type="s16" val="59"/>
- <attr name="y" type="s16" val="38"/>
-</obj>
-
-<obj class="Point" id="1 TCDataProcessor-2-MLTAlgorithm-via-algorithm">
+<obj class="Point" id="1 TPDataProcessor-2-TAAlgorithm-via-algorithms">
  <attr name="x" type="s16" val="117"/>
  <attr name="y" type="s16" val="38"/>
 </obj>
 
-<obj class="Point" id="1 TCHSI-2-HSISignalWindow-via-signals">
- <attr name="x" type="s16" val="189"/>
+<obj class="Point" id="1 TPDataProcessor-2-TPChannelFilterConf-via-channel_filter_conf">
+ <attr name="x" type="s16" val="35"/>
  <attr name="y" type="s16" val="38"/>
 </obj>
 
@@ -567,232 +897,408 @@
  <attr name="y" type="s16" val="65"/>
 </obj>
 
-<obj class="Point" id="2 DataProcessor-2-TADataProcessor">
- <attr name="x" type="s16" val="177"/>
- <attr name="y" type="s16" val="666"/>
+<obj class="Point" id="2 CustomTriggerCandidateMaker-2-CustomTriggerCandidateMakerConf-via-configuration">
+ <attr name="x" type="s16" val="136"/>
+ <attr name="y" type="s16" val="939"/>
 </obj>
 
-<obj class="Point" id="2 DataProcessor-2-TCDataProcessor">
- <attr name="x" type="s16" val="177"/>
- <attr name="y" type="s16" val="644"/>
+<obj class="Point" id="2 DataProcessor-2-HSIFrameProcessor">
+ <attr name="x" type="s16" val="116"/>
+ <attr name="y" type="s16" val="513"/>
+</obj>
+
+<obj class="Point" id="2 DataProcessor-2-RawDataProcessor">
+ <attr name="x" type="s16" val="116"/>
+ <attr name="y" type="s16" val="513"/>
+</obj>
+
+<obj class="Point" id="2 DataProcessor-2-TADataProcessor">
+ <attr name="x" type="s16" val="116"/>
+ <attr name="y" type="s16" val="513"/>
+</obj>
+
+<obj class="Point" id="2 DataProcessor-2-TPDataProcessor">
+ <attr name="x" type="s16" val="116"/>
+ <attr name="y" type="s16" val="513"/>
+</obj>
+
+<obj class="Point" id="2 DataReaderConf-2-HSI2TCTranslatorConf">
+ <attr name="x" type="s16" val="12"/>
+ <attr name="y" type="s16" val="310"/>
 </obj>
 
 <obj class="Point" id="2 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf">
- <attr name="x" type="s16" val="150"/>
- <attr name="y" type="s16" val="157"/>
+ <attr name="x" type="s16" val="200"/>
+ <attr name="y" type="s16" val="164"/>
 </obj>
 
 <obj class="Point" id="2 DataSubscriber-2-DataReaderConf-via-configuration">
  <attr name="x" type="s16" val="72"/>
- <attr name="y" type="s16" val="138"/>
+ <attr name="y" type="s16" val="88"/>
 </obj>
 
-<obj class="Point" id="2 MLTAlgorithm-2-ROIGroupConf-via-roi_group_conf">
- <attr name="x" type="s16" val="189"/>
- <attr name="y" type="s16" val="830"/>
+<obj class="Point" id="2 FakeHSIApplication-2-FakeHSIEventGeneratorConf-via-generator">
+ <attr name="x" type="s16" val="79"/>
+ <attr name="y" type="s16" val="245"/>
 </obj>
 
-<obj class="Point" id="2 MLTAlgorithm-2-SourceIDConf-via-mandatory_links">
- <attr name="x" type="s16" val="189"/>
- <attr name="y" type="s16" val="927"/>
+<obj class="Point" id="2 FakeHSIApplication-2-ReadoutModuleConf-via-link_handler">
+ <attr name="x" type="s16" val="99"/>
+ <attr name="y" type="s16" val="295"/>
 </obj>
 
-<obj class="Point" id="2 MLTAlgorithm-2-TCReadoutMap-via-tc_readout_map">
- <attr name="x" type="s16" val="189"/>
- <attr name="y" type="s16" val="859"/>
+<obj class="Point" id="2 HSI2TCTranslatorConf-2-HSISignalWindow-via-signals">
+ <attr name="x" type="s16" val="100"/>
+ <attr name="y" type="s16" val="419"/>
+</obj>
+
+<obj class="Point" id="2 HSIEventToTCApplication-2-HSI2TCTranslatorConf-via-hsevent_to_tc_conf">
+ <attr name="x" type="s16" val="134"/>
+ <attr name="y" type="s16" val="227"/>
+</obj>
+
+<obj class="Point" id="2 MLTApplication-2-ModuleLevelTriggerConf-via-mlt_conf">
+ <attr name="x" type="s16" val="188"/>
+ <attr name="y" type="s16" val="214"/>
+</obj>
+
+<obj class="Point" id="2 MLTApplication-2-StandaloneCandidateMakerConf-via-standalone_candidate_maker_confs">
+ <attr name="x" type="s16" val="40"/>
+ <attr name="y" type="s16" val="259"/>
+</obj>
+
+<obj class="Point" id="2 ModuleLevelTrigger-2-ModuleLevelTriggerConf-via-configuration">
+ <attr name="x" type="s16" val="91"/>
+ <attr name="y" type="s16" val="493"/>
+</obj>
+
+<obj class="Point" id="2 ModuleLevelTrigger-2-SourceIDConf-via-mandatory_links">
+ <attr name="x" type="s16" val="42"/>
+ <attr name="y" type="s16" val="534"/>
+</obj>
+
+<obj class="Point" id="2 ModuleLevelTriggerConf-2-ROIGroupConf-via-roi_group_conf">
+ <attr name="x" type="s16" val="139"/>
+ <attr name="y" type="s16" val="520"/>
+</obj>
+
+<obj class="Point" id="2 ModuleLevelTriggerConf-2-TCReadoutMap-via-tc_readout_map">
+ <attr name="x" type="s16" val="238"/>
+ <attr name="y" type="s16" val="510"/>
+</obj>
+
+<obj class="Point" id="2 RandomTriggerCandidateMaker-2-RandomTriggerCandidateMakerConf-via-configuration">
+ <attr name="x" type="s16" val="139"/>
+ <attr name="y" type="s16" val="856"/>
 </obj>
 
 <obj class="Point" id="2 ReadoutModuleConf-2-DataProcessor-via-data_processor">
  <attr name="x" type="s16" val="174"/>
- <attr name="y" type="s16" val="470"/>
+ <attr name="y" type="s16" val="351"/>
 </obj>
 
 <obj class="Point" id="2 ReadoutModuleConf-2-LatencyBuffer-via-latency_buffer">
  <attr name="x" type="s16" val="174"/>
- <attr name="y" type="s16" val="544"/>
+ <attr name="y" type="s16" val="354"/>
 </obj>
 
 <obj class="Point" id="2 ReadoutModuleConf-2-RequestHandler-via-request_handler">
  <attr name="x" type="s16" val="174"/>
- <attr name="y" type="s16" val="328"/>
+ <attr name="y" type="s16" val="312"/>
 </obj>
 
 <obj class="Point" id="2 RequestHandler-2-DataRecorderConf-via-data_recorder">
  <attr name="x" type="s16" val="156"/>
- <attr name="y" type="s16" val="316"/>
+ <attr name="y" type="s16" val="300"/>
 </obj>
 
-<obj class="Point" id="2 RequestHandler-2-TriggerRequestHandler">
- <attr name="x" type="s16" val="156"/>
- <attr name="y" type="s16" val="369"/>
+<obj class="Point" id="2 SmartDaqApplication-2-FakeHSIApplication">
+ <attr name="x" type="s16" val="54"/>
+ <attr name="y" type="s16" val="117"/>
+</obj>
+
+<obj class="Point" id="2 SmartDaqApplication-2-HSIEventToTCApplication">
+ <attr name="x" type="s16" val="54"/>
+ <attr name="y" type="s16" val="117"/>
+</obj>
+
+<obj class="Point" id="2 SmartDaqApplication-2-MLTApplication">
+ <attr name="x" type="s16" val="54"/>
+ <attr name="y" type="s16" val="117"/>
 </obj>
 
 <obj class="Point" id="2 SmartDaqApplication-2-TriggerApplication">
- <attr name="x" type="s16" val="95"/>
- <attr name="y" type="s16" val="296"/>
+ <attr name="x" type="s16" val="54"/>
+ <attr name="y" type="s16" val="117"/>
+</obj>
+
+<obj class="Point" id="2 StandaloneCandidateMaker-2-CustomTriggerCandidateMaker">
+ <attr name="x" type="s16" val="113"/>
+ <attr name="y" type="s16" val="820"/>
+</obj>
+
+<obj class="Point" id="2 StandaloneCandidateMaker-2-RandomTriggerCandidateMaker">
+ <attr name="x" type="s16" val="113"/>
+ <attr name="y" type="s16" val="820"/>
+</obj>
+
+<obj class="Point" id="2 StandaloneCandidateMakerConf-2-CustomTriggerCandidateMakerConf">
+ <attr name="x" type="s16" val="141"/>
+ <attr name="y" type="s16" val="783"/>
+</obj>
+
+<obj class="Point" id="2 StandaloneCandidateMakerConf-2-RandomTriggerCandidateMakerConf">
+ <attr name="x" type="s16" val="141"/>
+ <attr name="y" type="s16" val="783"/>
+</obj>
+
+<obj class="Point" id="2 TAAlgorithm-2-TriggerActivityMakerHorizontalMuonPlugin">
+ <attr name="x" type="s16" val="85"/>
+ <attr name="y" type="s16" val="747"/>
+</obj>
+
+<obj class="Point" id="2 TAAlgorithm-2-TriggerActivityMakerPrescalePlugin">
+ <attr name="x" type="s16" val="85"/>
+ <attr name="y" type="s16" val="747"/>
 </obj>
 
 <obj class="Point" id="2 TADataProcessor-2-TCAlgorithm-via-algorithms">
  <attr name="x" type="s16" val="117"/>
- <attr name="y" type="s16" val="739"/>
+ <attr name="y" type="s16" val="591"/>
 </obj>
 
 <obj class="Point" id="2 TCAlgorithm-2-TCCustom">
  <attr name="x" type="s16" val="85"/>
- <attr name="y" type="s16" val="610"/>
+ <attr name="y" type="s16" val="640"/>
 </obj>
 
-<obj class="Point" id="2 TCAlgorithm-2-TCHSI">
- <attr name="x" type="s16" val="85"/>
- <attr name="y" type="s16" val="810"/>
-</obj>
-
-<obj class="Point" id="2 TCAlgorithm-2-TCHorizontalMuon">
- <attr name="x" type="s16" val="85"/>
- <attr name="y" type="s16" val="681"/>
-</obj>
-
-<obj class="Point" id="2 TCAlgorithm-2-TCPassThrough">
- <attr name="x" type="s16" val="85"/>
- <attr name="y" type="s16" val="844"/>
-</obj>
-
-<obj class="Point" id="2 TCAlgorithm-2-TCRandom">
- <attr name="x" type="s16" val="59"/>
- <attr name="y" type="s16" val="922"/>
-</obj>
-
-<obj class="Point" id="2 TCDataProcessor-2-MLTAlgorithm-via-algorithm">
+<obj class="Point" id="2 TPDataProcessor-2-TAAlgorithm-via-algorithms">
  <attr name="x" type="s16" val="117"/>
- <attr name="y" type="s16" val="796"/>
+ <attr name="y" type="s16" val="688"/>
 </obj>
 
-<obj class="Point" id="2 TCHSI-2-HSISignalWindow-via-signals">
- <attr name="x" type="s16" val="189"/>
- <attr name="y" type="s16" val="792"/>
+<obj class="Point" id="2 TPDataProcessor-2-TPChannelFilterConf-via-channel_filter_conf">
+ <attr name="x" type="s16" val="35"/>
+ <attr name="y" type="s16" val="713"/>
 </obj>
 
 <obj class="Point" id="2 TriggerApplication-2-DataReaderConf-via-data_subscriber">
  <attr name="x" type="s16" val="191"/>
- <attr name="y" type="s16" val="267"/>
+ <attr name="y" type="s16" val="183"/>
 </obj>
 
 <obj class="Point" id="2 TriggerApplication-2-ReadoutModuleConf-via-trigger_inputs_handler">
  <attr name="x" type="s16" val="191"/>
- <attr name="y" type="s16" val="317"/>
+ <attr name="y" type="s16" val="271"/>
+</obj>
+
+<obj class="Point" id="3 CustomTriggerCandidateMaker-2-CustomTriggerCandidateMakerConf-via-configuration">
+ <attr name="x" type="s16" val="76"/>
+ <attr name="y" type="s16" val="939"/>
+</obj>
+
+<obj class="Point" id="3 DataProcessor-2-HSIFrameProcessor">
+ <attr name="x" type="s16" val="81"/>
+ <attr name="y" type="s16" val="513"/>
+</obj>
+
+<obj class="Point" id="3 DataProcessor-2-RawDataProcessor">
+ <attr name="x" type="s16" val="76"/>
+ <attr name="y" type="s16" val="513"/>
 </obj>
 
 <obj class="Point" id="3 DataProcessor-2-TADataProcessor">
  <attr name="x" type="s16" val="39"/>
- <attr name="y" type="s16" val="666"/>
+ <attr name="y" type="s16" val="513"/>
 </obj>
 
-<obj class="Point" id="3 DataProcessor-2-TCDataProcessor">
- <attr name="x" type="s16" val="39"/>
- <attr name="y" type="s16" val="644"/>
+<obj class="Point" id="3 DataProcessor-2-TPDataProcessor">
+ <attr name="x" type="s16" val="89"/>
+ <attr name="y" type="s16" val="513"/>
+</obj>
+
+<obj class="Point" id="3 DataReaderConf-2-HSI2TCTranslatorConf">
+ <attr name="x" type="s16" val="107"/>
+ <attr name="y" type="s16" val="310"/>
 </obj>
 
 <obj class="Point" id="3 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf">
  <attr name="x" type="s16" val="65"/>
- <attr name="y" type="s16" val="157"/>
+ <attr name="y" type="s16" val="164"/>
 </obj>
 
 <obj class="Point" id="3 DataSubscriber-2-DataReaderConf-via-configuration">
  <attr name="x" type="s16" val="50"/>
- <attr name="y" type="s16" val="138"/>
+ <attr name="y" type="s16" val="88"/>
 </obj>
 
-<obj class="Point" id="3 MLTAlgorithm-2-ROIGroupConf-via-roi_group_conf">
- <attr name="x" type="s16" val="62"/>
- <attr name="y" type="s16" val="830"/>
+<obj class="Point" id="3 FakeHSIApplication-2-FakeHSIEventGeneratorConf-via-generator">
+ <attr name="x" type="s16" val="52"/>
+ <attr name="y" type="s16" val="245"/>
 </obj>
 
-<obj class="Point" id="3 MLTAlgorithm-2-SourceIDConf-via-mandatory_links">
- <attr name="x" type="s16" val="45"/>
- <attr name="y" type="s16" val="927"/>
+<obj class="Point" id="3 FakeHSIApplication-2-ReadoutModuleConf-via-link_handler">
+ <attr name="y" type="s16" val="295"/>
 </obj>
 
-<obj class="Point" id="3 MLTAlgorithm-2-TCReadoutMap-via-tc_readout_map">
- <attr name="x" type="s16" val="38"/>
- <attr name="y" type="s16" val="859"/>
+<obj class="Point" id="3 HSI2TCTranslatorConf-2-HSISignalWindow-via-signals">
+ <attr name="x" type="s16" val="39"/>
+ <attr name="y" type="s16" val="419"/>
+</obj>
+
+<obj class="Point" id="3 HSIEventToTCApplication-2-HSI2TCTranslatorConf-via-hsevent_to_tc_conf">
+ <attr name="x" type="s16" val="12"/>
+ <attr name="y" type="s16" val="227"/>
+</obj>
+
+<obj class="Point" id="3 MLTApplication-2-ModuleLevelTriggerConf-via-mlt_conf">
+ <attr name="x" type="s16" val="115"/>
+ <attr name="y" type="s16" val="214"/>
+</obj>
+
+<obj class="Point" id="3 MLTApplication-2-StandaloneCandidateMakerConf-via-standalone_candidate_maker_confs">
+ <attr name="x" type="s16" val="145"/>
+ <attr name="y" type="s16" val="259"/>
+</obj>
+
+<obj class="Point" id="3 ModuleLevelTrigger-2-ModuleLevelTriggerConf-via-configuration">
+ <attr name="x" type="s16" val="63"/>
+ <attr name="y" type="s16" val="493"/>
+</obj>
+
+<obj class="Point" id="3 ModuleLevelTrigger-2-SourceIDConf-via-mandatory_links">
+ <attr name="x" type="s16" val="44"/>
+ <attr name="y" type="s16" val="534"/>
+</obj>
+
+<obj class="Point" id="3 ModuleLevelTriggerConf-2-ROIGroupConf-via-roi_group_conf">
+ <attr name="x" type="s16" val="96"/>
+ <attr name="y" type="s16" val="520"/>
+</obj>
+
+<obj class="Point" id="3 ModuleLevelTriggerConf-2-TCReadoutMap-via-tc_readout_map">
+ <attr name="x" type="s16" val="64"/>
+ <attr name="y" type="s16" val="510"/>
+</obj>
+
+<obj class="Point" id="3 RandomTriggerCandidateMaker-2-RandomTriggerCandidateMakerConf-via-configuration">
+ <attr name="x" type="s16" val="77"/>
+ <attr name="y" type="s16" val="856"/>
 </obj>
 
 <obj class="Point" id="3 ReadoutModuleConf-2-DataProcessor-via-data_processor">
  <attr name="x" type="s16" val="59"/>
- <attr name="y" type="s16" val="470"/>
+ <attr name="y" type="s16" val="351"/>
 </obj>
 
 <obj class="Point" id="3 ReadoutModuleConf-2-LatencyBuffer-via-latency_buffer">
  <attr name="x" type="s16" val="45"/>
- <attr name="y" type="s16" val="544"/>
+ <attr name="y" type="s16" val="354"/>
 </obj>
 
 <obj class="Point" id="3 ReadoutModuleConf-2-RequestHandler-via-request_handler">
  <attr name="x" type="s16" val="52"/>
- <attr name="y" type="s16" val="328"/>
+ <attr name="y" type="s16" val="312"/>
 </obj>
 
 <obj class="Point" id="3 RequestHandler-2-DataRecorderConf-via-data_recorder">
  <attr name="x" type="s16" val="56"/>
- <attr name="y" type="s16" val="316"/>
+ <attr name="y" type="s16" val="300"/>
 </obj>
 
-<obj class="Point" id="3 RequestHandler-2-TriggerRequestHandler">
- <attr name="x" type="s16" val="58"/>
- <attr name="y" type="s16" val="369"/>
+<obj class="Point" id="3 SmartDaqApplication-2-FakeHSIApplication">
+ <attr name="x" type="s16" val="30"/>
+ <attr name="y" type="s16" val="117"/>
+</obj>
+
+<obj class="Point" id="3 SmartDaqApplication-2-HSIEventToTCApplication">
+ <attr name="x" type="s16" val="38"/>
+ <attr name="y" type="s16" val="117"/>
+</obj>
+
+<obj class="Point" id="3 SmartDaqApplication-2-MLTApplication">
+ <attr name="x" type="s16" val="153"/>
+ <attr name="y" type="s16" val="117"/>
 </obj>
 
 <obj class="Point" id="3 SmartDaqApplication-2-TriggerApplication">
  <attr name="x" type="s16" val="63"/>
- <attr name="y" type="s16" val="296"/>
+ <attr name="y" type="s16" val="117"/>
+</obj>
+
+<obj class="Point" id="3 StandaloneCandidateMaker-2-CustomTriggerCandidateMaker">
+ <attr name="x" type="s16" val="45"/>
+ <attr name="y" type="s16" val="820"/>
+</obj>
+
+<obj class="Point" id="3 StandaloneCandidateMaker-2-RandomTriggerCandidateMaker">
+ <attr name="x" type="s16" val="44"/>
+ <attr name="y" type="s16" val="820"/>
+</obj>
+
+<obj class="Point" id="3 StandaloneCandidateMakerConf-2-CustomTriggerCandidateMakerConf">
+ <attr name="x" type="s16" val="76"/>
+ <attr name="y" type="s16" val="783"/>
+</obj>
+
+<obj class="Point" id="3 StandaloneCandidateMakerConf-2-RandomTriggerCandidateMakerConf">
+ <attr name="x" type="s16" val="124"/>
+ <attr name="y" type="s16" val="783"/>
+</obj>
+
+<obj class="Point" id="3 TAAlgorithm-2-TriggerActivityMakerHorizontalMuonPlugin">
+ <attr name="x" type="s16" val="186"/>
+ <attr name="y" type="s16" val="747"/>
+</obj>
+
+<obj class="Point" id="3 TAAlgorithm-2-TriggerActivityMakerPrescalePlugin">
+ <attr name="x" type="s16" val="52"/>
+ <attr name="y" type="s16" val="747"/>
 </obj>
 
 <obj class="Point" id="3 TADataProcessor-2-TCAlgorithm-via-algorithms">
  <attr name="x" type="s16" val="28"/>
- <attr name="y" type="s16" val="739"/>
+ <attr name="y" type="s16" val="591"/>
 </obj>
 
 <obj class="Point" id="3 TCAlgorithm-2-TCCustom">
- <attr name="y" type="s16" val="610"/>
+ <attr name="x" type="s16" val="120"/>
+ <attr name="y" type="s16" val="640"/>
 </obj>
 
-<obj class="Point" id="3 TCAlgorithm-2-TCHSI">
- <attr name="x" type="s16" val="63"/>
- <attr name="y" type="s16" val="810"/>
+<obj class="Point" id="3 TPDataProcessor-2-TAAlgorithm-via-algorithms">
+ <attr name="x" type="s16" val="28"/>
+ <attr name="y" type="s16" val="688"/>
 </obj>
 
-<obj class="Point" id="3 TCAlgorithm-2-TCHorizontalMuon">
- <attr name="x" type="s16" val="54"/>
- <attr name="y" type="s16" val="681"/>
-</obj>
-
-<obj class="Point" id="3 TCAlgorithm-2-TCPassThrough">
- <attr name="x" type="s16" val="24"/>
- <attr name="y" type="s16" val="844"/>
-</obj>
-
-<obj class="Point" id="3 TCAlgorithm-2-TCRandom">
- <attr name="y" type="s16" val="922"/>
-</obj>
-
-<obj class="Point" id="3 TCDataProcessor-2-MLTAlgorithm-via-algorithm">
- <attr name="x" type="s16" val="63"/>
- <attr name="y" type="s16" val="796"/>
-</obj>
-
-<obj class="Point" id="3 TCHSI-2-HSISignalWindow-via-signals">
- <attr name="x" type="s16" val="39"/>
- <attr name="y" type="s16" val="792"/>
+<obj class="Point" id="3 TPDataProcessor-2-TPChannelFilterConf-via-channel_filter_conf">
+ <attr name="x" type="s16" val="138"/>
+ <attr name="y" type="s16" val="713"/>
 </obj>
 
 <obj class="Point" id="3 TriggerApplication-2-DataReaderConf-via-data_subscriber">
  <attr name="x" type="s16" val="50"/>
- <attr name="y" type="s16" val="267"/>
+ <attr name="y" type="s16" val="183"/>
 </obj>
 
 <obj class="Point" id="3 TriggerApplication-2-ReadoutModuleConf-via-trigger_inputs_handler">
  <attr name="x" type="s16" val="58"/>
- <attr name="y" type="s16" val="317"/>
+ <attr name="y" type="s16" val="271"/>
+</obj>
+
+<obj class="Point" id="4 CustomTriggerCandidateMaker-2-CustomTriggerCandidateMakerConf-via-configuration">
+ <attr name="x" type="s16" val="76"/>
+ <attr name="y" type="s16" val="26"/>
+</obj>
+
+<obj class="Point" id="4 DataProcessor-2-HSIFrameProcessor">
+ <attr name="x" type="s16" val="81"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 DataProcessor-2-RawDataProcessor">
+ <attr name="x" type="s16" val="76"/>
+ <attr name="y" type="s16" val="35"/>
 </obj>
 
 <obj class="Point" id="4 DataProcessor-2-TADataProcessor">
@@ -800,9 +1306,14 @@
  <attr name="y" type="s16" val="12"/>
 </obj>
 
-<obj class="Point" id="4 DataProcessor-2-TCDataProcessor">
- <attr name="x" type="s16" val="39"/>
+<obj class="Point" id="4 DataProcessor-2-TPDataProcessor">
+ <attr name="x" type="s16" val="89"/>
  <attr name="y" type="s16" val="12"/>
+</obj>
+
+<obj class="Point" id="4 DataReaderConf-2-HSI2TCTranslatorConf">
+ <attr name="x" type="s16" val="107"/>
+ <attr name="y" type="s16" val="8"/>
 </obj>
 
 <obj class="Point" id="4 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf">
@@ -815,19 +1326,58 @@
  <attr name="y" type="s16" val="17"/>
 </obj>
 
-<obj class="Point" id="4 MLTAlgorithm-2-ROIGroupConf-via-roi_group_conf">
- <attr name="x" type="s16" val="62"/>
+<obj class="Point" id="4 FakeHSIApplication-2-FakeHSIEventGeneratorConf-via-generator">
+ <attr name="x" type="s16" val="52"/>
+ <attr name="y" type="s16" val="39"/>
+</obj>
+
+<obj class="Point" id="4 FakeHSIApplication-2-ReadoutModuleConf-via-link_handler">
  <attr name="y" type="s16" val="26"/>
 </obj>
 
-<obj class="Point" id="4 MLTAlgorithm-2-SourceIDConf-via-mandatory_links">
- <attr name="x" type="s16" val="45"/>
+<obj class="Point" id="4 HSI2TCTranslatorConf-2-HSISignalWindow-via-signals">
+ <attr name="x" type="s16" val="39"/>
+ <attr name="y" type="s16" val="21"/>
+</obj>
+
+<obj class="Point" id="4 HSIEventToTCApplication-2-HSI2TCTranslatorConf-via-hsevent_to_tc_conf">
+ <attr name="x" type="s16" val="12"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 MLTApplication-2-ModuleLevelTriggerConf-via-mlt_conf">
+ <attr name="x" type="s16" val="115"/>
+ <attr name="y" type="s16" val="57"/>
+</obj>
+
+<obj class="Point" id="4 MLTApplication-2-StandaloneCandidateMakerConf-via-standalone_candidate_maker_confs">
+ <attr name="x" type="s16" val="145"/>
  <attr name="y" type="s16" val="17"/>
 </obj>
 
-<obj class="Point" id="4 MLTAlgorithm-2-TCReadoutMap-via-tc_readout_map">
- <attr name="x" type="s16" val="38"/>
+<obj class="Point" id="4 ModuleLevelTrigger-2-ModuleLevelTriggerConf-via-configuration">
+ <attr name="x" type="s16" val="63"/>
+ <attr name="y" type="s16" val="57"/>
+</obj>
+
+<obj class="Point" id="4 ModuleLevelTrigger-2-SourceIDConf-via-mandatory_links">
+ <attr name="x" type="s16" val="44"/>
+ <attr name="y" type="s16" val="17"/>
+</obj>
+
+<obj class="Point" id="4 ModuleLevelTriggerConf-2-ROIGroupConf-via-roi_group_conf">
+ <attr name="x" type="s16" val="96"/>
+ <attr name="y" type="s16" val="26"/>
+</obj>
+
+<obj class="Point" id="4 ModuleLevelTriggerConf-2-TCReadoutMap-via-tc_readout_map">
+ <attr name="x" type="s16" val="64"/>
  <attr name="y" type="s16" val="21"/>
+</obj>
+
+<obj class="Point" id="4 RandomTriggerCandidateMaker-2-RandomTriggerCandidateMakerConf-via-configuration">
+ <attr name="x" type="s16" val="77"/>
+ <attr name="y" type="s16" val="26"/>
 </obj>
 
 <obj class="Point" id="4 ReadoutModuleConf-2-DataProcessor-via-data_processor">
@@ -850,14 +1400,54 @@
  <attr name="y" type="s16" val="26"/>
 </obj>
 
-<obj class="Point" id="4 RequestHandler-2-TriggerRequestHandler">
- <attr name="x" type="s16" val="58"/>
+<obj class="Point" id="4 SmartDaqApplication-2-FakeHSIApplication">
+ <attr name="x" type="s16" val="30"/>
+ <attr name="y" type="s16" val="17"/>
+</obj>
+
+<obj class="Point" id="4 SmartDaqApplication-2-HSIEventToTCApplication">
+ <attr name="x" type="s16" val="38"/>
  <attr name="y" type="s16" val="12"/>
+</obj>
+
+<obj class="Point" id="4 SmartDaqApplication-2-MLTApplication">
+ <attr name="x" type="s16" val="153"/>
+ <attr name="y" type="s16" val="17"/>
 </obj>
 
 <obj class="Point" id="4 SmartDaqApplication-2-TriggerApplication">
  <attr name="x" type="s16" val="63"/>
  <attr name="y" type="s16" val="21"/>
+</obj>
+
+<obj class="Point" id="4 StandaloneCandidateMaker-2-CustomTriggerCandidateMaker">
+ <attr name="x" type="s16" val="45"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 StandaloneCandidateMaker-2-RandomTriggerCandidateMaker">
+ <attr name="x" type="s16" val="44"/>
+ <attr name="y" type="s16" val="12"/>
+</obj>
+
+<obj class="Point" id="4 StandaloneCandidateMakerConf-2-CustomTriggerCandidateMakerConf">
+ <attr name="x" type="s16" val="76"/>
+ <attr name="y" type="s16" val="26"/>
+</obj>
+
+<obj class="Point" id="4 StandaloneCandidateMakerConf-2-RandomTriggerCandidateMakerConf">
+ <attr name="x" type="s16" val="124"/>
+ <attr name="y" type="s16" val="26"/>
+</obj>
+
+<obj class="Point" id="4 TAAlgorithm-2-TriggerActivityMakerHorizontalMuonPlugin">
+ <attr name="x" type="s16" val="186"/>
+ <attr name="y" type="s16" val="39"/>
+</obj>
+
+<obj class="Point" id="4 TAAlgorithm-2-TriggerActivityMakerPrescalePlugin">
+ <attr name="x" type="s16" val="52"/>
+ <attr name="y" type="s16" val="8"/>
 </obj>
 
 <obj class="Point" id="4 TADataProcessor-2-TCAlgorithm-via-algorithms">
@@ -866,35 +1456,17 @@
 </obj>
 
 <obj class="Point" id="4 TCAlgorithm-2-TCCustom">
+ <attr name="x" type="s16" val="120"/>
  <attr name="y" type="s16" val="21"/>
 </obj>
 
-<obj class="Point" id="4 TCAlgorithm-2-TCHSI">
- <attr name="x" type="s16" val="63"/>
+<obj class="Point" id="4 TPDataProcessor-2-TAAlgorithm-via-algorithms">
+ <attr name="x" type="s16" val="28"/>
  <attr name="y" type="s16" val="12"/>
 </obj>
 
-<obj class="Point" id="4 TCAlgorithm-2-TCHorizontalMuon">
- <attr name="x" type="s16" val="54"/>
- <attr name="y" type="s16" val="30"/>
-</obj>
-
-<obj class="Point" id="4 TCAlgorithm-2-TCPassThrough">
- <attr name="x" type="s16" val="24"/>
- <attr name="y" type="s16" val="8"/>
-</obj>
-
-<obj class="Point" id="4 TCAlgorithm-2-TCRandom">
- <attr name="y" type="s16" val="26"/>
-</obj>
-
-<obj class="Point" id="4 TCDataProcessor-2-MLTAlgorithm-via-algorithm">
- <attr name="x" type="s16" val="63"/>
- <attr name="y" type="s16" val="66"/>
-</obj>
-
-<obj class="Point" id="4 TCHSI-2-HSISignalWindow-via-signals">
- <attr name="x" type="s16" val="39"/>
+<obj class="Point" id="4 TPDataProcessor-2-TPChannelFilterConf-via-channel_filter_conf">
+ <attr name="x" type="s16" val="138"/>
  <attr name="y" type="s16" val="21"/>
 </obj>
 
@@ -908,7 +1480,7 @@
  <attr name="y" type="s16" val="26"/>
 </obj>
 
-<obj class="View" id="Unknown">
+<obj class="View" id="Trigger">
  <attr name="drawing area x margin" type="u16" val="6"/>
  <attr name="drawing area y margin" type="u16" val="4"/>
  <attr name="font x margin" type="u16" val="3"/>

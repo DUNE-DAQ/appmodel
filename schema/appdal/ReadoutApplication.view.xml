@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="266" oks-format="data" oks-version="cf3a4f0 built &quot;Aug 18 2023&quot;" created-by="gjc" created-on="21d162e26c87" creation-time="20240228T094245" last-modified-by="gjc" last-modified-on="21d162e26c87" last-modification-time="20240228T094245"/>
+<info name="" type="" num-of-items="266" oks-format="data" oks-version="oks-08-04-00-2-g4949f80 built &quot;Dec  6 2023&quot;" created-by="root" created-on="f1c9af75d018" creation-time="20240319T093311" last-modified-by="root" last-modified-on="f1c9af75d018" last-modification-time="20240319T093311"/>
 
 <obj class="ALink" id="DROStreamConf-2-GeoId-via-geo_id">
  <attr name="Name" type="string" val="geo_id"/>
@@ -456,18 +456,18 @@
 </obj>
 
 <obj class="Class" id="DataRecorder">
- <attr name="x" type="s16" val="575"/>
- <attr name="y" type="s16" val="732"/>
+ <attr name="x" type="s16" val="574"/>
+ <attr name="y" type="s16" val="738"/>
 </obj>
 
 <obj class="Class" id="DataRecorderConf">
  <attr name="x" type="s16" val="907"/>
- <attr name="y" type="s16" val="701"/>
+ <attr name="y" type="s16" val="721"/>
 </obj>
 
 <obj class="Class" id="GeoId">
- <attr name="x" type="s16" val="1271"/>
- <attr name="y" type="s16" val="128"/>
+ <attr name="x" type="s16" val="1270"/>
+ <attr name="y" type="s16" val="119"/>
 </obj>
 
 <obj class="Class" id="HostComponent">
@@ -476,8 +476,8 @@
 </obj>
 
 <obj class="Class" id="LatencyBuffer">
- <attr name="x" type="s16" val="1300"/>
- <attr name="y" type="s16" val="553"/>
+ <attr name="x" type="s16" val="1303"/>
+ <attr name="y" type="s16" val="547"/>
 </obj>
 
 <obj class="Class" id="NetworkConnection">
@@ -491,12 +491,12 @@
 </obj>
 
 <obj class="Class" id="NetworkConnectionRule">
- <attr name="x" type="s16" val="333"/>
- <attr name="y" type="s16" val="506"/>
+ <attr name="x" type="s16" val="358"/>
+ <attr name="y" type="s16" val="509"/>
 </obj>
 
 <obj class="Class" id="NetworkDevice">
- <attr name="x" type="s16" val="203"/>
+ <attr name="x" type="s16" val="218"/>
  <attr name="y" type="s16" val="712"/>
 </obj>
 
@@ -546,18 +546,18 @@
 </obj>
 
 <obj class="Class" id="ReadoutModule">
- <attr name="x" type="s16" val="946"/>
- <attr name="y" type="s16" val="433"/>
+ <attr name="x" type="s16" val="937"/>
+ <attr name="y" type="s16" val="428"/>
 </obj>
 
 <obj class="Class" id="ReadoutModuleConf">
- <attr name="x" type="s16" val="943"/>
- <attr name="y" type="s16" val="589"/>
+ <attr name="x" type="s16" val="957"/>
+ <attr name="y" type="s16" val="580"/>
 </obj>
 
 <obj class="Class" id="RequestHandler">
- <attr name="x" type="s16" val="1226"/>
- <attr name="y" type="s16" val="713"/>
+ <attr name="x" type="s16" val="1233"/>
+ <attr name="y" type="s16" val="706"/>
 </obj>
 
 <obj class="Class" id="ResourceBase">
@@ -591,8 +591,8 @@
 </obj>
 
 <obj class="Class" id="StreamEmulationParameters">
- <attr name="x" type="s16" val="1363"/>
- <attr name="y" type="s16" val="244"/>
+ <attr name="x" type="s16" val="1349"/>
+ <attr name="y" type="s16" val="247"/>
 </obj>
 
 <obj class="Class" id="StreamParameters">
@@ -802,7 +802,7 @@
 </obj>
 
 <obj class="Point" id="1 DaqModule-2-Connection-via-outputs">
- <attr name="x" type="s16" val="24"/>
+ <attr name="x" type="s16" val="19"/>
  <attr name="y" type="s16" val="32"/>
 </obj>
 
@@ -852,12 +852,12 @@
 </obj>
 
 <obj class="Point" id="1 HostComponent-2-NetworkDevice">
- <attr name="x" type="s16" val="75"/>
+ <attr name="x" type="s16" val="90"/>
  <attr name="y" type="s16" val="38"/>
 </obj>
 
 <obj class="Point" id="1 HostComponent-2-ProcessingResource">
- <attr name="x" type="s16" val="29"/>
+ <attr name="x" type="s16" val="43"/>
  <attr name="y" type="s16" val="38"/>
 </obj>
 
@@ -882,7 +882,7 @@
 </obj>
 
 <obj class="Point" id="1 ReadoutApplication-2-DataRecorderConf-via-data_recorder">
- <attr name="x" type="s16" val="116"/>
+ <attr name="x" type="s16" val="157"/>
  <attr name="y" type="s16" val="65"/>
 </obj>
 
@@ -907,7 +907,7 @@
 </obj>
 
 <obj class="Point" id="1 ReadoutModule-2-GeoId-via-geo_id">
- <attr name="x" type="s16" val="164"/>
+ <attr name="x" type="s16" val="154"/>
  <attr name="y" type="s16" val="65"/>
 </obj>
 
@@ -917,7 +917,7 @@
 </obj>
 
 <obj class="Point" id="1 ReadoutModuleConf-2-DataProcessor-via-data_processor">
- <attr name="x" type="s16" val="201"/>
+ <attr name="x" type="s16" val="220"/>
  <attr name="y" type="s16" val="65"/>
 </obj>
 
@@ -992,7 +992,7 @@
 </obj>
 
 <obj class="Point" id="1 SmartDaqApplication-2-NetworkConnectionRule-via-network_rules">
- <attr name="x" type="s16" val="60"/>
+ <attr name="x" type="s16" val="71"/>
  <attr name="y" type="s16" val="38"/>
 </obj>
 
@@ -1032,7 +1032,7 @@
 </obj>
 
 <obj class="Point" id="2 DaqModule-2-Connection-via-outputs">
- <attr name="x" type="s16" val="24"/>
+ <attr name="x" type="s16" val="19"/>
  <attr name="y" type="s16" val="184"/>
 </obj>
 
@@ -1073,21 +1073,21 @@
 
 <obj class="Point" id="2 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf">
  <attr name="x" type="s16" val="150"/>
- <attr name="y" type="s16" val="294"/>
+ <attr name="y" type="s16" val="307"/>
 </obj>
 
 <obj class="Point" id="2 DataRecorder-2-DataRecorderConf-via-configuration">
  <attr name="x" type="s16" val="65"/>
- <attr name="y" type="s16" val="747"/>
+ <attr name="y" type="s16" val="761"/>
 </obj>
 
 <obj class="Point" id="2 HostComponent-2-NetworkDevice">
- <attr name="x" type="s16" val="75"/>
+ <attr name="x" type="s16" val="90"/>
  <attr name="y" type="s16" val="700"/>
 </obj>
 
 <obj class="Point" id="2 HostComponent-2-ProcessingResource">
- <attr name="x" type="s16" val="29"/>
+ <attr name="x" type="s16" val="43"/>
  <attr name="y" type="s16" val="704"/>
 </obj>
 
@@ -1112,8 +1112,8 @@
 </obj>
 
 <obj class="Point" id="2 ReadoutApplication-2-DataRecorderConf-via-data_recorder">
- <attr name="x" type="s16" val="116"/>
- <attr name="y" type="s16" val="721"/>
+ <attr name="x" type="s16" val="157"/>
+ <attr name="y" type="s16" val="727"/>
 </obj>
 
 <obj class="Point" id="2 ReadoutApplication-2-ReadoutModuleConf-via-link_handler">
@@ -1137,18 +1137,18 @@
 </obj>
 
 <obj class="Point" id="2 ReadoutModule-2-GeoId-via-geo_id">
- <attr name="x" type="s16" val="164"/>
+ <attr name="x" type="s16" val="154"/>
  <attr name="y" type="s16" val="375"/>
 </obj>
 
 <obj class="Point" id="2 ReadoutModule-2-ReadoutModuleConf-via-module_configuration">
  <attr name="x" type="s16" val="75"/>
- <attr name="y" type="s16" val="475"/>
+ <attr name="y" type="s16" val="528"/>
 </obj>
 
 <obj class="Point" id="2 ReadoutModuleConf-2-DataProcessor-via-data_processor">
- <attr name="x" type="s16" val="201"/>
- <attr name="y" type="s16" val="485"/>
+ <attr name="x" type="s16" val="220"/>
+ <attr name="y" type="s16" val="497"/>
 </obj>
 
 <obj class="Point" id="2 ReadoutModuleConf-2-LatencyBuffer-via-latency_buffer">
@@ -1222,8 +1222,8 @@
 </obj>
 
 <obj class="Point" id="2 SmartDaqApplication-2-NetworkConnectionRule-via-network_rules">
- <attr name="x" type="s16" val="60"/>
- <attr name="y" type="s16" val="470"/>
+ <attr name="x" type="s16" val="71"/>
+ <attr name="y" type="s16" val="455"/>
 </obj>
 
 <obj class="Point" id="2 SmartDaqApplication-2-QueueConnectionRule-via-queue_rules">
@@ -1303,12 +1303,12 @@
 
 <obj class="Point" id="3 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf">
  <attr name="x" type="s16" val="65"/>
- <attr name="y" type="s16" val="294"/>
+ <attr name="y" type="s16" val="307"/>
 </obj>
 
 <obj class="Point" id="3 DataRecorder-2-DataRecorderConf-via-configuration">
  <attr name="x" type="s16" val="56"/>
- <attr name="y" type="s16" val="747"/>
+ <attr name="y" type="s16" val="761"/>
 </obj>
 
 <obj class="Point" id="3 HostComponent-2-NetworkDevice">
@@ -1317,7 +1317,7 @@
 </obj>
 
 <obj class="Point" id="3 HostComponent-2-ProcessingResource">
- <attr name="x" type="s16" val="5"/>
+ <attr name="x" type="s16" val="19"/>
  <attr name="y" type="s16" val="704"/>
 </obj>
 
@@ -1343,7 +1343,7 @@
 
 <obj class="Point" id="3 ReadoutApplication-2-DataRecorderConf-via-data_recorder">
  <attr name="x" type="s16" val="56"/>
- <attr name="y" type="s16" val="721"/>
+ <attr name="y" type="s16" val="727"/>
 </obj>
 
 <obj class="Point" id="3 ReadoutApplication-2-ReadoutModuleConf-via-link_handler">
@@ -1367,18 +1367,18 @@
 </obj>
 
 <obj class="Point" id="3 ReadoutModule-2-GeoId-via-geo_id">
- <attr name="x" type="s16" val="25"/>
+ <attr name="x" type="s16" val="40"/>
  <attr name="y" type="s16" val="375"/>
 </obj>
 
 <obj class="Point" id="3 ReadoutModule-2-ReadoutModuleConf-via-module_configuration">
- <attr name="x" type="s16" val="50"/>
- <attr name="y" type="s16" val="475"/>
+ <attr name="x" type="s16" val="55"/>
+ <attr name="y" type="s16" val="528"/>
 </obj>
 
 <obj class="Point" id="3 ReadoutModuleConf-2-DataProcessor-via-data_processor">
  <attr name="x" type="s16" val="59"/>
- <attr name="y" type="s16" val="485"/>
+ <attr name="y" type="s16" val="497"/>
 </obj>
 
 <obj class="Point" id="3 ReadoutModuleConf-2-LatencyBuffer-via-latency_buffer">
@@ -1387,7 +1387,7 @@
 </obj>
 
 <obj class="Point" id="3 ReadoutModuleConf-2-RequestHandler-via-request_handler">
- <attr name="x" type="s16" val="52"/>
+ <attr name="x" type="s16" val="57"/>
  <attr name="y" type="s16" val="667"/>
 </obj>
 
@@ -1452,8 +1452,8 @@
 </obj>
 
 <obj class="Point" id="3 SmartDaqApplication-2-NetworkConnectionRule-via-network_rules">
- <attr name="x" type="s16" val="187"/>
- <attr name="y" type="s16" val="470"/>
+ <attr name="x" type="s16" val="173"/>
+ <attr name="y" type="s16" val="455"/>
 </obj>
 
 <obj class="Point" id="3 SmartDaqApplication-2-QueueConnectionRule-via-queue_rules">
@@ -1547,7 +1547,7 @@
 </obj>
 
 <obj class="Point" id="4 HostComponent-2-ProcessingResource">
- <attr name="x" type="s16" val="5"/>
+ <attr name="x" type="s16" val="19"/>
  <attr name="y" type="s16" val="12"/>
 </obj>
 
@@ -1597,12 +1597,12 @@
 </obj>
 
 <obj class="Point" id="4 ReadoutModule-2-GeoId-via-geo_id">
- <attr name="x" type="s16" val="25"/>
+ <attr name="x" type="s16" val="40"/>
  <attr name="y" type="s16" val="26"/>
 </obj>
 
 <obj class="Point" id="4 ReadoutModule-2-ReadoutModuleConf-via-module_configuration">
- <attr name="x" type="s16" val="50"/>
+ <attr name="x" type="s16" val="55"/>
  <attr name="y" type="s16" val="21"/>
 </obj>
 
@@ -1617,7 +1617,7 @@
 </obj>
 
 <obj class="Point" id="4 ReadoutModuleConf-2-RequestHandler-via-request_handler">
- <attr name="x" type="s16" val="52"/>
+ <attr name="x" type="s16" val="57"/>
  <attr name="y" type="s16" val="35"/>
 </obj>
 
@@ -1682,7 +1682,7 @@
 </obj>
 
 <obj class="Point" id="4 SmartDaqApplication-2-NetworkConnectionRule-via-network_rules">
- <attr name="x" type="s16" val="187"/>
+ <attr name="x" type="s16" val="173"/>
  <attr name="y" type="s16" val="12"/>
 </obj>
 
