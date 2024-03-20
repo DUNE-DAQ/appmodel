@@ -19,6 +19,7 @@
 #include "appdal/QueueDescriptor.hpp"
 #include "appdal/ReadoutModule.hpp"
 #include "appdal/ReadoutModuleConf.hpp"
+#include "appdal/SourceIDConf.hpp"
 #include "appdal/appdalIssues.hpp"
 #include "coredal/Connection.hpp"
 #include "coredal/NetworkConnection.hpp"
@@ -98,7 +99,12 @@ FakeHSIApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     throw(BadConf(ERS_HERE, "No HSIEvent output network descriptor given"));
   }
 
-  auto id = 0;     // TODO Eric Flumerfelt <eflumerf@fnal.gov>, 08-Feb-2024: This is a magic number
+  auto idconf = get_source_id();
+  if (idconf == nullptr) {
+    throw(BadConf(ERS_HERE, "No SourceIDConf given"));
+  }
+  auto id = idconf->get_id();
+
   auto det_id = 1; // TODO Eric Flumerfelt <eflumerf@fnal.gov>, 08-Feb-2024: This is a magic number
   std::string uid("DLH-" + std::to_string(id));
   oksdbinterfaces::ConfigObject dlhObj;

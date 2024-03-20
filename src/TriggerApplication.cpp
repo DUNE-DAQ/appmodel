@@ -213,9 +213,13 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
   auto ti_conf_obj = ti_conf->config_object();
   oksdbinterfaces::ConfigObject ti_obj;
-  std::string ti_uid(handler_name + std::to_string(get_source_id()));
+  if (get_source_id() == nullptr) {
+    throw(BadConf(ERS_HERE, "No source_id associated with this TriggerApplication!"));
+  }
+  uint32_t source_id = get_source_id()->get_id();
+  std::string ti_uid(handler_name + std::to_string(source_id));
   confdb->create(dbfile, ti_class, ti_uid, ti_obj);
-  ti_obj.set_by_val<uint32_t>("source_id", get_source_id());
+  ti_obj.set_by_val<uint32_t>("source_id", source_id);
   ti_obj.set_obj("module_configuration", &ti_conf_obj);
   ti_obj.set_objs("inputs", {&input_queue_obj, &req_net_obj});
   if (tset_out_net_desc!= nullptr) {

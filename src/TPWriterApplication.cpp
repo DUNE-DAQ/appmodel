@@ -21,6 +21,7 @@
 #include "appdal/NetworkConnectionRule.hpp"
 #include "appdal/NetworkConnectionDescriptor.hpp"
 #include "appdal/ReadoutApplication.hpp"
+#include "appdal/SourceIDConf.hpp"
 #include "appdal/appdalIssues.hpp"
 #include "logging/Logging.hpp"
 
@@ -93,9 +94,15 @@ TPStreamWriterApplication::generate_modules(oksdbinterfaces::Configuration* conf
   */
 
   oksdbinterfaces::ConfigObject tpwrObj;
-  std::string tpwrUid("tpwriter-"+std::to_string(get_source_id()));
+
+  auto source_id = get_source_id();
+  if (source_id == nullptr) {
+    throw(BadConf(ERS_HERE, "No SourceIDConf given to TPWriterApplication!"));  
+  }
+
+  std::string tpwrUid("tpwriter-"+std::to_string(source_id->get_id()));
   confdb->create(dbfile, "TPStreamWriter", tpwrUid, tpwrObj);
-  tpwrObj.set_by_val<uint32_t>("source_id", get_source_id() ) ;
+  tpwrObj.set_by_val<uint32_t>("source_id", source_id->get_id());
   tpwrObj.set_obj("configuration", &tpwriterConf->config_object());
   tpwrObj.set_objs("inputs", {&tset_in_net_obj} );
 

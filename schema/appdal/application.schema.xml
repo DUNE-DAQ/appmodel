@@ -89,7 +89,6 @@
 
  <class name="DFApplication">
   <superclass name="SmartDaqApplication"/>
-  <attribute name="source_id" type="u32" init-value="0" is-not-null="yes"/>
   <relationship name="trb" description="Configuration of the TRB to be generated my get_modules()" class-type="TRBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_writer" class-type="DataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="uses" class-type="DFHWConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -203,7 +202,6 @@
 
  <class name="FakeHSIApplication">
   <superclass name="SmartDaqApplication"/>
-  <attribute name="source_id" description="The SourceID of this element" type="u32" is-not-null="yes"/>
   <relationship name="link_handler" class-type="ReadoutModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="generator" class-type="FakeHSIEventGeneratorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
@@ -368,6 +366,7 @@
 
  <class name="SmartDaqApplication" description="A SmartDaqApplication defines a &quot;generate_modules&quot; method which uses input configuration to generate the modules for known DUNE-DAQ applications." is-abstract="yes">
   <superclass name="Application"/>
+  <relationship name="source_id" class-type="SourceIDConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="queue_rules" class-type="QueueConnectionRule" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="network_rules" class-type="NetworkConnectionRule" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="">
@@ -399,7 +398,6 @@
 
  <class name="TPStreamWriterApplication">
   <superclass name="SmartDaqApplication"/>
-  <attribute name="source_id" type="u32" is-not-null="yes"/>
   <relationship name="tp_writer" class-type="TPStreamWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate dal objects for streams of thie ReadoutApplication on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>

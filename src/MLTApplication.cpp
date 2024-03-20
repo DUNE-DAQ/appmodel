@@ -244,23 +244,25 @@ MLTApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
       }
     }
 
+    // SmartDaqApplication now has source_id member, might want to use that but make sure that it's actually a data source somehow...
+
     auto trg_app = app->cast<appdal::TriggerApplication>();
-    if(trg_app != nullptr && trg_app->get_source_id() != 0) {
+    if(trg_app != nullptr && trg_app->get_source_id() != nullptr) {
       	oksdbinterfaces::ConfigObject* tcSourceIdConf = new oksdbinterfaces::ConfigObject();
-        confdb->create(dbfile, "SourceIDConf", trg_app->UID()+"-"+ std::to_string(trg_app->get_source_id()), *tcSourceIdConf);
-        tcSourceIdConf->set_by_val<uint32_t>("id", trg_app->get_source_id());
-        tcSourceIdConf->set_by_val<std::string>("subsystem", "Trigger");
+        confdb->create(dbfile, "SourceIDConf", trg_app->UID()+"-"+ std::to_string(trg_app->get_source_id()->get_id()), *tcSourceIdConf);
+        tcSourceIdConf->set_by_val<uint32_t>("id", trg_app->get_source_id()->get_id());
+        tcSourceIdConf->set_by_val<std::string>("subsystem", trg_app->get_source_id()->get_subsystem());
         sourceIds.push_back(tcSourceIdConf);
     }
 
     // FIXME: add here same logics for HSI application(s)
     //
     auto hsi_app = app->cast<appdal::FakeHSIApplication>();
-    if(hsi_app != nullptr && hsi_app->get_source_id() != 0) {
+    if(hsi_app != nullptr && hsi_app->get_source_id() != nullptr) {
         oksdbinterfaces::ConfigObject* hsEventSourceIdConf = new oksdbinterfaces::ConfigObject();
-        confdb->create(dbfile, "SourceIDConf", hsi_app->UID()+"-"+ std::to_string(hsi_app->get_source_id()), *hsEventSourceIdConf);
-        hsEventSourceIdConf->set_by_val<uint32_t>("id", hsi_app->get_source_id());
-        hsEventSourceIdConf->set_by_val<std::string>("subsystem", "HW_Signals_Interface");
+        confdb->create(dbfile, "SourceIDConf", hsi_app->UID()+"-"+ std::to_string(hsi_app->get_source_id()->get_id()), *hsEventSourceIdConf);
+        hsEventSourceIdConf->set_by_val<uint32_t>("id", hsi_app->get_source_id()->get_id());
+        hsEventSourceIdConf->set_by_val<std::string>("subsystem", hsi_app->get_source_id()->get_subsystem());
         sourceIds.push_back(hsEventSourceIdConf);
     }
 
