@@ -177,7 +177,7 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   trbConfObj.set_by_val<uint32_t>("source_id", get_source_id()->get_id());
   // Prepare TRB Module Object and assign its Config Object.
   oksdbinterfaces::ConfigObject trbObj;
-  std::string trbUid(UID() + "trb");
+  std::string trbUid(UID() + "-trb");
   confdb->create(dbfile, "TriggerRecordBuilder", trbUid, trbObj);
   trbObj.set_obj("configuration", &trbConfObj);
   trbObj.set_objs("inputs", { &trigdecNetObj, &fragNetObj });
@@ -195,7 +195,7 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   auto dwrConfObj = dwrConf->config_object();
   // Prepare DataWriter Module Object and assign its Config Object.
   oksdbinterfaces::ConfigObject dwrObj;
-  std::string dwrUid(UID() + "dw-1");
+  std::string dwrUid(UID() + "-dw-1");
   confdb->create(dbfile, "DataWriter", dwrUid, dwrObj);
   dwrObj.set_obj("configuration", &dwrConfObj);
   dwrObj.set_objs("inputs", { &trQueueObj });
