@@ -257,6 +257,7 @@
   <data val="--configurationService"/>
   <data val="oksconfig:test/config/test-session.data.xml"/><!-- ALTER_ME -->
  </attr>
+  <rel name="source_id" class="SourceIDConf" id="srcid-tp-stream-writer"/>
  <rel name="network_rules">
   <ref class="NetworkConnectionRule" id="tp-net-rule"/>
  </rel>
@@ -286,6 +287,11 @@
 <obj class="SourceIDConf" id="srcid-df-03">
  <attr name="id" type="u32" val="3"/>
  <attr name="subsystem" type="enum" val="TR_Builder"/>
+</obj>
+
+<obj class="SourceIDConf" id="srcid-tp-stream-writer">
+  <attr name="id" type="u32" val="4"/>
+  <attr name="subsystem" type="enum" val="TR_Builder"/>
 </obj>
 
 <obj class="StorageDevice" id="storage-01">
