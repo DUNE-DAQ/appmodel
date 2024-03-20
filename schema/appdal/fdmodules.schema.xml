@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="15" oks-format="schema" oks-version="cf3a4f0 built &quot;Aug 18 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="21d162e26c87" last-modification-time="20240228T123917"/>
+<info name="" type="" num-of-items="15" oks-format="schema" oks-version="oks-08-04-00-2-g4949f80 built &quot;Dec  6 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="root" last-modified-on="f1c9af75d018" last-modification-time="20240319T121534"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -183,7 +183,7 @@
 
  <class name="NICReceiverConf">
   <superclass name="DataReaderConf"/>
-  <attribute name="eal_args" type="string" init-value="-l 0-1 -n 3 -- -m [0:1].0 -j" is-not-null="yes"/>
+  <attribute name="eal_args" type="string" is-not-null="yes"/>
  </class>
 
  <class name="NICStatsConf">

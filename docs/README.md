@@ -51,6 +51,14 @@ Several OKS classes have far detector specific customisations, as shown in the d
 The Datflow applications, which are also **SmartDaqApplication** which
 generate **DaqModules** on the fly, are also included here.
 
+## Trigger applications
+
+  ![Trigger](trigger.png)
+
+The Trigger applications, which are also **SmartDaqApplication** which
+generate **DaqModules** on the fly, are also included here.
+
+
 ###Testing SmartDaqApplication module generation
 
 This package also provides a program `generate_modules_test` for

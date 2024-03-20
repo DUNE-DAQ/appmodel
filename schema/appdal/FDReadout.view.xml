@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="57" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="glehmann" created-on="lxplus928.cern.ch" creation-time="20240107T173931" last-modified-by="glehmann" last-modified-on="lxplus928.cern.ch" last-modification-time="20240107T173932"/>
+<info name="" type="" num-of-items="57" oks-format="data" oks-version="oks-08-04-00-2-g4949f80 built &quot;Dec  6 2023&quot;" created-by="root" created-on="f1c9af75d018" creation-time="20240319T122730" last-modified-by="root" last-modified-on="f1c9af75d018" last-modification-time="20240319T122730"/>
 
 <obj class="ALink" id="DataReader-2-DataReaderConf-via-configuration">
  <attr name="Name" type="string" val="configuration"/>
@@ -114,8 +114,8 @@
 </obj>
 
 <obj class="Class" id="DataReader">
- <attr name="x" type="s16" val="359"/>
- <attr name="y" type="s16" val="21"/>
+ <attr name="x" type="s16" val="381"/>
+ <attr name="y" type="s16" val="20"/>
 </obj>
 
 <obj class="Class" id="DataReaderConf">
@@ -124,13 +124,13 @@
 </obj>
 
 <obj class="Class" id="EthStreamParameters">
- <attr name="x" type="s16" val="10"/>
- <attr name="y" type="s16" val="123"/>
+ <attr name="x" type="s16" val="6"/>
+ <attr name="y" type="s16" val="120"/>
 </obj>
 
 <obj class="Class" id="FelixInterface">
- <attr name="x" type="s16" val="864"/>
- <attr name="y" type="s16" val="14"/>
+ <attr name="x" type="s16" val="838"/>
+ <attr name="y" type="s16" val="87"/>
 </obj>
 
 <obj class="Class" id="FelixStreamParameters">
@@ -139,33 +139,33 @@
 </obj>
 
 <obj class="Class" id="NICInterface">
- <attr name="x" type="s16" val="617"/>
- <attr name="y" type="s16" val="83"/>
+ <attr name="x" type="s16" val="609"/>
+ <attr name="y" type="s16" val="94"/>
 </obj>
 
 <obj class="Class" id="NICInterfaceConfiguration">
- <attr name="x" type="s16" val="590"/>
- <attr name="y" type="s16" val="231"/>
+ <attr name="x" type="s16" val="517"/>
+ <attr name="y" type="s16" val="258"/>
 </obj>
 
 <obj class="Class" id="NICReceiverConf">
- <attr name="x" type="s16" val="310"/>
- <attr name="y" type="s16" val="218"/>
+ <attr name="x" type="s16" val="385"/>
+ <attr name="y" type="s16" val="229"/>
 </obj>
 
 <obj class="Class" id="NICStatsConf">
- <attr name="x" type="s16" val="863"/>
- <attr name="y" type="s16" val="296"/>
+ <attr name="x" type="s16" val="791"/>
+ <attr name="y" type="s16" val="352"/>
 </obj>
 
 <obj class="Class" id="ReadoutInterface">
- <attr name="x" type="s16" val="666"/>
- <attr name="y" type="s16" val="17"/>
+ <attr name="x" type="s16" val="765"/>
+ <attr name="y" type="s16" val="13"/>
 </obj>
 
 <obj class="Class" id="StreamParameters">
- <attr name="x" type="s16" val="51"/>
- <attr name="y" type="s16" val="18"/>
+ <attr name="x" type="s16" val="138"/>
+ <attr name="y" type="s16" val="13"/>
 </obj>
 
 <obj class="GLink" id="DataReaderConf-2-NICReceiverConf">
@@ -224,7 +224,7 @@
 </obj>
 
 <obj class="Point" id="1 DataReader-2-DataReaderConf-via-configuration">
- <attr name="x" type="s16" val="57"/>
+ <attr name="x" type="s16" val="53"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
 
@@ -234,7 +234,7 @@
 </obj>
 
 <obj class="Point" id="1 DataReaderConf-2-NICReceiverConf">
- <attr name="x" type="s16" val="37"/>
+ <attr name="x" type="s16" val="64"/>
  <attr name="y" type="s16" val="51"/>
 </obj>
 
@@ -249,28 +249,28 @@
 </obj>
 
 <obj class="Point" id="1 ReadoutInterface-2-FelixInterface">
- <attr name="x" type="s16" val="78"/>
+ <attr name="x" type="s16" val="53"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
 
 <obj class="Point" id="1 ReadoutInterface-2-NICInterface">
- <attr name="x" type="s16" val="78"/>
+ <attr name="x" type="s16" val="53"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
 
 <obj class="Point" id="1 StreamParameters-2-EthStreamParameters">
- <attr name="x" type="s16" val="17"/>
+ <attr name="x" type="s16" val="54"/>
  <attr name="y" type="s16" val="38"/>
 </obj>
 
 <obj class="Point" id="1 StreamParameters-2-FelixStreamParameters">
- <attr name="x" type="s16" val="103"/>
+ <attr name="x" type="s16" val="54"/>
  <attr name="y" type="s16" val="38"/>
 </obj>
 
 <obj class="Point" id="2 DataReader-2-DataReaderConf-via-configuration">
- <attr name="x" type="s16" val="57"/>
- <attr name="y" type="s16" val="71"/>
+ <attr name="x" type="s16" val="53"/>
+ <attr name="y" type="s16" val="54"/>
 </obj>
 
 <obj class="Point" id="2 DataReader-2-ReadoutInterface-via-interfaces">
@@ -279,7 +279,7 @@
 </obj>
 
 <obj class="Point" id="2 DataReaderConf-2-NICReceiverConf">
- <attr name="x" type="s16" val="37"/>
+ <attr name="x" type="s16" val="64"/>
  <attr name="y" type="s16" val="203"/>
 </obj>
 
@@ -290,32 +290,32 @@
 
 <obj class="Point" id="2 NICInterfaceConfiguration-2-NICStatsConf-via-stats_conf">
  <attr name="x" type="s16" val="132"/>
- <attr name="y" type="s16" val="330"/>
+ <attr name="y" type="s16" val="390"/>
 </obj>
 
 <obj class="Point" id="2 ReadoutInterface-2-FelixInterface">
- <attr name="x" type="s16" val="78"/>
- <attr name="y" type="s16" val="25"/>
+ <attr name="x" type="s16" val="53"/>
+ <attr name="y" type="s16" val="72"/>
 </obj>
 
 <obj class="Point" id="2 ReadoutInterface-2-NICInterface">
- <attr name="x" type="s16" val="78"/>
- <attr name="y" type="s16" val="93"/>
+ <attr name="x" type="s16" val="53"/>
+ <attr name="y" type="s16" val="72"/>
 </obj>
 
 <obj class="Point" id="2 StreamParameters-2-EthStreamParameters">
- <attr name="x" type="s16" val="17"/>
- <attr name="y" type="s16" val="180"/>
+ <attr name="x" type="s16" val="54"/>
+ <attr name="y" type="s16" val="102"/>
 </obj>
 
 <obj class="Point" id="2 StreamParameters-2-FelixStreamParameters">
- <attr name="x" type="s16" val="103"/>
- <attr name="y" type="s16" val="106"/>
+ <attr name="x" type="s16" val="54"/>
+ <attr name="y" type="s16" val="102"/>
 </obj>
 
 <obj class="Point" id="3 DataReader-2-DataReaderConf-via-configuration">
  <attr name="x" type="s16" val="50"/>
- <attr name="y" type="s16" val="71"/>
+ <attr name="y" type="s16" val="54"/>
 </obj>
 
 <obj class="Point" id="3 DataReader-2-ReadoutInterface-via-interfaces">
@@ -335,27 +335,27 @@
 
 <obj class="Point" id="3 NICInterfaceConfiguration-2-NICStatsConf-via-stats_conf">
  <attr name="x" type="s16" val="56"/>
- <attr name="y" type="s16" val="330"/>
+ <attr name="y" type="s16" val="390"/>
 </obj>
 
 <obj class="Point" id="3 ReadoutInterface-2-FelixInterface">
  <attr name="x" type="s16" val="57"/>
- <attr name="y" type="s16" val="25"/>
+ <attr name="y" type="s16" val="72"/>
 </obj>
 
 <obj class="Point" id="3 ReadoutInterface-2-NICInterface">
  <attr name="x" type="s16" val="51"/>
- <attr name="y" type="s16" val="93"/>
+ <attr name="y" type="s16" val="72"/>
 </obj>
 
 <obj class="Point" id="3 StreamParameters-2-EthStreamParameters">
  <attr name="x" type="s16" val="51"/>
- <attr name="y" type="s16" val="180"/>
+ <attr name="y" type="s16" val="102"/>
 </obj>
 
 <obj class="Point" id="3 StreamParameters-2-FelixStreamParameters">
  <attr name="x" type="s16" val="34"/>
- <attr name="y" type="s16" val="106"/>
+ <attr name="y" type="s16" val="102"/>
 </obj>
 
 <obj class="Point" id="4 DataReader-2-DataReaderConf-via-configuration">
@@ -403,7 +403,7 @@
  <attr name="y" type="s16" val="17"/>
 </obj>
 
-<obj class="View" id="Unknown">
+<obj class="View" id="fd_customizations">
  <attr name="drawing area x margin" type="u16" val="6"/>
  <attr name="drawing area y margin" type="u16" val="4"/>
  <attr name="font x margin" type="u16" val="3"/>
