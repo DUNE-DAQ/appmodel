@@ -96,8 +96,8 @@
 <obj class="RCApplication" id="ru-controller">
  <attr name="application_name" type="string" val="drunc-controller"/>
  <attr name="commandline_parameters" type="string">
-  <data val="oksconfig://test/config/test-session.data.xml"/><!-- ALTER_ME -->
-  <data val="grpc://np04-srv-019:3334"/><!-- ALTER_ME -->
+  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
+  <data val="grpc://localhost:3334"/><!-- ALTER_ME -->
   <data val="ru-segment"/>
   <data val="test-session"/>
  </attr>
@@ -114,11 +114,11 @@
   <data val="--name"/>
   <data val="ru-01"/>
   <data val="-c"/>
-  <data val="rest://localhost:3335"/><!-- ALTER_ME -->
+  <data val="rest://localhost:4335"/><!-- ALTER_ME -->
   <data val="-i"/>
-  <data val="kafka://monkafka.cern.ch:30092/opmon"/>
+  <data val="${DAQAPP_CLI_INFO_SVC}"/>
   <data val="--configurationService"/>
-  <data val="oksconfig:test/config/test-session.data.xml"/><!-- ALTER_ME -->
+  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
  </attr>
  <rel name="contains">
   <ref class="ReadoutGroup" id="rog-1"/>
@@ -156,11 +156,11 @@
   <data val="--name"/>
   <data val="ru-02"/>
   <data val="-c"/>
-  <data val="rest://localhost:3335"/><!-- ALTER_ME -->
+  <data val="rest://localhost:4336"/><!-- ALTER_ME -->
   <data val="-i"/>
-  <data val="kafka://monkafka.cern.ch:30092/opmon"/>
+  <data val="${DAQAPP_CLI_INFO_SVC}"/>
   <data val="--configurationService"/>
-  <data val="oksconfig:test/config/test-session.data.xml"/><!-- ALTER_ME -->
+  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
  </attr>
  <rel name="contains">
   <ref class="ReadoutGroup" id="rog-2"/>
@@ -192,11 +192,11 @@
   <data val="--name"/>
   <data val="ru-03"/>
   <data val="-c"/>
-  <data val="rest://localhost:3335"/><!-- ALTER_ME -->
+  <data val="rest://localhost:4337"/><!-- ALTER_ME -->
   <data val="-i"/>
-  <data val="kafka://monkafka.cern.ch:30092/opmon"/>
+  <data val="${DAQAPP_CLI_INFO_SVC}"/>
   <data val="--configurationService"/>
-  <data val="oksconfig:test/config/test-session.data.xml"/><!-- ALTER_ME -->
+  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
 
  </attr>
  <rel name="contains">

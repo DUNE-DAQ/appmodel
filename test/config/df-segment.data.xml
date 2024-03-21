@@ -95,9 +95,9 @@
   <data val="-c"/>
   <data val="rest://localhost:3339"/><!-- ALTER_ME -->
   <data val="-i"/>
-  <data val="kafka://monkafka.cern.ch:30092/opmon"/>
+  <data val="${DAQAPP_CLI_INFO_SVC}"/>
   <data val="--configurationService"/>
-  <data val="oksconfig:test/config/test-session.data.xml"/><!-- ALTER_ME -->
+  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
  </attr>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="source_id" class="SourceIDConf" id="srcid-df-01"/>
@@ -124,9 +124,9 @@
   <data val="-c"/>
   <data val="rest://localhost:3340"/><!-- ALTER_ME -->
   <data val="-i"/>
-  <data val="kafka://monkafka.cern.ch:30092/opmon"/>
+  <data val="${DAQAPP_CLI_INFO_SVC}"/>
   <data val="--configurationService"/>
-  <data val="oksconfig:test/config/test-session.data.xml"/><!-- ALTER_ME -->
+  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
  </attr>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="source_id" class="SourceIDConf" id="srcid-df-02"/>
@@ -150,11 +150,11 @@
   <data val="--name"/>
   <data val="df-03"/>
   <data val="-c"/>
-  <data val="rest://np04-srv-019:3341"/><!-- ALTER_ME -->
+  <data val="rest://localhost:3341"/><!-- ALTER_ME -->
   <data val="-i"/>
-  <data val="kafka://monkafka.cern.ch:30092/opmon"/>
+  <data val="${DAQAPP_CLI_INFO_SVC}"/>
   <data val="--configurationService"/>
-  <data val="oksconfig:test/config/test-session.data.xml"/><!-- ALTER_ME -->
+  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
  </attr>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="source_id" class="SourceIDConf" id="srcid-df-03"/>
@@ -184,11 +184,11 @@
   <data val="--name"/>
   <data val="dfo-01"/>
   <data val="-c"/>
-  <data val="rest://np04-srv-019:3342"/><!-- ALTER_ME -->
+  <data val="rest://localhost:3342"/><!-- ALTER_ME -->
   <data val="-i"/>
-  <data val="kafka://monkafka.cern.ch:30092/opmon"/>
+  <data val="${DAQAPP_CLI_INFO_SVC}"/>
   <data val="--configurationService"/>
-  <data val="oksconfig:test/config/test-session.data.xml"/><!-- ALTER_ME -->
+  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
  </attr>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="network_rules">
@@ -234,8 +234,8 @@
 <obj class="RCApplication" id="df-controller">
  <attr name="application_name" type="string" val="drunc-controller"/>
  <attr name="commandline_parameters" type="string">
-  <data val="oksconfig://test/config/test-session.data.xml"/><!-- ALTER_ME -->
-  <data val="grpc://np04-srv-019:3338"/><!-- ALTER_ME -->
+  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
+  <data val="grpc://localhost:3338"/><!-- ALTER_ME -->
   <data val="df-segment"/>
   <data val="test-session"/>
  </attr>
@@ -251,11 +251,11 @@
   <data val="--name"/>
   <data val="tp-stream-writer"/>
   <data val="-c"/>
-  <data val="rest://np04-srv-019:3343"/><!-- ALTER_ME -->
+  <data val="rest://localhost:3343"/><!-- ALTER_ME -->
   <data val="-i"/>
-  <data val="kafka://monkafka.cern.ch:30092/opmon"/>
+  <data val="${DAQAPP_CLI_INFO_SVC}"/>
   <data val="--configurationService"/>
-  <data val="oksconfig:test/config/test-session.data.xml"/><!-- ALTER_ME -->
+  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
  </attr>
   <rel name="source_id" class="SourceIDConf" id="srcid-tp-stream-writer"/>
  <rel name="network_rules">
