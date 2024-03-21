@@ -86,6 +86,16 @@
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="source_id" class="SourceIDConf" id="hsi-srcid-01"/>
+ <attr name="commandline_parameters" type="string">
+  <data val="--name"/>
+  <data val="hsi-01"/>
+  <data val="-c"/>
+  <data val="rest://np04-srv-019:3382"/><!-- ALTER_ME -->
+  <data val="-i"/>
+  <data val="${DAQAPP_CLI_INFO_SVC}"/>
+  <data val="--configurationService"/>
+  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
+ </attr>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="hsi-raw-data-rule"/>
  </rel>
@@ -120,9 +130,16 @@
 </obj>
 
 <obj class="RCApplication" id="hsi-controller">
- <attr name="application_name" type="string" val="controller"/>
+ <attr name="application_name" type="string" val="drunc-controller"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="fsm" class="FSMconfiguration" id="fsmConf-1"/>
+ <attr name="commandline_parameters" type="string">
+  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
+  <data val="grpc://np04-srv-019:3498"/><!-- ALTER_ME -->
+  <data val="hsi-segment"/>
+  <data val="test-session"/>
+ </attr>
+ <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
 </obj>
 
 <obj class="ReadoutModuleConf" id="def-hsi-handler">
