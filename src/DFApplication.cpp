@@ -20,6 +20,7 @@
 #include "appdal/FilenameParams.hpp"
 #include "appdal/QueueDescriptor.hpp"
 #include "appdal/ReadoutApplication.hpp"
+#include "appdal/SourceIDConf.hpp"
 #include "appdal/TRBConf.hpp"
 #include "appdal/TriggerRecordBuilder.hpp"
 #include "appdal/appdalIssues.hpp"
@@ -120,6 +121,9 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   if (tokenNetDesc == nullptr) { // BadCond if no descriptor for Tokens out of DataWriter
     throw(BadConf(ERS_HERE, "Could not find network descriptor rule for output TriggerDecisionTokens!"));
   }
+  if (get_source_id() == nullptr) {
+    throw(BadConf(ERS_HERE, "Could not retrieve SourceIDConf"));
+  }
   // Create network connection config object
   oksdbinterfaces::ConfigObject fragNetObj;
   oksdbinterfaces::ConfigObject trigdecNetObj;
@@ -170,9 +174,10 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     throw(BadConf(ERS_HERE, "No DataWriter or TRB configuration given"));
   }
   auto trbConfObj = trbConf->config_object();
+  trbConfObj.set_by_val<uint32_t>("source_id", get_source_id()->get_id());
   // Prepare TRB Module Object and assign its Config Object.
   oksdbinterfaces::ConfigObject trbObj;
-  std::string trbUid("trb-" + UID());
+  std::string trbUid(UID() + "-trb");
   confdb->create(dbfile, "TriggerRecordBuilder", trbUid, trbObj);
   trbObj.set_obj("configuration", &trbConfObj);
   trbObj.set_objs("inputs", { &trigdecNetObj, &fragNetObj });
@@ -180,17 +185,17 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   // Push TRB Module Object from confdb
   modules.push_back(confdb->get<TriggerRecordBuilder>(trbUid));
 
-  // Get DataWriter Config Object
+  // Get DataWriter Config Object (only one for now, maybe more later?)
   auto dwrConf = get_data_writer();
   if (dwrConf == 0) {
     throw(BadConf(ERS_HERE, "No DataWriter or TRB configuration given"));
   }
   auto fnParamsObj = dwrConf->get_data_store_params()->get_filename_params()->config_object();
-  fnParamsObj.set_by_val<std::string>("writer_identifier", UID() + "_datawriter-" + UID());
+  fnParamsObj.set_by_val<std::string>("writer_identifier", UID() + "_datawriter-1");
   auto dwrConfObj = dwrConf->config_object();
   // Prepare DataWriter Module Object and assign its Config Object.
   oksdbinterfaces::ConfigObject dwrObj;
-  std::string dwrUid("dw-" + UID());
+  std::string dwrUid(UID() + "-dw-1");
   confdb->create(dbfile, "DataWriter", dwrUid, dwrObj);
   dwrObj.set_obj("configuration", &dwrConfObj);
   dwrObj.set_objs("inputs", { &trQueueObj });
