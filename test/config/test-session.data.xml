@@ -95,7 +95,7 @@
 
 <obj class="RCApplication" id="root-controller">
  <attr name="commandline_parameters" type="string">
-  <data val="oksconfig://test/config/test-session.data.xml"/><!-- ALTER_ME -->
+  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
   <data val="grpc://np04-srv-019:3333"/><!-- ALTER_ME -->
   <data val="root-segment"/>
   <data val="test-session"/>
@@ -122,11 +122,10 @@
  <attr name="connectivity_service_interval_ms" type="u32" val="2000"/>
  <attr name="data_request_timeout_ms" type="u32" val="1000"/>
  <attr name="data_rate_slowdown_factor" type="u32" val="1"/>
- <attr name="rte_script" type="string" val="/nfs/home/plasorak/NAFD24-02-08-OKS/swdir/install/daq_app_rte.sh"><!-- ALTER_ME -->
+ <attr name="rte_script" type="string" val="/nfs/home/plasorak/NFD_DEV_240320_A9/swdir/install/daq_app_rte.sh"><!-- ALTER_ME -->
  <rel name="environment">
   <ref class="Variable" id="session-env-session-name-0"/>
   <ref class="Variable" id="session-env-session-name-1"/>
-  <ref class="Variable" id="session-env-info-svc"/>
   <ref class="Variable" id="session-env-ers-verb"/>
   <ref class="Variable" id="session-env-ers-info"/>
   <ref class="Variable" id="session-env-ers-warning"/>
@@ -134,6 +133,8 @@
   <ref class="Variable" id="session-env-ers-fatal"/>
   <ref class="Variable" id="session-env-connectivity-server"/>
   <ref class="Variable" id="session-env-connectivity-port"/>
+  <ref class="Variable" id="daqapp-cli-monitoring"/>
+  <ref class="Variable" id="daqapp-cli-configuration"/>
  </rel>
  <rel name="disabled">
   <ref class="ReadoutGroup" id="rog-3"/>
@@ -144,6 +145,8 @@
  <rel name="readout_map" class="ReadoutMap" id="dummyRoMap"/>
 </obj>
 
+
+<!-- SESSION NAME -->
 <obj class="Variable" id="session-env-session-name-0">
  <attr name="name" type="string" val="DUNEDAQ_PARTITION"/>
  <attr name="value" type="string" val="test-session"/>
@@ -154,16 +157,12 @@
  <attr name="value" type="string" val="test-session"/>
 </obj>
 
+
+<!-- ERS CONF -->
 <obj class="Variable" id="session-env-ers-verb">
  <attr name="name" type="string" val="DUNEDAQ_ERS_VERBOSITY_LEVEL"/>
  <attr name="value" type="string" val="1"/>
 </obj>
-
-<obj class="Variable" id="session-env-info-svc">
- <attr name="name" type="string" val="INFO_SVC"/>
- <attr name="value" type="string" val="kafka://monkafka.cern.ch:30092/opmon"/>
-</obj>
-
 
 <obj class="Variable" id="session-env-ers-info">
  <attr name="name" type="string" val="DUNEDAQ_ERS_INFO"/>
@@ -186,7 +185,7 @@
 </obj>
 
 
-
+<!-- CONNECTIVITY SVC -->
 <obj class="Variable" id="session-env-connectivity-server">
  <attr name="name" type="string" val="CONNECTION_SERVER"/>
  <attr name="value" type="string" val="np04-srv-017"/>
@@ -195,6 +194,18 @@
 <obj class="Variable" id="session-env-connectivity-port">
  <attr name="name" type="string" val="CONNECTION_PORT"/>
  <attr name="value" type="string" val="30005"/>
+</obj>
+
+
+<!-- DAQ APP CLI -->
+<obj class="Variable" id="daqapp-cli-monitoring">
+ <attr name="name" type="string" val="DAQAPP_CLI_INFO_SVC"/>
+ <attr name="value" type="string" val="kafka://monkafka.cern.ch:30092/opmon"/>
+</obj>
+
+<obj class="Variable" id="daqapp-cli-configuration">
+ <attr name="name" type="string" val="DAQAPP_CLI_CONFIG_SVC"/>
+ <attr name="value" type="string" val="oksconfig:test/config/test-session.data.xml"/>
 </obj>
 
 </oks-data>
