@@ -90,7 +90,7 @@
   <data val="--name"/>
   <data val="hsi-01"/>
   <data val="-c"/>
-  <data val="rest://np04-srv-019:3382"/><!-- ALTER_ME -->
+  <data val="rest://localhost:3382"/><!-- ALTER_ME -->
   <data val="-i"/>
   <data val="${DAQAPP_CLI_INFO_SVC}"/>
   <data val="--configurationService"/>
@@ -135,7 +135,7 @@
  <rel name="fsm" class="FSMconfiguration" id="fsmConf-1"/>
  <attr name="commandline_parameters" type="string">
   <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
-  <data val="grpc://np04-srv-019:3498"/><!-- ALTER_ME -->
+  <data val="grpc://localhost:3498"/><!-- ALTER_ME -->
   <data val="hsi-segment"/>
   <data val="test-session"/>
  </attr>

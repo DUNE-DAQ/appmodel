@@ -150,7 +150,7 @@
   <data val="--name"/>
   <data val="df-03"/>
   <data val="-c"/>
-  <data val="rest://np04-srv-019:3341"/><!-- ALTER_ME -->
+  <data val="rest://localhost:3341"/><!-- ALTER_ME -->
   <data val="-i"/>
   <data val="${DAQAPP_CLI_INFO_SVC}"/>
   <data val="--configurationService"/>
@@ -184,7 +184,7 @@
   <data val="--name"/>
   <data val="dfo-01"/>
   <data val="-c"/>
-  <data val="rest://np04-srv-019:3342"/><!-- ALTER_ME -->
+  <data val="rest://localhost:3342"/><!-- ALTER_ME -->
   <data val="-i"/>
   <data val="${DAQAPP_CLI_INFO_SVC}"/>
   <data val="--configurationService"/>
@@ -235,7 +235,7 @@
  <attr name="application_name" type="string" val="drunc-controller"/>
  <attr name="commandline_parameters" type="string">
   <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
-  <data val="grpc://np04-srv-019:3338"/><!-- ALTER_ME -->
+  <data val="grpc://localhost:3338"/><!-- ALTER_ME -->
   <data val="df-segment"/>
   <data val="test-session"/>
  </attr>
@@ -251,7 +251,7 @@
   <data val="--name"/>
   <data val="tp-stream-writer"/>
   <data val="-c"/>
-  <data val="rest://np04-srv-019:3343"/><!-- ALTER_ME -->
+  <data val="rest://localhost:3343"/><!-- ALTER_ME -->
   <data val="-i"/>
   <data val="${DAQAPP_CLI_INFO_SVC}"/>
   <data val="--configurationService"/>

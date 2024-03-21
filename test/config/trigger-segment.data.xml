@@ -200,7 +200,7 @@
  <attr name="application_name" type="string" val="drunc-controller"/>
  <attr name="commandline_parameters" type="string">
   <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
-  <data val="grpc://np04-srv-019:3335"/><!-- ALTER_ME -->
+  <data val="grpc:/localhost:3335"/><!-- ALTER_ME -->
   <data val="trg-segment"/>
   <data val="test-session"/>
  </attr>
