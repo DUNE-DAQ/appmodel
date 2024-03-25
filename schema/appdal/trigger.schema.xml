@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="28" oks-format="schema" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231211T133151" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240312T114127"/>
+<info name="" type="" num-of-items="28" oks-format="schema" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231211T133151" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240322T080322"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -106,18 +106,17 @@
   <relationship name="configuration" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
+ <class name="HSI2TCTranslatorConf">
+  <superclass name="DataReaderConf"/>
+  <relationship name="signals" class-type="HSISignalWindow" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
  <class name="HSIEventToTCApplication">
   <superclass name="SmartDaqApplication"/>
   <relationship name="hsevent_to_tc_conf" class-type="HSI2TCTranslatorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate daq module dal objects for HSIEventToTCApplication on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
   </method>
-
-</class>
-
- <class name="HSI2TCTranslatorConf">
-  <superclass name="DataReaderConf"/>
-  <relationship name="signals" class-type="HSISignalWindow" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="HSISignalWindow">
@@ -127,24 +126,15 @@
  </class>
 
  <class name="MLTApplication">
-  <superclass name="SmartDaqApplication"/>
-  <superclass name="ResourceSetAND"/>
+  <superclass name="TriggerApplication"/>
   <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
-  <relationship name="mlt_conf" class-type="ModuleLevelTriggerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="standalone_candidate_maker_confs" class-type="StandaloneCandidateMakerConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate daq module dal objects for MLTApplication on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
   </method>
  </class>
 
- <class name="ModuleLevelTrigger">
-  <superclass name="DaqModule"/>
-  <relationship name="configuration" class-type="ModuleLevelTriggerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="mandatory_links" class-type="SourceIDConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
  <class name="ModuleLevelTriggerConf">
-  <attribute name="template_for" type="class" init-value="ModuleLevelTrigger"/>
   <attribute name="hsi_trigger_type_passthrough" type="bool" init-value="false" is-not-null="yes"/>
   <attribute name="merge_overlapping_tcs" type="bool" init-value="true" is-not-null="yes"/>
   <attribute name="td_out_of_timeout" type="bool" init-value="true" is-not-null="yes"/>
@@ -210,6 +200,11 @@
   <attribute name="trigger_types" type="u32" is-multi-value="yes"/>
   <attribute name="trigger_intervals" type="u32" is-multi-value="yes"/>
   <attribute name="timestamp_method" type="enum" range="kTimeSync,kSystemClock" init-value="kTimeSync" is-not-null="yes"/>
+ </class>
+
+ <class name="TCDataProcessor" description="Post-processor for TCs generating the trigger decisions">
+  <superclass name="DataProcessor"/>
+  <relationship name="mlt_conf" description="Configuration of the MLT logics" class-type="ModuleLevelTriggerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="TCReadoutMap">
