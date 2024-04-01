@@ -249,6 +249,11 @@
  <rel name="descriptor" class="QueueDescriptor" id="tc-input"/>
 </obj>
 
+<obj class="QueueConnectionRule" id="tc-queue-rule">
+ <attr name="destination_class" type="class" val="ModuleLevelTrigger"/>
+ <rel name="descriptor" class="QueueDescriptor" id="td-input"/>
+</obj>
+
 <obj class="QueueConnectionRule" id="tp-queue-rule">
  <attr name="destination_class" type="class" val="TriggerDataHandler"/>
  <rel name="descriptor" class="QueueDescriptor" id="tp-input"/>
@@ -299,6 +304,12 @@
  <attr name="data_type" type="string" val="TriggerCandidate"/>
 </obj>
 
+<obj class="QueueDescriptor" id="td-input">
+ <attr name="uid_base" type="string" val="tc_input_"/>
+ <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
+ <attr name="capacity" type="u32" val="1000"/>
+ <attr name="data_type" type="string" val="TriggerDecision"/>
+</obj>
 <obj class="QueueDescriptor" id="tp-input">
  <attr name="uid_base" type="string" val="tp_input_"/>
  <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>

@@ -154,6 +154,7 @@
  <rel name="source_id" class="SourceIDConf" id="tc-srcid-1"/>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="tc-queue-rule"/>
+  <ref class="QueueConnectionRule" id="td-queue-rule"/>
  </rel>
  <rel name="network_rules">
   <ref class="NetworkConnectionRule" id="tc-net-rule"/>
@@ -163,6 +164,7 @@
  </rel>
  <rel name="data_subscriber" class="DataReaderConf" id="tc-subscriber-1"/>
  <rel name="trigger_inputs_handler" class="ReadoutModuleConf" id="def-tc-handler"/>
+ <rel_name="mlt_conf" class="ModuleLevelTriggerConf" id="def_mlt_conf"/>
  <rel name="standalone_candidate_maker_confs">
   <ref class="RandomTriggerCandidateMakerConf" id="random-tc-generator"/>
  </rel>
@@ -259,7 +261,17 @@
  <attr name="queue_sizes" type="u32" val="10000"/>
  <attr name="thread_names_prefix" type="string" val="mlt-"/>
  <attr name="mask_processing" type="bool" val="0"/>
- <rel name="mlt_conf" class="ModuleLevelTriggerConf" id="def-mlt-conf"/>
+ <attr name="hsi_trigger_type_passthrough" type="bool" val="0"/>
+ <attr name="merge_overlapping_tcs" type="bool" val="1"/>
+ <attr name="td_out_of_timeout" type="bool" val="1"/>
+ <attr name="buffer_timeout" type="u32" val="1"/>
+ <attr name="td_readout_limit" type="u32" val="1"/>
+ <attr name="use_bitwords" type="bool" val="0"/>
+ <attr name="use_roi_readout" type="bool" val="0"/>
+ <attr name="use_readout_map" type="bool" val="0"/>
+ <rel name="tc_readout_map">
+  <ref class="TCReadoutMap" id="def-tc-map"/>
+  <ref class="TCReadoutMap" id="def-hsi-tc-map"/>
 </obj>
 
 <obj class="TCReadoutMap" id="def-hsi-tc-map">
