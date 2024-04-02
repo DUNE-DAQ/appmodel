@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="50" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="glehmann" last-modified-on="np04-srv-019.cern.ch" last-modification-time="20240325T092602"/>
+<info name="" type="" num-of-items="53" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="glehmann" last-modified-on="np04-srv-019.cern.ch" last-modification-time="20240402T065236"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -249,7 +249,7 @@
  <rel name="descriptor" class="QueueDescriptor" id="tc-input"/>
 </obj>
 
-<obj class="QueueConnectionRule" id="tc-queue-rule">
+<obj class="QueueConnectionRule" id="td-queue-rule">
  <attr name="destination_class" type="class" val="ModuleLevelTrigger"/>
  <rel name="descriptor" class="QueueDescriptor" id="td-input"/>
 </obj>
@@ -299,17 +299,18 @@
 
 <obj class="QueueDescriptor" id="tc-input">
  <attr name="uid_base" type="string" val="tc_input_"/>
- <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
+ <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>
  <attr name="capacity" type="u32" val="1000"/>
  <attr name="data_type" type="string" val="TriggerCandidate"/>
 </obj>
 
 <obj class="QueueDescriptor" id="td-input">
- <attr name="uid_base" type="string" val="tc_input_"/>
+ <attr name="uid_base" type="string" val="td_input_"/>
  <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
  <attr name="capacity" type="u32" val="1000"/>
  <attr name="data_type" type="string" val="TriggerDecision"/>
 </obj>
+
 <obj class="QueueDescriptor" id="tp-input">
  <attr name="uid_base" type="string" val="tp_input_"/>
  <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>
@@ -329,6 +330,12 @@
  <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
  <attr name="capacity" type="u32" val="10000"/>
  <attr name="data_type" type="string" val="WIBEthFrame"/>
+</obj>
+
+<obj class="RCBroadcaster" id="broadcaster-root">
+ <attr name="type" type="enum" val="kafka"/>
+ <attr name="address" type="string" val="monkafka.cern.ch:30092"/>
+ <attr name="publish_timeout" type="u32" val="2"/>
 </obj>
 
 <obj class="Service" id="HSIEvents">
@@ -391,9 +398,4 @@
  <attr name="eth_device_name" type="string" val="eno1"/>
 </obj>
 
-<obj class="RCBroadcaster" id="broadcaster-root">
-    <attr name="type" type="enum" val="kafka"/>
-    <attr name="address" type="string" val="monkafka.cern.ch:30092"/>
-    <attr name="publish_timeout" type="u32" val="2"/>
-</obj>
 </oks-data>

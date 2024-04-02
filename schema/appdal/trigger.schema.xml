@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="28" oks-format="schema" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231211T133151" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240322T080322"/>
+<info name="" type="" num-of-items="29" oks-format="schema" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231211T133151" last-modified-by="glehmann" last-modified-on="np04-srv-019.cern.ch" last-modification-time="20240402T091944"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -125,6 +125,16 @@
   <attribute name="time_after" type="u32" init-value="20000" is-not-null="yes"/>
  </class>
 
+ <class name="MLTApplication">
+  <superclass name="TriggerApplication"/>
+  <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
+  <relationship name="mlt_conf" class-type="ModuleLevelTriggerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="standalone_candidate_maker_confs" class-type="StandaloneCandidateMakerConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <method name="generate_modules" description="Generate daq module dal objects for MLTApplication on the fly">
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
+  </method>
+ </class>
+
  <class name="ModuleLevelTrigger">
   <superclass name="DaqModule"/>
   <relationship name="configuration" class-type="ModuleLevelTriggerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -135,16 +145,6 @@
   <attribute name="td_out_of_timeout" type="bool" init-value="true" is-not-null="yes"/>
   <attribute name="buffer_timeout" type="u32" init-value="100" is-not-null="yes"/>
   <attribute name="td_readout_limit" type="u32" init-value="1000" is-not-null="yes"/>
- </class>
-
- <class name="MLTApplication">
-  <superclass name="TriggerApplication"/>
-  <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
-  <relationship name="standalone_candidate_maker_confs" class-type="StandaloneCandidateMakerConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="mlt_conf" class-type="ModuleLevelTriggerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <method name="generate_modules" description="Generate daq module dal objects for MLTApplication on the fly">
-   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
-  </method>
  </class>
 
  <class name="ROIGroupConf">
@@ -283,6 +283,8 @@
 
  <class name="TriggerDataHandler">
   <superclass name="ReadoutModule"/>
+  <relationship name="enabled_source_ids" description="List of source IDs enabled in this session: used by trigger to define the readout window for trigger decisions." class-type="SourceIDConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="mandatory_source_ids" description="Source Ids that will always be included in a trigger decision." class-type="SourceIDConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
 </oks-schema>

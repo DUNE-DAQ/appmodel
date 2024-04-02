@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="21" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="glehmann" last-modified-on="np04-srv-019.cern.ch" last-modification-time="20240325T122158"/>
+<info name="" type="" num-of-items="22" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="glehmann" last-modified-on="np04-srv-019.cern.ch" last-modification-time="20240402T164456"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -72,7 +72,7 @@
  <file path="config/appdal/connections.data.xml"/>
  <file path="config/appdal/moduleconfs.data.xml"/>
  <file path="test/config/hosts.data.xml"/>
-  <file path="config/appdal/fsm.data.xml"/>
+ <file path="config/appdal/fsm.data.xml"/>
 </include>
 
 <comments>
@@ -161,10 +161,11 @@
   <ref class="NetworkConnectionRule" id="ti-net-rule"/>
   <ref class="NetworkConnectionRule" id="td-dfo-net-rule"/>
   <ref class="NetworkConnectionRule" id="data-req-trig-net-rule"/>
+  <ref class="NetworkConnectionRule" id="ts-net-rule"/>
  </rel>
  <rel name="data_subscriber" class="DataReaderConf" id="tc-subscriber-1"/>
  <rel name="trigger_inputs_handler" class="ReadoutModuleConf" id="def-tc-handler"/>
- <rel_name="mlt_conf" class="ModuleLevelTriggerConf" id="def_mlt_conf"/>
+ <rel name="mlt_conf" class="ModuleLevelTriggerConf" id="def-mlt-conf"/>
  <rel name="standalone_candidate_maker_confs">
   <ref class="RandomTriggerCandidateMakerConf" id="random-tc-generator"/>
  </rel>
@@ -173,7 +174,7 @@
 <obj class="RCApplication" id="trg-controller">
  <attr name="commandline_parameters" type="string">
   <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
-  <data val="grpc:/localhost:3335"/>
+  <data val="grpc://localhost:3335"/>
   <data val="trg-segment"/>
   <data val="test-session"/>
  </attr>
@@ -195,6 +196,8 @@
  <attr name="template_for" type="class" val="TriggerDataHandler"/>
  <attr name="input_data_type" type="string" val="TriggerActivity"/>
  <attr name="generate_timesync" type="bool" val="0"/>
+ <attr name="generate_timesync" type="bool" val="0"/>
+ <attr name="post_processing_delay_ticks" type="u64" val="0"/>
  <rel name="request_handler" class="RequestHandler" id="def-ta-request-handler"/>
  <rel name="latency_buffer" class="LatencyBuffer" id="def-latency-buf"/>
  <rel name="data_processor" class="TADataProcessor" id="def-ta-processor"/>
@@ -204,7 +207,7 @@
  <attr name="template_for" type="class" val="TriggerDataHandler"/>
  <attr name="input_data_type" type="string" val="TriggerCandidate"/>
  <attr name="generate_timesync" type="bool" val="0"/>
- <attr name="post_processing_delay_ticks" type="u64" val="6250000"/>
+ <attr name="post_processing_delay_ticks" type="u64" val="0"/>
  <rel name="request_handler" class="RequestHandler" id="def-tc-request-handler"/>
  <rel name="latency_buffer" class="LatencyBuffer" id="def-latency-buf"/>
  <rel name="data_processor" class="TCDataProcessor" id="def-tc-processor"/>
@@ -242,6 +245,11 @@
  <attr name="subsystem" type="enum" val="Trigger"/>
 </obj>
 
+<obj class="SourceIDConf" id="ta-srcid-1">
+ <attr name="id" type="u32" val="1000"/>
+ <attr name="subsystem" type="enum" val="Trigger"/>
+</obj>
+
 <obj class="SourceIDConf" id="tc-srcid-1">
  <attr name="id" type="u32" val="10000"/>
  <attr name="subsystem" type="enum" val="Trigger"/>
@@ -259,7 +267,7 @@
 
 <obj class="TCDataProcessor" id="def-tc-processor">
  <attr name="queue_sizes" type="u32" val="10000"/>
- <attr name="thread_names_prefix" type="string" val="mlt-"/>
+ <attr name="thread_names_prefix" type="string" val="mlt_"/>
  <attr name="mask_processing" type="bool" val="0"/>
  <attr name="hsi_trigger_type_passthrough" type="bool" val="0"/>
  <attr name="merge_overlapping_tcs" type="bool" val="1"/>
@@ -272,6 +280,7 @@
  <rel name="tc_readout_map">
   <ref class="TCReadoutMap" id="def-tc-map"/>
   <ref class="TCReadoutMap" id="def-hsi-tc-map"/>
+ </rel>
 </obj>
 
 <obj class="TCReadoutMap" id="def-hsi-tc-map">
@@ -319,7 +328,7 @@
   <ref class="Service" id="triggerActivities"/>
   <ref class="Service" id="dataRequests"/>
  </rel>
- <rel name="source_id" class="SourceIDConf" id="tc-srcid-1"/>
+ <rel name="source_id" class="SourceIDConf" id="ta-srcid-1"/>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="ta-queue-rule"/>
  </rel>
@@ -328,12 +337,12 @@
   <ref class="NetworkConnectionRule" id="tc-net-rule"/>
   <ref class="NetworkConnectionRule" id="data-req-trig-net-rule"/>
  </rel>
- <rel name="data_subscriber" class="DataReaderConf" id="tc-subscriber-1"/>
+ <rel name="data_subscriber" class="DataReaderConf" id="ta-subscriber-1"/>
  <rel name="trigger_inputs_handler" class="ReadoutModuleConf" id="def-ta-handler"/>
 </obj>
 
 <obj class="TriggerCandidateMakerPrescalePlugin" id="tc-pass-through-algo">
- <attr name="prescale" type="u32" val="20"/>
+ <attr name="prescale" type="u32" val="100"/>
 </obj>
 
 </oks-data>

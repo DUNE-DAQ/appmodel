@@ -300,7 +300,7 @@
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="source_id" class="SourceIDConf" id="srcid-tp-stream-writer"/>
  <rel name="network_rules">
-  <ref class="NetworkConnectionRule" id="tp-net-rule"/>
+  <ref class="NetworkConnectionRule" id="tpset-net-rule"/>
  </rel>
  <rel name="tp_writer" class="TPStreamWriterConf" id="tp-stream-writer-conf"/>
 </obj>

@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="6" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105615" last-modified-by="glehmann" last-modified-on="np04-srv-019.cern.ch" last-modification-time="20240325T124934"/>
+<info name="" type="" num-of-items="6" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105615" last-modified-by="glehmann" last-modified-on="np04-srv-019.cern.ch" last-modification-time="20240402T164754"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -115,7 +115,6 @@
   <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
  </attr>
  <attr name="tp_source_id" type="u32" val="100"/>
- <attr name="ta_source_id" type="u32" val="1000"/>
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="contains">
   <ref class="ReadoutGroup" id="rog-1"/>
@@ -157,7 +156,6 @@
   <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
  </attr>
  <attr name="tp_source_id" type="u32" val="200"/>
- <attr name="ta_source_id" type="u32" val="2000"/>
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="contains">
   <ref class="ReadoutGroup" id="rog-2"/>
@@ -193,7 +191,6 @@
   <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
  </attr>
  <attr name="tp_source_id" type="u32" val="300"/>
- <attr name="ta_source_id" type="u32" val="3000"/>
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="contains">
   <ref class="ReadoutGroup" id="rog-3"/>
