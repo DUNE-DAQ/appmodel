@@ -196,7 +196,7 @@ MLTApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   if (!req_net_desc) {
     throw(BadConf(ERS_HERE, "No MLT network connection for the Input of DataRequests given"));
   }
-  // Network connection for the MLT: input TriggerInhibit, input TCs
+  // Network connection for input TriggerInhibit, input TCs
 
   oksdbinterfaces::ConfigObject ti_net_obj =
     create_mlt_network_connection(ti_net_desc->get_uid_base(), ti_net_desc, confdb, dbfile);
@@ -204,11 +204,11 @@ MLTApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   oksdbinterfaces::ConfigObject tc_net_obj =
     create_mlt_network_connection(tc_net_desc->get_uid_base()+".*", tc_net_desc, confdb, dbfile);
 
-        // Network connection for the MLT: output TriggerDecision
+        // Network connection for output TriggerDecision
   oksdbinterfaces::ConfigObject td_net_obj =
     create_mlt_network_connection(td_net_desc->get_uid_base(), td_net_desc, confdb, dbfile);
 
-  // Network conection for the MLT: input Data Requests
+  // Network conection for the input Data Requests
   oksdbinterfaces::ConfigObject dr_net_obj =
     create_mlt_network_connection(req_net_desc->get_uid_base()+UID(), req_net_desc, confdb, dbfile);
 
@@ -227,10 +227,10 @@ MLTApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
      oksdbinterfaces::ConfigObject gen_obj;
      confdb->create(dbfile, gen_conf->get_template_for(), gen_conf->UID(), gen_obj);
      gen_obj.set_obj("configuration", &(gen_conf->config_object()));
-     gen_obj.set_objs("outputs", {&input_queue_obj});
      if (gen_conf->get_timestamp_method() == "kTimeSync" && !timesync_net_obj.is_null()) {
 	gen_obj.set_objs("inputs", {&timesync_net_obj});
      }
+     gen_obj.set_objs("outputs", {&input_queue_obj});
      modules.push_back(confdb->get<StandaloneCandidateMaker>(gen_conf->UID()));
    }
 
