@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="22" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="glehmann" last-modified-on="np04-srv-019.cern.ch" last-modification-time="20240402T164456"/>
+<info name="" type="" num-of-items="22" oks-format="data" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="glehmann" last-modified-on="np04-srv-019.cern.ch" last-modification-time="20240403T110823"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -91,6 +91,9 @@
  <comment creation-time="20240312T203446" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="Add application source_id entries"/>
  <comment creation-time="20240325T092602" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="Unknown" text="transformed MLT app into readout model"/>
  <comment creation-time="20240325T122158" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="Unknown" text="fixed MLT conf"/>
+ <comment creation-time="20240403T064226" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="glehmann" text="simplify"/>
+ <comment creation-time="20240403T081943" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="glehmann" text="add all pieces back"/>
+ <comment creation-time="20240403T110823" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="glehmann" text="no random generator"/>
 </comments>
 
 
@@ -166,9 +169,6 @@
  <rel name="data_subscriber" class="DataReaderConf" id="tc-subscriber-1"/>
  <rel name="trigger_inputs_handler" class="ReadoutModuleConf" id="def-tc-handler"/>
  <rel name="mlt_conf" class="ModuleLevelTriggerConf" id="def-mlt-conf"/>
- <rel name="standalone_candidate_maker_confs">
-  <ref class="RandomTriggerCandidateMakerConf" id="random-tc-generator"/>
- </rel>
 </obj>
 
 <obj class="RCApplication" id="trg-controller">
@@ -196,8 +196,6 @@
  <attr name="template_for" type="class" val="TriggerDataHandler"/>
  <attr name="input_data_type" type="string" val="TriggerActivity"/>
  <attr name="generate_timesync" type="bool" val="0"/>
- <attr name="generate_timesync" type="bool" val="0"/>
- <attr name="post_processing_delay_ticks" type="u64" val="0"/>
  <rel name="request_handler" class="RequestHandler" id="def-ta-request-handler"/>
  <rel name="latency_buffer" class="LatencyBuffer" id="def-latency-buf"/>
  <rel name="data_processor" class="TADataProcessor" id="def-ta-processor"/>
@@ -207,7 +205,6 @@
  <attr name="template_for" type="class" val="TriggerDataHandler"/>
  <attr name="input_data_type" type="string" val="TriggerCandidate"/>
  <attr name="generate_timesync" type="bool" val="0"/>
- <attr name="post_processing_delay_ticks" type="u64" val="0"/>
  <rel name="request_handler" class="RequestHandler" id="def-tc-request-handler"/>
  <rel name="latency_buffer" class="LatencyBuffer" id="def-latency-buf"/>
  <rel name="data_processor" class="TCDataProcessor" id="def-tc-processor"/>
@@ -233,9 +230,9 @@
 
 <obj class="Segment" id="trg-segment">
  <rel name="applications">
-  <ref class="HSIEventToTCApplication" id="hsi-to-tc-app"/>
   <ref class="TriggerApplication" id="tc-maker-1"/>
   <ref class="MLTApplication" id="mlt"/>
+  <ref class="HSIEventToTCApplication" id="hsi-to-tc-app"/>
  </rel>
  <rel name="controller" class="RCApplication" id="trg-controller"/>
 </obj>

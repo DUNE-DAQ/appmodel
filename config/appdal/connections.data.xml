@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="53" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="glehmann" last-modified-on="np04-srv-019.cern.ch" last-modification-time="20240402T065236"/>
+<info name="" type="" num-of-items="54" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="glehmann" last-modified-on="np04-srv-019.cern.ch" last-modification-time="20240403T070107"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -81,6 +81,7 @@
  <comment creation-time="20240220T132034" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="direct send/rec instead of pub/sub on trigger path"/>
  <comment creation-time="20240301T165850" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="add eth_device_name for Services"/>
  <comment creation-time="20240325T092602" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="Unknown" text="transformed MLT app into readout model"/>
+ <comment creation-time="20240403T070107" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="glehmann" text="add split network descriptor"/>
 </comments>
 
 
@@ -147,6 +148,13 @@
  <rel name="associated_service" class="Service" id="triggerDecisions"/>
 </obj>
 
+<obj class="NetworkConnectionDescriptor" id="trigger-decisions-mlt-dfo">
+ <attr name="uid_base" type="string" val="td_mlt_dfo"/>
+ <attr name="connection_type" type="enum" val="kSendRecv"/>
+ <attr name="data_type" type="string" val="TriggerDecision"/>
+ <rel name="associated_service" class="Service" id="triggerDecisions"/>
+</obj>
+
 <obj class="NetworkConnectionDescriptor" id="trigger-inhibits">
  <attr name="uid_base" type="string" val="trigger_inhibit"/>
  <attr name="connection_type" type="enum" val="kSendRecv"/>
@@ -196,7 +204,7 @@
 
 <obj class="NetworkConnectionRule" id="td-dfo-net-rule">
  <attr name="endpoint_class" type="class" val="DataFlowOrchestrator"/>
- <rel name="descriptor" class="NetworkConnectionDescriptor" id="trigger-decisions"/>
+ <rel name="descriptor" class="NetworkConnectionDescriptor" id="trigger-decisions-mlt-dfo"/>
 </obj>
 
 <obj class="NetworkConnectionRule" id="td-trb-net-rule">

@@ -210,7 +210,7 @@ MLTApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
   // Network conection for the MLT: input Data Requests
   oksdbinterfaces::ConfigObject dr_net_obj =
-    create_mlt_network_connection(req_net_desc->get_uid_base(), req_net_desc, confdb, dbfile);
+    create_mlt_network_connection(req_net_desc->get_uid_base()+UID(), req_net_desc, confdb, dbfile);
 
   oksdbinterfaces::ConfigObject timesync_net_obj;
   if (timesync_net_desc != nullptr) {
