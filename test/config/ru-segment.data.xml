@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="6" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105615" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240314T134337"/>
+<info name="" type="" num-of-items="6" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105615" last-modified-by="glehmann" last-modified-on="np04-srv-019.cern.ch" last-modification-time="20240402T164754"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -71,6 +71,7 @@
  <file path="schema/appdal/fdmodules.schema.xml"/>
  <file path="config/appdal/connections.data.xml"/>
  <file path="config/appdal/moduleconfs.data.xml"/>
+ <file path="test/config/hosts.data.xml"/>
 </include>
 
 <comments>
@@ -85,41 +86,36 @@
  <comment creation-time="20240220T094213" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="updated configuration to use a dedicated app for TA making"/>
  <comment creation-time="20240301T164311" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="activate TA"/>
  <comment creation-time="20240312T122552" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="added information about services exposed by app; used to infer whether an app responds to data reuqests."/>
+ <comment creation-time="20240325T124934" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="Unknown" text="adjusted to name changes in connections"/>
 </comments>
 
-<obj class="RCBroadcaster" id="broadcaster-root">
-    <attr name="type" type="enum" val="kafka"/>
-    <attr name="address" type="string" val="monkafka.cern.ch:30092"/>
-    <attr name="publish_timeout" type="u32" val="2"/>
-</obj>
 
 <obj class="RCApplication" id="ru-controller">
- <attr name="application_name" type="string" val="drunc-controller"/>
  <attr name="commandline_parameters" type="string">
   <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
-  <data val="grpc://localhost:3334"/><!-- ALTER_ME -->
+  <data val="grpc://localhost:3334"/>
   <data val="ru-segment"/>
   <data val="test-session"/>
  </attr>
+ <attr name="application_name" type="string" val="drunc-controller"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="fsm" class="FSMconfiguration" id="fsmConf-1"/>
  <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
 </obj>
 
 <obj class="ReadoutApplication" id="ru-01">
- <attr name="tp_source_id" type="u32" val="100"/>
- <attr name="ta_source_id" type="u32" val="1000"/>
- <attr name="application_name" type="string" val="daq_application"/>
  <attr name="commandline_parameters" type="string">
   <data val="--name"/>
   <data val="ru-01"/>
   <data val="-c"/>
-  <data val="rest://localhost:4335"/><!-- ALTER_ME -->
+  <data val="rest://localhost:4335"/>
   <data val="-i"/>
   <data val="${DAQAPP_CLI_INFO_SVC}"/>
   <data val="--configurationService"/>
   <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
  </attr>
+ <attr name="tp_source_id" type="u32" val="100"/>
+ <attr name="application_name" type="string" val="daq_application"/>
  <rel name="contains">
   <ref class="ReadoutGroup" id="rog-1"/>
  </rel>
@@ -132,93 +128,90 @@
  </rel>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="fa-queue-rule"/>
-  <ref class="QueueConnectionRule" id="data-requests-queue-rule"/>
   <ref class="QueueConnectionRule" id="tp-queue-rule"/>
   <ref class="QueueConnectionRule" id="wib-eth-raw-data-rule"/>
+  <ref class="QueueConnectionRule" id="fd-dlh-data-requests-queue-rule"/>
  </rel>
  <rel name="network_rules">
-  <ref class="NetworkConnectionRule" id="data-req-net-rule"/>
-  <ref class="NetworkConnectionRule" id="tp-net-rule"/>
   <ref class="NetworkConnectionRule" id="ts-net-rule"/>
   <ref class="NetworkConnectionRule" id="ta-net-rule"/>
+  <ref class="NetworkConnectionRule" id="data-req-readout-net-rule"/>
+  <ref class="NetworkConnectionRule" id="tpset-net-rule"/>
  </rel>
  <rel name="uses" class="RoHwConfig" id="rohw-1"/>
  <rel name="link_handler" class="ReadoutModuleConf" id="def-link-handler"/>
  <rel name="tp_handler" class="ReadoutModuleConf" id="def-tp-handler"/>
- <rel name="data_reader" class="NICReceiverConf" id="def-nic-receiver-conf"/>
+ <rel name="data_reader" class="NICReceiverConf" id="def-emu-nic-receiver-conf"/>
 </obj>
 
 <obj class="ReadoutApplication" id="ru-02">
- <attr name="tp_source_id" type="u32" val="200"/>
- <attr name="ta_source_id" type="u32" val="2000"/>
- <attr name="application_name" type="string" val="daq_application"/>
  <attr name="commandline_parameters" type="string">
   <data val="--name"/>
   <data val="ru-02"/>
   <data val="-c"/>
-  <data val="rest://localhost:4336"/><!-- ALTER_ME -->
+  <data val="rest://localhost:4336"/>
   <data val="-i"/>
   <data val="${DAQAPP_CLI_INFO_SVC}"/>
   <data val="--configurationService"/>
   <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
  </attr>
+ <attr name="tp_source_id" type="u32" val="200"/>
+ <attr name="application_name" type="string" val="daq_application"/>
  <rel name="contains">
   <ref class="ReadoutGroup" id="rog-2"/>
  </rel>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="fa-queue-rule"/>
-  <ref class="QueueConnectionRule" id="data-requests-queue-rule"/>
   <ref class="QueueConnectionRule" id="tp-queue-rule"/>
   <ref class="QueueConnectionRule" id="wib-eth-raw-data-rule"/>
+  <ref class="QueueConnectionRule" id="fd-dlh-data-requests-queue-rule"/>
  </rel>
  <rel name="network_rules">
-  <ref class="NetworkConnectionRule" id="data-req-net-rule"/>
-  <ref class="NetworkConnectionRule" id="tp-net-rule"/>
   <ref class="NetworkConnectionRule" id="ts-net-rule"/>
   <ref class="NetworkConnectionRule" id="ta-net-rule"/>
+  <ref class="NetworkConnectionRule" id="data-req-readout-net-rule"/>
+  <ref class="NetworkConnectionRule" id="tpset-net-rule"/>
  </rel>
  <rel name="uses" class="RoHwConfig" id="rohw-1"/>
  <rel name="link_handler" class="ReadoutModuleConf" id="def-link-handler"/>
  <rel name="tp_handler" class="ReadoutModuleConf" id="def-tp-handler"/>
- <rel name="data_reader" class="NICReceiverConf" id="def-nic-receiver-conf"/>
+ <rel name="data_reader" class="NICReceiverConf" id="def-emu-nic-receiver-conf"/>
 </obj>
 
 <obj class="ReadoutApplication" id="ru-03">
- <attr name="tp_source_id" type="u32" val="300"/>
- <attr name="ta_source_id" type="u32" val="3000"/>
- <attr name="application_name" type="string" val="daq_application"/>
  <attr name="commandline_parameters" type="string">
   <data val="--name"/>
   <data val="ru-03"/>
   <data val="-c"/>
-  <data val="rest://localhost:4337"/><!-- ALTER_ME -->
+  <data val="rest://localhost:4337"/>
   <data val="-i"/>
   <data val="${DAQAPP_CLI_INFO_SVC}"/>
   <data val="--configurationService"/>
   <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
-
  </attr>
+ <attr name="tp_source_id" type="u32" val="300"/>
+ <attr name="application_name" type="string" val="daq_application"/>
  <rel name="contains">
   <ref class="ReadoutGroup" id="rog-3"/>
  </rel>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="fa-queue-rule"/>
-  <ref class="QueueConnectionRule" id="data-requests-queue-rule"/>
   <ref class="QueueConnectionRule" id="tp-queue-rule"/>
   <ref class="QueueConnectionRule" id="wib-eth-raw-data-rule"/>
+  <ref class="QueueConnectionRule" id="fd-dlh-data-requests-queue-rule"/>
  </rel>
  <rel name="network_rules">
-  <ref class="NetworkConnectionRule" id="tp-net-rule"/>
   <ref class="NetworkConnectionRule" id="ts-net-rule"/>
   <ref class="NetworkConnectionRule" id="ta-net-rule"/>
-  <ref class="NetworkConnectionRule" id="data-req-net-rule"/>
+  <ref class="NetworkConnectionRule" id="data-req-readout-net-rule"/>
+  <ref class="NetworkConnectionRule" id="tpset-net-rule"/>
  </rel>
  <rel name="uses" class="RoHwConfig" id="rohw-1"/>
  <rel name="link_handler" class="ReadoutModuleConf" id="def-link-handler"/>
  <rel name="tp_handler" class="ReadoutModuleConf" id="def-tp-handler"/>
- <rel name="data_reader" class="NICReceiverConf" id="def-nic-receiver-conf"/>
+ <rel name="data_reader" class="NICReceiverConf" id="def-emu-nic-receiver-conf"/>
 </obj>
 
 <obj class="RoHwConfig" id="rohw-1">
