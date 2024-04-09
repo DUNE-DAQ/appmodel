@@ -2,6 +2,7 @@
 #include "appdal/SmartDaqApplication.hpp"
 #include "appdal/appdalIssues.hpp"
 #include "oks/kernel.hpp"
+#include "coredal/util.hpp"
 
 using namespace dunedaq::appdal;
 
@@ -15,4 +16,10 @@ SmartDaqApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
                                             confdb,
                                             dbfile,
                                             session);
+}
+
+const std::vector<std::string> SmartDaqApplication::construct_commandline_parameters(
+    const oksdbinterfaces::Configuration& confdb,
+    const dunedaq::coredal::Session* session) const {
+    return dunedaq::coredal::construct_commandline_parameters_appfwk<dunedaq::appdal::SmartDaqApplication>(this, confdb, session);
 }
