@@ -103,12 +103,6 @@
  <attr name="op_env" type="string" val="swtest"/>
 </obj>
 
-<obj class="NICReceiverConf" id="nicrcvr-1">
- <attr name="template_for" type="class" val="NICReceiver"/>
- <attr name="emulation_mode" type="bool" val="0"/>
- <attr name="eal_args" type="string" val=""/>
-</obj>
-
 <obj class="RCApplication" id="ru-controller">
  <attr name="application_name" type="string" val="controller"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
@@ -131,14 +125,14 @@
  </rel>
  <rel name="network_rules">
   <ref class="NetworkConnectionRule" id="ta-net-rule"/>
-  <ref class="NetworkConnectionRule" id="tp-net-rule"/>
+  <ref class="NetworkConnectionRule" id="tpset-net-rule"/>
   <ref class="NetworkConnectionRule" id="ts-net-rule"/>
-  <ref class="NetworkConnectionRule" id="data-req-net-rule"/>
+  <ref class="NetworkConnectionRule" id="data-req-readout-net-rule"/>
  </rel>
  <rel name="uses" class="RoHwConfig" id="rohw-group-247"/>
  <rel name="link_handler" class="ReadoutModuleConf" id="def-link-handler"/>
  <rel name="tp_handler" class="ReadoutModuleConf" id="def-tp-handler"/>
- <rel name="data_reader" class="NICReceiverConf" id="nicrcvr-1"/>
+ <rel name="data_reader" class="NICReceiverConf" id="def-nic-receiver-conf"/>
 </obj>
 
 <obj class="RoHwConfig" id="rohw-group-247">

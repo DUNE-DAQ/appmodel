@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="4" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240301T095815"/>
+<info name="" type="" num-of-items="15" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="glehmann" last-modified-on="np04-srv-019.cern.ch" last-modification-time="20240403T081943"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -84,6 +84,8 @@
  <comment creation-time="20231207T113214" created-by="gjc" created-on="thinkpad" author="gjc" text="u"/>
  <comment creation-time="20240208T095535" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="reformat"/>
  <comment creation-time="20240220T094213" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="updated configuration to use a dedicated app for TA making"/>
+ <comment creation-time="20240403T064226" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="glehmann" text="simplify"/>
+ <comment creation-time="20240403T081943" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="glehmann" text="add all pieces back"/>
 </comments>
 
 
@@ -181,7 +183,7 @@
  <attr name="connectivity_service_interval_ms" type="u32" val="2000"/>
  <attr name="data_request_timeout_ms" type="u32" val="1000"/>
  <attr name="data_rate_slowdown_factor" type="u32" val="1"/>
- <attr name="rte_script" type="string" val="/nfs/home/plasorak/fddaq-v5.0.0-rc1-a9/swdir/install/daq_app_rte.sh"><!-- ALTER_ME -->
+ <attr name="rte_script" type="string" val="/path/to/swdir/install/daq_app_rte.sh"><!-- ALTER_ME -->
  <rel name="infrastructure_applications">
   <ref class="OpMonService" id="cern-opmon-application-service">
   <!--   <ref name="connectivity_service" id="session-connectivity_service"> -->
@@ -208,33 +210,24 @@
  <rel name="readout_map" class="ReadoutMap" id="dummyRoMap"/>
 </obj>
 
-
-<!-- SESSION NAME -->
-<obj class="Variable" id="session-env-session-name-0">
- <attr name="name" type="string" val="DUNEDAQ_PARTITION"/>
- <attr name="value" type="string" val="test-session"/>
+<obj class="Variable" id="daqapp-cli-configuration">
+ <attr name="name" type="string" val="DAQAPP_CLI_CONFIG_SVC"/>
+ <attr name="value" type="string" val="oksconfig:test/config/test-session.data.xml"/>
 </obj>
 
-<obj class="Variable" id="session-env-session-name-1">
- <attr name="name" type="string" val="DUNEDAQ_SESSION"/>
- <attr name="value" type="string" val="test-session"/>
+<obj class="Variable" id="daqapp-cli-monitoring">
+ <attr name="name" type="string" val="DAQAPP_CLI_INFO_SVC"/>
+ <attr name="value" type="string" val="kafka://monkafka.cern.ch:30092/opmon"/>
 </obj>
 
-
-<!-- ERS CONF -->
-<obj class="Variable" id="session-env-ers-verb">
- <attr name="name" type="string" val="DUNEDAQ_ERS_VERBOSITY_LEVEL"/>
- <attr name="value" type="string" val="1"/>
+<obj class="Variable" id="session-env-connectivity-port">
+ <attr name="name" type="string" val="CONNECTION_PORT"/>
+ <attr name="value" type="string" val="30005"/>
 </obj>
 
-<obj class="Variable" id="session-env-ers-info">
- <attr name="name" type="string" val="DUNEDAQ_ERS_INFO"/>
- <attr name="value" type="string" val="erstrace,throttle,lstdout,protobufstream(monkafka.cern.ch:30092)"/>
-</obj>
-
-<obj class="Variable" id="session-env-ers-warning">
- <attr name="name" type="string" val="DUNEDAQ_ERS_WARNING"/>
- <attr name="value" type="string" val="erstrace,throttle,lstdout,protobufstream(monkafka.cern.ch:30092)"/>
+<obj class="Variable" id="session-env-connectivity-server">
+ <attr name="name" type="string" val="CONNECTION_SERVER"/>
+ <attr name="value" type="string" val="np04-srv-017"/>
 </obj>
 
 <obj class="Variable" id="session-env-ers-error">
@@ -247,28 +240,29 @@
  <attr name="value" type="string" val="erstrace,lstdout,protobufstream(monkafka.cern.ch:30092)"/>
 </obj>
 
-
-<!-- CONNECTIVITY SVC -->
-<obj class="Variable" id="session-env-connectivity-server">
- <attr name="name" type="string" val="CONNECTION_SERVER"/>
- <attr name="value" type="string" val="np04-srv-017"/>
+<obj class="Variable" id="session-env-ers-info">
+ <attr name="name" type="string" val="DUNEDAQ_ERS_INFO"/>
+ <attr name="value" type="string" val="erstrace,throttle,lstdout,protobufstream(monkafka.cern.ch:30092)"/>
 </obj>
 
-<obj class="Variable" id="session-env-connectivity-port">
- <attr name="name" type="string" val="CONNECTION_PORT"/>
- <attr name="value" type="string" val="30005"/>
+<obj class="Variable" id="session-env-ers-verb">
+ <attr name="name" type="string" val="DUNEDAQ_ERS_VERBOSITY_LEVEL"/>
+ <attr name="value" type="string" val="1"/>
 </obj>
 
-
-<!-- DAQ APP CLI -->
-<obj class="Variable" id="daqapp-cli-monitoring">
- <attr name="name" type="string" val="DAQAPP_CLI_INFO_SVC"/>
- <attr name="value" type="string" val="kafka://monkafka.cern.ch:30092/opmon"/>
+<obj class="Variable" id="session-env-ers-warning">
+ <attr name="name" type="string" val="DUNEDAQ_ERS_WARNING"/>
+ <attr name="value" type="string" val="erstrace,throttle,lstdout,protobufstream(monkafka.cern.ch:30092)"/>
 </obj>
 
-<obj class="Variable" id="daqapp-cli-configuration">
- <attr name="name" type="string" val="DAQAPP_CLI_CONFIG_SVC"/>
- <attr name="value" type="string" val="oksconfig:test/config/test-session.data.xml"/>
+<obj class="Variable" id="session-env-session-name-0">
+ <attr name="name" type="string" val="DUNEDAQ_PARTITION"/>
+ <attr name="value" type="string" val="test-session"/>
+</obj>
+
+<obj class="Variable" id="session-env-session-name-1">
+ <attr name="name" type="string" val="DUNEDAQ_SESSION"/>
+ <attr name="value" type="string" val="test-session"/>
 </obj>
 
 </oks-data>

@@ -104,6 +104,17 @@
  <attr name="free_threshold" type="s32" val="1"/>
 </obj>
 
+<obj class="DataReaderConf" id="ta-subscriber-1">
+ <attr name="template_for" type="class" val="DataSubscriber"/>
+ <attr name="emulation_mode" type="bool" val="0"/>
+</obj>
+
+<obj class="DataReaderConf" id="tc-subscriber-1">
+ <attr name="template_for" type="class" val="DataSubscriber"/>
+ <attr name="emulation_mode" type="bool" val="0"/>
+</obj>
+
+
 <obj class="DataReaderConf" id="tpset-subscriber-1">
  <attr name="template_for" type="class" val="DataSubscriber"/>
  <attr name="emulation_mode" type="bool" val="0"/>
@@ -117,6 +128,20 @@
  <rel name="data_store_params" class="DataStoreConf" id="default"/>
 </obj>
 
+<obj class="HSI2TCTranslatorConf" id="hsi-to-tc-conf">
+ <attr name="template_for" type="class" val="DataReader"/>
+ <attr name="emulation_mode" type="bool" val="0"/>
+ <rel name="signals">
+  <ref class="HSISignalWindow" id="def-hsi-signal-window"/>
+ </rel>
+</obj>
+
+<obj class="HSISignalWindow" id="def-hsi-signal-window">
+ <attr name="signal_type" type="u32" val="1"/>
+ <attr name="time_before" type="u32" val="10000"/>
+ <attr name="time_after" type="u32" val="20000"/>
+</obj>
+
 <obj class="LatencyBuffer" id="def-latency-buf">
  <attr name="size" type="u32" val="139008"/>
  <attr name="numa_aware" type="bool" val="1"/>
@@ -126,11 +151,23 @@
  <attr name="preallocation" type="bool" val="1"/>
 </obj>
 
-<obj class="NICReceiverConf" id="def-nic-receiver-conf">
+<obj class="ModuleLevelTriggerConf" id="def-mlt-conf">
+ <attr name="td_out_of_timeout" type="bool" val="1"/>
+ <attr name="buffer_timeout" type="u32" val="1"/>
+ <attr name="td_readout_limit" type="u32" val="1"/>
+</obj>
+
+<obj class="NICReceiverConf" id="def-emu-nic-receiver-conf">
  <attr name="template_for" type="class" val="FDFakeCardReader"/>
  <attr name="emulation_mode" type="bool" val="1"/>
- <attr name="eal_args" type="string" val="-l 0-1 -n 3 -- -m [0:1].0 -j"/>
+ <attr name="eal_args" type="string" val=""/>
  <rel name="emulation_conf" class="StreamEmulationParameters" id="stream-emu"/>
+</obj>
+
+<obj class="NICReceiverConf" id="def-nic-receiver-conf">
+ <attr name="template_for" type="class" val="NICReceiver"/>
+ <attr name="emulation_mode" type="bool" val="0"/>
+ <attr name="eal_args" type="string" val=""/>
 </obj>
 
 <obj class="NICStatsConf" id="def-nic-stats">
