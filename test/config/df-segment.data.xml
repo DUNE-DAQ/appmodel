@@ -121,22 +121,9 @@
 
 <obj class="DFApplication" id="df-01">
  <attr name="application_name" type="string" val="daq_application"/>
-<<<<<<< HEAD
  <rel name="exposes_service">
   <ref class="Service" id="df-01_control">
  </rel>
-=======
- <attr name="commandline_parameters" type="string">
-  <data val="--name"/>
-  <data val="df-01"/>
-  <data val="-c"/>
-  <data val="rest://localhost:3339"/>
-  <data val="-i"/>
-  <data val="${DAQAPP_CLI_INFO_SVC}"/>
-  <data val="--configurationService"/>
-  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
- </attr>
->>>>>>> develop
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="source_id" class="SourceIDConf" id="srcid-df-01"/>
  <rel name="queue_rules">
@@ -157,22 +144,9 @@
 
 <obj class="DFApplication" id="df-02">
  <attr name="application_name" type="string" val="daq_application"/>
-<<<<<<< HEAD
  <rel name="exposes_service">
   <ref class="Service" id="df-02_control">
  </rel>
-=======
- <attr name="commandline_parameters" type="string">
-  <data val="--name"/>
-  <data val="df-02"/>
-  <data val="-c"/>
-  <data val="rest://localhost:3340"/>
-  <data val="-i"/>
-  <data val="${DAQAPP_CLI_INFO_SVC}"/>
-  <data val="--configurationService"/>
-  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
- </attr>
->>>>>>> develop
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="source_id" class="SourceIDConf" id="srcid-df-02"/>
  <rel name="queue_rules">
@@ -193,19 +167,6 @@
 
 <obj class="DFApplication" id="df-03">
  <attr name="application_name" type="string" val="daq_application"/>
-<<<<<<< HEAD
-=======
- <attr name="commandline_parameters" type="string">
-  <data val="--name"/>
-  <data val="df-03"/>
-  <data val="-c"/>
-  <data val="rest://localhost:3341"/>
-  <data val="-i"/>
-  <data val="${DAQAPP_CLI_INFO_SVC}"/>
-  <data val="--configurationService"/>
-  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
- </attr>
->>>>>>> develop
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="source_id" class="SourceIDConf" id="srcid-df-03"/>
  <rel name="exposes_service">
