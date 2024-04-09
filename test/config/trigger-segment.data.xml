@@ -89,6 +89,32 @@
  <comment creation-time="20240312T203446" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="Add application source_id entries"/>
 </comments>
 
+<obj class="Service" id="trg-controller_control">
+  <attr name="protocol" val="grpc"/>
+  <attr name="port" val="5700"/>
+</obj>
+
+<obj class="Service" id="hsi-to-tc-app_control">
+  <attr name="protocol" val="rest"/>
+  <attr name="port" val="5701"/>
+</obj>
+
+<obj class="Service" id="mlt_control">
+  <attr name="protocol" val="rest"/>
+  <attr name="port" val="5702"/>
+</obj>
+
+<obj class="Service" id="tc-maker-1_control">
+  <attr name="protocol" val="rest"/>
+  <attr name="port" val="5703"/>
+</obj>
+
+<obj class="Service" id="tc-buffer-1_control">
+  <attr name="protocol" val="rest"/>
+  <attr name="port" val="5704"/>
+</obj>
+
+
 
 <obj class="CustomTriggerCandidateMakerConf" id="cstm-tc-generator">
  <attr name="timestamp_method" type="enum" val="kTimeSync"/>
@@ -132,19 +158,12 @@
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="source_id" class="SourceIDConf" id="hsi-tc-srcid-1"/>
- <attr name="commandline_parameters" type="string">
-  <data val="--name"/>
-  <data val="hsi-to-tc-app"/>
-  <data val="-c"/>
-  <data val="rest://localhost:3348"/><!-- ALTER_ME -->
-  <data val="-i"/>
-  <data val="${DAQAPP_CLI_INFO_SVC}"/>
-  <data val="--configurationService"/>
-  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
- </attr>
  <rel name="network_rules">
   <ref class="NetworkConnectionRule" id="hsi-rule"/>
   <ref class="NetworkConnectionRule" id="tc-mlt-rule"/>
+ </rel>
+ <rel name="exposes_service">
+  <ref class="Service" id="hsi-to-tc-app_control">
  </rel>
  <rel name="hsevent_to_tc_conf" class="HSI2TCTranslatorConf" id="hsi-to-tc-conf"/>
 </obj>
@@ -159,20 +178,13 @@
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="source_id" class="SourceIDConf" id="mlt-srcid-01"/>
- <attr name="commandline_parameters" type="string">
-  <data val="--name"/>
-  <data val="mlt"/>
-  <data val="-c"/>
-  <data val="rest://localhost:3346"/><!-- ALTER_ME -->
-  <data val="-i"/>
-  <data val="${DAQAPP_CLI_INFO_SVC}"/>
-  <data val="--configurationService"/>
-  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
- </attr>
  <rel name="network_rules">
   <ref class="NetworkConnectionRule" id="tc-net-rule"/>
   <ref class="NetworkConnectionRule" id="ti-net-rule"/>
   <ref class="NetworkConnectionRule" id="td-dfo-net-rule"/>
+ </rel>
+ <rel name="exposes_service">
+  <ref class="Service" id="mlt_control">
  </rel>
  <rel name="mlt_conf" class="ModuleLevelTriggerConf" id="mlt-conf"/>
  <rel name="standalone_candidate_maker_confs">
@@ -198,14 +210,11 @@
 
 <obj class="RCApplication" id="trg-controller">
  <attr name="application_name" type="string" val="drunc-controller"/>
- <attr name="commandline_parameters" type="string">
-  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
-  <data val="grpc:/localhost:3335"/><!-- ALTER_ME -->
-  <data val="trg-segment"/>
-  <data val="test-session"/>
- </attr>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="fsm" class="FSMconfiguration" id="fsmConf-1"/>
+ <rel name="exposes_service">
+  <ref class="Service" id="trg-controller_control">
+ </rel>
  <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
 </obj>
 
@@ -323,18 +332,9 @@
 
 <obj class="TriggerApplication" id="tc-buffer-1">
  <attr name="application_name" type="string" val="daq_application"/>
- <attr name="commandline_parameters" type="string">
-  <data val="--name"/>
-  <data val="tc-buffer-1"/>
-  <data val="-c"/>
-  <data val="rest://localhost:3344"/><!-- ALTER_ME -->
-  <data val="-i"/>
-  <data val="${DAQAPP_CLI_INFO_SVC}"/>
-  <data val="--configurationService"/>
-  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
- </attr>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="exposes_service">
+  <ref class="Service" id="tc-buffer-1_control">
   <ref class="Service" id="dataRequests"/>
   <ref class="Service" id="triggerCandidates"/>
  </rel>
@@ -353,18 +353,9 @@
 
 <obj class="TriggerApplication" id="tc-maker-1">
  <attr name="application_name" type="string" val="daq_application"/>
- <attr name="commandline_parameters" type="string">
-  <data val="--name"/>
-  <data val="tc-maker-1"/>
-  <data val="-c"/>
-  <data val="rest://localhost:3345"/><!-- ALTER_ME -->
-  <data val="-i"/>
-  <data val="${DAQAPP_CLI_INFO_SVC}"/>
-  <data val="--configurationService"/>
-  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
- </attr>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="exposes_service">
+  <ref class="Service" id="tc-maker-1_control">
   <ref class="Service" id="triggerActivities"/>
  </rel>
  <rel name="source_id" class="SourceIDConf" id="tc-srcid-1"/>

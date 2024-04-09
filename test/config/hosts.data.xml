@@ -100,4 +100,31 @@
  <rel name="runs_on" class="PhysicalHost" id="localhost"/>
 </obj>
 
+
+<obj class="PhysicalHost" id="monkafka.cern.ch">
+ <rel name="contains">
+  <ref class="ProcessingResource" id="localhost_cpus"/>
+ </rel>
+</obj>
+
+<obj class="VirtualHost" id="kafka-cern-vhost">
+ <rel name="uses">
+  <ref class="ProcessingResource" id="localhost_cpus"/>
+ </rel>
+ <rel name="runs_on" class="PhysicalHost" id="monkafka.cern.ch"/>
+</obj>
+
+<obj class="PhysicalHost" id="pocket-host"> <!-- ALTER_ME -->
+ <rel name="contains">
+  <ref class="ProcessingResource" id="localhost_cpus"/>
+ </rel>
+</obj>
+
+<obj class="VirtualHost" id="kafka-pocket-vhost">
+ <rel name="uses">
+  <ref class="ProcessingResource" id="localhost_cpus"/>
+ </rel>
+ <rel name="runs_on" class="PhysicalHost" id="pocket-host"/> <!-- ALTER_ME -->
+</obj>
+
 </oks-data>
