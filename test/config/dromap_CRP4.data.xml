@@ -63,13 +63,17 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="131" oks-format="data" oks-version="862f2957270" created-by="crone" created-on="np04-srv-011.cern.ch" creation-time="20240308T134124" last-modified-by="crone" last-modified-on="np04-srv-011.cern.ch" last-modification-time="20240308T134124"/>
+<info name="" type="" num-of-items="131" oks-format="data" oks-version="862f2957270" created-by="crone" created-on="np04-srv-011.cern.ch" creation-time="20240308T134124" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240405T094240"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
  <file path="schema/appdal/application.schema.xml"/>
  <file path="schema/appdal/fdmodules.schema.xml"/>
 </include>
+
+<comments>
+ <comment creation-time="20240405T094240" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="Nic configuration updated"/>
+</comments>
 
 
 <obj class="DROStreamConf" id="DROStream-200">
@@ -982,11 +986,11 @@
 <obj class="NICInterfaceConfiguration" id="nicConfig-np02_WIB_CRP4">
  <attr name="flow_control" type="bool" val="1"/>
  <attr name="mtu" type="u32" val="9000"/>
- <attr name="rx_ring_size" type="u32" val="1024"/>
+ <attr name="rx_ring_size" type="u32" val="4096"/>
  <attr name="tx_ring_size" type="u32" val="1024"/>
- <attr name="num_bufs" type="u32" val="8191"/>
- <attr name="mbuf_cache_size" type="u32" val="256"/>
- <attr name="burst_size" type="u32" val="256"/>
+ <attr name="num_bufs" type="u32" val="16384"/>
+ <attr name="mbuf_cache_size" type="u32" val="0"/>
+ <attr name="burst_size" type="u32" val="2048"/>
  <attr name="lcore_sleep_us" type="u32" val="10"/>
  <rel name="stats_conf" class="NICStatsConf" id="nicStats-np02_WIB_CRP4"/>
 </obj>

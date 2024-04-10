@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="45" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240307T183731"/>
+<info name="" type="" num-of-items="56" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240407T201252"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -80,6 +80,8 @@
  <comment creation-time="20240220T094213" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="updated configuration to use a dedicated app for TA making"/>
  <comment creation-time="20240220T132034" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="direct send/rec instead of pub/sub on trigger path"/>
  <comment creation-time="20240301T165850" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="add eth_device_name for Services"/>
+ <comment creation-time="20240405T095202" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="Switching ethernet readout to callbacks"/>
+ <comment creation-time="20240407T201252" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="back to queues"/>
 </comments>
 
 
@@ -257,19 +259,19 @@
  <rel name="descriptor" class="QueueDescriptor" id="hsi-raw-input"/>
 </obj>
 
-<obj class="QueueConnectionRule" id="tcQueueRule">
- <attr name="destination_class" type="class" val="ModuleLevelTrigger"/>
- <rel name="descriptor" class="QueueDescriptor" id="tcQueueRuleDescriptor"/>
-</obj>
-
- <obj class="QueueConnectionRule" id="ta-queue-rule">
+<obj class="QueueConnectionRule" id="ta-queue-rule">
  <attr name="destination_class" type="class" val="TriggerDataHandler"/>
  <rel name="descriptor" class="QueueDescriptor" id="ta-input"/>
 </obj>
 
- <obj class="QueueConnectionRule" id="tc-queue-rule">
+<obj class="QueueConnectionRule" id="tc-queue-rule">
  <attr name="destination_class" type="class" val="TriggerDataHandler"/>
  <rel name="descriptor" class="QueueDescriptor" id="tc-input"/>
+</obj>
+
+<obj class="QueueConnectionRule" id="tcQueueRule">
+ <attr name="destination_class" type="class" val="ModuleLevelTrigger"/>
+ <rel name="descriptor" class="QueueDescriptor" id="tcQueueRuleDescriptor"/>
 </obj>
 
 <obj class="QueueConnectionRule" id="tp-queue-rule">
@@ -308,13 +310,6 @@
  <attr name="data_type" type="string" val="HSIFrame"/>
 </obj>
 
-<obj class="QueueDescriptor" id="tcQueueRuleDescriptor">
- <attr name="uid_base" type="string" val="trigger_candidates_"/>
- <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>
- <attr name="capacity" type="u32" val="1000"/>
- <attr name="data_type" type="string" val="TriggerActivity"/>
-</obj>
-
 <obj class="QueueDescriptor" id="ta-input">
  <attr name="uid_base" type="string" val="ta_input_"/>
  <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
@@ -329,6 +324,13 @@
  <attr name="data_type" type="string" val="TriggerCandidate"/>
 </obj>
 
+<obj class="QueueDescriptor" id="tcQueueRuleDescriptor">
+ <attr name="uid_base" type="string" val="trigger_candidates_"/>
+ <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>
+ <attr name="capacity" type="u32" val="1000"/>
+ <attr name="data_type" type="string" val="TriggerActivity"/>
+</obj>
+
 <obj class="QueueDescriptor" id="tp-input">
  <attr name="uid_base" type="string" val="tp_input_"/>
  <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>
@@ -341,6 +343,13 @@
  <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
  <attr name="capacity" type="u32" val="11"/>
  <attr name="data_type" type="string" val="TriggerRecord"/>
+</obj>
+
+<obj class="QueueDescriptor" id="wib-eth-callback-bypass">
+ <attr name="uid_base" type="string" val="cb_raw_input_"/>
+ <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
+ <attr name="capacity" type="u32" val="10000"/>
+ <attr name="data_type" type="string" val="WIBEthFrame"/>
 </obj>
 
 <obj class="QueueDescriptor" id="wib-eth-raw-input">

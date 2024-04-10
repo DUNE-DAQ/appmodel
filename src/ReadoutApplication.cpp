@@ -69,7 +69,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   auto tphConf = get_tp_handler();
   std::string tphClass = "";
   if (tphConf!=nullptr) {
-	tphClass = tphConf->get_template_for();
+  tphClass = tphConf->get_template_for();
   }
 
   // Process the queue rules looking for inputs to our DL/TP handler modules
@@ -268,7 +268,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
         confdb->create(dbfile, dlhClass, uid, dlhObj);
         dlhObj.set_by_val<uint32_t>("source_id", id);
         dlhObj.set_by_val<bool>("emulation_mode", emulation_mode);
-	dlhObj.set_obj("geo_id", &stream->get_geo_id()->config_object());
+        dlhObj.set_obj("geo_id", &stream->get_geo_id()->config_object());
         dlhObj.set_obj("module_configuration", &dlhConf->config_object());
 
         // Time Sync network connection
