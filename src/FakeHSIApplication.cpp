@@ -103,7 +103,7 @@ FakeHSIApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   if (idconf == nullptr) {
     throw(BadConf(ERS_HERE, "No SourceIDConf given"));
   }
-  auto id = idconf->get_id();
+  auto id = idconf->get_sid();
 
   auto det_id = 1; // TODO Eric Flumerfelt <eflumerf@fnal.gov>, 08-Feb-2024: This is a magic number
   std::string uid("DLH-" + std::to_string(id));

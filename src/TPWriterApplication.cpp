@@ -86,7 +86,7 @@ TPStreamWriterApplication::generate_modules(oksdbinterfaces::Configuration* conf
     if (ro_app != nullptr && !ro_app->disabled(*session)) {
       oksdbinterfaces::ConfigObject* tpSourceIdConf = new oksdbinterfaces::ConfigObject();
       confdb->create(dbfile, "SourceIDConf", ro_app->UID()+"-"+ std::to_string(ro_app->get_tp_source_id()), *tpSourceIdConf);
-      tpSourceIdConf->set_by_val<uint32_t>("id", ro_app->get_tp_source_id());
+      tpSourceIdConf->set_by_val<uint32_t>("sid", ro_app->get_tp_source_id());
       tpSourceIdConf->set_by_val<std::string>("subsystem", "Trigger");
       sourceIds.push_back(tpSourceIdConf);
     }
@@ -100,9 +100,9 @@ TPStreamWriterApplication::generate_modules(oksdbinterfaces::Configuration* conf
     throw(BadConf(ERS_HERE, "No SourceIDConf given to TPWriterApplication!"));  
   }
 
-  std::string tpwrUid("tpwriter-"+std::to_string(source_id->get_id()));
+  std::string tpwrUid("tpwriter-"+std::to_string(source_id->get_sid()));
   confdb->create(dbfile, "TPStreamWriter", tpwrUid, tpwrObj);
-  tpwrObj.set_by_val<uint32_t>("source_id", source_id->get_id());
+  tpwrObj.set_by_val<uint32_t>("source_id", source_id->get_sid());
   tpwrObj.set_obj("configuration", &tpwriterConf->config_object());
   tpwrObj.set_objs("inputs", {&tset_in_net_obj} );
 
