@@ -262,22 +262,22 @@
 </obj>
 
 <obj class="SourceIDConf" id="srcid-df-01">
- <attr name="id" type="u32" val="1"/>
+ <attr name="sid" type="u32" val="1"/>
  <attr name="subsystem" type="enum" val="TR_Builder"/>
 </obj>
 
 <obj class="SourceIDConf" id="srcid-df-02">
- <attr name="id" type="u32" val="2"/>
+ <attr name="sid" type="u32" val="2"/>
  <attr name="subsystem" type="enum" val="TR_Builder"/>
 </obj>
 
 <obj class="SourceIDConf" id="srcid-df-03">
- <attr name="id" type="u32" val="3"/>
+ <attr name="sid" type="u32" val="3"/>
  <attr name="subsystem" type="enum" val="TR_Builder"/>
 </obj>
 
 <obj class="SourceIDConf" id="srcid-tp-stream-writer">
- <attr name="id" type="u32" val="4"/>
+ <attr name="sid" type="u32" val="4"/>
  <attr name="subsystem" type="enum" val="TR_Builder"/>
 </obj>
 

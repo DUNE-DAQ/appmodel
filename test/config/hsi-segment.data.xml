@@ -170,7 +170,7 @@
 </obj>
 
 <obj class="SourceIDConf" id="hsi-srcid-01">
- <attr name="id" type="u32" val="1"/>
+ <attr name="sid" type="u32" val="1"/>
  <attr name="subsystem" type="enum" val="HW_Signals_Interface"/>
 </obj>
 
