@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="15" oks-format="schema" oks-version="oks-08-04-00-2-g4949f80 built &quot;Dec  6 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="root" last-modified-on="f1c9af75d018" last-modification-time="20240319T121534"/>
+<info name="" type="" num-of-items="15" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="thea" last-modified-on="np04-srv-018.cern.ch" last-modification-time="20240411T085724"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -174,7 +174,6 @@
   <attribute name="mbuf_cache_size" type="u32" init-value="256" is-not-null="yes"/>
   <attribute name="burst_size" type="u32" init-value="256" is-not-null="yes"/>
   <attribute name="lcore_sleep_us" type="u32" init-value="10" is-not-null="yes"/>
-  <relationship name="stats_conf" class-type="NICStatsConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="NICReceiver">
