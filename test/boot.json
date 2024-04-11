@@ -40,11 +40,6 @@
       "host": "local",
       "port": 3352
     },
-    "tc-buffer-1": {
-      "exec": "daq_application_ssh",
-      "host": "local",
-      "port": 3355
-    },
     "mlt": {
       "exec": "daq_application_ssh",
       "host": "local",
