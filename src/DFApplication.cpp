@@ -174,7 +174,7 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     throw(BadConf(ERS_HERE, "No DataWriter or TRB configuration given"));
   }
   auto trbConfObj = trbConf->config_object();
-  trbConfObj.set_by_val<uint32_t>("source_id", get_source_id()->get_id());
+  trbConfObj.set_by_val<uint32_t>("source_id", get_source_id()->get_sid());
   // Prepare TRB Module Object and assign its Config Object.
   oksdbinterfaces::ConfigObject trbObj;
   std::string trbUid(UID() + "-trb");

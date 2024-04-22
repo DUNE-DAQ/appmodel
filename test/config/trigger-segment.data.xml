@@ -242,17 +242,17 @@
 </obj>
 
 <obj class="SourceIDConf" id="hsi-tc-srcid-1">
- <attr name="id" type="u32" val="2"/>
+ <attr name="sid" type="u32" val="2"/>
  <attr name="subsystem" type="enum" val="Trigger"/>
 </obj>
 
 <obj class="SourceIDConf" id="ta-srcid-1">
- <attr name="id" type="u32" val="1000"/>
+ <attr name="sid" type="u32" val="1000"/>
  <attr name="subsystem" type="enum" val="Trigger"/>
 </obj>
 
 <obj class="SourceIDConf" id="tc-srcid-1">
- <attr name="id" type="u32" val="10000"/>
+ <attr name="sid" type="u32" val="10000"/>
  <attr name="subsystem" type="enum" val="Trigger"/>
 </obj>
 
