@@ -88,6 +88,7 @@
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="modules">
+  <ref class="HermesController" id="hermes_10_10_5"/>
   <ref class="HermesController" id="hermes_10_10_4"/>
   <ref class="HermesController" id="hermes_10_10_3"/>
   <ref class="HermesController" id="hermes_10_10_2"/>

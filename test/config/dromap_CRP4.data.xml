@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="131" oks-format="data" oks-version="862f2957270" created-by="crone" created-on="np04-srv-011.cern.ch" creation-time="20240308T134124" last-modified-by="crone" last-modified-on="np04-srv-011.cern.ch" last-modification-time="20240308T134124"/>
+<info name="" type="" num-of-items="132" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="latitude" creation-time="20240425T095754" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20240425T095754"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -848,6 +848,16 @@
  <rel name="links">
   <ref class="HermesLinkConf" id="hermes_10_10_4-0"/>
   <ref class="HermesLinkConf" id="hermes_10_10_4-1"/>
+ </rel>
+</obj>
+
+<obj class="HermesController" id="hermes_10_10_5">
+ <attr name="uri" type="string" val="ipbusudp-2.0://np02-wib-1006:50001"/>
+ <attr name="port" type="u32" val="17476"/>
+ <rel name="address_table" class="IpbusAddressTable" id="Hermes-addrtab"/>
+ <rel name="links">
+  <ref class="HermesLinkConf" id="hermes_10_10_5-0"/>
+  <ref class="HermesLinkConf" id="hermes_10_10_5-1"/>
  </rel>
 </obj>
 
