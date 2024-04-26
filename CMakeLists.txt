@@ -16,25 +16,25 @@ find_package(coredal REQUIRED)
 
 #find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 
-daq_oks_codegen(application.schema.xml fdmodules.schema.xml trigger.schema.xml 
+daq_oks_codegen(application.schema.xml fdmodules.schema.xml trigger.schema.xml
   NAMESPACE dunedaq::appdal DEP_PKGS coredal)
 
+
 daq_add_library(ReadoutApplication.cpp SmartDaqApplication.cpp
-	DFApplication.cpp DFOApplication.cpp TPWriterApplication.cpp FakeDataApplication.cpp FakeHSIApplication.cpp TriggerApplication.cpp MLTApplication.cpp HSIEventToTCApplication.cpp 
+	DFApplication.cpp DFOApplication.cpp TPWriterApplication.cpp FakeDataApplication.cpp FakeHSIApplication.cpp TriggerApplication.cpp MLTApplication.cpp HSIEventToTCApplication.cpp
  LINK_LIBRARIES oksdbinterfaces::oksdbinterfaces okssystem::okssystem
   logging::logging coredal::coredal oks::oks ers::ers)
 
+daq_add_application(getAppsArguments get_apps_arguments.cxx
+  LINK_LIBRARIES coredal appdal oksdbinterfaces::oksdbinterfaces)
 
-daq_add_python_bindings(dal_methods.cpp module.cpp LINK_LIBRARIES 
-  appdal coredal::coredal)
-
+daq_add_python_bindings(*.cpp LINK_LIBRARIES appdal coredal::coredal)
 
 daq_add_application(generate_modules_test generate_modules_test.cxx
  TEST LINK_LIBRARIES appdal coredal::coredal oksdbinterfaces::oksdbinterfaces
  logging::logging)
 
 ##############################################################################
-
 
 # See https://dune-daq-sw.readthedocs.io/en/latest/packages/daq-cmake/#daq_add_unit_test
 

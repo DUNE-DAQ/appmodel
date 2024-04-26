@@ -90,30 +90,37 @@
 </comments>
 
 
+<obj class="Service" id="ru-controller_control">
+  <attr name="protocol" val="grpc"/>
+  <attr name="port" val="5500"/>
+</obj>
+
+<obj class="Service" id="ru-01_control">
+  <attr name="protocol" val="rest"/>
+  <attr name="port" val="5501"/>
+</obj>
+
+<obj class="Service" id="ru-02_control">
+  <attr name="protocol" val="rest"/>
+  <attr name="port" val="5502"/>
+</obj>
+
+<obj class="Service" id="ru-03_control">
+  <attr name="protocol" val="rest"/>
+  <attr name="port" val="5503"/>
+</obj>
+
 <obj class="RCApplication" id="ru-controller">
- <attr name="commandline_parameters" type="string">
-  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
-  <data val="grpc://localhost:3334"/>
-  <data val="ru-segment"/>
-  <data val="test-session"/>
- </attr>
  <attr name="application_name" type="string" val="drunc-controller"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="fsm" class="FSMconfiguration" id="fsmConf-1"/>
  <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
+ <rel name="exposes_service">
+  <ref class="Service" id="ru-controller_control">
+ </rel>
 </obj>
 
 <obj class="ReadoutApplication" id="ru-01">
- <attr name="commandline_parameters" type="string">
-  <data val="--name"/>
-  <data val="ru-01"/>
-  <data val="-c"/>
-  <data val="rest://localhost:4335"/>
-  <data val="-i"/>
-  <data val="${DAQAPP_CLI_INFO_SVC}"/>
-  <data val="--configurationService"/>
-  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
- </attr>
  <attr name="tp_source_id" type="u32" val="100"/>
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="contains">
@@ -121,6 +128,7 @@
  </rel>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="exposes_service">
+  <ref class="Service" id="ru-01_control">
   <ref class="Service" id="dataRequests"/>
   <ref class="Service" id="timeSyncs"/>
   <ref class="Service" id="triggerActivities"/>
@@ -145,22 +153,15 @@
 </obj>
 
 <obj class="ReadoutApplication" id="ru-02">
- <attr name="commandline_parameters" type="string">
-  <data val="--name"/>
-  <data val="ru-02"/>
-  <data val="-c"/>
-  <data val="rest://localhost:4336"/>
-  <data val="-i"/>
-  <data val="${DAQAPP_CLI_INFO_SVC}"/>
-  <data val="--configurationService"/>
-  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
- </attr>
  <attr name="tp_source_id" type="u32" val="200"/>
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="contains">
   <ref class="ReadoutGroup" id="rog-2"/>
  </rel>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="exposes_service">
+  <ref class="Service" id="ru-02_control">
+ </rel>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="fa-queue-rule"/>
   <ref class="QueueConnectionRule" id="tp-queue-rule"/>
@@ -180,22 +181,15 @@
 </obj>
 
 <obj class="ReadoutApplication" id="ru-03">
- <attr name="commandline_parameters" type="string">
-  <data val="--name"/>
-  <data val="ru-03"/>
-  <data val="-c"/>
-  <data val="rest://localhost:4337"/>
-  <data val="-i"/>
-  <data val="${DAQAPP_CLI_INFO_SVC}"/>
-  <data val="--configurationService"/>
-  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
- </attr>
  <attr name="tp_source_id" type="u32" val="300"/>
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="contains">
   <ref class="ReadoutGroup" id="rog-3"/>
  </rel>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="exposes_service">
+  <ref class="Service" id="ru-03_control">
+ </rel>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="fa-queue-rule"/>
   <ref class="QueueConnectionRule" id="tp-queue-rule"/>

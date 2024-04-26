@@ -27,7 +27,7 @@ namespace dunedaq::appdal::python {
 
   struct ObjectLocator {
     ObjectLocator(const std::string& id_arg, const std::string& class_name_arg) :
-      id(id_arg), class_name(class_name_arg) 
+      id(id_arg), class_name(class_name_arg)
       {}
     const std::string id;
     const std::string class_name;
@@ -38,7 +38,7 @@ namespace dunedaq::appdal::python {
   application_generate_template(const oksdbinterfaces::Configuration& confdb,
                                 const std::string& dbfile,
                                 const std::string& app_id,
-                                const std::string& session_id) 
+                                const std::string& session_id)
   {
     auto app =
       const_cast<oksdbinterfaces::Configuration&>(confdb).get<ApplicationType>(app_id);
@@ -51,6 +51,14 @@ namespace dunedaq::appdal::python {
       mods.push_back({mod->UID(),mod->class_name()});
     }
     return mods;
+  }
+
+  std::vector<std::string> smart_daq_application_construct_commandline_parameters(const oksdbinterfaces::Configuration& db,
+                                                                                  const std::string& session_id,
+                                                                                  const std::string& app_id) {
+    const auto* app = const_cast<oksdbinterfaces::Configuration&>(db).get<dunedaq::appdal::SmartDaqApplication>(app_id);
+    const auto* session = const_cast<oksdbinterfaces::Configuration&>(db).get<dunedaq::coredal::Session>(session_id);
+    return app->construct_commandline_parameters(db, session);
   }
 
 void
@@ -67,6 +75,7 @@ register_dal_methods(py::module& m)
   m.def("dfo_application_generate", &application_generate_template<DFOApplication>, "Generate DaqModules required by DFOApplication");
   m.def("tpwriter_application_generate", &application_generate_template<TPStreamWriterApplication>, "Generate DaqModules required by TPStreamWriterApplication");
   m.def("trigger_application_generate", &application_generate_template<TriggerApplication>, "Generate DaqModules required by TriggerApplication");
+  m.def("smart_daq_application_construct_commandline_parameters", &smart_daq_application_construct_commandline_parameters, "Get a version of the command line agruments parsed");
 }
 
 } // namespace dunedaq::appdal::python

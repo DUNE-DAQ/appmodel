@@ -83,19 +83,19 @@
  <comment creation-time="20240325T124934" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="Unknown" text="adjusted to name changes in connections"/>
 </comments>
 
+<obj class="Service" id="hsi-controller_control">
+  <attr name="protocol" val="grpc"/>
+  <attr name="port" val="5800"/>
+</obj>
+
+<obj class="Service" id="hsi-01_control">
+  <attr name="protocol" val="rest"/>
+  <attr name="port" val="5801"/>
+</obj>
+
 
 <obj class="FakeHSIApplication" id="hsi-01">
  <attr name="application_name" type="string" val="daq_application"/>
- <attr name="commandline_parameters" type="string">
-  <data val="--name"/>
-  <data val="hsi-01"/>
-  <data val="-c"/>
-  <data val="rest://localhost:3382"/>
-  <data val="-i"/>
-  <data val="${DAQAPP_CLI_INFO_SVC}"/>
-  <data val="--configurationService"/>
-  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
- </attr>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="source_id" class="SourceIDConf" id="hsi-srcid-01"/>
  <rel name="queue_rules">
@@ -105,6 +105,9 @@
   <ref class="NetworkConnectionRule" id="hsi-rule"/>
   <ref class="NetworkConnectionRule" id="data-req-hsi-net-rule"/>
   <ref class="NetworkConnectionRule" id="ts-hsi-net-rule"/>
+ </rel>
+ <rel name="exposes_service">
+  <ref class="Service" id="hsi-01_control">
  </rel>
  <rel name="link_handler" class="ReadoutModuleConf" id="def-hsi-handler"/>
  <rel name="generator" class="FakeHSIEventGeneratorConf" id="fakehsi"/>
@@ -132,14 +135,11 @@
 </obj>
 
 <obj class="RCApplication" id="hsi-controller">
- <attr name="commandline_parameters" type="string">
-  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
-  <data val="grpc://localhost:3498"/>
-  <data val="hsi-segment"/>
-  <data val="test-session"/>
- </attr>
  <attr name="application_name" type="string" val="drunc-controller"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="exposes_service">
+  <ref class="Service" id="hsi-controller_control">
+ </rel>
  <rel name="fsm" class="FSMconfiguration" id="fsmConf-1"/>
  <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
 </obj>

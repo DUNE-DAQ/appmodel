@@ -88,19 +88,42 @@
  <comment creation-time="20240325T124934" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="Unknown" text="adjusted to name changes in connections"/>
 </comments>
 
+<obj class="Service" id="df-controller_control">
+  <attr name="protocol" val="grpc"/>
+  <attr name="port" val="5600"/>
+</obj>
+
+<obj class="Service" id="df-01_control">
+  <attr name="protocol" val="rest"/>
+  <attr name="port" val="5601"/>
+</obj>
+
+<obj class="Service" id="df-02_control">
+  <attr name="protocol" val="rest"/>
+  <attr name="port" val="5602"/>
+</obj>
+
+<obj class="Service" id="df-03_control">
+  <attr name="protocol" val="rest"/>
+  <attr name="port" val="5603"/>
+</obj>
+
+<obj class="Service" id="dfo-01_control">
+  <attr name="protocol" val="rest"/>
+  <attr name="port" val="5604"/>
+</obj>
+
+<obj class="Service" id="tp-stream-writer_control">
+  <attr name="protocol" val="rest"/>
+  <attr name="port" val="5605"/>
+</obj>
+
 
 <obj class="DFApplication" id="df-01">
  <attr name="application_name" type="string" val="daq_application"/>
- <attr name="commandline_parameters" type="string">
-  <data val="--name"/>
-  <data val="df-01"/>
-  <data val="-c"/>
-  <data val="rest://localhost:3339"/>
-  <data val="-i"/>
-  <data val="${DAQAPP_CLI_INFO_SVC}"/>
-  <data val="--configurationService"/>
-  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
- </attr>
+ <rel name="exposes_service">
+  <ref class="Service" id="df-01_control">
+ </rel>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="source_id" class="SourceIDConf" id="srcid-df-01"/>
  <rel name="queue_rules">
@@ -121,16 +144,9 @@
 
 <obj class="DFApplication" id="df-02">
  <attr name="application_name" type="string" val="daq_application"/>
- <attr name="commandline_parameters" type="string">
-  <data val="--name"/>
-  <data val="df-02"/>
-  <data val="-c"/>
-  <data val="rest://localhost:3340"/>
-  <data val="-i"/>
-  <data val="${DAQAPP_CLI_INFO_SVC}"/>
-  <data val="--configurationService"/>
-  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
- </attr>
+ <rel name="exposes_service">
+  <ref class="Service" id="df-02_control">
+ </rel>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="source_id" class="SourceIDConf" id="srcid-df-02"/>
  <rel name="queue_rules">
@@ -151,18 +167,11 @@
 
 <obj class="DFApplication" id="df-03">
  <attr name="application_name" type="string" val="daq_application"/>
- <attr name="commandline_parameters" type="string">
-  <data val="--name"/>
-  <data val="df-03"/>
-  <data val="-c"/>
-  <data val="rest://localhost:3341"/>
-  <data val="-i"/>
-  <data val="${DAQAPP_CLI_INFO_SVC}"/>
-  <data val="--configurationService"/>
-  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
- </attr>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="source_id" class="SourceIDConf" id="srcid-df-03"/>
+ <rel name="exposes_service">
+  <ref class="Service" id="df-03_control">
+ </rel>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="trigger-record-q-rule"/>
  </rel>
@@ -187,16 +196,9 @@
 
 <obj class="DFOApplication" id="dfo-01">
  <attr name="application_name" type="string" val="daq_application"/>
- <attr name="commandline_parameters" type="string">
-  <data val="--name"/>
-  <data val="dfo-01"/>
-  <data val="-c"/>
-  <data val="rest://localhost:3342"/>
-  <data val="-i"/>
-  <data val="${DAQAPP_CLI_INFO_SVC}"/>
-  <data val="--configurationService"/>
-  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
- </attr>
+ <rel name="exposes_service">
+  <ref class="Service" id="dfo-01_control">
+ </rel>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="network_rules">
   <ref class="NetworkConnectionRule" id="td-dfo-net-rule"/>
@@ -239,13 +241,10 @@
 </obj>
 
 <obj class="RCApplication" id="df-controller">
- <attr name="commandline_parameters" type="string">
-  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
-  <data val="grpc://localhost:3338"/>
-  <data val="df-segment"/>
-  <data val="test-session"/>
- </attr>
  <attr name="application_name" type="string" val="drunc-controller"/>
+ <rel name="exposes_service">
+  <ref class="Service" id="df-controller_control">
+ </rel>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="fsm" class="FSMconfiguration" id="fsmConf-1"/>
  <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
@@ -287,16 +286,9 @@
 
 <obj class="TPStreamWriterApplication" id="tp-stream-writer">
  <attr name="application_name" type="string" val="daq_application"/>
- <attr name="commandline_parameters" type="string">
-  <data val="--name"/>
-  <data val="tp-stream-writer"/>
-  <data val="-c"/>
-  <data val="rest://localhost:3343"/>
-  <data val="-i"/>
-  <data val="${DAQAPP_CLI_INFO_SVC}"/>
-  <data val="--configurationService"/>
-  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
- </attr>
+ <rel name="exposes_service">
+  <ref class="Service" id="tp-stream-writer_control">
+ </rel>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="source_id" class="SourceIDConf" id="srcid-tp-stream-writer"/>
  <rel name="network_rules">

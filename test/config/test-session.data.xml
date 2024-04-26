@@ -95,17 +95,20 @@
  <attr name="op_env" type="string" val="test"/>
 </obj>
 
+<obj class="Service" id="root-controller_control">
+ <attr name="protocol" type="string" val="grpc"/>
+ <attr name="port" type="u16" val="3333"/>
+ <attr name="eth_device_name" type="string" val=""/>
+</obj>
+
 <obj class="RCApplication" id="root-controller">
- <attr name="commandline_parameters" type="string">
-  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
-  <data val="grpc://localhost:3333"/>
-  <data val="root-segment"/>
-  <data val="test-session"/>
- </attr>
  <attr name="application_name" type="string" val="drunc-controller"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="fsm" class="FSMconfiguration" id="fsmConf-1"/>
  <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
+ <rel name="exposes_service">
+   <ref class="Service" id="root-controller_control">
+ </rel>
 </obj>
 
 <obj class="Segment" id="root-segment">
@@ -118,12 +121,73 @@
  <rel name="controller" class="RCApplication" id="root-controller"/>
 </obj>
 
+
+<obj class="Service" id="daq-k8s-opmon-service">
+    <attr name="protocol" val="kafka"/>
+    <attr name="port" val="30092"/>
+    <attr name="path" val="/opmon"/>
+</obj>
+
+<obj class="Service" id="local-opmon-service">
+    <attr name="protocol" val="file"/>
+    <attr name="port" val=""/>
+    <attr name="path" val="info.json"/> <!-- BUG, should be keyed with the application name, which isn't available here... Hopefully, this behaves correctly and appends the file for all the apps... (-_o) see you on the other side -->
+</obj>
+
+<obj class="OpMonService" id="cern-opmon-application-service">
+ <attr name="application_name" val="sh"> <!-- just in case someone has the idea to do something with infrastructure_applications... -->
+ <attr name="commandline_parameters" type="string">
+  <data val="-c"/>
+  <data val="echo Not starting kafka/grafana/postgres/influx"/>
+  <data val="&amp;&amp;"/>
+  <data val="sleep 10000"/>
+ </attr>
+ <rel name="runs_on" class="VirtualHost" id="kafka-cern-vhost"/>
+ <rel name="exposes_service">
+   <ref class="Service" id="daq-k8s-opmon-service">
+ </rel>
+</obj>
+
+<obj class="OpMonService" id="pocket-opmon-application-service">
+ <attr name="application_name" val="sh"> <!-- just in case someone has the idea to do something with infrastructure_applications... -->
+ <attr name="commandline_parameters" type="string">
+  <data val="-c"/>
+  <data val="echo Not starting kafka/grafana/postgres/influx"/>
+  <data val="&amp;&amp;"/>
+  <data val="sleep 10000"/>
+ </attr>
+ <rel name="runs_on" class="VirtualHost" id="kafka-pocket-vhost"/>
+ <rel name="exposes_service">
+   <ref class="Service" id="daq-k8s-opmon-service">
+ </rel>
+</obj>
+
+<obj class="OpMonService" id="local-opmon-application-service">
+ <attr name="application_name" val="sh"> <!-- just in case someone has the idea to do something with infrastructure_applications... -->
+ <attr name="commandline_parameters" type="string">
+  <data val="-c"/>
+  <data val="echo This service doesnt need any executable"/>
+  <data val="&amp;&amp;"/>
+  <data val="sleep 10000"/>
+ </attr>
+ <rel name="runs_on" class="VirtualHost" id="vlocalhost"/><!-- whatever, really -->
+ <rel name="exposes_service">
+   <ref class="Service" id="local-opmon-service">
+ </rel>
+</obj>
+
+
+
 <obj class="Session" id="test-session">
- <attr name="use_connectivity_server" type="bool" val="1"/>
+ <attr name="use_connectivity_server" type="bool" val="1"/> <!-- Should delete and check for connectivity_service in infrastructure_application instead -->
  <attr name="connectivity_service_interval_ms" type="u32" val="2000"/>
  <attr name="data_request_timeout_ms" type="u32" val="1000"/>
  <attr name="data_rate_slowdown_factor" type="u32" val="1"/>
- <attr name="rte_script" type="string" val="/nfs/home/glehmann/NFD_DEV_240322_A9/install/daq_app_rte.sh"/>
+ <attr name="rte_script" type="string" val="/path/to/swdir/install/daq_app_rte.sh"><!-- ALTER_ME -->
+ <rel name="infrastructure_applications">
+  <ref class="OpMonService" id="cern-opmon-application-service">
+  <!--   <ref name="connectivity_service" id="session-connectivity_service"> -->
+ </rel>
  <rel name="environment">
   <ref class="Variable" id="session-env-session-name-0"/>
   <ref class="Variable" id="session-env-session-name-1"/>
