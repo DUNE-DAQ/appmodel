@@ -66,6 +66,7 @@
 	"CONNECTION_PORT": "30005",
         "DETCHANNELMAPS_SHARE": "getenv",
         "DUNEDAQ_SHARE_PATH": "getenv",
+        "DUNEDAQ_DB_PATH": "getenv",
         "INFO_SVC": "kafka://monkafka.cern.ch:30092/opmon",
         "LD_LIBRARY_PATH": "getenv",
         "PATH": "getenv",

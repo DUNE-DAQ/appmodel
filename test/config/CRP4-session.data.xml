@@ -118,7 +118,7 @@
  </rel>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="queue_rules">
-  <ref class="QueueConnectionRule" id="data-requests-queue-rule"/>
+  <ref class="QueueConnectionRule" id="fd-dlh-data-requests-queue-rule"/>
   <ref class="QueueConnectionRule" id="fa-queue-rule"/>
   <ref class="QueueConnectionRule" id="wib-eth-raw-data-rule"/>
   <ref class="QueueConnectionRule" id="tp-queue-rule"/>
