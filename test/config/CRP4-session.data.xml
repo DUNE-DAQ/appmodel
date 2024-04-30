@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="8" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20240306T144154" last-modified-by="thea" last-modified-on="np02-srv-001.cern.ch" last-modification-time="20240426T073141"/>
+<info name="" type="" num-of-items="8" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20240306T144154" last-modified-by="thea" last-modified-on="np02-srv-001.cern.ch" last-modification-time="20240430T135211"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -82,6 +82,7 @@
  <comment creation-time="20240307T084519" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="added dataflow"/>
  <comment creation-time="20240307T133917" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="disable TPG"/>
  <comment creation-time="20240426T073141" created-by="thea" created-on="np02-srv-001.cern.ch" author="thea" text="enabling callbacks"/>
+ <comment creation-time="20240430T135210" created-by="thea" created-on="np02-srv-001.cern.ch" author="thea" text="Removed ta source id"/>
 </comments>
 
 
@@ -112,7 +113,6 @@
 
 <obj class="ReadoutApplication" id="runp02srv003eth0">
  <attr name="tp_source_id" type="u32" val="100"/>
- <attr name="ta_source_id" type="u32" val="1000"/>
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="contains">
   <ref class="ReadoutGroup" id="group-247"/>
