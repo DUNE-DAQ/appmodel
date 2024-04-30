@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="9" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20240306T144154" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240307T192401"/>
+<info name="" type="" num-of-items="8" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20240306T144154" last-modified-by="thea" last-modified-on="np02-srv-001.cern.ch" last-modification-time="20240426T073141"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -81,6 +81,7 @@
 <comments>
  <comment creation-time="20240307T084519" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="added dataflow"/>
  <comment creation-time="20240307T133917" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="disable TPG"/>
+ <comment creation-time="20240426T073141" created-by="thea" created-on="np02-srv-001.cern.ch" author="thea" text="enabling callbacks"/>
 </comments>
 
 
@@ -120,8 +121,8 @@
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="fd-dlh-data-requests-queue-rule"/>
   <ref class="QueueConnectionRule" id="fa-queue-rule"/>
-  <ref class="QueueConnectionRule" id="wib-eth-raw-data-rule"/>
   <ref class="QueueConnectionRule" id="tp-queue-rule"/>
+  <ref class="QueueConnectionRule" id="wib-callback-raw-data-rule"/>
  </rel>
  <rel name="network_rules">
   <ref class="NetworkConnectionRule" id="ta-net-rule"/>

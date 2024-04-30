@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="54" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="glehmann" last-modified-on="np04-srv-019.cern.ch" last-modification-time="20240403T070107"/>
+<info name="" type="" num-of-items="56" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="thea" last-modified-on="np02-srv-001.cern.ch" last-modification-time="20240426T073141"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -82,6 +82,9 @@
  <comment creation-time="20240301T165850" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="add eth_device_name for Services"/>
  <comment creation-time="20240325T092602" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="Unknown" text="transformed MLT app into readout model"/>
  <comment creation-time="20240403T070107" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="glehmann" text="add split network descriptor"/>
+ <comment creation-time="20240405T095202" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="Switching ethernet readout to callbacks"/>
+ <comment creation-time="20240407T201252" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="back to queues"/>
+ <comment creation-time="20240426T073141" created-by="thea" created-on="np02-srv-001.cern.ch" author="thea" text="enabling callbacks"/>
 </comments>
 
 
@@ -272,6 +275,11 @@
  <rel name="descriptor" class="QueueDescriptor" id="trigger-records"/>
 </obj>
 
+<obj class="QueueConnectionRule" id="wib-callback-raw-data-rule">
+ <attr name="destination_class" type="class" val="FDDataLinkHandler"/>
+ <rel name="descriptor" class="QueueDescriptor" id="wib-eth-callback-bypass"/>
+</obj>
+
 <obj class="QueueConnectionRule" id="wib-eth-raw-data-rule">
  <attr name="destination_class" type="class" val="FDDataLinkHandler"/>
  <rel name="descriptor" class="QueueDescriptor" id="wib-eth-raw-input"/>
@@ -331,6 +339,13 @@
  <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
  <attr name="capacity" type="u32" val="11"/>
  <attr name="data_type" type="string" val="TriggerRecord"/>
+</obj>
+
+<obj class="QueueDescriptor" id="wib-eth-callback-bypass">
+ <attr name="uid_base" type="string" val="cb_raw_input_"/>
+ <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
+ <attr name="capacity" type="u32" val="10000"/>
+ <attr name="data_type" type="string" val="WIBEthFrame"/>
 </obj>
 
 <obj class="QueueDescriptor" id="wib-eth-raw-input">
