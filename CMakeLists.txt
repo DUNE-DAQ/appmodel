@@ -26,7 +26,7 @@ daq_add_library(ReadoutApplication.cpp SmartDaqApplication.cpp
   logging::logging coredal::coredal oks::oks ers::ers)
 
 daq_add_application(getAppsArguments get_apps_arguments.cxx
-  LINK_LIBRARIES coredal appdal oksdbinterfaces::oksdbinterfaces)
+  LINK_LIBRARIES coredal::coredal appdal oksdbinterfaces::oksdbinterfaces)
 
 daq_add_python_bindings(*.cpp LINK_LIBRARIES appdal coredal::coredal)
 
