@@ -856,6 +856,16 @@
  </rel>
 </obj>
 
+<obj class="HermesController" id="hermes_10_10_5">
+ <attr name="uri" type="string" val="ipbusudp-2.0://np02-wib-1006:50001"/>
+ <attr name="port" type="u32" val="17476"/>
+ <rel name="address_table" class="IpbusAddressTable" id="Hermes-addrtab"/>
+ <rel name="links">
+  <ref class="HermesLinkConf" id="hermes_10_10_5-0"/>
+  <ref class="HermesLinkConf" id="hermes_10_10_5-1"/>
+ </rel>
+</obj>
+
 <obj class="HermesLinkConf" id="hermes_10_10_0-0">
  <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
  <rel name="source" class="DROStreamConf" id="DROStream-200"/>

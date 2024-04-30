@@ -92,6 +92,7 @@
         "CONNECTION_SERVER": "localhost",
         "DETCHANNELMAPS_SHARE": "getenv",
         "DUNEDAQ_SHARE_PATH": "getenv",
+        "DUNEDAQ_DB_PATH": "getenv",
         "INFO_SVC": "file://info_{APP_NAME}_{APP_PORT}.json",
         "TIMING_SHARE": "disabled",
 	"LD_LIBRARY_PATH": "getenv",

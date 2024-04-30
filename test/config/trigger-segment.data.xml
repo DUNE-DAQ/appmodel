@@ -97,6 +97,32 @@
  <comment creation-time="20240403T115733" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="glehmann" text=" "/>
 </comments>
 
+<obj class="Service" id="trg-controller_control">
+  <attr name="protocol" val="grpc"/>
+  <attr name="port" val="5700"/>
+</obj>
+
+<obj class="Service" id="hsi-to-tc-app_control">
+  <attr name="protocol" val="rest"/>
+  <attr name="port" val="5701"/>
+</obj>
+
+<obj class="Service" id="mlt_control">
+  <attr name="protocol" val="rest"/>
+  <attr name="port" val="5702"/>
+</obj>
+
+<obj class="Service" id="tc-maker-1_control">
+  <attr name="protocol" val="rest"/>
+  <attr name="port" val="5703"/>
+</obj>
+
+<obj class="Service" id="tc-buffer-1_control">
+  <attr name="protocol" val="rest"/>
+  <attr name="port" val="5704"/>
+</obj>
+
+
 
 <obj class="CustomTriggerCandidateMakerConf" id="cstm-tc-generator">
  <attr name="timestamp_method" type="enum" val="kTimeSync"/>
@@ -128,6 +154,7 @@
  <rel name="exposes_service">
   <ref class="Service" id="dataRequests"/>
   <ref class="Service" id="HSIEvents"/>
+  <ref class="Service" id="hsi-to-tc-app_control">
  </rel>
  <rel name="source_id" class="SourceIDConf" id="hsi-tc-srcid-1"/>
  <rel name="network_rules">
@@ -154,6 +181,8 @@
   <ref class="Service" id="triggerCandidates"/>
   <ref class="Service" id="triggerInhibits"/>
   <ref class="Service" id="dataRequests"/>
+  <ref class="Service" id="mlt_control">
+
  </rel>
  <rel name="source_id" class="SourceIDConf" id="tc-srcid-1"/>
  <rel name="queue_rules">
@@ -176,15 +205,12 @@
 </obj>
 
 <obj class="RCApplication" id="trg-controller">
- <attr name="commandline_parameters" type="string">
-  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
-  <data val="grpc://localhost:3335"/>
-  <data val="trg-segment"/>
-  <data val="test-session"/>
- </attr>
  <attr name="application_name" type="string" val="drunc-controller"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="fsm" class="FSMconfiguration" id="fsmConf-1"/>
+ <rel name="exposes_service">
+  <ref class="Service" id="trg-controller_control">
+ </rel>
  <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
 </obj>
 
@@ -326,6 +352,7 @@
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="exposes_service">
+  <ref class="Service" id="tc-maker-1_control">
   <ref class="Service" id="triggerActivities"/>
   <ref class="Service" id="dataRequests"/>
  </rel>
