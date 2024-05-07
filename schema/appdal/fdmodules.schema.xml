@@ -168,11 +168,11 @@
   <attribute name="flow_control" type="bool" init-value="1"/>
   <attribute name="promiscuous_mode" type="bool" init-value="0"/>
   <attribute name="mtu" type="u32" init-value="9000" is-not-null="yes"/>
-  <attribute name="rx_ring_size" type="u32" init-value="1024" is-not-null="yes"/>
+  <attribute name="rx_ring_size" type="u32" init-value="4096" is-not-null="yes"/>
   <attribute name="tx_ring_size" type="u32" init-value="1024" is-not-null="yes"/>
-  <attribute name="num_bufs" type="u32" init-value="8191" is-not-null="yes"/>
-  <attribute name="mbuf_cache_size" type="u32" init-value="256" is-not-null="yes"/>
-  <attribute name="burst_size" type="u32" init-value="256" is-not-null="yes"/>
+  <attribute name="num_bufs" type="u32" init-value="16384" is-not-null="yes"/>
+  <attribute name="mbuf_cache_size" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="burst_size" type="u32" init-value="2048" is-not-null="yes"/>
   <attribute name="lcore_sleep_us" type="u32" init-value="10" is-not-null="yes"/>
  </class>
 
