@@ -183,7 +183,7 @@
  <attr name="connectivity_service_interval_ms" type="u32" val="2000"/>
  <attr name="data_request_timeout_ms" type="u32" val="1000"/>
  <attr name="data_rate_slowdown_factor" type="u32" val="1"/>
- <attr name="rte_script" type="string" val="/path/to/swdir/install/daq_app_rte.sh"><!-- ALTER_ME -->
+ <attr name="rte_script" type="string" val="">
  <rel name="infrastructure_applications">
   <ref class="OpMonService" id="cern-opmon-application-service">
   <!--   <ref name="connectivity_service" id="session-connectivity_service"> -->
