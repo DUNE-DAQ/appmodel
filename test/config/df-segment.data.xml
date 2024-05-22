@@ -246,7 +246,7 @@
   <ref class="Service" id="df-controller_control">
  </rel>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
- <rel name="fsm" class="FSMconfiguration" id="fsmConf-1"/>
+ <rel name="fsm" class="FSMconfiguration" id="FSMconfiguration_noAction"/>
  <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
 </obj>
 

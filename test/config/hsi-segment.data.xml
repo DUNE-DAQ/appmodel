@@ -140,7 +140,7 @@
  <rel name="exposes_service">
   <ref class="Service" id="hsi-controller_control">
  </rel>
- <rel name="fsm" class="FSMconfiguration" id="fsmConf-1"/>
+ <rel name="fsm" class="FSMconfiguration" id="FSMconfiguration_noAction"/>
  <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
 </obj>
 
