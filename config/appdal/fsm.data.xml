@@ -151,7 +151,7 @@
  </rel>
  <rel name="post_transitions">
   <ref class="FSMxTransition" id="post_start"/>
-  <ref class="FSMxTransition" id="post_stop"/>
+  <ref class="FSMxTransition" id="post_drain_dataflow"/>
  </rel>
 </obj>
 
@@ -263,6 +263,7 @@
 </obj>
 
 <obj class="FSMxTransition" id="pre_start">
+ <attr name="transition" type="string" val="start"/>
  <attr name="order" type="string">
   <data val="user-provided-run-number"/>
   <data val="file-run-registry"/>
@@ -274,18 +275,16 @@
 </obj>
 
 <obj class="FSMxTransition" id="post_start">
+ <attr name="transition" type="string" val="start"/>
  <attr name="order" type="string">
   <data val="file-logbook"/>
  </attr>
- <!-- <attr name="mandatory" type="string">
- </attr> -->
 </obj>
 
-<obj class="FSMxTransition" id="post_stop">
+<obj class="FSMxTransition" id="post_drain_dataflow">
+ <attr name="transition" type="string" val="drain_dataflow"/>
  <attr name="order" type="string">
   <data val="file-logbook"/>
  </attr>
- <!-- <attr name="mandatory" type="string">
- </attr> -->
 </obj>
 </oks-data>
