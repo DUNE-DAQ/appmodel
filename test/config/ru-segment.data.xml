@@ -291,26 +291,24 @@
  <attr name="pcie_addr" type="string" val="0"/>
 </obj>
 
-<obj class="NetworkDevice" id="ru_2_readout">
- <attr name="mac_address" type="string" val="00:00:00:00:00:00"/>
- <attr name="ip_address" type="string" val="123.456.201.501"/>
- <attr name="interface_name" type="string" val="data0"/>
- <attr name="network_name" type="enum" val="Control"/>
- <attr name="pcie_addr" type="string" val="0"/>
+<obj class="Service" id="ru-controller_control">
+  <attr name="protocol" val="grpc"/>
+  <attr name="port" val="0"/>
 </obj>
 
-<obj class="NetworkInterface" id="wib_101_hermes0">
- <attr name="mac_address" type="string" val="00:00:00:00:00:00"/>
- <attr name="ip_address" type="string" val="123.456.101.000"/>
- <attr name="interface_name" type="string" val="hermes0"/>
- <attr name="network_name" type="enum" val="Control"/>
+<obj class="Service" id="ru-01_control">
+  <attr name="protocol" val="rest"/>
+  <attr name="port" val="0"/>
 </obj>
 
-<obj class="NetworkInterface" id="wib_201_hermes0">
- <attr name="mac_address" type="string" val="00:00:00:00:00:00"/>
- <attr name="ip_address" type="string" val="123.456.101.001"/>
- <attr name="interface_name" type="string" val="hermes0"/>
- <attr name="network_name" type="enum" val="Control"/>
+<obj class="Service" id="ru-02_control">
+  <attr name="protocol" val="rest"/>
+  <attr name="port" val="0"/>
+</obj>
+
+<obj class="Service" id="ru-03_control">
+  <attr name="protocol" val="rest"/>
+  <attr name="port" val="0"/>
 </obj>
 
 <obj class="RCApplication" id="ru-controller">
@@ -418,21 +416,6 @@
   <ref class="ReadoutApplication" id="ru-02"/>
  </rel>
  <rel name="controller" class="RCApplication" id="ru-controller"/>
-</obj>
-
-<obj class="Service" id="ru-01_control">
- <attr name="protocol" type="string" val="rest"/>
- <attr name="port" type="u16" val="5501"/>
-</obj>
-
-<obj class="Service" id="ru-02_control">
- <attr name="protocol" type="string" val="rest"/>
- <attr name="port" type="u16" val="5502"/>
-</obj>
-
-<obj class="Service" id="ru-controller_control">
- <attr name="protocol" type="string" val="grpc"/>
- <attr name="port" type="u16" val="5500"/>
 </obj>
 
 </oks-data>

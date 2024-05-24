@@ -141,6 +141,12 @@
  <attr name="op_env" type="string" val="test"/>
 </obj>
 
+<obj class="Service" id="root-controller_control">
+ <attr name="protocol" type="string" val="grpc"/>
+ <attr name="port" type="u16" val="0"/>
+ <attr name="eth_device_name" type="string" val=""/>
+</obj>
+
 <obj class="RCApplication" id="root-controller">
  <attr name="application_name" type="string" val="drunc-controller"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
@@ -153,9 +159,9 @@
 
 <obj class="Segment" id="root-segment">
  <rel name="segments">
-  <ref class="Segment" id="ru-segment"/>
+  <!-- <ref class="Segment" id="ru-segment"/>
   <ref class="Segment" id="df-segment"/>
-  <ref class="Segment" id="trg-segment"/>
+  <ref class="Segment" id="trg-segment"/> -->
   <ref class="Segment" id="hsi-segment"/>
  </rel>
  <rel name="controller" class="RCApplication" id="root-controller"/>

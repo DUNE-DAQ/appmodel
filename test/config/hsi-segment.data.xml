@@ -98,6 +98,16 @@
  <rel name="data_processor" class="HSIFrameProcessor" id="def-hsi-processor"/>
 </obj>
 
+<obj class="Service" id="hsi-controller_control">
+  <attr name="protocol" val="grpc"/>
+  <attr name="port" val="0"/>
+</obj>
+
+<obj class="Service" id="hsi-01_control">
+  <attr name="protocol" val="rest"/>
+  <attr name="port" val="0"/>
+</obj>
+
 <obj class="FakeHSIApplication" id="hsi-01">
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>

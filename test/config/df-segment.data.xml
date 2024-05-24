@@ -94,6 +94,36 @@
  <comment creation-time="20240916T092524" created-by="maroda" created-on="np04-srv-015.cern.ch" author="maroda" text="Correct locations for OpMonConf objects"/>
 </comments>
 
+<obj class="Service" id="df-controller_control">
+  <attr name="protocol" val="grpc"/>
+  <attr name="port" val="0"/>
+</obj>
+
+<obj class="Service" id="df-01_control">
+  <attr name="protocol" val="rest"/>
+  <attr name="port" val="0"/>
+</obj>
+
+<obj class="Service" id="df-02_control">
+  <attr name="protocol" val="rest"/>
+  <attr name="port" val="0"/>
+</obj>
+
+<obj class="Service" id="df-03_control">
+  <attr name="protocol" val="rest"/>
+  <attr name="port" val="0"/>
+</obj>
+
+<obj class="Service" id="dfo-01_control">
+  <attr name="protocol" val="rest"/>
+  <attr name="port" val="0"/>
+</obj>
+
+<obj class="Service" id="tp-stream-writer_control">
+  <attr name="protocol" val="rest"/>
+  <attr name="port" val="0"/>
+</obj>
+
 
 <obj class="DFApplication" id="df-01">
  <attr name="application_name" type="string" val="daq_application"/>
