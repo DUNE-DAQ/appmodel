@@ -63,7 +63,19 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="57" oks-format="data" oks-version="oks-08-04-00-2-g4949f80 built &quot;Dec  6 2023&quot;" created-by="root" created-on="f1c9af75d018" creation-time="20240319T122730" last-modified-by="root" last-modified-on="f1c9af75d018" last-modification-time="20240319T122730"/>
+<info name="" type="" num-of-items="76" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="glehmann" created-on="np04-srv-024.cern.ch" creation-time="20240527T144916" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240527T144918"/>
+
+<obj class="ALink" id="DPDK_NICInterfaceConfiguration-2-ProcessingResource-via-used_lcores">
+ <attr name="Name" type="string" val="used_lcores"/>
+ <rel name="From" class="Class" id="DPDK_NICInterfaceConfiguration"/>
+ <rel name="To" class="Class" id="ProcessingResource"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DPDK_NICInterfaceConfiguration-2-ProcessingResource-via-used_lcores"/>
+  <ref class="Point" id="2 DPDK_NICInterfaceConfiguration-2-ProcessingResource-via-used_lcores"/>
+  <ref class="Point" id="3 DPDK_NICInterfaceConfiguration-2-ProcessingResource-via-used_lcores"/>
+  <ref class="Point" id="4 DPDK_NICInterfaceConfiguration-2-ProcessingResource-via-used_lcores"/>
+ </rel>
+</obj>
 
 <obj class="ALink" id="DataReader-2-DataReaderConf-via-configuration">
  <attr name="Name" type="string" val="configuration"/>
@@ -77,15 +89,15 @@
  </rel>
 </obj>
 
-<obj class="ALink" id="DataReader-2-ReadoutInterface-via-interfaces">
+<obj class="ALink" id="DataReader-2-Resource-via-interfaces">
  <attr name="Name" type="string" val="interfaces"/>
  <rel name="From" class="Class" id="DataReader"/>
- <rel name="To" class="Class" id="ReadoutInterface"/>
+ <rel name="To" class="Class" id="Resource"/>
  <rel name="Points">
-  <ref class="Point" id="1 DataReader-2-ReadoutInterface-via-interfaces"/>
-  <ref class="Point" id="2 DataReader-2-ReadoutInterface-via-interfaces"/>
-  <ref class="Point" id="3 DataReader-2-ReadoutInterface-via-interfaces"/>
-  <ref class="Point" id="4 DataReader-2-ReadoutInterface-via-interfaces"/>
+  <ref class="Point" id="1 DataReader-2-Resource-via-interfaces"/>
+  <ref class="Point" id="2 DataReader-2-Resource-via-interfaces"/>
+  <ref class="Point" id="3 DataReader-2-Resource-via-interfaces"/>
+  <ref class="Point" id="4 DataReader-2-Resource-via-interfaces"/>
  </rel>
 </obj>
 
@@ -101,21 +113,14 @@
  </rel>
 </obj>
 
-<obj class="ALink" id="NICInterfaceConfiguration-2-NICStatsConf-via-stats_conf">
- <attr name="Name" type="string" val="stats_conf"/>
- <rel name="From" class="Class" id="NICInterfaceConfiguration"/>
- <rel name="To" class="Class" id="NICStatsConf"/>
- <rel name="Points">
-  <ref class="Point" id="1 NICInterfaceConfiguration-2-NICStatsConf-via-stats_conf"/>
-  <ref class="Point" id="2 NICInterfaceConfiguration-2-NICStatsConf-via-stats_conf"/>
-  <ref class="Point" id="3 NICInterfaceConfiguration-2-NICStatsConf-via-stats_conf"/>
-  <ref class="Point" id="4 NICInterfaceConfiguration-2-NICStatsConf-via-stats_conf"/>
- </rel>
+<obj class="Class" id="DPDK_NICInterfaceConfiguration">
+ <attr name="x" type="s16" val="521"/>
+ <attr name="y" type="s16" val="319"/>
 </obj>
 
 <obj class="Class" id="DataReader">
- <attr name="x" type="s16" val="381"/>
- <attr name="y" type="s16" val="20"/>
+ <attr name="x" type="s16" val="508"/>
+ <attr name="y" type="s16" val="12"/>
 </obj>
 
 <obj class="Class" id="DataReaderConf">
@@ -126,6 +131,11 @@
 <obj class="Class" id="EthStreamParameters">
  <attr name="x" type="s16" val="6"/>
  <attr name="y" type="s16" val="120"/>
+</obj>
+
+<obj class="Class" id="FelixCardReader">
+ <attr name="x" type="s16" val="369"/>
+ <attr name="y" type="s16" val="49"/>
 </obj>
 
 <obj class="Class" id="FelixInterface">
@@ -148,24 +158,56 @@
  <attr name="y" type="s16" val="258"/>
 </obj>
 
+<obj class="Class" id="NICReceiver">
+ <attr name="x" type="s16" val="288"/>
+ <attr name="y" type="s16" val="4"/>
+</obj>
+
 <obj class="Class" id="NICReceiverConf">
  <attr name="x" type="s16" val="385"/>
  <attr name="y" type="s16" val="229"/>
 </obj>
 
 <obj class="Class" id="NICStatsConf">
- <attr name="x" type="s16" val="791"/>
+ <attr name="x" type="s16" val="913"/>
  <attr name="y" type="s16" val="352"/>
 </obj>
 
-<obj class="Class" id="ReadoutInterface">
- <attr name="x" type="s16" val="765"/>
- <attr name="y" type="s16" val="13"/>
+<obj class="Class" id="ProcessingResource">
+ <attr name="x" type="s16" val="335"/>
+ <attr name="y" type="s16" val="397"/>
+</obj>
+
+<obj class="Class" id="Resource">
+ <attr name="x" type="s16" val="825"/>
+ <attr name="y" type="s16" val="29"/>
 </obj>
 
 <obj class="Class" id="StreamParameters">
- <attr name="x" type="s16" val="138"/>
- <attr name="y" type="s16" val="13"/>
+ <attr name="x" type="s16" val="70"/>
+ <attr name="y" type="s16" val="12"/>
+</obj>
+
+<obj class="GLink" id="DataReader-2-FelixCardReader">
+ <rel name="From" class="Class" id="DataReader"/>
+ <rel name="To" class="Class" id="FelixCardReader"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DataReader-2-FelixCardReader"/>
+  <ref class="Point" id="2 DataReader-2-FelixCardReader"/>
+  <ref class="Point" id="3 DataReader-2-FelixCardReader"/>
+  <ref class="Point" id="4 DataReader-2-FelixCardReader"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="DataReader-2-NICReceiver">
+ <rel name="From" class="Class" id="DataReader"/>
+ <rel name="To" class="Class" id="NICReceiver"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DataReader-2-NICReceiver"/>
+  <ref class="Point" id="2 DataReader-2-NICReceiver"/>
+  <ref class="Point" id="3 DataReader-2-NICReceiver"/>
+  <ref class="Point" id="4 DataReader-2-NICReceiver"/>
+ </rel>
 </obj>
 
 <obj class="GLink" id="DataReaderConf-2-NICReceiverConf">
@@ -179,25 +221,36 @@
  </rel>
 </obj>
 
-<obj class="GLink" id="ReadoutInterface-2-FelixInterface">
- <rel name="From" class="Class" id="ReadoutInterface"/>
- <rel name="To" class="Class" id="FelixInterface"/>
+<obj class="GLink" id="NICInterfaceConfiguration-2-DPDK_NICInterfaceConfiguration">
+ <rel name="From" class="Class" id="NICInterfaceConfiguration"/>
+ <rel name="To" class="Class" id="DPDK_NICInterfaceConfiguration"/>
  <rel name="Points">
-  <ref class="Point" id="1 ReadoutInterface-2-FelixInterface"/>
-  <ref class="Point" id="2 ReadoutInterface-2-FelixInterface"/>
-  <ref class="Point" id="3 ReadoutInterface-2-FelixInterface"/>
-  <ref class="Point" id="4 ReadoutInterface-2-FelixInterface"/>
+  <ref class="Point" id="1 NICInterfaceConfiguration-2-DPDK_NICInterfaceConfiguration"/>
+  <ref class="Point" id="2 NICInterfaceConfiguration-2-DPDK_NICInterfaceConfiguration"/>
+  <ref class="Point" id="3 NICInterfaceConfiguration-2-DPDK_NICInterfaceConfiguration"/>
+  <ref class="Point" id="4 NICInterfaceConfiguration-2-DPDK_NICInterfaceConfiguration"/>
  </rel>
 </obj>
 
-<obj class="GLink" id="ReadoutInterface-2-NICInterface">
- <rel name="From" class="Class" id="ReadoutInterface"/>
+<obj class="GLink" id="Resource-2-FelixInterface">
+ <rel name="From" class="Class" id="Resource"/>
+ <rel name="To" class="Class" id="FelixInterface"/>
+ <rel name="Points">
+  <ref class="Point" id="1 Resource-2-FelixInterface"/>
+  <ref class="Point" id="2 Resource-2-FelixInterface"/>
+  <ref class="Point" id="3 Resource-2-FelixInterface"/>
+  <ref class="Point" id="4 Resource-2-FelixInterface"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="Resource-2-NICInterface">
+ <rel name="From" class="Class" id="Resource"/>
  <rel name="To" class="Class" id="NICInterface"/>
  <rel name="Points">
-  <ref class="Point" id="1 ReadoutInterface-2-NICInterface"/>
-  <ref class="Point" id="2 ReadoutInterface-2-NICInterface"/>
-  <ref class="Point" id="3 ReadoutInterface-2-NICInterface"/>
-  <ref class="Point" id="4 ReadoutInterface-2-NICInterface"/>
+  <ref class="Point" id="1 Resource-2-NICInterface"/>
+  <ref class="Point" id="2 Resource-2-NICInterface"/>
+  <ref class="Point" id="3 Resource-2-NICInterface"/>
+  <ref class="Point" id="4 Resource-2-NICInterface"/>
  </rel>
 </obj>
 
@@ -223,12 +276,27 @@
  </rel>
 </obj>
 
+<obj class="Point" id="1 DPDK_NICInterfaceConfiguration-2-ProcessingResource-via-used_lcores">
+ <attr name="x" type="s16" val="188"/>
+ <attr name="y" type="s16" val="159"/>
+</obj>
+
 <obj class="Point" id="1 DataReader-2-DataReaderConf-via-configuration">
  <attr name="x" type="s16" val="53"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 DataReader-2-ReadoutInterface-via-interfaces">
+<obj class="Point" id="1 DataReader-2-FelixCardReader">
+ <attr name="x" type="s16" val="57"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 DataReader-2-NICReceiver">
+ <attr name="x" type="s16" val="57"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 DataReader-2-Resource-via-interfaces">
  <attr name="x" type="s16" val="57"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
@@ -243,18 +311,18 @@
  <attr name="y" type="s16" val="78"/>
 </obj>
 
-<obj class="Point" id="1 NICInterfaceConfiguration-2-NICStatsConf-via-stats_conf">
- <attr name="x" type="s16" val="132"/>
- <attr name="y" type="s16" val="146"/>
-</obj>
-
-<obj class="Point" id="1 ReadoutInterface-2-FelixInterface">
- <attr name="x" type="s16" val="53"/>
+<obj class="Point" id="1 NICInterfaceConfiguration-2-DPDK_NICInterfaceConfiguration">
+ <attr name="x" type="s16" val="114"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 ReadoutInterface-2-NICInterface">
- <attr name="x" type="s16" val="53"/>
+<obj class="Point" id="1 Resource-2-FelixInterface">
+ <attr name="x" type="s16" val="47"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 Resource-2-NICInterface">
+ <attr name="x" type="s16" val="47"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
 
@@ -268,14 +336,29 @@
  <attr name="y" type="s16" val="38"/>
 </obj>
 
+<obj class="Point" id="2 DPDK_NICInterfaceConfiguration-2-ProcessingResource-via-used_lcores">
+ <attr name="x" type="s16" val="188"/>
+ <attr name="y" type="s16" val="363"/>
+</obj>
+
 <obj class="Point" id="2 DataReader-2-DataReaderConf-via-configuration">
  <attr name="x" type="s16" val="53"/>
  <attr name="y" type="s16" val="54"/>
 </obj>
 
-<obj class="Point" id="2 DataReader-2-ReadoutInterface-via-interfaces">
+<obj class="Point" id="2 DataReader-2-FelixCardReader">
  <attr name="x" type="s16" val="57"/>
- <attr name="y" type="s16" val="35"/>
+ <attr name="y" type="s16" val="23"/>
+</obj>
+
+<obj class="Point" id="2 DataReader-2-NICReceiver">
+ <attr name="x" type="s16" val="57"/>
+ <attr name="y" type="s16" val="23"/>
+</obj>
+
+<obj class="Point" id="2 DataReader-2-Resource-via-interfaces">
+ <attr name="x" type="s16" val="57"/>
+ <attr name="y" type="s16" val="24"/>
 </obj>
 
 <obj class="Point" id="2 DataReaderConf-2-NICReceiverConf">
@@ -285,22 +368,22 @@
 
 <obj class="Point" id="2 NICInterface-2-NICInterfaceConfiguration-via-configuration">
  <attr name="x" type="s16" val="23"/>
- <attr name="y" type="s16" val="351"/>
+ <attr name="y" type="s16" val="188"/>
 </obj>
 
-<obj class="Point" id="2 NICInterfaceConfiguration-2-NICStatsConf-via-stats_conf">
- <attr name="x" type="s16" val="132"/>
- <attr name="y" type="s16" val="390"/>
+<obj class="Point" id="2 NICInterfaceConfiguration-2-DPDK_NICInterfaceConfiguration">
+ <attr name="x" type="s16" val="114"/>
+ <attr name="y" type="s16" val="284"/>
 </obj>
 
-<obj class="Point" id="2 ReadoutInterface-2-FelixInterface">
- <attr name="x" type="s16" val="53"/>
- <attr name="y" type="s16" val="72"/>
+<obj class="Point" id="2 Resource-2-FelixInterface">
+ <attr name="x" type="s16" val="47"/>
+ <attr name="y" type="s16" val="58"/>
 </obj>
 
-<obj class="Point" id="2 ReadoutInterface-2-NICInterface">
- <attr name="x" type="s16" val="53"/>
- <attr name="y" type="s16" val="72"/>
+<obj class="Point" id="2 Resource-2-NICInterface">
+ <attr name="x" type="s16" val="47"/>
+ <attr name="y" type="s16" val="44"/>
 </obj>
 
 <obj class="Point" id="2 StreamParameters-2-EthStreamParameters">
@@ -313,14 +396,29 @@
  <attr name="y" type="s16" val="102"/>
 </obj>
 
+<obj class="Point" id="3 DPDK_NICInterfaceConfiguration-2-ProcessingResource-via-used_lcores">
+ <attr name="x" type="s16" val="32"/>
+ <attr name="y" type="s16" val="363"/>
+</obj>
+
 <obj class="Point" id="3 DataReader-2-DataReaderConf-via-configuration">
- <attr name="x" type="s16" val="50"/>
+ <attr name="x" type="s16" val="174"/>
  <attr name="y" type="s16" val="54"/>
 </obj>
 
-<obj class="Point" id="3 DataReader-2-ReadoutInterface-via-interfaces">
+<obj class="Point" id="3 DataReader-2-FelixCardReader">
  <attr name="x" type="s16" val="26"/>
- <attr name="y" type="s16" val="35"/>
+ <attr name="y" type="s16" val="23"/>
+</obj>
+
+<obj class="Point" id="3 DataReader-2-NICReceiver">
+ <attr name="x" type="s16" val="20"/>
+ <attr name="y" type="s16" val="23"/>
+</obj>
+
+<obj class="Point" id="3 DataReader-2-Resource-via-interfaces">
+ <attr name="x" type="s16" val="15"/>
+ <attr name="y" type="s16" val="24"/>
 </obj>
 
 <obj class="Point" id="3 DataReaderConf-2-NICReceiverConf">
@@ -330,22 +428,22 @@
 
 <obj class="Point" id="3 NICInterface-2-NICInterfaceConfiguration-via-configuration">
  <attr name="x" type="s16" val="44"/>
- <attr name="y" type="s16" val="351"/>
+ <attr name="y" type="s16" val="188"/>
 </obj>
 
-<obj class="Point" id="3 NICInterfaceConfiguration-2-NICStatsConf-via-stats_conf">
- <attr name="x" type="s16" val="56"/>
- <attr name="y" type="s16" val="390"/>
+<obj class="Point" id="3 NICInterfaceConfiguration-2-DPDK_NICInterfaceConfiguration">
+ <attr name="x" type="s16" val="62"/>
+ <attr name="y" type="s16" val="284"/>
 </obj>
 
-<obj class="Point" id="3 ReadoutInterface-2-FelixInterface">
- <attr name="x" type="s16" val="57"/>
- <attr name="y" type="s16" val="72"/>
+<obj class="Point" id="3 Resource-2-FelixInterface">
+ <attr name="x" type="s16" val="117"/>
+ <attr name="y" type="s16" val="58"/>
 </obj>
 
-<obj class="Point" id="3 ReadoutInterface-2-NICInterface">
+<obj class="Point" id="3 Resource-2-NICInterface">
  <attr name="x" type="s16" val="51"/>
- <attr name="y" type="s16" val="72"/>
+ <attr name="y" type="s16" val="44"/>
 </obj>
 
 <obj class="Point" id="3 StreamParameters-2-EthStreamParameters">
@@ -358,13 +456,28 @@
  <attr name="y" type="s16" val="102"/>
 </obj>
 
+<obj class="Point" id="4 DPDK_NICInterfaceConfiguration-2-ProcessingResource-via-used_lcores">
+ <attr name="x" type="s16" val="32"/>
+ <attr name="y" type="s16" val="12"/>
+</obj>
+
 <obj class="Point" id="4 DataReader-2-DataReaderConf-via-configuration">
- <attr name="x" type="s16" val="50"/>
+ <attr name="x" type="s16" val="174"/>
  <attr name="y" type="s16" val="17"/>
 </obj>
 
-<obj class="Point" id="4 DataReader-2-ReadoutInterface-via-interfaces">
+<obj class="Point" id="4 DataReader-2-FelixCardReader">
  <attr name="x" type="s16" val="26"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 DataReader-2-NICReceiver">
+ <attr name="x" type="s16" val="20"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 DataReader-2-Resource-via-interfaces">
+ <attr name="x" type="s16" val="15"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
 
@@ -375,22 +488,22 @@
 
 <obj class="Point" id="4 NICInterface-2-NICInterfaceConfiguration-via-configuration">
  <attr name="x" type="s16" val="44"/>
- <attr name="y" type="s16" val="48"/>
+ <attr name="y" type="s16" val="32"/>
 </obj>
 
-<obj class="Point" id="4 NICInterfaceConfiguration-2-NICStatsConf-via-stats_conf">
- <attr name="x" type="s16" val="56"/>
- <attr name="y" type="s16" val="26"/>
+<obj class="Point" id="4 NICInterfaceConfiguration-2-DPDK_NICInterfaceConfiguration">
+ <attr name="x" type="s16" val="62"/>
+ <attr name="y" type="s16" val="53"/>
 </obj>
 
-<obj class="Point" id="4 ReadoutInterface-2-FelixInterface">
- <attr name="x" type="s16" val="57"/>
- <attr name="y" type="s16" val="66"/>
+<obj class="Point" id="4 Resource-2-FelixInterface">
+ <attr name="x" type="s16" val="117"/>
+ <attr name="y" type="s16" val="62"/>
 </obj>
 
-<obj class="Point" id="4 ReadoutInterface-2-NICInterface">
+<obj class="Point" id="4 Resource-2-NICInterface">
  <attr name="x" type="s16" val="51"/>
- <attr name="y" type="s16" val="26"/>
+ <attr name="y" type="s16" val="30"/>
 </obj>
 
 <obj class="Point" id="4 StreamParameters-2-EthStreamParameters">
