@@ -34,6 +34,10 @@ daq_add_application(generate_modules_test generate_modules_test.cxx
  TEST LINK_LIBRARIES appdal coredal::coredal oksdbinterfaces::oksdbinterfaces
  logging::logging)
 
+daq_add_application(print_detailed_config_info print_detailed_config_info.cxx
+ TEST LINK_LIBRARIES appdal coredal::coredal oksdbinterfaces::oksdbinterfaces
+ logging::logging)
+
 ##############################################################################
 
 # See https://dune-daq-sw.readthedocs.io/en/latest/packages/daq-cmake/#daq_add_unit_test
