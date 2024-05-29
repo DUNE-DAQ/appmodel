@@ -13,13 +13,13 @@
 #include "coredal/DaqModule.hpp"
 #include "coredal/Session.hpp"
 #include "appdal/SmartDaqApplication.hpp"
-#include "oksdbinterfaces/Configuration.hpp"
+#include "conffwk/Configuration.hpp"
 
 namespace dunedaq::coredal {
   class DaqModule;
   class Session;
 }
-namespace dunedaq::oksdbinterfaces {
+namespace dunedaq::conffwk {
   class Configuration;
 }
 namespace dunedaq::appdal {
@@ -31,7 +31,7 @@ namespace dunedaq::appdal {
 
     typedef std::function<
       ReturnType(const SmartDaqApplication*,
-      dunedaq::oksdbinterfaces::Configuration*, const std::string&,
+      dunedaq::conffwk::Configuration*, const std::string&,
       const dunedaq::coredal::Session*)> Generator;
 
     struct Registrator {
@@ -62,7 +62,7 @@ namespace dunedaq::appdal {
 
     ReturnType generate(const std::string& type,
                         const SmartDaqApplication* app,
-                        oksdbinterfaces::Configuration* confdb,
+                        conffwk::Configuration* confdb,
                         const std::string& dbfile,
                         const coredal::Session* session) {
       std::unique_lock lock(m_mutex);

@@ -4,7 +4,7 @@ import sys
 
 import coredal
 import appdal
-import oksdbinterfaces
+import conffwk
 import logging
 from rich.console import Console
 from rich.logging import RichHandler
@@ -26,7 +26,7 @@ logging.basicConfig(
 log = logging.getLogger("app_environment")
 console = Console()
 
-dal = oksdbinterfaces.dal.module('x', 'schema/coredal/dunedaq.schema.xml')
+dal = conffwk.dal.module('x', 'schema/coredal/dunedaq.schema.xml')
 
 # Process a dal::Variable object, placing key/value pairs in a dictionary
 def process_variables(variables, envDict):
@@ -109,7 +109,7 @@ def main():
   if len(sys.argv) != 3:
     print(f"Usage: {sys.argv[0]} <path-to-oks-data-file> <session-name>")
     return
-  db = oksdbinterfaces.Configuration("oksconfig:" + sys.argv[1])
+  db = conffwk.Configuration("oksconflibs:" + sys.argv[1])
   session_name = sys.argv[2]
   session = db.get_dal(class_name="Session", uid=session_name)
 

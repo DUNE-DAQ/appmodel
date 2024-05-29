@@ -61,7 +61,7 @@
         "-i",
         "{INFO_SVC}",
         "--configurationService",
-        "oksconfig:test/config/test-session.data.xml"
+        "oksconflibs:test/config/test-session.data.xml"
       ],
       "cmd": "daq_application",
       "comment": "Application profile using PATH variables (lower start time)",

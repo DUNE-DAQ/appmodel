@@ -10,7 +10,7 @@
 
 #include "ModuleFactory.hpp"
 
-#include "oksdbinterfaces/Configuration.hpp"
+#include "conffwk/Configuration.hpp"
 
 #include "coredal/Connection.hpp"
 #include "coredal/DROStreamConf.hpp"
@@ -49,7 +49,7 @@ using namespace dunedaq::appdal;
 
 static ModuleFactory::Registrator __reg__("ReadoutApplication",
                                           [](const SmartDaqApplication* smartApp,
-                                             oksdbinterfaces::Configuration* confdb,
+                                             conffwk::Configuration* confdb,
                                              const std::string& dbfile,
                                              const coredal::Session* session) -> ModuleFactory::ReturnType {
                                             auto app = smartApp->cast<ReadoutApplication>();
@@ -57,7 +57,7 @@ static ModuleFactory::Registrator __reg__("ReadoutApplication",
                                           });
 
 std::vector<const coredal::DaqModule*>
-ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
+ReadoutApplication::generate_modules(conffwk::Configuration* confdb,
                                      const std::string& dbfile,
                                      const coredal::Session* session) const
 {
@@ -123,7 +123,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   if (faOutputQDesc == nullptr) {
     throw(BadConf(ERS_HERE, "No fragment output queue descriptor given"));
   }
-  oksdbinterfaces::ConfigObject faQueueObj;
+  conffwk::ConfigObject faQueueObj;
   std::vector<const coredal::Connection*> faOutputQueues;
 
   std::string faFragQueueUid(faOutputQDesc->get_uid_base());
@@ -134,10 +134,10 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
   // Now create the TP Handler and its associated queue and network
   // connections if we have a TP handler config
-  oksdbinterfaces::ConfigObject tpReqQueueObj;
-  oksdbinterfaces::ConfigObject tpQueueObj;
-  oksdbinterfaces::ConfigObject tpNetObj;
-  oksdbinterfaces::ConfigObject taNetObj;
+  conffwk::ConfigObject tpReqQueueObj;
+  conffwk::ConfigObject tpQueueObj;
+  conffwk::ConfigObject tpNetObj;
+  conffwk::ConfigObject taNetObj;
   if (tphConf) {
     if (tpNetDesc == nullptr) {
       throw(BadConf(ERS_HERE, "No tpHandler network descriptor for TPSets  given"));
@@ -191,7 +191,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     taNetObj.set_obj("associated_service", &taServiceObj);
 
     auto tphConfObj = tphConf->config_object();
-    oksdbinterfaces::ConfigObject tpObj;
+    conffwk::ConfigObject tpObj;
     std::string tpUid("tphandler-" + std::to_string(tpsrc));
     confdb->create(dbfile, tphClass, tpUid, tpObj);
     tpObj.set_by_val<uint32_t>("source_id", tpsrc);
@@ -236,7 +236,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
       throw(BadConf(ERS_HERE, "ReadoutGroup does not contain interfaces"));
     }
 
-    std::vector<const oksdbinterfaces::ConfigObject*> ifObjs;
+    std::vector<const conffwk::ConfigObject*> ifObjs;
     auto interfaces = group_rset->get_contains();
     for (auto interface_rset : interfaces) {
       if (interface_rset->disabled(*session)) {
@@ -263,7 +263,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
                << stream->get_geo_id()->get_detector_id();
         auto id = stream->get_source_id();
         std::string uid("DLH-" + std::to_string(id));
-        oksdbinterfaces::ConfigObject dlhObj;
+        conffwk::ConfigObject dlhObj;
         TLOG_DEBUG(7) << "creating OKS configuration object for Data Link Handler class " << dlhClass << ", id " << id;
         confdb->create(dbfile, dlhClass, uid, dlhObj);
         dlhObj.set_by_val<uint32_t>("source_id", id);
@@ -275,7 +275,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
         if (dlhConf->get_generate_timesync()) {
           std::string tsStreamUid = tsNetDesc->get_uid_base() + std::to_string(id);
           auto tsServiceObj = tsNetDesc->get_associated_service()->config_object();
-          oksdbinterfaces::ConfigObject tsNetObj;
+          conffwk::ConfigObject tsNetObj;
           confdb->create(dbfile, "NetworkConnection", tsStreamUid, tsNetObj);
           tsNetObj.set_by_val<std::string>("connection_type", tsNetDesc->get_connection_type());
           tsNetObj.set_by_val<std::string>("data_type", tsNetDesc->get_data_type());
@@ -294,7 +294,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
           }
         }
         std::string dataQueueUid(dlhInputQDesc->get_uid_base() + std::to_string(id));
-        oksdbinterfaces::ConfigObject queueObj;
+        conffwk::ConfigObject queueObj;
         confdb->create(dbfile, "QueueWithId", dataQueueUid, queueObj);
         queueObj.set_by_val<std::string>("data_type", dlhInputQDesc->get_data_type());
         queueObj.set_by_val<std::string>("queue_type", dlhInputQDesc->get_queue_type());
@@ -302,7 +302,7 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
         queueObj.set_by_val<uint32_t>("source_id", stream->get_source_id());
 
         std::string reqQueueUid(dlhReqInputQDesc->get_uid_base() + std::to_string(id));
-        oksdbinterfaces::ConfigObject reqQueueObj;
+        conffwk::ConfigObject reqQueueObj;
         confdb->create(dbfile, "QueueWithId", reqQueueUid, reqQueueObj);
         reqQueueObj.set_by_val<std::string>("data_type", dlhReqInputQDesc->get_data_type());
         reqQueueObj.set_by_val<std::string>("queue_type", dlhReqInputQDesc->get_queue_type());
@@ -321,11 +321,11 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     }
     std::string readerUid("datareader-" + UID() + "-" + std::to_string(rnum++));
     std::string readerClass = rdrConf->get_template_for();
-    oksdbinterfaces::ConfigObject readerObj;
+    conffwk::ConfigObject readerObj;
     TLOG_DEBUG(7) << "creating OKS configuration object for Data reader class " << readerClass;
     confdb->create(dbfile, readerClass, readerUid, readerObj);
 
-    std::vector<const oksdbinterfaces::ConfigObject*> qObjs;
+    std::vector<const conffwk::ConfigObject*> qObjs;
     for (auto q : outputQueues) {
       qObjs.push_back(&q->config_object());
     }
@@ -338,21 +338,21 @@ ReadoutApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
   // Finally create Fragment Aggregator
   std::string faUid("fragmentaggregator-" + UID());
-  oksdbinterfaces::ConfigObject faObj;
+  conffwk::ConfigObject faObj;
   TLOG_DEBUG(7) << "creating OKS configuration object for Fragment Aggregator class ";
   confdb->create(dbfile, "FragmentAggregator", faUid, faObj);
 
   // Add network connection to TRBs
   auto faServiceObj = faNetDesc->get_associated_service()->config_object();
   std::string faNetUid = faNetDesc->get_uid_base() + UID();
-  oksdbinterfaces::ConfigObject faNetObj;
+  conffwk::ConfigObject faNetObj;
   confdb->create(dbfile, "NetworkConnection", faNetUid, faNetObj);
   faNetObj.set_by_val<std::string>("connection_type", faNetDesc->get_connection_type());
   faNetObj.set_by_val<std::string>("data_type", faNetDesc->get_data_type());
   faNetObj.set_obj("associated_service", &faServiceObj);
 
   // Add output queueus of data requests
-  std::vector<const oksdbinterfaces::ConfigObject*> qObjs;
+  std::vector<const conffwk::ConfigObject*> qObjs;
   for (auto q : faOutputQueues) {
     qObjs.push_back(&q->config_object());
   }
