@@ -142,7 +142,7 @@
   <ref class="FSMsequence" id="stop_run"/>
  </rel>
  <rel name="actions">
-  <ref class="FSMaction" id="user-provided-run-number">
+  <ref class="FSMaction" id="usvc-provided-run-number">
   <ref class="FSMactionFileLogbook" id="file-logbook">
   <ref class="FSMaction" id="file-run-registry">
  </rel>
@@ -184,8 +184,8 @@
  </rel>
 </obj>
 
-<obj class="FSMaction" id="user-provided-run-number">
- <attr name="name" type="string" val="user-provided-run-number"/>
+<obj class="FSMaction" id="usvc-provided-run-number">
+ <attr name="name" type="string" val="usvc-provided-run-number"/>
 </obj>
 <obj class="FSMaction" id="file-run-registry">
  <attr name="name" type="string" val="file-run-registry"/>
@@ -265,12 +265,12 @@
 <obj class="FSMxTransition" id="pre_start">
  <attr name="transition" type="string" val="start"/>
  <attr name="order" type="string">
-  <data val="user-provided-run-number"/>
+  <data val="usvc-provided-run-number"/>
   <data val="file-run-registry"/>
  </attr>
  <attr name="mandatory" type="string">
   <data val="file-run-registry"/>
-  <data val="user-provided-run-number"/>
+  <data val="usvc-provided-run-number"/>
  </attr>
 </obj>
 
