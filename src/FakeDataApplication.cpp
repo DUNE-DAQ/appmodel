@@ -11,7 +11,7 @@
 #include "ModuleFactory.hpp"
 
 #include "oks/kernel.hpp"
-#include "oksdbinterfaces/Configuration.hpp"
+#include "conffwk/Configuration.hpp"
 
 #include "coredal/Connection.hpp"
 #include "coredal/NetworkConnection.hpp"
@@ -41,7 +41,7 @@ using namespace dunedaq::appdal;
 
 static ModuleFactory::Registrator __reg__("FakeDataApplication",
                                           [](const SmartDaqApplication* smartApp,
-                                             oksdbinterfaces::Configuration* confdb,
+                                             conffwk::Configuration* confdb,
                                              const std::string& dbfile,
                                              const coredal::Session* session) -> ModuleFactory::ReturnType {
                                             auto app = smartApp->cast<FakeDataApplication>();
@@ -49,7 +49,7 @@ static ModuleFactory::Registrator __reg__("FakeDataApplication",
                                           });
 
 std::vector<const coredal::DaqModule*>
-FakeDataApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
+FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
                                       const std::string& dbfile,
                                       const coredal::Session* session) const
 {
@@ -89,7 +89,7 @@ FakeDataApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   if (faOutputQDesc == nullptr) {
     throw(BadConf(ERS_HERE, "No fragment output queue descriptor given"));
   }
-  oksdbinterfaces::ConfigObject faQueueObj;
+  conffwk::ConfigObject faQueueObj;
   std::vector<const coredal::Connection*> faOutputQueues;
 
   std::string taFragQueueUid(faOutputQDesc->get_uid_base() + UID());
@@ -125,7 +125,7 @@ FakeDataApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
       }
       auto id = stream->get_source_id();
       std::string uid("FakeDataProd-" + std::to_string(id));
-      oksdbinterfaces::ConfigObject dlhObj;
+      conffwk::ConfigObject dlhObj;
       TLOG_DEBUG(7) << "creating OKS configuration object for FakeDataProd";
       confdb->create(dbfile, "FakeDataProd", uid, dlhObj);
       dlhObj.set_obj("configuration", &stream->config_object());
@@ -133,7 +133,7 @@ FakeDataApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
       // Time Sync network connection
       std::string tsStreamUid = tsNetDesc->get_uid_base() + std::to_string(id);
       auto tsServiceObj = tsNetDesc->get_associated_service()->config_object();
-      oksdbinterfaces::ConfigObject tsNetObj;
+      conffwk::ConfigObject tsNetObj;
       confdb->create(dbfile, "NetworkConnection", tsStreamUid, tsNetObj);
       tsNetObj.set_by_val<std::string>("connection_type", tsNetDesc->get_connection_type());
       tsNetObj.set_by_val<std::string>("data_type", tsNetDesc->get_data_type());
@@ -142,7 +142,7 @@ FakeDataApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
       dlhObj.set_objs("outputs", { &faQueueObj, &tsNetObj });
 
       std::string reqQueueUid(dlhReqInputQDesc->get_uid_base() + std::to_string(id));
-      oksdbinterfaces::ConfigObject reqQueueObj;
+      conffwk::ConfigObject reqQueueObj;
       confdb->create(dbfile, "QueueWithId", reqQueueUid, reqQueueObj);
       reqQueueObj.set_by_val<std::string>("data_type", dlhReqInputQDesc->get_data_type());
       reqQueueObj.set_by_val<std::string>("queue_type", dlhReqInputQDesc->get_queue_type());
@@ -159,21 +159,21 @@ FakeDataApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
   // Finally create Fragment Aggregator
   std::string faUid("fragmentaggregator-" + UID());
-  oksdbinterfaces::ConfigObject faObj;
+  conffwk::ConfigObject faObj;
   TLOG_DEBUG(7) << "creating OKS configuration object for Fragment Aggregator class ";
   confdb->create(dbfile, "FragmentAggregator", faUid, faObj);
 
   // Add network connection to TRBs
   auto faServiceObj = faNetDesc->get_associated_service()->config_object();
   std::string faNetUid = faNetDesc->get_uid_base() + UID();
-  oksdbinterfaces::ConfigObject faNetObj;
+  conffwk::ConfigObject faNetObj;
   confdb->create(dbfile, "NetworkConnection", faNetUid, faNetObj);
   faNetObj.set_by_val<std::string>("connection_type", faNetDesc->get_connection_type());
   faNetObj.set_by_val<std::string>("data_type", faNetDesc->get_data_type());
   faNetObj.set_obj("associated_service", &faServiceObj);
 
   // Add output queueus of data requests
-  std::vector<const oksdbinterfaces::ConfigObject*> qObjs;
+  std::vector<const conffwk::ConfigObject*> qObjs;
   for (auto q : faOutputQueues) {
     qObjs.push_back(&q->config_object());
   }

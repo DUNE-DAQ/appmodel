@@ -35,29 +35,29 @@ namespace dunedaq::appdal::python {
 
   template <typename ApplicationType>
   std::vector<ObjectLocator>
-  application_generate_template(const oksdbinterfaces::Configuration& confdb,
+  application_generate_template(const conffwk::Configuration& confdb,
                                 const std::string& dbfile,
                                 const std::string& app_id,
                                 const std::string& session_id)
   {
     auto app =
-      const_cast<oksdbinterfaces::Configuration&>(confdb).get<ApplicationType>(app_id);
+      const_cast<conffwk::Configuration&>(confdb).get<ApplicationType>(app_id);
     auto session =
-      const_cast<oksdbinterfaces::Configuration&>(confdb).get<coredal::Session>(session_id);
+      const_cast<conffwk::Configuration&>(confdb).get<coredal::Session>(session_id);
 
     std::vector<ObjectLocator> mods;
     for (auto mod : app->generate_modules(
-           const_cast<oksdbinterfaces::Configuration*>(&confdb), dbfile, session)) {
+           const_cast<conffwk::Configuration*>(&confdb), dbfile, session)) {
       mods.push_back({mod->UID(),mod->class_name()});
     }
     return mods;
   }
 
-  std::vector<std::string> smart_daq_application_construct_commandline_parameters(const oksdbinterfaces::Configuration& db,
+  std::vector<std::string> smart_daq_application_construct_commandline_parameters(const conffwk::Configuration& db,
                                                                                   const std::string& session_id,
                                                                                   const std::string& app_id) {
-    const auto* app = const_cast<oksdbinterfaces::Configuration&>(db).get<dunedaq::appdal::SmartDaqApplication>(app_id);
-    const auto* session = const_cast<oksdbinterfaces::Configuration&>(db).get<dunedaq::coredal::Session>(session_id);
+    const auto* app = const_cast<conffwk::Configuration&>(db).get<dunedaq::appdal::SmartDaqApplication>(app_id);
+    const auto* session = const_cast<conffwk::Configuration&>(db).get<dunedaq::coredal::Session>(session_id);
     return app->construct_commandline_parameters(db, session);
   }
 

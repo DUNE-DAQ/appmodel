@@ -10,7 +10,7 @@
 
 #include "ModuleFactory.hpp"
 
-#include "oksdbinterfaces/Configuration.hpp"
+#include "conffwk/Configuration.hpp"
 
 #include "coredal/Connection.hpp"
 #include "coredal/NetworkConnection.hpp"
@@ -48,7 +48,7 @@ using namespace dunedaq::appdal;
 
 static ModuleFactory::Registrator __reg__("TriggerApplication",
                                           [](const SmartDaqApplication* smartApp,
-                                             oksdbinterfaces::Configuration* confdb,
+                                             conffwk::Configuration* confdb,
                                              const std::string& dbfile,
                                              const coredal::Session* session) -> ModuleFactory::ReturnType {
                                             auto app = smartApp->cast<TriggerApplication>();
@@ -65,14 +65,14 @@ static ModuleFactory::Registrator __reg__("TriggerApplication",
  *
  * \ret OKS configuration object for the network connection
  */
-oksdbinterfaces::ConfigObject
+conffwk::ConfigObject
 create_network_connection(std::string uid,
                           const NetworkConnectionDescriptor* ntDesc,
-                          oksdbinterfaces::Configuration* confdb,
+                          conffwk::Configuration* confdb,
                           const std::string& dbfile)
 {
   auto ntServiceObj = ntDesc->get_associated_service()->config_object();
-  oksdbinterfaces::ConfigObject ntObj;
+  conffwk::ConfigObject ntObj;
   confdb->create(dbfile, "NetworkConnection", uid, ntObj);
   ntObj.set_by_val<std::string>("data_type", ntDesc->get_data_type());
   ntObj.set_by_val<std::string>("connection_type", ntDesc->get_connection_type());
@@ -82,7 +82,7 @@ create_network_connection(std::string uid,
 }
 
 std::vector<const coredal::DaqModule*>
-TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
+TriggerApplication::generate_modules(conffwk::Configuration* confdb,
                                      const std::string& dbfile,
                                      const coredal::Session* session) const
 {
@@ -153,11 +153,11 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
   // Now create the Data Handler and its associated queue and network
   // connections
-  oksdbinterfaces::ConfigObject input_queue_obj;
-  oksdbinterfaces::ConfigObject req_net_obj;
-  oksdbinterfaces::ConfigObject tin_net_obj;
-  oksdbinterfaces::ConfigObject tout_net_obj;
-  oksdbinterfaces::ConfigObject tset_out_net_obj;
+  conffwk::ConfigObject input_queue_obj;
+  conffwk::ConfigObject req_net_obj;
+  conffwk::ConfigObject tin_net_obj;
+  conffwk::ConfigObject tout_net_obj;
+  conffwk::ConfigObject tset_out_net_obj;
   auto handlerConf = get_trigger_inputs_handler();
   
   if ( req_net_desc== nullptr) {
@@ -212,7 +212,7 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   }
 
   auto ti_conf_obj = ti_conf->config_object();
-  oksdbinterfaces::ConfigObject ti_obj;
+  conffwk::ConfigObject ti_obj;
   if (get_source_id() == nullptr) {
     throw(BadConf(ERS_HERE, "No source_id associated with this TriggerApplication!"));
   }
@@ -242,7 +242,7 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
   std::string reader_uid("data-reader-"+UID());
   std::string reader_class = rdr_conf->get_template_for();
-  oksdbinterfaces::ConfigObject reader_obj;
+  conffwk::ConfigObject reader_obj;
   TLOG_DEBUG(7) <<  "creating OKS configuration object for Data subscriber class " << reader_class;
   confdb->create(dbfile, reader_class, reader_uid, reader_obj);
   reader_obj.set_objs("inputs", {&tin_net_obj} );
