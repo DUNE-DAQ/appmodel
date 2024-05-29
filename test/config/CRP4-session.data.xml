@@ -115,7 +115,7 @@
  <attr name="tp_source_id" type="u32" val="100"/>
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="contains">
-  <ref class="ReadoutGroup" id="group-247"/>
+  <ref class="DetectorToDaqConnection" id="crp4-connections"/>
  </rel>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="queue_rules">
@@ -163,7 +163,6 @@
  <attr name="data_rate_slowdown_factor" type="u32" val="1"/>
  <rel name="segment" class="Segment" id="ru-segment"/>
  <rel name="detector_configuration" class="DetectorConfig" id="dummy-detector"/>
- <rel name="readout_map" class="ReadoutMap" id="readoutmap"/>
 </obj>
 
 </oks-data>

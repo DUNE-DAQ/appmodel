@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="131" oks-format="data" oks-version="862f2957270" created-by="crone" created-on="np04-srv-011.cern.ch" creation-time="20240308T134124" last-modified-by="thea" last-modified-on="np04-srv-018.cern.ch" last-modification-time="20240411T090553"/>
+<info name="" type="" num-of-items="134" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="crone" created-on="np04-srv-011.cern.ch" creation-time="20240308T134124" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240529T172508"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -76,6 +76,25 @@
  <comment creation-time="20240411T090553" created-by="thea" created-on="np04-srv-018.cern.ch" author="thea" text="dependency removed"/>
 </comments>
 
+
+<obj class="DPDKReceiver" id="dpdk-crp4-receiver">
+ <rel name="uses" class="NICInterface" id="nic-np02-srv-003"/>
+ <rel name="configuration" class="DPDK_NICInterfaceConfiguration" id="nic-config-CRP4"/>
+</obj>
+
+<obj class="DPDK_NICInterfaceConfiguration" id="nic-config-CRP4">
+ <attr name="flow_control" type="bool" val="1"/>
+ <attr name="mtu" type="u32" val="9000"/>
+ <attr name="rx_ring_size" type="u32" val="4096"/>
+ <attr name="tx_ring_size" type="u32" val="1024"/>
+ <attr name="num_bufs" type="u32" val="16384"/>
+ <attr name="burst_size" type="u32" val="2048"/>
+ <attr name="lcore_sleep_us" type="u32" val="10"/>
+ <attr name="source_to_rx_queue_multiplexing" type="s16" val="1"/>
+ <rel name="used_lcores">
+  <ref class="ProcessingResource" id="crp4-lcores"/>
+ </rel>
+</obj>
 
 <obj class="DROStreamConf" id="DROStream-200">
  <attr name="source_id" type="u32" val="200"/>
@@ -365,13 +384,19 @@
  <rel name="stream_params" class="EthStreamParameters" id="pars-244"/>
 </obj>
 
+<obj class="DetectorToDaqConnection" id="crp4-connections">
+ <rel name="contains">
+  <ref class="ResourceSetAND" id="crp4-streams"/>
+  <ref class="DPDKReceiver" id="dpdk-crp4-receiver"/>
+ </rel>
+</obj>
+
 <obj class="EthStreamParameters" id="pars-200">
  <attr name="mode" type="enum" val="fix_rate"/>
  <attr name="protocol" type="enum" val="udp"/>
  <attr name="tx_mac" type="string" val="80:d3:36:00:52:64"/>
  <attr name="tx_ip" type="string" val="10.73.139.59"/>
  <attr name="tx_hostname" type="string" val="np02-wib-1001"/>
- <attr name="lcore" type="u32" val="3"/>
 </obj>
 
 <obj class="EthStreamParameters" id="pars-204">
@@ -380,8 +405,6 @@
  <attr name="tx_mac" type="string" val="80:d3:36:00:52:65"/>
  <attr name="tx_ip" type="string" val="10.73.139.58"/>
  <attr name="tx_hostname" type="string" val="np02-wib-1001"/>
- <attr name="lcore" type="u32" val="59"/>
- <attr name="rx_queue" type="u32" val="1"/>
 </obj>
 
 <obj class="EthStreamParameters" id="pars-208">
@@ -390,8 +413,6 @@
  <attr name="tx_mac" type="string" val="80:d3:36:00:52:66"/>
  <attr name="tx_ip" type="string" val="10.73.139.60"/>
  <attr name="tx_hostname" type="string" val="np02-wib-1002"/>
- <attr name="lcore" type="u32" val="5"/>
- <attr name="rx_queue" type="u32" val="2"/>
 </obj>
 
 <obj class="EthStreamParameters" id="pars-212">
@@ -400,8 +421,6 @@
  <attr name="tx_mac" type="string" val="80:d3:36:00:52:67"/>
  <attr name="tx_ip" type="string" val="10.73.139.61"/>
  <attr name="tx_hostname" type="string" val="np02-wib-1002"/>
- <attr name="lcore" type="u32" val="61"/>
- <attr name="rx_queue" type="u32" val="3"/>
 </obj>
 
 <obj class="EthStreamParameters" id="pars-216">
@@ -410,8 +429,6 @@
  <attr name="tx_mac" type="string" val="80:d3:36:00:52:68"/>
  <attr name="tx_ip" type="string" val="10.73.139.62"/>
  <attr name="tx_hostname" type="string" val="np02-wib-1003"/>
- <attr name="lcore" type="u32" val="7"/>
- <attr name="rx_queue" type="u32" val="4"/>
 </obj>
 
 <obj class="EthStreamParameters" id="pars-220">
@@ -420,8 +437,6 @@
  <attr name="tx_mac" type="string" val="80:d3:36:00:52:69"/>
  <attr name="tx_ip" type="string" val="10.73.139.63"/>
  <attr name="tx_hostname" type="string" val="np02-wib-1003"/>
- <attr name="lcore" type="u32" val="63"/>
- <attr name="rx_queue" type="u32" val="5"/>
 </obj>
 
 <obj class="EthStreamParameters" id="pars-224">
@@ -430,8 +445,6 @@
  <attr name="tx_mac" type="string" val="80:d3:36:00:52:6a"/>
  <attr name="tx_ip" type="string" val="10.73.139.65"/>
  <attr name="tx_hostname" type="string" val="np02-wib-1004"/>
- <attr name="lcore" type="u32" val="3"/>
- <attr name="rx_queue" type="u32" val="6"/>
 </obj>
 
 <obj class="EthStreamParameters" id="pars-228">
@@ -440,8 +453,6 @@
  <attr name="tx_mac" type="string" val="80:d3:36:00:52:6b"/>
  <attr name="tx_ip" type="string" val="10.73.139.64"/>
  <attr name="tx_hostname" type="string" val="np02-wib-1004"/>
- <attr name="lcore" type="u32" val="59"/>
- <attr name="rx_queue" type="u32" val="7"/>
 </obj>
 
 <obj class="EthStreamParameters" id="pars-232">
@@ -450,8 +461,6 @@
  <attr name="tx_mac" type="string" val="80:d3:36:00:52:6c"/>
  <attr name="tx_ip" type="string" val="10.73.139.66"/>
  <attr name="tx_hostname" type="string" val="np02-wib-1005"/>
- <attr name="lcore" type="u32" val="5"/>
- <attr name="rx_queue" type="u32" val="8"/>
 </obj>
 
 <obj class="EthStreamParameters" id="pars-236">
@@ -460,8 +469,6 @@
  <attr name="tx_mac" type="string" val="80:d3:36:00:52:6d"/>
  <attr name="tx_ip" type="string" val="10.73.139.67"/>
  <attr name="tx_hostname" type="string" val="np02-wib-1005"/>
- <attr name="lcore" type="u32" val="61"/>
- <attr name="rx_queue" type="u32" val="9"/>
 </obj>
 
 <obj class="EthStreamParameters" id="pars-240">
@@ -470,8 +477,6 @@
  <attr name="tx_mac" type="string" val="80:d3:36:00:52:6e"/>
  <attr name="tx_ip" type="string" val="10.73.139.68"/>
  <attr name="tx_hostname" type="string" val="np02-wib-1006"/>
- <attr name="lcore" type="u32" val="7"/>
- <attr name="rx_queue" type="u32" val="10"/>
 </obj>
 
 <obj class="EthStreamParameters" id="pars-244">
@@ -480,8 +485,6 @@
  <attr name="tx_mac" type="string" val="80:d3:36:00:52:6f"/>
  <attr name="tx_ip" type="string" val="10.73.139.69"/>
  <attr name="tx_hostname" type="string" val="np02-wib-1006"/>
- <attr name="lcore" type="u32" val="63"/>
- <attr name="rx_queue" type="u32" val="11"/>
 </obj>
 
 <obj class="GeoId" id="geoId-200">
@@ -937,10 +940,31 @@
 </obj>
 
 <obj class="NICInterface" id="nic-np02-srv-003">
- <attr name="rx_pcie_addr" type="string" val="0000:98:00.1"/>
- <attr name="rx_mac" type="string" val="6c:fe:54:4b:20:f1"/>
- <attr name="rx_ip" type="string" val="10.73.139.82"/>
- <attr name="rx_hostname" type="string" val="np02-srv-003"/>
+ <attr name="numa_id" type="s16" val="1"/>
+ <attr name="pcie_addr" type="string" val="0000:98:00.1"/>
+ <attr name="mac" type="string" val="6c:fe:54:4b:20:f1"/>
+ <attr name="ip" type="string" val="10.73.139.82"/>
+</obj>
+
+<obj class="NICStatsConf" id="nicStats-np02_WIB_CRP4">
+ <attr name="analyze_nth_packet" type="s32" val="1"/>
+ <attr name="expected_packet_size" type="u32" val="7243"/>
+ <attr name="expected_seq_id_step" type="u32" val="1"/>
+ <attr name="expected_timestamp_step" type="s32" val="-999"/>
+</obj>
+
+<obj class="ProcessingResource" id="crp4-lcores">
+ <attr name="cpu_cores" type="u16">
+  <data val="3"/>
+  <data val="59"/>
+  <data val="5"/>
+  <data val="61"/>
+  <data val="7"/>
+  <data val="63"/>
+ </attr>
+</obj>
+
+<obj class="ResourceSetAND" id="crp4-streams">
  <rel name="contains">
   <ref class="DROStreamConf" id="DROStream-200"/>
   <ref class="DROStreamConf" id="DROStream-201"/>
@@ -990,37 +1014,6 @@
   <ref class="DROStreamConf" id="DROStream-245"/>
   <ref class="DROStreamConf" id="DROStream-246"/>
   <ref class="DROStreamConf" id="DROStream-247"/>
- </rel>
- <rel name="configuration" class="NICInterfaceConfiguration" id="nicConfig-np02_WIB_CRP4"/>
-</obj>
-
-<obj class="NICInterfaceConfiguration" id="nicConfig-np02_WIB_CRP4">
- <attr name="flow_control" type="bool" val="1"/>
- <attr name="mtu" type="u32" val="9000"/>
- <attr name="rx_ring_size" type="u32" val="4096"/>
- <attr name="tx_ring_size" type="u32" val="1024"/>
- <attr name="num_bufs" type="u32" val="16384"/>
- <attr name="mbuf_cache_size" type="u32" val="0"/>
- <attr name="burst_size" type="u32" val="2048"/>
- <attr name="lcore_sleep_us" type="u32" val="10"/>
-</obj>
-
-<obj class="NICStatsConf" id="nicStats-np02_WIB_CRP4">
- <attr name="analyze_nth_packet" type="s32" val="1"/>
- <attr name="expected_packet_size" type="u32" val="7243"/>
- <attr name="expected_seq_id_step" type="u32" val="1"/>
- <attr name="expected_timestamp_step" type="s32" val="-999"/>
-</obj>
-
-<obj class="ReadoutGroup" id="group-247">
- <rel name="contains">
-  <ref class="NICInterface" id="nic-np02-srv-003"/>
- </rel>
-</obj>
-
-<obj class="ReadoutMap" id="readoutmap">
- <rel name="groups">
-  <ref class="ReadoutGroup" id="group-247"/>
  </rel>
 </obj>
 
