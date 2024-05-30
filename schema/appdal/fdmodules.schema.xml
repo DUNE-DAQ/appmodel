@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="15" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="thea" last-modified-on="np04-srv-018.cern.ch" last-modification-time="20240411T085724"/>
+<info name="" type="" num-of-items="18" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="rsipos" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240530T133422"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -104,6 +104,23 @@
 
  <class name="FDFakeCardReader">
   <superclass name="DataReader"/>
+ </class>
+
+ <class name="FEMBSettings">
+  <attribute name="enabled" description="True of FEMB should be configured and read out by WIB" type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="test_cap" description="Enable the test capacitor" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="gain" description="Channel gain selector: 14, 25, 7.8, 4.7 mV/fC (0 - 3)" type="u8" range="0,1,2,3" init-value="0" is-not-null="yes"/>
+  <attribute name="peak_time" description="Channel peak time selector: 1.0, 0.5, 3, 2 us (0 - 3)" type="u8" range="0,1,2,3" init-value="3" is-not-null="yes"/>
+  <attribute name="baseline" description="Baseline selector: 0 (900 mV), 1 (200 mV), 2 (200 mV collection, 900 mV induction)" type="u8" range="0,1,2" init-value="2" is-not-null="yes"/>
+  <attribute name="pulse_dac" description="Pulser DAC setting [0-63]" type="u8" init-value="0" is-not-null="yes"/>
+  <attribute name="gain_match" description="Enable pulser DAC gain matching" type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="leak" description="Leak current selector: 0 (500 pA), 1 (100 pA)" type="u8" range="0,1" init-value="0" is-not-null="yes"/>
+  <attribute name="leak_10x" description="Multiply leak current by 10 if true" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="ac_couple" description="false (DC coupling), true (AC coupling)" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="buffering" description="0 (no buffer), 1 (se buffer), 2 (sedc buffer)" type="u8" range="0,1,2" init-value="0" is-not-null="yes"/>
+  <attribute name="strobe_skip" description="2MHz periods to skip after strobe (pulser period 0-255)" type="u8" init-value="255" is-not-null="yes"/>
+  <attribute name="strobe_delay" description="64MHz periods to skip after 2MHz edge for strobe (pulser offset 0-255)" type="u8" init-value="255" is-not-null="yes"/>
+  <attribute name="strobe_length" description="Length of strobe in 64MHz periods (pulser length 0-255)" type="u8" init-value="255" is-not-null="yes"/>
  </class>
 
  <class name="FelixCardReader" description="DAQModule which reads a Felix card">
@@ -190,6 +207,22 @@
   <attribute name="expected_packet_size" type="u32" init-value="7243" is-not-null="yes"/>
   <attribute name="expected_seq_id_step" type="u32" init-value="1"/>
   <attribute name="expected_timestamp_step" type="s32" init-value="-999" is-not-null="yes"/>
+ </class>
+
+ <class name="WIBConf">
+  <attribute name="wib_addr" type="string" init-value="tcp://192.168.121.1:1234" is-not-null="yes"/>
+  <relationship name="settings" class-type="WIBSettings" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+ </class>
+
+ <class name="WIBSettings">
+  <attribute name="cold" description="True if the front end electronics are COLD (77k)" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="pulser" description="True if the calibration pulser should be enabled" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="detector_type" description="Detector type selector: WIB default (0), upper APA (1), lower APA (2), CRP (3)" type="u8" range="0,1,2,3" init-value="0" is-not-null="yes"/>
+  <attribute name="adc_test_pattern" description="True if the COLDADC test pattern should be enabled" type="bool" init-value="false" is-not-null="yes"/>
+  <relationship name="femb0" description="Settings for FEMB in slot 0" class-type="FEMBSettings" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <relationship name="femb1" description="Settings for FEMB in slot 1" class-type="FEMBSettings" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <relationship name="femb2" description="Settings for FEMB in slot 2" class-type="FEMBSettings" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <relationship name="femb3" description="Settings for FEMB in slot 3" class-type="FEMBSettings" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
  </class>
 
 </oks-schema>
