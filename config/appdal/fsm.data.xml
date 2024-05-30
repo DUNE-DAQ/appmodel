@@ -144,10 +144,11 @@
  <rel name="actions">
   <ref class="FSMaction" id="usvc-provided-run-number">
   <ref class="FSMactionFileLogbook" id="file-logbook">
-  <ref class="FSMaction" id="file-run-registry">
+  <ref class="FSMaction" id="db-run-registry">
  </rel>
  <rel name="pre_transitions">
   <ref class="FSMxTransition" id="pre_start"/>
+  <ref class="FSMxTransition" id="pre_drain_dataflow"/>
  </rel>
  <rel name="post_transitions">
   <ref class="FSMxTransition" id="post_start"/>
@@ -189,6 +190,9 @@
 </obj>
 <obj class="FSMaction" id="file-run-registry">
  <attr name="name" type="string" val="file-run-registry"/>
+</obj>
+<obj class="FSMaction" id="db-run-registry">
+ <attr name="name" type="string" val="db-run-registry"/>
 </obj>
 <obj class="FSMactionFileLogbook" id="file-logbook">
  <attr name="name" type="string" val="file-logbook"/>
@@ -266,11 +270,21 @@
  <attr name="transition" type="string" val="start"/>
  <attr name="order" type="string">
   <data val="usvc-provided-run-number"/>
-  <data val="file-run-registry"/>
+  <data val="db-run-registry"/>
  </attr>
  <attr name="mandatory" type="string">
-  <data val="file-run-registry"/>
+  <data val="db-run-registry"/>
   <data val="usvc-provided-run-number"/>
+ </attr>
+</obj>
+
+<obj class="FSMxTransition" id="pre_drain_dataflow">
+ <attr name="transition" type="string" val="drain_dataflow"/>
+ <attr name="order" type="string">
+  <data val="db-run-registry"/>
+ </attr>
+ <attr name="mandatory" type="string">
+  <data val="db-run-registry"/>
  </attr>
 </obj>
 
