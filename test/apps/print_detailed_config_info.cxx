@@ -101,7 +101,7 @@ int main(int argc, char* argv[]) {
   std::string dbfile(argv[3]);
   conffwk::Configuration* confdb;
   try {
-    confdb = new conffwk::Configuration("oksconfig:" + dbfile);
+    confdb = new conffwk::Configuration("oksconflibs:" + dbfile);
   }
   catch (conffwk::Generic& exc) {
     std::cout << "Failed to load OKS database: " << exc << std::endl;
