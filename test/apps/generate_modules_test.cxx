@@ -10,7 +10,7 @@
 
 #include "logging/Logging.hpp"
 
-#include "oksdbinterfaces/Configuration.hpp"
+#include "conffwk/Configuration.hpp"
 
 #include "coredal/Session.hpp"
 #include "coredal/Connection.hpp"
@@ -39,11 +39,11 @@ int main(int argc, char* argv[]) {
   std::string sessionName(argv[1]);
   std::string appName(argv[2]);
   std::string dbfile(argv[3]);
-  oksdbinterfaces::Configuration* confdb;
+  conffwk::Configuration* confdb;
   try {
-    confdb = new oksdbinterfaces::Configuration("oksconfig:" + dbfile);
+    confdb = new conffwk::Configuration("oksconflibs:" + dbfile);
   }
-  catch (oksdbinterfaces::Generic& exc) {
+  catch (conffwk::Generic& exc) {
     std::cout << "Failed to load OKS database: " << exc << std::endl;
     return 0;
   }

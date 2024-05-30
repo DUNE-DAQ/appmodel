@@ -10,7 +10,7 @@
 
 #include "ModuleFactory.hpp"
 
-#include "oksdbinterfaces/Configuration.hpp"
+#include "conffwk/Configuration.hpp"
 #include "oks/kernel.hpp"
 #include "coredal/Connection.hpp"
 #include "coredal/Service.hpp"
@@ -34,7 +34,7 @@ using namespace dunedaq::appdal;
 
 static ModuleFactory::Registrator
 __reg__("TPStreamWriterApplication", [] (const SmartDaqApplication* smartApp,
-                             oksdbinterfaces::Configuration* confdb,
+                             conffwk::Configuration* confdb,
                              const std::string& dbfile,
                              const coredal::Session* session) -> ModuleFactory::ReturnType
   {
@@ -44,7 +44,7 @@ __reg__("TPStreamWriterApplication", [] (const SmartDaqApplication* smartApp,
   );
 
 std::vector<const coredal::DaqModule*> 
-TPStreamWriterApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
+TPStreamWriterApplication::generate_modules(conffwk::Configuration* confdb,
                                      const std::string& dbfile,
                                      const coredal::Session* session) const
 {
@@ -68,7 +68,7 @@ TPStreamWriterApplication::generate_modules(oksdbinterfaces::Configuration* conf
       throw (BadConf(ERS_HERE, "No network descriptor given to receive TPSets"));
   }
   // Create Network Connection
-  oksdbinterfaces::ConfigObject tset_in_net_obj;
+  conffwk::ConfigObject tset_in_net_obj;
   auto tset_in_service_obj = tset_in_net_desc->get_associated_service()->config_object();
   std::string tset_stream_uid(tset_in_net_desc->get_uid_base()+".*");
   confdb->create(dbfile, "NetworkConnection", tset_stream_uid, tset_in_net_obj);
@@ -79,12 +79,12 @@ TPStreamWriterApplication::generate_modules(oksdbinterfaces::Configuration* conf
   /* Get TPSet sources
 
   std::vector<const dunedaq::coredal::Application*> apps = session->get_all_applications();
-  std::vector<const oksdbinterfaces::ConfigObject*> sourceIds;
+  std::vector<const conffwk::ConfigObject*> sourceIds;
 
   for (auto app : apps) {
     auto ro_app = app->cast<appdal::ReadoutApplication>();
     if (ro_app != nullptr && !ro_app->disabled(*session)) {
-      oksdbinterfaces::ConfigObject* tpSourceIdConf = new oksdbinterfaces::ConfigObject();
+      conffwk::ConfigObject* tpSourceIdConf = new conffwk::ConfigObject();
       confdb->create(dbfile, "SourceIDConf", ro_app->UID()+"-"+ std::to_string(ro_app->get_tp_source_id()), *tpSourceIdConf);
       tpSourceIdConf->set_by_val<uint32_t>("sid", ro_app->get_tp_source_id());
       tpSourceIdConf->set_by_val<std::string>("subsystem", "Trigger");
@@ -93,7 +93,7 @@ TPStreamWriterApplication::generate_modules(oksdbinterfaces::Configuration* conf
   }
   */
 
-  oksdbinterfaces::ConfigObject tpwrObj;
+  conffwk::ConfigObject tpwrObj;
 
   auto source_id = get_source_id();
   if (source_id == nullptr) {

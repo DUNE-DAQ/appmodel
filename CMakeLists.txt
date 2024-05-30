@@ -7,10 +7,10 @@ daq_setup_environment()
 
 find_package(okssystem REQUIRED)
 find_package(oks REQUIRED)
-find_package(genconfig REQUIRED)
+find_package(oksdalgen REQUIRED)
 find_package(ers REQUIRED)
 find_package(logging REQUIRED)
-find_package(oksdbinterfaces REQUIRED)
+find_package(conffwk REQUIRED)
 find_package(coredal REQUIRED)
 
 
@@ -22,16 +22,16 @@ daq_oks_codegen(application.schema.xml fdmodules.schema.xml trigger.schema.xml
 
 daq_add_library(ReadoutApplication.cpp SmartDaqApplication.cpp
 	DFApplication.cpp DFOApplication.cpp TPWriterApplication.cpp FakeDataApplication.cpp FakeHSIApplication.cpp TriggerApplication.cpp MLTApplication.cpp HSIEventToTCApplication.cpp
- LINK_LIBRARIES oksdbinterfaces::oksdbinterfaces okssystem::okssystem
+ LINK_LIBRARIES conffwk::conffwk okssystem::okssystem
   logging::logging coredal::coredal oks::oks ers::ers)
 
 daq_add_application(getAppsArguments get_apps_arguments.cxx
-  LINK_LIBRARIES coredal::coredal appdal oksdbinterfaces::oksdbinterfaces)
+  LINK_LIBRARIES coredal::coredal appdal conffwk::conffwk)
 
 daq_add_python_bindings(*.cpp LINK_LIBRARIES appdal coredal::coredal)
 
 daq_add_application(generate_modules_test generate_modules_test.cxx
- TEST LINK_LIBRARIES appdal coredal::coredal oksdbinterfaces::oksdbinterfaces
+ TEST LINK_LIBRARIES appdal coredal::coredal conffwk::conffwk
  logging::logging)
 
 daq_add_application(print_detailed_config_info print_detailed_config_info.cxx
