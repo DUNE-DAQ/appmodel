@@ -84,7 +84,7 @@ create_network_connection(std::string uid,
 std::vector<const coredal::DaqModule*>
 TriggerApplication::generate_modules(conffwk::Configuration* confdb,
                                      const std::string& dbfile,
-                                     const coredal::Session* session) const
+                                     const coredal::Session* /*session*/) const
 {
   std::vector<const coredal::DaqModule*> modules;
 
@@ -158,7 +158,7 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
   conffwk::ConfigObject tin_net_obj;
   conffwk::ConfigObject tout_net_obj;
   conffwk::ConfigObject tset_out_net_obj;
-  auto handlerConf = get_trigger_inputs_handler();
+  //auto handlerConf = get_trigger_inputs_handler();
   
   if ( req_net_desc== nullptr) {
       throw (BadConf(ERS_HERE, "No network descriptor given to receive request and send data was set"));
