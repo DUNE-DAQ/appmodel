@@ -35,7 +35,7 @@ daq_add_application(generate_modules_test generate_modules_test.cxx
  logging::logging)
 
 daq_add_application(print_detailed_config_info print_detailed_config_info.cxx
- TEST LINK_LIBRARIES appdal coredal::coredal oksdbinterfaces::oksdbinterfaces
+ TEST LINK_LIBRARIES appdal coredal::coredal conffwk::conffwk
  logging::logging)
 
 ##############################################################################

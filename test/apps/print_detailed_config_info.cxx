@@ -8,11 +8,11 @@
 
 #include "logging/Logging.hpp"
 
-#include "oksdbinterfaces/Schema.hpp"
-#include "oksdbinterfaces/Configuration.hpp"
-#include "oksdbinterfaces/ConfigurationImpl.hpp"
-#include "oksdbinterfaces/ConfigObject.hpp"
-#include "oksdbinterfaces/ConfigObjectImpl.hpp"
+#include "conffwk/Schema.hpp"
+#include "conffwk/Configuration.hpp"
+#include "conffwk/ConfigurationImpl.hpp"
+#include "conffwk/ConfigObject.hpp"
+#include "conffwk/ConfigObjectImpl.hpp"
 
 #include "coredal/Session.hpp"
 #include "coredal/Connection.hpp"
@@ -32,26 +32,26 @@
 using namespace dunedaq;
 
 // forward declaration
-void print_object_details(oksdbinterfaces::ConfigObject& config_object_to_print,
+void print_object_details(conffwk::ConfigObject& config_object_to_print,
                           const std::string& object_name,
-                          oksdbinterfaces::Configuration* confdb,
+                          conffwk::Configuration* confdb,
                           const std::string& spaces);
 
 // function for handling a ConfigObject data member
-void print_member_details_if_needed(oksdbinterfaces::ConfigObject& parent_config_object,
+void print_member_details_if_needed(conffwk::ConfigObject& parent_config_object,
                                     const std::string& member_name,
-                                    oksdbinterfaces::Configuration* confdb,
+                                    conffwk::Configuration* confdb,
                                     const std::string& spaces) {
   try {
-    oksdbinterfaces::ConfigObject member_object;
+    conffwk::ConfigObject member_object;
     parent_config_object.get(member_name, member_object);
     if (! member_object.is_null()) {
       print_object_details(member_object, member_name, confdb, spaces + "  ");
     }
   }
-  catch (oksdbinterfaces::Exception& exc) {
+  catch (conffwk::Exception& exc) {
     try {
-      std::vector<oksdbinterfaces::ConfigObject> member_object_list;
+      std::vector<conffwk::ConfigObject> member_object_list;
       parent_config_object.get(member_name, member_object_list);
       for (uint32_t idx = 0; idx < member_object_list.size(); ++idx) {
         if (! member_object_list[idx].is_null()) {
@@ -63,22 +63,22 @@ void print_member_details_if_needed(oksdbinterfaces::ConfigObject& parent_config
         }
       }
     }
-    catch (oksdbinterfaces::Exception& exc) {
+    catch (conffwk::Exception& exc) {
     }
   }
 }
 
 // function for printing out the details of a specified ConfigObject
-void print_object_details(oksdbinterfaces::ConfigObject& config_object_to_print,
+void print_object_details(conffwk::ConfigObject& config_object_to_print,
                           const std::string& object_name,
-                          oksdbinterfaces::Configuration* confdb,
+                          conffwk::Configuration* confdb,
                           const std::string& spaces) {
   if (object_name != "") {
     std::cout << spaces << "-----" << std::endl;
     std::cout << spaces << "\"" << object_name << "\" ";
   }
   config_object_to_print.print_ref(std::cout, *confdb, spaces);
-  dunedaq::oksdbinterfaces::class_t cd = confdb->get_class_info(config_object_to_print.class_name());
+  dunedaq::conffwk::class_t cd = confdb->get_class_info(config_object_to_print.class_name());
   for (const auto& attr : cd.p_attributes) {
     const std::string& attr_name(attr.p_name);
     print_member_details_if_needed(config_object_to_print, attr_name, confdb, spaces);
@@ -99,11 +99,11 @@ int main(int argc, char* argv[]) {
   std::string sessionName(argv[1]);
   std::string appName(argv[2]);
   std::string dbfile(argv[3]);
-  oksdbinterfaces::Configuration* confdb;
+  conffwk::Configuration* confdb;
   try {
-    confdb = new oksdbinterfaces::Configuration("oksconfig:" + dbfile);
+    confdb = new conffwk::Configuration("oksconfig:" + dbfile);
   }
-  catch (oksdbinterfaces::Generic& exc) {
+  catch (conffwk::Generic& exc) {
     std::cout << "Failed to load OKS database: " << exc << std::endl;
     return 0;
   }
@@ -135,7 +135,7 @@ int main(int argc, char* argv[]) {
     std::cout << "Generated " << modules.size() << " modules" << std::endl;
     for (auto module: modules) {
       std::cout << "module " << module->UID() << std::endl;
-      oksdbinterfaces::ConfigObject module_config_object = module->config_object();
+      conffwk::ConfigObject module_config_object = module->config_object();
       print_object_details(module_config_object, "", confdb, "  ");
       std::cout  << " input objects "  << std::endl;
       for (auto input : module->get_inputs()) {
