@@ -55,7 +55,7 @@
         "-i",
         "{INFO_SVC}",
         "--configurationService",
-        "oksconfig:test/config/CRP4-session.data.xml"
+        "oksconflibs:test/config/CRP4-session.data.xml"
       ],
       "cmd": "daq_application",
       "comment": "Application profile using PATH variables (lower start time)",

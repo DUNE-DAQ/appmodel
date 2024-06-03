@@ -10,7 +10,7 @@
 
 #include "ModuleFactory.hpp"
 
-#include "oksdbinterfaces/Configuration.hpp"
+#include "conffwk/Configuration.hpp"
 #include "oks/kernel.hpp"
 #include "coredal/Connection.hpp"
 #include "coredal/NetworkConnection.hpp"
@@ -33,7 +33,7 @@ using namespace dunedaq::appdal;
 
 static ModuleFactory::Registrator
 __reg__("HSIEventToTCApplication", [] (const SmartDaqApplication* smartApp,
-                             oksdbinterfaces::Configuration* confdb,
+                             conffwk::Configuration* confdb,
                              const std::string& dbfile,
                              const coredal::Session* session) -> ModuleFactory::ReturnType
   {
@@ -43,7 +43,7 @@ __reg__("HSIEventToTCApplication", [] (const SmartDaqApplication* smartApp,
   );
 
 std::vector<const coredal::DaqModule*> 
-HSIEventToTCApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
+HSIEventToTCApplication::generate_modules(conffwk::Configuration* confdb,
                                      const std::string& dbfile,
                                      const coredal::Session* session) const
 {
@@ -51,7 +51,7 @@ HSIEventToTCApplication::generate_modules(oksdbinterfaces::Configuration* confdb
 
 
   std::string hstcUid("module-" + UID());
-  oksdbinterfaces::ConfigObject hstcObj;
+  conffwk::ConfigObject hstcObj;
   TLOG_DEBUG(7) << "creating OKS configuration object for the DataSubscriber class ";
   confdb->create(dbfile, "DataSubscriber", hstcUid, hstcObj);
 
@@ -62,14 +62,14 @@ HSIEventToTCApplication::generate_modules(oksdbinterfaces::Configuration* confdb
     throw(BadConf(ERS_HERE, "No HSI2TCTranslatorConf configuration given"));
   }
 
-  oksdbinterfaces::ConfigObject inObj;
-  oksdbinterfaces::ConfigObject outObj;
+  conffwk::ConfigObject inObj;
+  conffwk::ConfigObject outObj;
 
   for (auto rule : get_network_rules()) {
     auto endpoint_class = rule->get_endpoint_class();
     auto descriptor = rule->get_descriptor();
 
-    oksdbinterfaces::ConfigObject connObj;
+    conffwk::ConfigObject connObj;
     auto serviceObj = descriptor->get_associated_service()->config_object();
     std::string connUid(descriptor->get_uid_base());
     if (descriptor->get_data_type() == "HSIEvent") {
