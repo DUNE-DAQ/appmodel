@@ -45,7 +45,7 @@ __reg__("HSIEventToTCApplication", [] (const SmartDaqApplication* smartApp,
 std::vector<const coredal::DaqModule*> 
 HSIEventToTCApplication::generate_modules(conffwk::Configuration* confdb,
                                      const std::string& dbfile,
-                                     const coredal::Session* session) const
+                                     const coredal::Session* /*session*/) const
 {
   std::vector<const coredal::DaqModule*> modules;
 

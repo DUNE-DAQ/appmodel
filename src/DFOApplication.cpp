@@ -45,7 +45,7 @@ __reg__("DFOApplication", [] (const SmartDaqApplication* smartApp,
 std::vector<const coredal::DaqModule*> 
 DFOApplication::generate_modules(conffwk::Configuration* confdb,
                                      const std::string& dbfile,
-                                     const coredal::Session* session) const
+                                     const coredal::Session* /*session*/) const
 {
   std::vector<const coredal::DaqModule*> modules;
 
