@@ -143,15 +143,18 @@
  </rel>
  <rel name="actions">
   <ref class="FSMaction" id="user-provided-run-number">
-  <ref class="FSMactionFileLogbook" id="file-logbook">
+  <ref class="FSMaction" id="file-logbook">
   <ref class="FSMaction" id="file-run-registry">
+  <ref class="FSMaction" id="thread-pinning">
  </rel>
  <rel name="pre_transitions">
   <ref class="FSMxTransition" id="pre_start"/>
+  <ref class="FSMxTransition" id="pre_conf"/>
  </rel>
  <rel name="post_transitions">
   <ref class="FSMxTransition" id="post_start"/>
   <ref class="FSMxTransition" id="post_drain_dataflow"/>
+  <ref class="FSMxTransition" id="post_conf"/>
  </rel>
 </obj>
 
@@ -190,9 +193,36 @@
 <obj class="FSMaction" id="file-run-registry">
  <attr name="name" type="string" val="file-run-registry"/>
 </obj>
-<obj class="FSMactionFileLogbook" id="file-logbook">
+<obj class="FSMaction" id="file-logbook">
  <attr name="name" type="string" val="file-logbook"/>
- <attr name="file_name" type="string" val="logbook.txt"/>
+ <rel name="parameters">
+  <ref class="Variable" id="file-logbook-file-name"/>
+ </rel>
+</obj>
+<obj class="Variable" id="file-logbook-file-name">
+ <attr name="name" type="string" val="file_name"/>
+ <attr name="value" type="string" val="logbook.txt"/>
+</obj>
+
+<obj class="FSMaction" id="thread-pinning">
+ <attr name="name" type="string" val="thread-pinning"/>
+ <rel name="parameters">
+  <ref class="Variable" id="thread-pinning-file-pre-conf"/>
+  <ref class="Variable" id="thread-pinning-file-post-conf"/>
+  <ref class="Variable" id="thread-pinning-file-post-start"/>
+ </rel>
+</obj>
+<obj class="Variable" id="thread-pinning-file-pre-conf">
+ <attr name="name" type="string" val="pre_conf"/>
+ <attr name="value" type="string" val="/cvmfs/dunedaq.opensciencegrid.org/spack/releases/coredaq-v5.0.0-a9-1/spack-0.20.0/opt/spack/linux-almalinux9-x86_64/gcc-12.1.0/readoutlibs-v2.1.0-kkwlcckeyl7ltarpbd5bn6fn2nczjqmp/share/config/cpupins/cpupin-example.json"/>
+</obj>
+<obj class="Variable" id="thread-pinning-file-post-conf">
+ <attr name="name" type="string" val="post_conf"/>
+ <attr name="value" type="string" val="/cvmfs/dunedaq.opensciencegrid.org/spack/releases/coredaq-v5.0.0-a9-1/spack-0.20.0/opt/spack/linux-almalinux9-x86_64/gcc-12.1.0/readoutlibs-v2.1.0-kkwlcckeyl7ltarpbd5bn6fn2nczjqmp/share/config/cpupins/cpupin-example.json"/>
+</obj>
+<obj class="Variable" id="thread-pinning-file-post-start">
+ <attr name="name" type="string" val="post_start"/>
+ <attr name="value" type="string" val="/cvmfs/dunedaq.opensciencegrid.org/spack/releases/coredaq-v5.0.0-a9-1/spack-0.20.0/opt/spack/linux-almalinux9-x86_64/gcc-12.1.0/readoutlibs-v2.1.0-kkwlcckeyl7ltarpbd5bn6fn2nczjqmp/share/config/cpupins/cpupin-example.json"/>
 </obj>
 
 <obj class="FSMsequence" id="shutdown">
@@ -278,6 +308,30 @@
  <attr name="transition" type="string" val="start"/>
  <attr name="order" type="string">
   <data val="file-logbook"/>
+  <data val="thread-pinning"/>
+ </attr>
+ <attr name="mandatory" type="string">
+  <data val="thread-pinning"/>
+ </attr>
+</obj>
+
+<obj class="FSMxTransition" id="pre_conf">
+ <attr name="transition" type="string" val="conf"/>
+ <attr name="order" type="string">
+  <data val="thread-pinning"/>
+ </attr>
+ <attr name="mandatory" type="string">
+  <data val="thread-pinning"/>
+ </attr>
+</obj>
+
+<obj class="FSMxTransition" id="post_conf">
+ <attr name="transition" type="string" val="conf"/>
+ <attr name="order" type="string">
+  <data val="thread-pinning"/>
+ </attr>
+ <attr name="mandatory" type="string">
+  <data val="thread-pinning"/>
  </attr>
 </obj>
 
