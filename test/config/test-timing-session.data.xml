@@ -71,7 +71,7 @@
  <file path="config/appdal/fsm-timing.data.xml"/>
  <file path="test/config/hosts.data.xml"/>
  <file path="test/config/dummy-readoutmap.data.xml"/>
-
+ <file path="config/appdal/connections.data.xml"/>
 </include>
 
 <comments>
@@ -326,7 +326,7 @@
  <attr name="application_name" type="string" val="drunc-controller"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="fsm" class="FSMconfiguration" id="fsm_timing"/>
- <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-timing"/>
+ <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
  <rel name="exposes_service">
    <ref class="Service" id="timing-controller_control">
  </rel>

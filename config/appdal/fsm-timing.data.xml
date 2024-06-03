@@ -128,11 +128,36 @@
   <ref class="FSMtransition" id="stop_scanning_endpoints"/>
   <ref class="FSMtransition" id="send_master_fl_command"/>
  </rel>
+ <rel name="actions">
+  <ref class="FSMaction" id="send-master-fl-command">
+ </rel>
+ <rel name="pre_transitions">
+  <ref class="FSMxTransition" id="pre_send_master_fl_command"/>
+ </rel>
+</obj>
+
+<obj class="FSMaction" id="send-master-fl-command">
+ <attr name="name" type="string" val="send-master-fl-command"/>
+</obj>
+
+<obj class="FSMxTransition" id="pre_send_master_fl_command">
+ <attr name="transition" type="string" val="send_master_fl_command"/>
+ <attr name="order" type="string">
+  <data val="send-master-fl-command"/>
+ </attr>
+ <attr name="mandatory" type="string">
+  <data val="send-master-fl-command"/>
+ </attr>
 </obj>
 
 <obj class="FSMtransition" id="conf">
  <attr name="source" type="string" val="initial"/>
  <attr name="dest" type="string" val="configured"/>
+</obj>
+
+<obj class="FSMtransition" id="scrap">
+ <attr name="source" type="string" val="configured"/>
+ <attr name="dest" type="string" val="initial"/>
 </obj>
 
 <obj class="FSMtransition" id="start_scanning_endpoints">
