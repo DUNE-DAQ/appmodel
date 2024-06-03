@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="ASCII"?>
+
+<!-- oks-data version 2.2 -->
+
+
+<!DOCTYPE oks-data [
+  <!ELEMENT oks-data (info, (include)?, (comments)?, (obj)+)>
+  <!ELEMENT info EMPTY>
+  <!ATTLIST info
+      name CDATA #IMPLIED
+      type CDATA #IMPLIED
+      num-of-items CDATA #REQUIRED
+      oks-format CDATA #FIXED "data"
+      oks-version CDATA #REQUIRED
+      created-by CDATA #IMPLIED
+      created-on CDATA #IMPLIED
+      creation-time CDATA #IMPLIED
+      last-modified-by CDATA #IMPLIED
+      last-modified-on CDATA #IMPLIED
+      last-modification-time CDATA #IMPLIED
+  >
+  <!ELEMENT include (file)*>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+      path CDATA #REQUIRED
+  >
+  <!ELEMENT comments (comment)*>
+  <!ELEMENT comment EMPTY>
+  <!ATTLIST comment
+      creation-time CDATA #REQUIRED
+      created-by CDATA #REQUIRED
+      created-on CDATA #REQUIRED
+      author CDATA #REQUIRED
+      text CDATA #REQUIRED
+  >
+  <!ELEMENT obj (attr | rel)*>
+  <!ATTLIST obj
+      class CDATA #REQUIRED
+      id CDATA #REQUIRED
+  >
+  <!ELEMENT attr (data)*>
+  <!ATTLIST attr
+      name CDATA #REQUIRED
+      type (bool|s8|u8|s16|u16|s32|u32|s64|u64|float|double|date|time|string|uid|enum|class|-) "-"
+      val CDATA ""
+  >
+  <!ELEMENT data EMPTY>
+  <!ATTLIST data
+      val CDATA #REQUIRED
+  >
+  <!ELEMENT rel (ref)*>
+  <!ATTLIST rel
+      name CDATA #REQUIRED
+      class CDATA ""
+      id CDATA ""
+  >
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref
+      class CDATA #REQUIRED
+      id CDATA #REQUIRED
+  >
+]>
+
+<oks-data>
+
+<info name="" type="" num-of-items="15" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="glehmann" last-modified-on="np04-srv-019.cern.ch" last-modification-time="20240403T081943"/>
+
+<include>
+ <file path="schema/coredal/dunedaq.schema.xml"/>
+ <file path="schema/appdal/application.schema.xml"/>
+ <file path="config/appdal/fsm-timing.data.xml"/>
+ <file path="test/config/hosts.data.xml"/>
+ <file path="test/config/dummy-readoutmap.data.xml"/>
+
+</include>
+
+<comments>
+ <comment creation-time="20231207T110014" created-by="gjc" created-on="thinkpad" author="gjc" text="j"/>
+ <comment creation-time="20231207T111607" created-by="gjc" created-on="thinkpad" author="gjc" text="u"/>
+ <comment creation-time="20231207T111909" created-by="gjc" created-on="thinkpad" author="gjc" text="h"/>
+ <comment creation-time="20231207T112252" created-by="gjc" created-on="thinkpad" author="gjc" text="g"/>
+ <comment creation-time="20231207T113214" created-by="gjc" created-on="thinkpad" author="gjc" text="u"/>
+ <comment creation-time="20240208T095535" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="reformat"/>
+ <comment creation-time="20240220T094213" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="updated configuration to use a dedicated app for TA making"/>
+ <comment creation-time="20240403T064226" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="glehmann" text="simplify"/>
+ <comment creation-time="20240403T081943" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="glehmann" text="add all pieces back"/>
+</comments>
+
+<obj class="DetectorConfig" id="dummy-detector">
+ <attr name="tpg_channel_map" type="string" val="PD2HDChannelMap"/>
+ <attr name="clock_speed_hz" type="u32" val="62500000"/>
+ <attr name="op_env" type="string" val="test"/>
+</obj>
+
+
+
+<obj class="Service" id="daq-k8s-opmon-service">
+    <attr name="protocol" val="kafka"/>
+    <attr name="port" val="30092"/>
+    <attr name="path" val="/opmon"/>
+</obj>
+
+<obj class="Service" id="local-opmon-service">
+    <attr name="protocol" val="file"/>
+    <attr name="port" val=""/>
+    <attr name="path" val="info.json"/> <!-- BUG, should be keyed with the application name, which isn't available here... Hopefully, this behaves correctly and appends the file for all the apps... (-_o) see you on the other side -->
+</obj>
+
+<obj class="OpMonService" id="cern-opmon-application-service">
+ <attr name="application_name" val="sh"> <!-- just in case someone has the idea to do something with infrastructure_applications... -->
+ <attr name="commandline_parameters" type="string">
+  <data val="-c"/>
+  <data val="echo Not starting kafka/grafana/postgres/influx"/>
+  <data val="&amp;&amp;"/>
+  <data val="sleep 10000"/>
+ </attr>
+ <rel name="runs_on" class="VirtualHost" id="kafka-cern-vhost"/>
+ <rel name="exposes_service">
+   <ref class="Service" id="daq-k8s-opmon-service">
+ </rel>
+</obj>
+
+<obj class="OpMonService" id="pocket-opmon-application-service">
+ <attr name="application_name" val="sh"> <!-- just in case someone has the idea to do something with infrastructure_applications... -->
+ <attr name="commandline_parameters" type="string">
+  <data val="-c"/>
+  <data val="echo Not starting kafka/grafana/postgres/influx"/>
+  <data val="&amp;&amp;"/>
+  <data val="sleep 10000"/>
+ </attr>
+ <rel name="runs_on" class="VirtualHost" id="kafka-pocket-vhost"/>
+ <rel name="exposes_service">
+   <ref class="Service" id="daq-k8s-opmon-service">
+ </rel>
+</obj>
+
+<obj class="OpMonService" id="local-opmon-application-service">
+ <attr name="application_name" val="sh"> <!-- just in case someone has the idea to do something with infrastructure_applications... -->
+ <attr name="commandline_parameters" type="string">
+  <data val="-c"/>
+  <data val="echo This service doesnt need any executable"/>
+  <data val="&amp;&amp;"/>
+  <data val="sleep 10000"/>
+ </attr>
+ <rel name="runs_on" class="VirtualHost" id="vlocalhost"/><!-- whatever, really -->
+ <rel name="exposes_service">
+   <ref class="Service" id="local-opmon-service">
+ </rel>
+</obj>
+
+
+
+<obj class="Session" id="timing-session">
+ <attr name="use_connectivity_server" type="bool" val="1"/> <!-- Should delete and check for connectivity_service in infrastructure_application instead -->
+ <attr name="connectivity_service_interval_ms" type="u32" val="2000"/>
+ <attr name="data_request_timeout_ms" type="u32" val="1000"/>
+ <attr name="data_rate_slowdown_factor" type="u32" val="1"/>
+ <attr name="rte_script" type="string" val="">
+ <rel name="infrastructure_applications">
+  <ref class="OpMonService" id="cern-opmon-application-service">
+ </rel>
+ <rel name="environment">
+  <ref class="Variable" id="session-env-session-name-0"/>
+  <ref class="Variable" id="session-env-session-name-1"/>
+  <ref class="Variable" id="session-env-ers-verb"/>
+  <ref class="Variable" id="session-env-ers-info"/>
+  <ref class="Variable" id="session-env-ers-warning"/>
+  <ref class="Variable" id="session-env-ers-error"/>
+  <ref class="Variable" id="session-env-ers-fatal"/>
+  <ref class="Variable" id="session-env-connectivity-server"/>
+  <ref class="Variable" id="session-env-connectivity-port"/>
+  <ref class="Variable" id="daqapp-cli-monitoring"/>
+  <ref class="Variable" id="daqapp-cli-configuration"/>
+ </rel>
+ <rel name="disabled">
+  <ref class="ReadoutGroup" id="rog-3"/>
+  <ref class="ReadoutGroup" id="rog-2"/>
+ </rel>
+ <rel name="segment" class="Segment" id="timing-segment"/>
+ <rel name="detector_configuration" class="DetectorConfig" id="dummy-detector"/>
+ <rel name="readout_map" class="ReadoutMap" id="dummyRoMap"/>
+</obj>
+
+<obj class="Variable" id="daqapp-cli-configuration">
+ <attr name="name" type="string" val="DAQAPP_CLI_CONFIG_SVC"/>
+ <attr name="value" type="string" val="oksconflibs:test/config/test-timing-session.data.xml"/>
+</obj>
+
+<obj class="Variable" id="daqapp-cli-monitoring">
+ <attr name="name" type="string" val="DAQAPP_CLI_INFO_SVC"/>
+ <attr name="value" type="string" val="kafka://monkafka.cern.ch:30092/opmon"/>
+</obj>
+
+<obj class="Variable" id="session-env-connectivity-port">
+ <attr name="name" type="string" val="CONNECTION_PORT"/>
+ <attr name="value" type="string" val="30005"/>
+</obj>
+
+<obj class="Variable" id="session-env-connectivity-server">
+ <attr name="name" type="string" val="CONNECTION_SERVER"/>
+ <attr name="value" type="string" val="np04-srv-017"/>
+</obj>
+
+<obj class="Variable" id="session-env-ers-error">
+ <attr name="name" type="string" val="DUNEDAQ_ERS_ERROR"/>
+ <attr name="value" type="string" val="erstrace,throttle,lstdout,protobufstream(monkafka.cern.ch:30092)"/>
+</obj>
+
+<obj class="Variable" id="session-env-ers-fatal">
+ <attr name="name" type="string" val="DUNEDAQ_ERS_FATAL"/>
+ <attr name="value" type="string" val="erstrace,lstdout,protobufstream(monkafka.cern.ch:30092)"/>
+</obj>
+
+<obj class="Variable" id="session-env-ers-info">
+ <attr name="name" type="string" val="DUNEDAQ_ERS_INFO"/>
+ <attr name="value" type="string" val="erstrace,throttle,lstdout,protobufstream(monkafka.cern.ch:30092)"/>
+</obj>
+
+<obj class="Variable" id="session-env-ers-verb">
+ <attr name="name" type="string" val="DUNEDAQ_ERS_VERBOSITY_LEVEL"/>
+ <attr name="value" type="string" val="1"/>
+</obj>
+
+<obj class="Variable" id="session-env-ers-warning">
+ <attr name="name" type="string" val="DUNEDAQ_ERS_WARNING"/>
+ <attr name="value" type="string" val="erstrace,throttle,lstdout,protobufstream(monkafka.cern.ch:30092)"/>
+</obj>
+
+<obj class="Variable" id="session-env-session-name-0">
+ <attr name="name" type="string" val="DUNEDAQ_PARTITION"/>
+ <attr name="value" type="string" val="timing-session"/>
+</obj>
+
+<obj class="Variable" id="session-env-session-name-1">
+ <attr name="name" type="string" val="DUNEDAQ_SESSION"/>
+ <attr name="value" type="string" val="timing-session"/>
+</obj>
+
+
+<obj class="Service" id="hsi-01_control">
+  <attr name="protocol" val="rest"/>
+  <attr name="port" val="5801"/>
+</obj>
+
+
+<obj class="FakeHSIApplication" id="hsi-01">
+ <attr name="application_name" type="string" val="daq_application"/>
+ <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="source_id" class="SourceIDConf" id="hsi-srcid-01"/>
+ <rel name="queue_rules">
+  <ref class="QueueConnectionRule" id="hsi-dlh-data-requests-queue-rule"/>
+ </rel>
+ <rel name="network_rules">
+  <ref class="NetworkConnectionRule" id="hsi-rule"/>
+  <ref class="NetworkConnectionRule" id="data-req-hsi-net-rule"/>
+  <ref class="NetworkConnectionRule" id="ts-hsi-net-rule"/>
+ </rel>
+ <rel name="exposes_service">
+  <ref class="Service" id="hsi-01_control">
+ </rel>
+ <rel name="link_handler" class="ReadoutModuleConf" id="def-hsi-handler"/>
+ <rel name="generator" class="FakeHSIEventGeneratorConf" id="fakehsi"/>
+</obj>
+
+<obj class="FakeHSIEventGeneratorConf" id="fakehsi">
+ <attr name="clock_frequency" type="u64" val="62500000"/>
+ <attr name="trigger_rate" type="double" val="3"/>
+ <attr name="hsi_device_id" type="u32" val="1"/>
+ <attr name="mean_signal_multiplicity" type="u32" val="1"/>
+ <attr name="enabled_signals" type="u32" val="1"/>
+</obj>
+
+<obj class="HSIFrameProcessor" id="def-hsi-processor">
+ <attr name="queue_sizes" type="u32" val="10000"/>
+ <attr name="thread_names_prefix" type="string" val="hsip"/>
+ <attr name="mask_processing" type="bool" val="0"/>
+</obj>
+
+<obj class="LatencyBuffer" id="hsilatencybuffer-generic">
+ <attr name="size" type="u32" val="100000"/>
+ <attr name="numa_aware" type="bool" val="0"/>
+ <attr name="intrinsic_allocator" type="bool" val="0"/>
+ <attr name="preallocation" type="bool" val="0"/>
+</obj>
+
+
+<obj class="ReadoutModuleConf" id="def-hsi-handler">
+ <attr name="template_for" type="class" val="HSIDataLinkHandler"/>
+ <attr name="input_data_type" type="string" val="HSIFrame"/>
+ <attr name="generate_timesync" type="bool" val="1"/>
+ <rel name="request_handler" class="RequestHandler" id="hsi-requesthandler-generic"/>
+ <rel name="latency_buffer" class="LatencyBuffer" id="hsilatencybuffer-generic"/>
+ <rel name="data_processor" class="HSIFrameProcessor" id="def-hsi-processor"/>
+</obj>
+
+<obj class="RequestHandler" id="hsi-requesthandler-generic">
+ <attr name="handler_threads" type="u16" val="4"/>
+ <attr name="request_timeout" type="u32" val="1000"/>
+ <attr name="pop_limit_pct" type="float" val="0.8"/>
+ <attr name="pop_size_pct" type="float" val="0.1"/>
+ <attr name="warn_on_timeout" type="bool" val="1"/>
+ <attr name="warn_on_empty_buffer" type="bool" val="0"/>
+</obj>
+
+
+<obj class="Segment" id="timing-segment">
+ <rel name="applications">
+  <ref class="FakeHSIApplication" id="hsi-01"/>
+ </rel>
+ <rel name="controller" class="RCApplication" id="timing-controller"/>
+</obj>
+
+<obj class="SourceIDConf" id="hsi-srcid-01">
+ <attr name="sid" type="u32" val="1"/>
+ <attr name="subsystem" type="enum" val="HW_Signals_Interface"/>
+</obj>
+
+
+<obj class="Service" id="timing-controller_control">
+ <attr name="protocol" type="string" val="grpc"/>
+ <attr name="port" type="u16" val="2222"/>
+ <attr name="eth_device_name" type="string" val=""/>
+</obj>
+
+<obj class="RCApplication" id="timing-controller">
+ <attr name="application_name" type="string" val="drunc-controller"/>
+ <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="fsm" class="FSMconfiguration" id="fsm_timing"/>
+ <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-timing"/>
+ <rel name="exposes_service">
+   <ref class="Service" id="timing-controller_control">
+ </rel>
+</obj>
+
+
+</oks-data>
