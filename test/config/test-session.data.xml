@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="15" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="glehmann" last-modified-on="np04-srv-019.cern.ch" last-modification-time="20240403T081943"/>
+<info name="" type="" num-of-items="21" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240603T150546"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -86,6 +86,7 @@
  <comment creation-time="20240220T094213" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="updated configuration to use a dedicated app for TA making"/>
  <comment creation-time="20240403T064226" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="glehmann" text="simplify"/>
  <comment creation-time="20240403T081943" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="glehmann" text="add all pieces back"/>
+ <comment creation-time="20240603T150546" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="glehmann" text=" "/>
 </comments>
 
 
@@ -95,20 +96,56 @@
  <attr name="op_env" type="string" val="test"/>
 </obj>
 
-<obj class="Service" id="root-controller_control">
- <attr name="protocol" type="string" val="grpc"/>
- <attr name="port" type="u16" val="3333"/>
- <attr name="eth_device_name" type="string" val=""/>
+<obj class="OpMonService" id="cern-opmon-application-service">
+ <attr name="application_name" type="string" val="sh"/>
+ <attr name="commandline_parameters" type="string">
+  <data val="-c"/>
+  <data val="echo Not starting kafka/grafana/postgres/influx"/>
+  <data val="&amp;&amp;"/>
+  <data val="sleep 10000"/>
+ </attr>
+ <rel name="runs_on" class="VirtualHost" id="kafka-cern-vhost"/>
+ <rel name="exposes_service">
+  <ref class="Service" id="daq-k8s-opmon-service"/>
+ </rel>
+</obj>
+
+<obj class="OpMonService" id="local-opmon-application-service">
+ <attr name="application_name" type="string" val="sh"/>
+ <attr name="commandline_parameters" type="string">
+  <data val="-c"/>
+  <data val="echo This service doesnt need any executable"/>
+  <data val="&amp;&amp;"/>
+  <data val="sleep 10000"/>
+ </attr>
+ <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="exposes_service">
+  <ref class="Service" id="local-opmon-service"/>
+ </rel>
+</obj>
+
+<obj class="OpMonService" id="pocket-opmon-application-service">
+ <attr name="application_name" type="string" val="sh"/>
+ <attr name="commandline_parameters" type="string">
+  <data val="-c"/>
+  <data val="echo Not starting kafka/grafana/postgres/influx"/>
+  <data val="&amp;&amp;"/>
+  <data val="sleep 10000"/>
+ </attr>
+ <rel name="runs_on" class="VirtualHost" id="kafka-pocket-vhost"/>
+ <rel name="exposes_service">
+  <ref class="Service" id="daq-k8s-opmon-service"/>
+ </rel>
 </obj>
 
 <obj class="RCApplication" id="root-controller">
  <attr name="application_name" type="string" val="drunc-controller"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="exposes_service">
+  <ref class="Service" id="root-controller_control"/>
+ </rel>
  <rel name="fsm" class="FSMconfiguration" id="fsmConf-1"/>
  <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
- <rel name="exposes_service">
-   <ref class="Service" id="root-controller_control">
- </rel>
 </obj>
 
 <obj class="Segment" id="root-segment">
@@ -121,73 +158,28 @@
  <rel name="controller" class="RCApplication" id="root-controller"/>
 </obj>
 
-
 <obj class="Service" id="daq-k8s-opmon-service">
-    <attr name="protocol" val="kafka"/>
-    <attr name="port" val="30092"/>
-    <attr name="path" val="/opmon"/>
+ <attr name="protocol" type="string" val="kafka"/>
+ <attr name="port" type="u16" val="30092"/>
+ <attr name="path" type="string" val="/opmon"/>
 </obj>
 
 <obj class="Service" id="local-opmon-service">
-    <attr name="protocol" val="file"/>
-    <attr name="port" val=""/>
-    <attr name="path" val="info.json"/> <!-- BUG, should be keyed with the application name, which isn't available here... Hopefully, this behaves correctly and appends the file for all the apps... (-_o) see you on the other side -->
+ <attr name="protocol" type="string" val="file"/>
+ <attr name="port" type="u16" val="0"/>
+ <attr name="path" type="string" val="info.json"/>
 </obj>
 
-<obj class="OpMonService" id="cern-opmon-application-service">
- <attr name="application_name" val="sh"> <!-- just in case someone has the idea to do something with infrastructure_applications... -->
- <attr name="commandline_parameters" type="string">
-  <data val="-c"/>
-  <data val="echo Not starting kafka/grafana/postgres/influx"/>
-  <data val="&amp;&amp;"/>
-  <data val="sleep 10000"/>
- </attr>
- <rel name="runs_on" class="VirtualHost" id="kafka-cern-vhost"/>
- <rel name="exposes_service">
-   <ref class="Service" id="daq-k8s-opmon-service">
- </rel>
+<obj class="Service" id="root-controller_control">
+ <attr name="protocol" type="string" val="grpc"/>
+ <attr name="port" type="u16" val="3333"/>
 </obj>
-
-<obj class="OpMonService" id="pocket-opmon-application-service">
- <attr name="application_name" val="sh"> <!-- just in case someone has the idea to do something with infrastructure_applications... -->
- <attr name="commandline_parameters" type="string">
-  <data val="-c"/>
-  <data val="echo Not starting kafka/grafana/postgres/influx"/>
-  <data val="&amp;&amp;"/>
-  <data val="sleep 10000"/>
- </attr>
- <rel name="runs_on" class="VirtualHost" id="kafka-pocket-vhost"/>
- <rel name="exposes_service">
-   <ref class="Service" id="daq-k8s-opmon-service">
- </rel>
-</obj>
-
-<obj class="OpMonService" id="local-opmon-application-service">
- <attr name="application_name" val="sh"> <!-- just in case someone has the idea to do something with infrastructure_applications... -->
- <attr name="commandline_parameters" type="string">
-  <data val="-c"/>
-  <data val="echo This service doesnt need any executable"/>
-  <data val="&amp;&amp;"/>
-  <data val="sleep 10000"/>
- </attr>
- <rel name="runs_on" class="VirtualHost" id="vlocalhost"/><!-- whatever, really -->
- <rel name="exposes_service">
-   <ref class="Service" id="local-opmon-service">
- </rel>
-</obj>
-
-
 
 <obj class="Session" id="test-session">
- <attr name="use_connectivity_server" type="bool" val="1"/> <!-- Should delete and check for connectivity_service in infrastructure_application instead -->
+ <attr name="use_connectivity_server" type="bool" val="1"/>
  <attr name="connectivity_service_interval_ms" type="u32" val="2000"/>
  <attr name="data_request_timeout_ms" type="u32" val="1000"/>
  <attr name="data_rate_slowdown_factor" type="u32" val="1"/>
- <attr name="rte_script" type="string" val="">
- <rel name="infrastructure_applications">
-  <ref class="OpMonService" id="cern-opmon-application-service">
-  <!--   <ref name="connectivity_service" id="session-connectivity_service"> -->
- </rel>
  <rel name="environment">
   <ref class="Variable" id="session-env-session-name-0"/>
   <ref class="Variable" id="session-env-session-name-1"/>
@@ -202,12 +194,14 @@
   <ref class="Variable" id="daqapp-cli-configuration"/>
  </rel>
  <rel name="disabled">
-  <ref class="ReadoutGroup" id="rog-3"/>
-  <ref class="ReadoutGroup" id="rog-2"/>
+  <ref class="DetectorToDaqConnection" id="det-3-connections"/>
+  <ref class="DetectorToDaqConnection" id="det-4-connections"/>
  </rel>
  <rel name="segment" class="Segment" id="root-segment"/>
+ <rel name="infrastructure_applications">
+  <ref class="OpMonService" id="cern-opmon-application-service"/>
+ </rel>
  <rel name="detector_configuration" class="DetectorConfig" id="dummy-detector"/>
- <rel name="readout_map" class="ReadoutMap" id="dummyRoMap"/>
 </obj>
 
 <obj class="Variable" id="daqapp-cli-configuration">

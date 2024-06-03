@@ -76,6 +76,30 @@
  <comment creation-time="20240208T093213" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="format"/>
 </comments>
 
+<obj class="DetectorToDaqConnection" id="det-1-connections">
+ <rel name="contains">
+  <ref class="ResourceSetAND" id="det-streams-1"/>
+  <ref class="Resource" id="dummy-nic-1"/>
+ </rel>
+</obj>
+
+<obj class="DetectorToDaqConnection" id="det-3-connections">
+ <rel name="contains">
+  <ref class="ResourceSetAND" id="det-streams-3"/>
+  <ref class="Resource" id="dummy-nic-3"/>
+ </rel>
+</obj>
+
+<obj class="DetectorToDaqConnection" id="det-4-connections">
+ <rel name="contains">
+  <ref class="ResourceSetAND" id="det-streams-4"/>
+  <ref class="Resource" id="dummy-nic-4"/>
+ </rel>
+</obj>
+
+<obj class="Resource" id="dummy-nic-1"></obj>
+<obj class="Resource" id="dummy-nic-3"></obj>
+<obj class="Resource" id="dummy-nic-4"></obj>
 
 <obj class="DROStreamConf" id="dummyStream-1">
  <attr name="source_id" type="u32" val="1"/>
@@ -129,48 +153,22 @@
  <attr name="stream_id" type="u32" val="0"/>
 </obj>
 
-<obj class="ReadoutGroup" id="rog-1">
- <rel name="contains">
-  <ref class="ReadoutInterface" id="ROInterface-1"/>
- </rel>
-</obj>
-
-<obj class="ReadoutGroup" id="rog-2">
- <rel name="contains">
-  <ref class="ReadoutInterface" id="ROInterface-2"/>
- </rel>
-</obj>
-
-<obj class="ReadoutGroup" id="rog-3">
- <rel name="contains">
-  <ref class="ReadoutInterface" id="ROInterface-3"/>
- </rel>
-</obj>
-
-<obj class="ReadoutInterface" id="ROInterface-1">
+<obj class="ResourceSetAND" id="det-streams-1">
  <rel name="contains">
   <ref class="DROStreamConf" id="dummyStream-1"/>
   <ref class="DROStreamConf" id="dummyStream-2"/>
  </rel>
 </obj>
 
-<obj class="ReadoutInterface" id="ROInterface-2">
+<obj class="ResourceSetAND" id="det-streams-3">
  <rel name="contains">
   <ref class="DROStreamConf" id="dummyStream-3"/>
  </rel>
 </obj>
 
-<obj class="ReadoutInterface" id="ROInterface-3">
+<obj class="ResourceSetAND" id="det-streams-4">
  <rel name="contains">
   <ref class="DROStreamConf" id="dummyStream-4"/>
- </rel>
-</obj>
-
-<obj class="ReadoutMap" id="dummyRoMap">
- <rel name="groups">
-  <ref class="ReadoutGroup" id="rog-1"/>
-  <ref class="ReadoutGroup" id="rog-2"/>
-  <ref class="ReadoutGroup" id="rog-3"/>
  </rel>
 </obj>
 
