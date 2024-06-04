@@ -114,7 +114,7 @@
  <attr name="optional" type="bool" val="0"/>
 </obj>
 
-<obj class="FSMconfiguration" id="fsmConf-1">
+<obj class="FSMconfiguration" id="fsmConf-prod">
  <attr name="states" type="string">
   <data val="initial"/>
   <data val="configured"/>
@@ -153,6 +153,46 @@
  <rel name="post_transitions">
   <ref class="FSMxTransition" id="post_start"/>
   <ref class="FSMxTransition" id="post_drain_dataflow"/>
+ </rel>
+</obj>
+
+<obj class="FSMconfiguration" id="fsmConf-test">
+ <attr name="states" type="string">
+  <data val="initial"/>
+  <data val="configured"/>
+  <data val="ready"/>
+  <data val="running"/>
+  <data val="paused"/>
+  <data val="dataflow_drained"/>
+  <data val="trigger_sources_stopped"/>
+  <data val="error"/>
+ </attr>
+ <attr name="initial_state" type="string" val="initial"/>
+ <rel name="transitions">
+  <ref class="FSMtransition" id="conf"/>
+  <ref class="FSMtransition" id="start"/>
+  <ref class="FSMtransition" id="enable_triggers"/>
+  <ref class="FSMtransition" id="disable_triggers"/>
+  <ref class="FSMtransition" id="drain_dataflow"/>
+  <ref class="FSMtransition" id="stop_trigger_sources"/>
+  <ref class="FSMtransition" id="stop"/>
+  <ref class="FSMtransition" id="scrap"/>
+ </rel>
+ <rel name="command_sequences">
+  <ref class="FSMsequence" id="shutdown"/>
+  <ref class="FSMsequence" id="start_run"/>
+  <ref class="FSMsequence" id="stop_run"/>
+ </rel>
+ <rel name="actions">
+  <ref class="FSMaction" id="usvc-provided-run-number">
+  <ref class="FSMactionFileLogbook" id="file-logbook">
+  <ref class="FSMaction" id="file-run-registry">
+ </rel>
+ <rel name="pre_transitions">
+  <ref class="FSMxTransition" id="pre_start"/>
+ </rel>
+ <rel name="post_transitions">
+  <ref class="FSMxTransition" id="post_start"/>
  </rel>
 </obj>
 
