@@ -172,10 +172,6 @@
   <ref class="Variable" id="daqapp-cli-monitoring"/>
   <ref class="Variable" id="daqapp-cli-configuration"/>
  </rel>
- <rel name="disabled">
-  <ref class="ReadoutGroup" id="rog-3"/>
-  <ref class="ReadoutGroup" id="rog-2"/>
- </rel>
  <rel name="segment" class="Segment" id="timing-segment"/>
  <rel name="detector_configuration" class="DetectorConfig" id="dummy-detector"/>
  <rel name="readout_map" class="ReadoutMap" id="dummyRoMap"/>
