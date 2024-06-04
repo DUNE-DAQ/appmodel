@@ -212,7 +212,7 @@
 
 <obj class="Variable" id="daqapp-cli-configuration">
  <attr name="name" type="string" val="DAQAPP_CLI_CONFIG_SVC"/>
- <attr name="value" type="string" val="oksconfig:test/config/test-session.data.xml"/>
+ <attr name="value" type="string" val="oksconflibs:test/config/test-session.data.xml"/>
 </obj>
 
 <obj class="Variable" id="daqapp-cli-monitoring">

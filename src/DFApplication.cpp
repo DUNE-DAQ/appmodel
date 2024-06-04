@@ -29,7 +29,7 @@
 #include "coredal/Service.hpp"
 #include "logging/Logging.hpp"
 #include "oks/kernel.hpp"
-#include "oksdbinterfaces/Configuration.hpp"
+#include "conffwk/Configuration.hpp"
 
 #include <string>
 #include <vector>
@@ -39,7 +39,7 @@ using namespace dunedaq::appdal;
 
 static ModuleFactory::Registrator __reg__("DFApplication",
                                           [](const SmartDaqApplication* smartApp,
-                                             oksdbinterfaces::Configuration* confdb,
+                                             conffwk::Configuration* confdb,
                                              const std::string& dbfile,
                                              const coredal::Session* session) -> ModuleFactory::ReturnType {
                                             auto app = smartApp->cast<DFApplication>();
@@ -47,7 +47,7 @@ static ModuleFactory::Registrator __reg__("DFApplication",
                                           });
 
 inline void
-fill_queue_object_from_desc(const QueueDescriptor* qDesc, oksdbinterfaces::ConfigObject& qObj)
+fill_queue_object_from_desc(const QueueDescriptor* qDesc, conffwk::ConfigObject& qObj)
 {
   qObj.set_by_val<std::string>("data_type", qDesc->get_data_type());
   qObj.set_by_val<std::string>("queue_type", qDesc->get_queue_type());
@@ -55,7 +55,7 @@ fill_queue_object_from_desc(const QueueDescriptor* qDesc, oksdbinterfaces::Confi
 }
 
 inline void
-fill_netconn_object_from_desc(const NetworkConnectionDescriptor* netDesc, oksdbinterfaces::ConfigObject& netObj)
+fill_netconn_object_from_desc(const NetworkConnectionDescriptor* netDesc, conffwk::ConfigObject& netObj)
 {
   netObj.set_by_val<std::string>("data_type", netDesc->get_data_type());
   netObj.set_by_val<std::string>("connection_type", netDesc->get_connection_type());
@@ -65,7 +65,7 @@ fill_netconn_object_from_desc(const NetworkConnectionDescriptor* netDesc, oksdbi
 }
 
 std::vector<const coredal::DaqModule*>
-DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
+DFApplication::generate_modules(conffwk::Configuration* confdb,
                                 const std::string& dbfile,
                                 const coredal::Session* session) const
 {
@@ -73,7 +73,7 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
   // Containers for module specific config objects for output/input
   // Prepare TRB output objects
-  std::vector<const oksdbinterfaces::ConfigObject*> trbOutputObjs;
+  std::vector<const conffwk::ConfigObject*> trbOutputObjs;
 
   // -- First, we process expected Queue and Network connections and create their objects.
 
@@ -89,7 +89,7 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     throw(BadConf(ERS_HERE, "Could not find queue descriptor rule for TriggerRecords!"));
   }
   // Create queue connection config object
-  oksdbinterfaces::ConfigObject trQueueObj;
+  conffwk::ConfigObject trQueueObj;
   std::string trQueueUid(trQDesc->get_uid_base() + UID());
   confdb->create(dbfile, "Queue", trQueueUid, trQueueObj);
   fill_queue_object_from_desc(trQDesc, trQueueObj);
@@ -125,9 +125,9 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     throw(BadConf(ERS_HERE, "Could not retrieve SourceIDConf"));
   }
   // Create network connection config object
-  oksdbinterfaces::ConfigObject fragNetObj;
-  oksdbinterfaces::ConfigObject trigdecNetObj;
-  oksdbinterfaces::ConfigObject tokenNetObj;
+  conffwk::ConfigObject fragNetObj;
+  conffwk::ConfigObject trigdecNetObj;
+  conffwk::ConfigObject tokenNetObj;
   std::string fragNetUid = fragNetDesc->get_uid_base() + UID();
   std::string trigdecNetUid = trigdecNetDesc->get_uid_base() + UID();
   std::string tokenNetUid = tokenNetDesc->get_uid_base();
@@ -141,7 +141,7 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   // Process special Network rules!
   // Looking for DataRequest rules from ReadoutAppplications in current Session
   auto sessionApps = session->get_all_applications();
-  std::vector<oksdbinterfaces::ConfigObject> dreqNetObjs;
+  std::vector<conffwk::ConfigObject> dreqNetObjs;
   for (auto app : sessionApps) {
     auto roapp = app->cast<appdal::ReadoutApplication>();
     if (roapp != nullptr) {
@@ -176,7 +176,7 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   auto trbConfObj = trbConf->config_object();
   trbConfObj.set_by_val<uint32_t>("source_id", get_source_id()->get_sid());
   // Prepare TRB Module Object and assign its Config Object.
-  oksdbinterfaces::ConfigObject trbObj;
+  conffwk::ConfigObject trbObj;
   std::string trbUid(UID() + "-trb");
   confdb->create(dbfile, "TriggerRecordBuilder", trbUid, trbObj);
   trbObj.set_obj("configuration", &trbConfObj);
@@ -194,7 +194,7 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   fnParamsObj.set_by_val<std::string>("writer_identifier", UID() + "_datawriter-1");
   auto dwrConfObj = dwrConf->config_object();
   // Prepare DataWriter Module Object and assign its Config Object.
-  oksdbinterfaces::ConfigObject dwrObj;
+  conffwk::ConfigObject dwrObj;
   std::string dwrUid(UID() + "-dw-1");
   confdb->create(dbfile, "DataWriter", dwrUid, dwrObj);
   dwrObj.set_obj("configuration", &dwrConfObj);
