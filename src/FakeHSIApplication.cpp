@@ -26,7 +26,7 @@
 #include "coredal/Service.hpp"
 #include "logging/Logging.hpp"
 #include "oks/kernel.hpp"
-#include "oksdbinterfaces/Configuration.hpp"
+#include "conffwk/Configuration.hpp"
 
 #include <iostream>
 #include <string>
@@ -37,7 +37,7 @@ using namespace dunedaq::appdal;
 
 static ModuleFactory::Registrator __reg__("FakeHSIApplication",
                                           [](const SmartDaqApplication* smartApp,
-                                             oksdbinterfaces::Configuration* confdb,
+                                             conffwk::Configuration* confdb,
                                              const std::string& dbfile,
                                              const coredal::Session* session) -> ModuleFactory::ReturnType {
                                             auto app = smartApp->cast<FakeHSIApplication>();
@@ -45,9 +45,9 @@ static ModuleFactory::Registrator __reg__("FakeHSIApplication",
                                           });
 
 std::vector<const coredal::DaqModule*>
-FakeHSIApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
+FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
                                      const std::string& dbfile,
-                                     const coredal::Session* session) const
+                                     const coredal::Session* /*session*/) const
 {
   std::vector<const coredal::DaqModule*> modules;
 
@@ -107,7 +107,7 @@ FakeHSIApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
   auto det_id = 1; // TODO Eric Flumerfelt <eflumerf@fnal.gov>, 08-Feb-2024: This is a magic number
   std::string uid("DLH-" + std::to_string(id));
-  oksdbinterfaces::ConfigObject dlhObj;
+  conffwk::ConfigObject dlhObj;
   TLOG_DEBUG(7) << "creating OKS configuration object for Data Link Handler class " << dlhClass << ", id " << id;
   confdb->create(dbfile, dlhClass, uid, dlhObj);
   dlhObj.set_by_val<uint32_t>("source_id", id);
@@ -118,7 +118,7 @@ FakeHSIApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   if (dlhConf->get_generate_timesync()) {
     std::string tsStreamUid = tsNetDesc->get_uid_base() + std::to_string(id);
     auto tsServiceObj = tsNetDesc->get_associated_service()->config_object();
-    oksdbinterfaces::ConfigObject tsNetObj;
+    conffwk::ConfigObject tsNetObj;
     confdb->create(dbfile, "NetworkConnection", tsStreamUid, tsNetObj);
     tsNetObj.set_by_val<std::string>("connection_type", tsNetDesc->get_connection_type());
     tsNetObj.set_by_val<std::string>("data_type", tsNetDesc->get_data_type());
@@ -129,7 +129,7 @@ FakeHSIApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     dlhObj.set_objs("outputs", {});
   }
   std::string dataQueueUid(dlhInputQDesc->get_uid_base() + std::to_string(id));
-  oksdbinterfaces::ConfigObject queueObj;
+  conffwk::ConfigObject queueObj;
   confdb->create(dbfile, "QueueWithId", dataQueueUid, queueObj);
   queueObj.set_by_val<std::string>("data_type", dlhInputQDesc->get_data_type());
   queueObj.set_by_val<std::string>("queue_type", dlhInputQDesc->get_queue_type());
@@ -138,7 +138,7 @@ FakeHSIApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
   auto faServiceObj = dlhReqInputNetDesc->get_associated_service()->config_object();
   std::string faNetUid = dlhReqInputNetDesc->get_uid_base() + UID();
-  oksdbinterfaces::ConfigObject faNetObj;
+  conffwk::ConfigObject faNetObj;
   confdb->create(dbfile, "NetworkConnection", faNetUid, faNetObj);
   faNetObj.set_by_val<std::string>("connection_type", dlhReqInputNetDesc->get_connection_type());
   faNetObj.set_by_val<std::string>("data_type", dlhReqInputNetDesc->get_data_type());
@@ -150,14 +150,14 @@ FakeHSIApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
   auto hsiServiceObj = hsiNetDesc->get_associated_service()->config_object();
   std::string hsiNetUid = hsiNetDesc->get_uid_base();
-  oksdbinterfaces::ConfigObject hsiNetObj;
+  conffwk::ConfigObject hsiNetObj;
   confdb->create(dbfile, "NetworkConnection", hsiNetUid, hsiNetObj);
   hsiNetObj.set_by_val<std::string>("connection_type", hsiNetDesc->get_connection_type());
   hsiNetObj.set_by_val<std::string>("data_type", hsiNetDesc->get_data_type());
   hsiNetObj.set_obj("associated_service", &hsiServiceObj);
   
   std::string genuid("FakeHSI-" + std::to_string(id));
-  oksdbinterfaces::ConfigObject fakehsiObj;
+  conffwk::ConfigObject fakehsiObj;
   confdb->create(dbfile, "FakeHSIEventGenerator", genuid, fakehsiObj);
   fakehsiObj.set_obj("configuration", &rdrConf->config_object());
   fakehsiObj.set_objs("outputs", { &queueObj, &hsiNetObj });

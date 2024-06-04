@@ -7,7 +7,7 @@
 using namespace dunedaq::appdal;
 
 std::vector<const dunedaq::coredal::DaqModule*>
-SmartDaqApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
+SmartDaqApplication::generate_modules(conffwk::Configuration* confdb,
                                       const std::string& dbfile,
                                       const coredal::Session* session) const {
   oks::OksFile::set_nolock_mode(true);
@@ -19,7 +19,7 @@ SmartDaqApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 }
 
 const std::vector<std::string> SmartDaqApplication::construct_commandline_parameters(
-    const oksdbinterfaces::Configuration& confdb,
+    const conffwk::Configuration& confdb,
     const dunedaq::coredal::Session* session) const {
     return dunedaq::coredal::construct_commandline_parameters_appfwk<dunedaq::appdal::SmartDaqApplication>(this, confdb, session);
 }

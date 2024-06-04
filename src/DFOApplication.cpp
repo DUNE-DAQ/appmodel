@@ -10,7 +10,7 @@
 
 #include "ModuleFactory.hpp"
 
-#include "oksdbinterfaces/Configuration.hpp"
+#include "conffwk/Configuration.hpp"
 #include "oks/kernel.hpp"
 #include "coredal/Connection.hpp"
 #include "coredal/NetworkConnection.hpp"
@@ -33,7 +33,7 @@ using namespace dunedaq::appdal;
 
 static ModuleFactory::Registrator
 __reg__("DFOApplication", [] (const SmartDaqApplication* smartApp,
-                             oksdbinterfaces::Configuration* confdb,
+                             conffwk::Configuration* confdb,
                              const std::string& dbfile,
                              const coredal::Session* session) -> ModuleFactory::ReturnType
   {
@@ -43,15 +43,15 @@ __reg__("DFOApplication", [] (const SmartDaqApplication* smartApp,
   );
 
 std::vector<const coredal::DaqModule*> 
-DFOApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
+DFOApplication::generate_modules(conffwk::Configuration* confdb,
                                      const std::string& dbfile,
-                                     const coredal::Session* session) const
+                                     const coredal::Session* /*session*/) const
 {
   std::vector<const coredal::DaqModule*> modules;
 
 
   std::string dfoUid("DFO-" + UID());
-  oksdbinterfaces::ConfigObject dfoObj;
+  conffwk::ConfigObject dfoObj;
   TLOG_DEBUG(7) << "creating OKS configuration object for DataFlowOrchestrator class ";
   confdb->create(dbfile, "DataFlowOrchestrator", dfoUid, dfoObj);
 
@@ -62,17 +62,17 @@ DFOApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     throw(BadConf(ERS_HERE, "No DFOConf configuration given"));
   }
 
-  std::vector<const oksdbinterfaces::ConfigObject*> output_conns;
-  std::vector<const oksdbinterfaces::ConfigObject*> input_conns;
-  oksdbinterfaces::ConfigObject tdInObj;
-  oksdbinterfaces::ConfigObject busyOutObj;
-  oksdbinterfaces::ConfigObject tokenInObj;
+  std::vector<const conffwk::ConfigObject*> output_conns;
+  std::vector<const conffwk::ConfigObject*> input_conns;
+  conffwk::ConfigObject tdInObj;
+  conffwk::ConfigObject busyOutObj;
+  conffwk::ConfigObject tokenInObj;
 
   for (auto rule : get_network_rules()) {
     auto endpoint_class = rule->get_endpoint_class();
     auto descriptor = rule->get_descriptor();
 
-    oksdbinterfaces::ConfigObject connObj;
+    conffwk::ConfigObject connObj;
     auto serviceObj = descriptor->get_associated_service()->config_object();
     std::string connUid(descriptor->get_uid_base());
     confdb->create(dbfile, "NetworkConnection", connUid, connObj);

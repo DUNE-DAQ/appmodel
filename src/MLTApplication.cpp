@@ -10,7 +10,7 @@
 
 #include "ModuleFactory.hpp"
 
-#include "oksdbinterfaces/Configuration.hpp"
+#include "conffwk/Configuration.hpp"
 
 #include "coredal/Connection.hpp"
 #include "coredal/NetworkConnection.hpp"
@@ -59,7 +59,7 @@ using namespace dunedaq::appdal;
 
 static ModuleFactory::Registrator __reg__("MLTApplication",
                                           [](const SmartDaqApplication* smartApp,
-                                             oksdbinterfaces::Configuration* confdb,
+                                             conffwk::Configuration* confdb,
                                              const std::string& dbfile,
                                              const coredal::Session* session) -> ModuleFactory::ReturnType {
                                             auto app = smartApp->cast<MLTApplication>();
@@ -76,14 +76,14 @@ static ModuleFactory::Registrator __reg__("MLTApplication",
  *
  * \ret OKS configuration object for the network connection
  */
-oksdbinterfaces::ConfigObject
+conffwk::ConfigObject
 create_mlt_network_connection(std::string uid,
                           const NetworkConnectionDescriptor* ntDesc,
-                          oksdbinterfaces::Configuration* confdb,
+                          conffwk::Configuration* confdb,
                           const std::string& dbfile)
 {
   auto ntServiceObj = ntDesc->get_associated_service()->config_object();
-  oksdbinterfaces::ConfigObject ntObj;
+  conffwk::ConfigObject ntObj;
   confdb->create(dbfile, "NetworkConnection", uid, ntObj);
   ntObj.set_by_val<std::string>("data_type", ntDesc->get_data_type());
   ntObj.set_by_val<std::string>("connection_type", ntDesc->get_connection_type());
@@ -93,7 +93,7 @@ create_mlt_network_connection(std::string uid,
 }
 
 std::vector<const coredal::DaqModule*>
-MLTApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
+MLTApplication::generate_modules(conffwk::Configuration* confdb,
                                      const std::string& dbfile,
                                      const coredal::Session* session) const
 {
@@ -137,7 +137,7 @@ MLTApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   }
 
   // Create queues
-  oksdbinterfaces::ConfigObject input_queue_obj;
+  conffwk::ConfigObject input_queue_obj;
 
   std::string queue_uid(tc_inputq_desc->get_uid_base());
   confdb->create(dbfile, "Queue", queue_uid, input_queue_obj);
@@ -145,7 +145,7 @@ MLTApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   input_queue_obj.set_by_val<std::string>("queue_type", tc_inputq_desc->get_queue_type());
   input_queue_obj.set_by_val<uint32_t>("capacity", tc_inputq_desc->get_capacity());
 
-  oksdbinterfaces::ConfigObject output_queue_obj;
+  conffwk::ConfigObject output_queue_obj;
 
   queue_uid = td_outputq_desc->get_uid_base();
   confdb->create(dbfile, "Queue", queue_uid, output_queue_obj);
@@ -198,21 +198,21 @@ MLTApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   }
   // Network connection for input TriggerInhibit, input TCs
 
-  oksdbinterfaces::ConfigObject ti_net_obj =
+  conffwk::ConfigObject ti_net_obj =
     create_mlt_network_connection(ti_net_desc->get_uid_base(), ti_net_desc, confdb, dbfile);
 
-  oksdbinterfaces::ConfigObject tc_net_obj =
+  conffwk::ConfigObject tc_net_obj =
     create_mlt_network_connection(tc_net_desc->get_uid_base()+".*", tc_net_desc, confdb, dbfile);
 
         // Network connection for output TriggerDecision
-  oksdbinterfaces::ConfigObject td_net_obj =
+  conffwk::ConfigObject td_net_obj =
     create_mlt_network_connection(td_net_desc->get_uid_base(), td_net_desc, confdb, dbfile);
 
   // Network conection for the input Data Requests
-  oksdbinterfaces::ConfigObject dr_net_obj =
+  conffwk::ConfigObject dr_net_obj =
     create_mlt_network_connection(req_net_desc->get_uid_base()+UID(), req_net_desc, confdb, dbfile);
 
-  oksdbinterfaces::ConfigObject timesync_net_obj;
+  conffwk::ConfigObject timesync_net_obj;
   if (timesync_net_desc != nullptr) {
      timesync_net_obj = create_mlt_network_connection(timesync_net_desc->get_uid_base()+".*", timesync_net_desc, confdb, dbfile); 
   }
@@ -224,7 +224,7 @@ MLTApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
    auto standalone_TC_maker_confs = get_standalone_candidate_maker_confs();
    for (auto gen_conf : standalone_TC_maker_confs) {
-     oksdbinterfaces::ConfigObject gen_obj;
+     conffwk::ConfigObject gen_obj;
      confdb->create(dbfile, gen_conf->get_template_for(), gen_conf->UID(), gen_obj);
      gen_obj.set_obj("configuration", &(gen_conf->config_object()));
      if (gen_conf->get_timestamp_method() == "kTimeSync" && !timesync_net_obj.is_null()) {
@@ -245,7 +245,7 @@ MLTApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
   std::string reader_uid("data-reader-"+UID());
   std::string reader_class = rdr_conf->get_template_for();
-  oksdbinterfaces::ConfigObject reader_obj;
+  conffwk::ConfigObject reader_obj;
   TLOG_DEBUG(7) <<  "creating OKS configuration object for Data subscriber class " << reader_class;
   confdb->create(dbfile, reader_class, reader_uid, reader_obj);
   reader_obj.set_objs("inputs", {&tc_net_obj} );
@@ -260,7 +260,7 @@ MLTApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   
   std::vector<const dunedaq::coredal::Application*> apps = session->get_all_applications();
 
-  std::vector<const oksdbinterfaces::ConfigObject*> sourceIds;
+  std::vector<const conffwk::ConfigObject*> sourceIds;
 
   for (auto app : apps) {
     auto ro_app = app->cast<appdal::ReadoutApplication>();
@@ -309,7 +309,7 @@ MLTApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
             // Create SourceIDConf object for the MLT
             auto id = stream->get_source_id();
-            oksdbinterfaces::ConfigObject* sourceIdConf = new oksdbinterfaces::ConfigObject();
+            conffwk::ConfigObject* sourceIdConf = new conffwk::ConfigObject();
             std::string sourceIdConfUID = "dro-mlt-stream-config-" + std::to_string(id);
             confdb->create(dbfile, "SourceIDConf", sourceIdConfUID, *sourceIdConf);
             sourceIdConf->set_by_val<uint32_t>("sid", id);
@@ -320,7 +320,7 @@ MLTApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
         }
       }
       if (ro_app->get_tp_source_id()!= 0) {
-         oksdbinterfaces::ConfigObject* tpSourceIdConf = new oksdbinterfaces::ConfigObject();
+         conffwk::ConfigObject* tpSourceIdConf = new conffwk::ConfigObject();
          confdb->create(dbfile, "SourceIDConf", ro_app->UID()+"-"+ std::to_string(ro_app->get_tp_source_id()), *tpSourceIdConf);
          tpSourceIdConf->set_by_val<uint32_t>("sid", ro_app->get_tp_source_id());
          tpSourceIdConf->set_by_val<std::string>("subsystem", "Trigger");
@@ -331,7 +331,7 @@ MLTApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     // SmartDaqApplication now has source_id member, might want to use that but make sure that it's actually a data source somehow...
     auto trg_app = app->cast<appdal::TriggerApplication>();
     if(trg_app != nullptr && trg_app->get_source_id() != nullptr) {
-      	oksdbinterfaces::ConfigObject* tcSourceIdConf = new oksdbinterfaces::ConfigObject();
+      	conffwk::ConfigObject* tcSourceIdConf = new conffwk::ConfigObject();
         confdb->create(dbfile, "SourceIDConf", trg_app->UID()+"-"+ std::to_string(trg_app->get_source_id()->get_sid()), *tcSourceIdConf);
         tcSourceIdConf->set_by_val<uint32_t>("sid", trg_app->get_source_id()->get_sid());
         tcSourceIdConf->set_by_val<std::string>("subsystem", trg_app->get_source_id()->get_subsystem());
@@ -342,7 +342,7 @@ MLTApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     //
     auto hsi_app = app->cast<appdal::FakeHSIApplication>();
     if(hsi_app != nullptr && hsi_app->get_source_id() != nullptr) {
-        oksdbinterfaces::ConfigObject* hsEventSourceIdConf = new oksdbinterfaces::ConfigObject();
+        conffwk::ConfigObject* hsEventSourceIdConf = new conffwk::ConfigObject();
         confdb->create(dbfile, "SourceIDConf", hsi_app->UID()+"-"+ std::to_string(hsi_app->get_source_id()->get_sid()), *hsEventSourceIdConf);
         hsEventSourceIdConf->set_by_val<uint32_t>("sid", hsi_app->get_source_id()->get_sid());
         hsEventSourceIdConf->set_by_val<std::string>("subsystem", hsi_app->get_source_id()->get_subsystem());
@@ -352,7 +352,7 @@ MLTApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   }
 
   // Get mandatory links
-  std::vector<const oksdbinterfaces::ConfigObject*> mandatory_sids;
+  std::vector<const conffwk::ConfigObject*> mandatory_sids;
   const TCDataProcessor* tc_dp = tch_conf->get_data_processor()->cast<TCDataProcessor>();
   if (tc_dp != nullptr) {
 	  for (auto m: tc_dp->get_mandatory_links()) {
@@ -365,7 +365,7 @@ MLTApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
    **************************************************************/
 
   auto tch_conf_obj = tch_conf->config_object();
-  oksdbinterfaces::ConfigObject ti_obj;
+  conffwk::ConfigObject ti_obj;
   if (get_source_id() == nullptr) {
     throw(BadConf(ERS_HERE, "No source_id associated with this TriggerApplication!"));
   }
@@ -386,7 +386,7 @@ MLTApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
    * Instantiate the ModuleLevelTrigger module
    **************************************************************/
 
-   oksdbinterfaces::ConfigObject mlt_obj;
+   conffwk::ConfigObject mlt_obj;
    confdb->create(dbfile, mlt_conf->get_template_for(), mlt_conf->UID(), mlt_obj);
    mlt_obj.set_obj("configuration", &(mlt_conf->config_object()));
    mlt_obj.set_objs("inputs", {&output_queue_obj, &ti_net_obj});
