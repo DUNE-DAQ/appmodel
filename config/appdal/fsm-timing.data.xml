@@ -171,8 +171,8 @@
 </obj>
 
 <obj class="FSMtransition" id="send_master_fl_command">
- <attr name="source" type="string" val=".*"/>
- <attr name="dest" type="string" val=".*"/>
+ <attr name="source" type="string" val="configured|scanning_endpoints"/>
+ <attr name="dest" type="string" val=""/>
 </obj>
 
 </oks-data>
