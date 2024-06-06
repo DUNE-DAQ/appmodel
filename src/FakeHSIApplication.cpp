@@ -10,20 +10,20 @@
 
 #include "ModuleFactory.hpp"
 
-#include "appdal/FakeHSIApplication.hpp"
-#include "appdal/FakeHSIEventGenerator.hpp"
-#include "appdal/FakeHSIEventGeneratorConf.hpp"
-#include "appdal/NetworkConnectionDescriptor.hpp"
-#include "appdal/NetworkConnectionRule.hpp"
-#include "appdal/QueueConnectionRule.hpp"
-#include "appdal/QueueDescriptor.hpp"
-#include "appdal/ReadoutModule.hpp"
-#include "appdal/ReadoutModuleConf.hpp"
-#include "appdal/SourceIDConf.hpp"
-#include "appdal/appdalIssues.hpp"
-#include "coredal/Connection.hpp"
-#include "coredal/NetworkConnection.hpp"
-#include "coredal/Service.hpp"
+#include "appmodel/FakeHSIApplication.hpp"
+#include "appmodel/FakeHSIEventGenerator.hpp"
+#include "appmodel/FakeHSIEventGeneratorConf.hpp"
+#include "appmodel/NetworkConnectionDescriptor.hpp"
+#include "appmodel/NetworkConnectionRule.hpp"
+#include "appmodel/QueueConnectionRule.hpp"
+#include "appmodel/QueueDescriptor.hpp"
+#include "appmodel/ReadoutModule.hpp"
+#include "appmodel/ReadoutModuleConf.hpp"
+#include "appmodel/SourceIDConf.hpp"
+#include "appmodel/appmodelIssues.hpp"
+#include "confmodel/Connection.hpp"
+#include "confmodel/NetworkConnection.hpp"
+#include "confmodel/Service.hpp"
 #include "logging/Logging.hpp"
 #include "oks/kernel.hpp"
 #include "conffwk/Configuration.hpp"
@@ -33,23 +33,23 @@
 #include <vector>
 
 using namespace dunedaq;
-using namespace dunedaq::appdal;
+using namespace dunedaq::appmodel;
 
 static ModuleFactory::Registrator __reg__("FakeHSIApplication",
                                           [](const SmartDaqApplication* smartApp,
                                              conffwk::Configuration* confdb,
                                              const std::string& dbfile,
-                                             const coredal::Session* session) -> ModuleFactory::ReturnType {
+                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
                                             auto app = smartApp->cast<FakeHSIApplication>();
                                             return app->generate_modules(confdb, dbfile, session);
                                           });
 
-std::vector<const coredal::DaqModule*>
+std::vector<const confmodel::DaqModule*>
 FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
                                      const std::string& dbfile,
-                                     const coredal::Session* /*session*/) const
+                                     const confmodel::Session* /*session*/) const
 {
-  std::vector<const coredal::DaqModule*> modules;
+  std::vector<const confmodel::DaqModule*> modules;
 
   auto dlhConf = get_link_handler();
   auto dlhClass = dlhConf->get_template_for();

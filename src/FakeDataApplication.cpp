@@ -13,23 +13,23 @@
 #include "oks/kernel.hpp"
 #include "conffwk/Configuration.hpp"
 
-#include "coredal/Connection.hpp"
-#include "coredal/NetworkConnection.hpp"
-#include "coredal/ReadoutGroup.hpp"
-#include "coredal/ResourceSet.hpp"
-#include "coredal/Service.hpp"
-#include "coredal/Session.hpp"
+#include "confmodel/Connection.hpp"
+#include "confmodel/NetworkConnection.hpp"
+#include "confmodel/ReadoutGroup.hpp"
+#include "confmodel/ResourceSet.hpp"
+#include "confmodel/Service.hpp"
+#include "confmodel/Session.hpp"
 
-#include "appdal/FakeDataApplication.hpp"
-#include "appdal/FakeDataProd.hpp"
-#include "appdal/FakeDataProdConf.hpp"
-#include "appdal/FragmentAggregator.hpp"
-#include "appdal/NetworkConnectionDescriptor.hpp"
-#include "appdal/NetworkConnectionRule.hpp"
-#include "appdal/QueueConnectionRule.hpp"
-#include "appdal/QueueDescriptor.hpp"
+#include "appmodel/FakeDataApplication.hpp"
+#include "appmodel/FakeDataProd.hpp"
+#include "appmodel/FakeDataProdConf.hpp"
+#include "appmodel/FragmentAggregator.hpp"
+#include "appmodel/NetworkConnectionDescriptor.hpp"
+#include "appmodel/NetworkConnectionRule.hpp"
+#include "appmodel/QueueConnectionRule.hpp"
+#include "appmodel/QueueDescriptor.hpp"
 
-#include "appdal/appdalIssues.hpp"
+#include "appmodel/appmodelIssues.hpp"
 
 #include "logging/Logging.hpp"
 
@@ -37,25 +37,25 @@
 #include <vector>
 
 using namespace dunedaq;
-using namespace dunedaq::appdal;
+using namespace dunedaq::appmodel;
 
 static ModuleFactory::Registrator __reg__("FakeDataApplication",
                                           [](const SmartDaqApplication* smartApp,
                                              conffwk::Configuration* confdb,
                                              const std::string& dbfile,
-                                             const coredal::Session* session) -> ModuleFactory::ReturnType {
+                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
                                             auto app = smartApp->cast<FakeDataApplication>();
                                             return app->generate_modules(confdb, dbfile, session);
                                           });
 
-std::vector<const coredal::DaqModule*>
+std::vector<const confmodel::DaqModule*>
 FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
                                       const std::string& dbfile,
-                                      const coredal::Session* session) const
+                                      const confmodel::Session* session) const
 {
   // oks::OksFile::set_nolock_mode(true);
 
-  std::vector<const coredal::DaqModule*> modules;
+  std::vector<const confmodel::DaqModule*> modules;
 
   // Process the queue rules looking for inputs to our DL/TP handler modules
   const QueueDescriptor* dlhReqInputQDesc = nullptr;
@@ -90,7 +90,7 @@ FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
     throw(BadConf(ERS_HERE, "No fragment output queue descriptor given"));
   }
   conffwk::ConfigObject faQueueObj;
-  std::vector<const coredal::Connection*> faOutputQueues;
+  std::vector<const confmodel::Connection*> faOutputQueues;
 
   std::string taFragQueueUid(faOutputQDesc->get_uid_base() + UID());
   confdb->create(dbfile, "Queue", taFragQueueUid, faQueueObj);
@@ -109,13 +109,13 @@ FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
       TLOG_DEBUG(7) << "Ignoring disabled ReadoutGroup " << roGroup->UID();
       continue;
     }
-    auto rset = roGroup->cast<coredal::ReadoutGroup>();
+    auto rset = roGroup->cast<confmodel::ReadoutGroup>();
     if (rset == nullptr) {
       throw(BadConf(ERS_HERE, "FakeDataApplication contains something other than ReadoutGroup"));
     }
-    std::vector<const coredal::Connection*> outputQueues;
+    std::vector<const confmodel::Connection*> outputQueues;
     for (auto res : rset->get_contains()) {
-      auto stream = res->cast<appdal::FakeDataProdConf>();
+      auto stream = res->cast<appmodel::FakeDataProdConf>();
       if (stream == nullptr) {
         throw(BadConf(ERS_HERE, "ReadoutGroup contains something other than FakeDataProdConf"));
       }
@@ -149,7 +149,7 @@ FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
       reqQueueObj.set_by_val<uint32_t>("capacity", dlhReqInputQDesc->get_capacity());
       reqQueueObj.set_by_val<uint32_t>("source_id", stream->get_source_id());
       // Add the requessts queue dal pointer to the outputs of the FragmentAggregator
-      faOutputQueues.push_back(confdb->get<coredal::Connection>(reqQueueUid));
+      faOutputQueues.push_back(confdb->get<confmodel::Connection>(reqQueueUid));
 
       dlhObj.set_objs("inputs", { &reqQueueObj });
 

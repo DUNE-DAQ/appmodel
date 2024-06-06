@@ -10,23 +10,23 @@
 
 #include "ModuleFactory.hpp"
 
-#include "appdal/DFApplication.hpp"
-#include "appdal/DataWriter.hpp"
-#include "appdal/DataWriterConf.hpp"
-#include "appdal/NetworkConnectionDescriptor.hpp"
-#include "appdal/NetworkConnectionRule.hpp"
-#include "appdal/QueueConnectionRule.hpp"
-#include "appdal/DataStoreConf.hpp"
-#include "appdal/FilenameParams.hpp"
-#include "appdal/QueueDescriptor.hpp"
-#include "appdal/ReadoutApplication.hpp"
-#include "appdal/SourceIDConf.hpp"
-#include "appdal/TRBConf.hpp"
-#include "appdal/TriggerRecordBuilder.hpp"
-#include "appdal/appdalIssues.hpp"
-#include "coredal/Connection.hpp"
-#include "coredal/NetworkConnection.hpp"
-#include "coredal/Service.hpp"
+#include "appmodel/DFApplication.hpp"
+#include "appmodel/DataWriter.hpp"
+#include "appmodel/DataWriterConf.hpp"
+#include "appmodel/NetworkConnectionDescriptor.hpp"
+#include "appmodel/NetworkConnectionRule.hpp"
+#include "appmodel/QueueConnectionRule.hpp"
+#include "appmodel/DataStoreConf.hpp"
+#include "appmodel/FilenameParams.hpp"
+#include "appmodel/QueueDescriptor.hpp"
+#include "appmodel/ReadoutApplication.hpp"
+#include "appmodel/SourceIDConf.hpp"
+#include "appmodel/TRBConf.hpp"
+#include "appmodel/TriggerRecordBuilder.hpp"
+#include "appmodel/appmodelIssues.hpp"
+#include "confmodel/Connection.hpp"
+#include "confmodel/NetworkConnection.hpp"
+#include "confmodel/Service.hpp"
 #include "logging/Logging.hpp"
 #include "oks/kernel.hpp"
 #include "conffwk/Configuration.hpp"
@@ -35,13 +35,13 @@
 #include <vector>
 
 using namespace dunedaq;
-using namespace dunedaq::appdal;
+using namespace dunedaq::appmodel;
 
 static ModuleFactory::Registrator __reg__("DFApplication",
                                           [](const SmartDaqApplication* smartApp,
                                              conffwk::Configuration* confdb,
                                              const std::string& dbfile,
-                                             const coredal::Session* session) -> ModuleFactory::ReturnType {
+                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
                                             auto app = smartApp->cast<DFApplication>();
                                             return app->generate_modules(confdb, dbfile, session);
                                           });
@@ -64,12 +64,12 @@ fill_netconn_object_from_desc(const NetworkConnectionDescriptor* netDesc, conffw
   netObj.set_obj("associated_service", &serviceObj);
 }
 
-std::vector<const coredal::DaqModule*>
+std::vector<const confmodel::DaqModule*>
 DFApplication::generate_modules(conffwk::Configuration* confdb,
                                 const std::string& dbfile,
-                                const coredal::Session* session) const
+                                const confmodel::Session* session) const
 {
-  std::vector<const coredal::DaqModule*> modules;
+  std::vector<const confmodel::DaqModule*> modules;
 
   // Containers for module specific config objects for output/input
   // Prepare TRB output objects
@@ -143,7 +143,7 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
   auto sessionApps = session->get_all_applications();
   std::vector<conffwk::ConfigObject> dreqNetObjs;
   for (auto app : sessionApps) {
-    auto roapp = app->cast<appdal::ReadoutApplication>();
+    auto roapp = app->cast<appmodel::ReadoutApplication>();
     if (roapp != nullptr) {
       TLOG() << "Readout app in session: " << roapp;
       auto roQRules = roapp->get_network_rules();
