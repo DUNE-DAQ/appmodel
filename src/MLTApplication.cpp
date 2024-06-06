@@ -12,42 +12,42 @@
 
 #include "conffwk/Configuration.hpp"
 
-#include "coredal/Connection.hpp"
-#include "coredal/NetworkConnection.hpp"
-#include "coredal/ReadoutGroup.hpp"
-#include "coredal/ReadoutInterface.hpp"
-#include "coredal/DROStreamConf.hpp"
-#include "coredal/ResourceSet.hpp"
-#include "coredal/Service.hpp"
-#include "coredal/Session.hpp"
+#include "confmodel/Connection.hpp"
+#include "confmodel/NetworkConnection.hpp"
+#include "confmodel/ReadoutGroup.hpp"
+#include "confmodel/ReadoutInterface.hpp"
+#include "confmodel/DROStreamConf.hpp"
+#include "confmodel/ResourceSet.hpp"
+#include "confmodel/Service.hpp"
+#include "confmodel/Session.hpp"
 
-#include "appdal/NetworkConnectionRule.hpp"
-#include "appdal/QueueConnectionRule.hpp"
+#include "appmodel/NetworkConnectionRule.hpp"
+#include "appmodel/QueueConnectionRule.hpp"
 
-#include "appdal/QueueDescriptor.hpp"
-#include "appdal/NetworkConnectionDescriptor.hpp"
+#include "appmodel/QueueDescriptor.hpp"
+#include "appmodel/NetworkConnectionDescriptor.hpp"
 
-#include "appdal/SourceIDConf.hpp"
+#include "appmodel/SourceIDConf.hpp"
 
-#include "appdal/DataSubscriber.hpp"
-#include "appdal/DataReaderConf.hpp"
-#include "appdal/DataRecorderConf.hpp"
+#include "appmodel/DataSubscriber.hpp"
+#include "appmodel/DataReaderConf.hpp"
+#include "appmodel/DataRecorderConf.hpp"
 
-#include "appdal/ReadoutModule.hpp"
-#include "appdal/ReadoutModuleConf.hpp"
-#include "appdal/TCDataProcessor.hpp"
+#include "appmodel/ReadoutModule.hpp"
+#include "appmodel/ReadoutModuleConf.hpp"
+#include "appmodel/TCDataProcessor.hpp"
 
-#include "appdal/ModuleLevelTrigger.hpp"
-#include "appdal/ModuleLevelTriggerConf.hpp"
+#include "appmodel/ModuleLevelTrigger.hpp"
+#include "appmodel/ModuleLevelTriggerConf.hpp"
 
-#include "appdal/MLTApplication.hpp"
-#include "appdal/ReadoutApplication.hpp"
-#include "appdal/TriggerApplication.hpp"
-#include "appdal/FakeHSIApplication.hpp"
-#include "appdal/appdalIssues.hpp"
+#include "appmodel/MLTApplication.hpp"
+#include "appmodel/ReadoutApplication.hpp"
+#include "appmodel/TriggerApplication.hpp"
+#include "appmodel/FakeHSIApplication.hpp"
+#include "appmodel/appmodelIssues.hpp"
 
-#include "appdal/StandaloneCandidateMakerConf.hpp"
-#include "appdal/StandaloneCandidateMaker.hpp"
+#include "appmodel/StandaloneCandidateMakerConf.hpp"
+#include "appmodel/StandaloneCandidateMaker.hpp"
 
 #include "logging/Logging.hpp"
 
@@ -55,13 +55,13 @@
 #include <vector>
 
 using namespace dunedaq;
-using namespace dunedaq::appdal;
+using namespace dunedaq::appmodel;
 
 static ModuleFactory::Registrator __reg__("MLTApplication",
                                           [](const SmartDaqApplication* smartApp,
                                              conffwk::Configuration* confdb,
                                              const std::string& dbfile,
-                                             const coredal::Session* session) -> ModuleFactory::ReturnType {
+                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
                                             auto app = smartApp->cast<MLTApplication>();
                                             return app->generate_modules(confdb, dbfile, session);
                                           });
@@ -92,12 +92,12 @@ create_mlt_network_connection(std::string uid,
   return ntObj;
 }
 
-std::vector<const coredal::DaqModule*>
+std::vector<const confmodel::DaqModule*>
 MLTApplication::generate_modules(conffwk::Configuration* confdb,
                                      const std::string& dbfile,
-                                     const coredal::Session* session) const
+                                     const confmodel::Session* session) const
 {
-  std::vector<const coredal::DaqModule*> modules;
+  std::vector<const confmodel::DaqModule*> modules;
 
   //auto mlt_conf = get_mlt_conf();
   //auto mlt_class = mlt_conf->get_template_for();
@@ -258,12 +258,12 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
    * Create the readout map 
    **************************************************************/
   
-  std::vector<const dunedaq::coredal::Application*> apps = session->get_all_applications();
+  std::vector<const dunedaq::confmodel::Application*> apps = session->get_all_applications();
 
   std::vector<const conffwk::ConfigObject*> sourceIds;
 
   for (auto app : apps) {
-    auto ro_app = app->cast<appdal::ReadoutApplication>();
+    auto ro_app = app->cast<appmodel::ReadoutApplication>();
     if (ro_app != nullptr && !ro_app->disabled(*session)) {
   	auto resources = ro_app->get_contains();
         // Interate over all the readout groups
@@ -273,7 +273,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
               continue;
         }
 
-        auto group_rset = roGroup->cast<coredal::ReadoutGroup>();
+        auto group_rset = roGroup->cast<confmodel::ReadoutGroup>();
         if (group_rset == nullptr) {
           throw(BadConf(ERS_HERE, "MLTApplication's readoutgroup list contains something other than ReadoutGroup"));
         }
@@ -289,7 +289,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
             TLOG_DEBUG(7) << "Ignoring disabled ReadoutInterface " << interface_rset->UID();
             continue;
           }
-          auto interface = interface_rset->cast<coredal::ReadoutInterface>();
+          auto interface = interface_rset->cast<confmodel::ReadoutInterface>();
           if (interface == nullptr) {
             throw(BadConf(ERS_HERE, "ReadoutGroup contains something othen than ReadoutInterface"));
           }
@@ -298,7 +298,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
 
           // Interate over all the streams
           for (auto link : streams) {
-            auto stream = link->cast<coredal::DROStreamConf>();
+            auto stream = link->cast<confmodel::DROStreamConf>();
             if (stream == nullptr) {
               throw(BadConf(ERS_HERE, "ReadoutInterface contains something other than DROStreamConf"));
             }
@@ -329,7 +329,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
     }
 
     // SmartDaqApplication now has source_id member, might want to use that but make sure that it's actually a data source somehow...
-    auto trg_app = app->cast<appdal::TriggerApplication>();
+    auto trg_app = app->cast<appmodel::TriggerApplication>();
     if(trg_app != nullptr && trg_app->get_source_id() != nullptr) {
       	conffwk::ConfigObject* tcSourceIdConf = new conffwk::ConfigObject();
         confdb->create(dbfile, "SourceIDConf", trg_app->UID()+"-"+ std::to_string(trg_app->get_source_id()->get_sid()), *tcSourceIdConf);
@@ -340,7 +340,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
     
     // FIXME: add here same logics for HSI application(s)
     //
-    auto hsi_app = app->cast<appdal::FakeHSIApplication>();
+    auto hsi_app = app->cast<appmodel::FakeHSIApplication>();
     if(hsi_app != nullptr && hsi_app->get_source_id() != nullptr) {
         conffwk::ConfigObject* hsEventSourceIdConf = new conffwk::ConfigObject();
         confdb->create(dbfile, "SourceIDConf", hsi_app->UID()+"-"+ std::to_string(hsi_app->get_source_id()->get_sid()), *hsEventSourceIdConf);

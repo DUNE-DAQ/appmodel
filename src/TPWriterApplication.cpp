@@ -12,17 +12,17 @@
 
 #include "conffwk/Configuration.hpp"
 #include "oks/kernel.hpp"
-#include "coredal/Connection.hpp"
-#include "coredal/Service.hpp"
-#include "coredal/NetworkConnection.hpp"
-#include "appdal/TPStreamWriterApplication.hpp"
-#include "appdal/TPStreamWriter.hpp"
-#include "appdal/TPStreamWriterConf.hpp"
-#include "appdal/NetworkConnectionRule.hpp"
-#include "appdal/NetworkConnectionDescriptor.hpp"
-#include "appdal/ReadoutApplication.hpp"
-#include "appdal/SourceIDConf.hpp"
-#include "appdal/appdalIssues.hpp"
+#include "confmodel/Connection.hpp"
+#include "confmodel/Service.hpp"
+#include "confmodel/NetworkConnection.hpp"
+#include "appmodel/TPStreamWriterApplication.hpp"
+#include "appmodel/TPStreamWriter.hpp"
+#include "appmodel/TPStreamWriterConf.hpp"
+#include "appmodel/NetworkConnectionRule.hpp"
+#include "appmodel/NetworkConnectionDescriptor.hpp"
+#include "appmodel/ReadoutApplication.hpp"
+#include "appmodel/SourceIDConf.hpp"
+#include "appmodel/appmodelIssues.hpp"
 #include "logging/Logging.hpp"
 
 #include <string>
@@ -30,25 +30,25 @@
 #include <iostream>
 
 using namespace dunedaq;
-using namespace dunedaq::appdal;
+using namespace dunedaq::appmodel;
 
 static ModuleFactory::Registrator
 __reg__("TPStreamWriterApplication", [] (const SmartDaqApplication* smartApp,
                              conffwk::Configuration* confdb,
                              const std::string& dbfile,
-                             const coredal::Session* session) -> ModuleFactory::ReturnType
+                             const confmodel::Session* session) -> ModuleFactory::ReturnType
   {
     auto app = smartApp->cast<TPStreamWriterApplication>();
     return app->generate_modules(confdb, dbfile, session);
   }
   );
 
-std::vector<const coredal::DaqModule*> 
+std::vector<const confmodel::DaqModule*> 
 TPStreamWriterApplication::generate_modules(conffwk::Configuration* confdb,
                                             const std::string& dbfile,
-                                            const coredal::Session* /*session*/) const
+                                            const confmodel::Session* /*session*/) const
 {
-  std::vector<const coredal::DaqModule*> modules;
+  std::vector<const confmodel::DaqModule*> modules;
 
   auto tpwriterConf = get_tp_writer();
   if (tpwriterConf == 0) {
@@ -78,11 +78,11 @@ TPStreamWriterApplication::generate_modules(conffwk::Configuration* confdb,
 
   /* Get TPSet sources
 
-  std::vector<const dunedaq::coredal::Application*> apps = session->get_all_applications();
+  std::vector<const dunedaq::confmodel::Application*> apps = session->get_all_applications();
   std::vector<const conffwk::ConfigObject*> sourceIds;
 
   for (auto app : apps) {
-    auto ro_app = app->cast<appdal::ReadoutApplication>();
+    auto ro_app = app->cast<appmodel::ReadoutApplication>();
     if (ro_app != nullptr && !ro_app->disabled(*session)) {
       conffwk::ConfigObject* tpSourceIdConf = new conffwk::ConfigObject();
       confdb->create(dbfile, "SourceIDConf", ro_app->UID()+"-"+ std::to_string(ro_app->get_tp_source_id()), *tpSourceIdConf);

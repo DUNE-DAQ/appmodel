@@ -2,8 +2,8 @@
 
 import sys
 
-import coredal
-import appdal
+import confmodel
+import appmodel
 import conffwk
 import logging
 from rich.console import Console
@@ -26,7 +26,7 @@ logging.basicConfig(
 log = logging.getLogger("app_environment")
 console = Console()
 
-dal = conffwk.dal.module('x', 'schema/coredal/dunedaq.schema.xml')
+dal = conffwk.dal.module('x', 'schema/confmodel/dunedaq.schema.xml')
 
 # Process a dal::Variable object, placing key/value pairs in a dictionary
 def process_variables(variables, envDict):
@@ -49,7 +49,7 @@ def process_segment(db, session, segment):
 
   # Recurse over nested segments
   for seg in segment.segments:
-    if coredal.component_disabled(db._obj, session.id, seg.id):
+    if confmodel.component_disabled(db._obj, session.id, seg.id):
       print(f"Ignoring disabled segment {seg.id}")
       continue
     apps += process_segment(db, session, seg)
@@ -58,7 +58,7 @@ def process_segment(db, session, segment):
   process_variables(segment.controller.applicationEnvironment, rc_env)
   rc_host = segment.controller.runs_on.runs_on.id
 
-  CLA_constructor = coredal.rc_application_construct_commandline_parameters
+  CLA_constructor = confmodel.rc_application_construct_commandline_parameters
   apps.append(
     (
       segment.controller.id,
@@ -73,7 +73,7 @@ def process_segment(db, session, segment):
   for app in segment.applications:
     console.print(f"Considering app \'{app.id}\'")
     if 'Component' in app.oksTypes():
-      enabled = not coredal.component_disabled(db._obj, session.id, app.id)
+      enabled = not confmodel.component_disabled(db._obj, session.id, app.id)
       log.debug(f"{app.id} {enabled=}")
     else:
       enabled = True
@@ -86,9 +86,9 @@ def process_segment(db, session, segment):
     # Override with any app specific environment from Application
     process_variables(app.applicationEnvironment, appenv)
     if 'DaqApplication' in app.oksTypes():
-      CLA_constructor = coredal.daq_application_construct_commandline_parameters
+      CLA_constructor = confmodel.daq_application_construct_commandline_parameters
     elif "SmartDaqApplication"  in app.oksTypes():
-      CLA_constructor = appdal.smart_daq_application_construct_commandline_parameters
+      CLA_constructor = appmodel.smart_daq_application_construct_commandline_parameters
 
 
     host = app.runs_on.runs_on.id

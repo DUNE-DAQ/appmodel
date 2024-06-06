@@ -66,12 +66,12 @@
 <info name="" type="" num-of-items="17" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240307T202444"/>
 
 <include>
- <file path="schema/coredal/dunedaq.schema.xml"/>
- <file path="schema/appdal/application.schema.xml"/>
- <file path="schema/appdal/trigger.schema.xml"/>
- <file path="schema/appdal/fdmodules.schema.xml"/>
- <file path="config/appdal/connections.data.xml"/>
- <file path="config/appdal/data-store-params.data.xml"/>
+ <file path="schema/confmodel/dunedaq.schema.xml"/>
+ <file path="schema/appmodel/application.schema.xml"/>
+ <file path="schema/appmodel/trigger.schema.xml"/>
+ <file path="schema/appmodel/fdmodules.schema.xml"/>
+ <file path="config/appmodel/connections.data.xml"/>
+ <file path="config/appmodel/data-store-params.data.xml"/>
 </include>
 
 <comments>
