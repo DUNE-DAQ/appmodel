@@ -1,1 +1,1 @@
-from ._daq_appdal_py import *
+from ._daq_appmodel_py import *

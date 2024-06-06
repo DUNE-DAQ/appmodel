@@ -66,9 +66,9 @@
 <info name="" type="" num-of-items="134" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="crone" created-on="np04-srv-011.cern.ch" creation-time="20240308T134124" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240529T172508"/>
 
 <include>
- <file path="schema/coredal/dunedaq.schema.xml"/>
- <file path="schema/appdal/application.schema.xml"/>
- <file path="schema/appdal/fdmodules.schema.xml"/>
+ <file path="schema/confmodel/dunedaq.schema.xml"/>
+ <file path="schema/appmodel/application.schema.xml"/>
+ <file path="schema/appmodel/fdmodules.schema.xml"/>
 </include>
 
 <comments>

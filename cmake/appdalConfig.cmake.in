@@ -9,7 +9,7 @@ find_dependency(ers)
 find_dependency(logging)
 find_dependency(conffwk)
 find_dependency(oks)
-find_dependency(coredal)
+find_dependency(confmodel)
 
 # Figure out whether or not this dependency is an installed package or
 # in repo form

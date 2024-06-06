@@ -11,12 +11,12 @@
 
 namespace py = pybind11;
 
-namespace dunedaq::appdal::python {
+namespace dunedaq::appmodel::python {
 
 extern void
 register_dal_methods(py::module&);
 
-PYBIND11_MODULE(_daq_appdal_py, m)
+PYBIND11_MODULE(_daq_appmodel_py, m)
 {
 
   m.doc() = "C++ implementation of the application dal modules";
@@ -24,4 +24,4 @@ PYBIND11_MODULE(_daq_appdal_py, m)
   register_dal_methods(m);
 }
 
-} // namespace dunedaq::appdal::python
+} // namespace dunedaq::appmodel::python
