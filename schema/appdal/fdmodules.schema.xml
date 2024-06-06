@@ -80,13 +80,19 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="16" oks-format="schema" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240527T143140"/>
+<info name="" type="" num-of-items="18" oks-format="schema" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240606T114540"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
  <file path="schema/appdal/application.schema.xml"/>
 </include>
 
+
+ <class name="DPDKReceiver">
+  <superclass name="NWDetDataReceiver"/>
+  <relationship name="uses" class-type="NICInterface" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="configuration" class-type="DPDK_NICInterfaceConfiguration" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
 
  <class name="DPDK_NICInterfaceConfiguration">
   <attribute name="flow_control" type="bool" init-value="1"/>
@@ -102,20 +108,6 @@
   <relationship name="used_lcores" description="associates CPUs to the data reception workload." class-type="ProcessingResource" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="DPDKReceiver">
-  <superclass name="Resource"/>
-  <relationship name="uses" class-type="NICInterface" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="configuration" class-type="DPDK_NICInterfaceConfiguration" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="EthStreamParameters">
-  <superclass name="StreamParameters"/>
-  <attribute name="protocol" type="enum" range="udp,zmq" init-value="udp" is-not-null="yes"/>
-  <attribute name="tx_mac" description="Transmitter MAC address" type="string" init-value="00:00:00:00:00:00" is-not-null="yes"/>
-  <attribute name="tx_ip" description="Transmitter IP address" type="string" init-value="0.0.0.0" is-not-null="yes"/>
-  <attribute name="tx_hostname" description="Transmitter IP name" type="string" init-value="localhost" is-not-null="yes"/>
- </class>
-
  <class name="FDDataLinkHandler">
   <superclass name="ReadoutModule"/>
  </class>
@@ -128,8 +120,15 @@
   <superclass name="DataReader"/>
  </class>
 
+ <class name="FelixDataSender">
+  <superclass name="DetDataSender"/>
+  <attribute name="protocol" type="enum" range="full,half"/>
+  <attribute name="link" description="Link within SLR" type="u8" range="0..5" init-value="0" is-not-null="yes"/>
+ </class>
+
  <class name="FelixInterface" description="Specialization of ReadoutInterface for the FLX card. ">
   <superclass name="Resource"/>
+  <superclass name="DetDataReceiver"/>
   <attribute name="card" description="Card ID in readout host." type="u8" range="0..1" init-value="0" is-not-null="yes"/>
   <attribute name="slr" description="Super logic region of a FLX card" type="u16" init-value="0" is-not-null="yes"/>
   <attribute name="dma_id" description="DMA descriptor to use" type="u8" init-value="0" is-not-null="yes"/>
@@ -144,23 +143,23 @@
   <attribute name="links_enabled" description="Number of elinks configured." type="u32" is-multi-value="yes" init-value="0,1,2,3,4" is-not-null="yes"/>
  </class>
 
- <class name="FelixStreamParameters">
-  <superclass name="StreamParameters"/>
-  <attribute name="protocol" type="enum" range="full,half"/>
-  <attribute name="link" description="Link within SLR" type="u8" range="0..5" init-value="0" is-not-null="yes"/>
- </class>
-
  <class name="HermesController">
   <superclass name="DaqModule"/>
   <superclass name="IpbusDevice"/>
-  <attribute name="port" type="u32" init-value="17476" is-not-null="yes"/>
-  <relationship name="links" class-type="HermesLinkConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="links" class-type="HermesDataSender" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="destination" class-type="NetworkInterface" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="HermesLinkConf">
+ <class name="HermesDataSender">
+  <superclass name="NWDetDataSender"/>
   <attribute name="link_id" type="u32" is-not-null="yes"/>
-  <relationship name="destination" description="Destination NIC" class-type="NICInterface" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="source" class-type="DROStreamConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <attribute name="port" type="u32" init-value="17476" is-not-null="yes"/>
+ </class>
+
+ <class name="HermesModuleConf">
+  <attribute name="ipbus_type" type="string" init-value="ipbusudp-2.0" is-not-null="yes"/>
+  <attribute name="ipbus_port" type="u32" init-value="50001" is-not-null="yes"/>
+  <relationship name="address_table" class-type="IpbusAddressTable" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="IpbusAddressTable">
@@ -173,11 +172,8 @@
  </class>
 
  <class name="NICInterface">
-  <attribute name="numa_id" type="s16" init-value="0" is-not-null="yes"/>
+  <superclass name="NetworkDevice"/>
   <attribute name="iface" type="s16" init-value="0" is-not-null="yes"/>
-  <attribute name="pcie_addr" description="PCIe address of NIC on readout host" type="string" init-value="0" is-not-null="yes"/>
-  <attribute name="mac" description="Destination MAC address on readout host" type="string" init-value="00:00:00:00:00:00" is-not-null="yes"/>
-  <attribute name="ip" type="string" init-value="192.168.1.1" is-not-null="yes"/>
  </class>
 
  <class name="NICReceiver">
@@ -194,6 +190,16 @@
   <attribute name="expected_packet_size" type="u32" init-value="7243" is-not-null="yes"/>
   <attribute name="expected_seq_id_step" type="u32" init-value="1"/>
   <attribute name="expected_timestamp_step" type="s32" init-value="-999" is-not-null="yes"/>
+ </class>
+
+ <class name="WIBModuleConf">
+ </class>
+
+ <class name="WIECApplication" description="Application describing the controller of a detector unit using WIBs inside a WIEC.">
+  <superclass name="SmartDaqApplication"/>
+  <superclass name="ResourceSetAND"/>
+  <relationship name="wib_module_conf" class-type="WIBModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="hermes_module_conf" class-type="HermesModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
 </oks-schema>

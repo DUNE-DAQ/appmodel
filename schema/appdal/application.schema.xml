@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="45" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="thea" last-modified-on="np04-srv-018.cern.ch" last-modification-time="20240411T085724"/>
+<info name="" type="" num-of-items="47" oks-format="schema" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240606T112758"/>
 
 <include>
  <file path="schema/coredal/dunedaq.schema.xml"/>
@@ -271,6 +271,16 @@
   <attribute name="intrinsic_allocator" type="bool" init-value="true"/>
   <attribute name="alignment_size" type="u32" init-value="0"/>
   <attribute name="preallocation" type="bool" init-value="true"/>
+ </class>
+
+ <class name="NWDetDataReceiver">
+  <superclass name="DetDataReceiver"/>
+  <relationship name="uses" class-type="NetworkInterface" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="NWDetDataSender">
+  <superclass name="DetDataSender"/>
+  <relationship name="uses" class-type="NetworkInterface" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="NetworkConnectionDescriptor">
