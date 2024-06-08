@@ -149,12 +149,12 @@
  </rel>
  <rel name="pre_transitions">
   <ref class="FSMxTransition" id="pre_start_prod"/>
-<ref class="FSMxTransition" id="pre_conf"/>
-  <ref class="FSMxTransition" id="post_drain_dataflow_prod"/>
+  <ref class="FSMxTransition" id="pre_conf"/>
  </rel>
  <rel name="post_transitions">
   <ref class="FSMxTransition" id="post_start"/>
   <ref class="FSMxTransition" id="post_conf"/>
+  <ref class="FSMxTransition" id="post_drain_dataflow_prod"/>
  </rel>
 </obj>
 
@@ -198,6 +198,7 @@
  <rel name="post_transitions">
   <ref class="FSMxTransition" id="post_start"/>
   <ref class="FSMxTransition" id="post_conf"/>
+  <ref class="FSMxTransition" id="post_drain_dataflow_test"/>
  </rel>
 </obj>
 
@@ -365,14 +366,6 @@
  </attr>
 </obj>
 
-<obj class="FSMxTransition" id="pre_drain_dataflow">
- <attr name="transition" type="string" val="drain_dataflow"/>
- <attr name="order" type="string">
- </attr>
- <attr name="mandatory" type="string">
- </attr>
-</obj>
-
 <obj class="FSMxTransition" id="post_start">
  <attr name="transition" type="string" val="start"/>
  <attr name="order" type="string">
@@ -392,7 +385,7 @@
  <attr name="mandatory" type="string">
   <data val="thread-pinning"/>
  </attr>
-</obj>k
+</obj>
 
 <obj class="FSMxTransition" id="post_conf">
  <attr name="transition" type="string" val="conf"/>
