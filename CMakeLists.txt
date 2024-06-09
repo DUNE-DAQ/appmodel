@@ -5,7 +5,6 @@ find_package(daq-cmake REQUIRED)
 
 daq_setup_environment()
 
-find_package(okssystem REQUIRED)
 find_package(oks REQUIRED)
 find_package(oksdalgen REQUIRED)
 find_package(ers REQUIRED)
@@ -22,7 +21,7 @@ daq_oks_codegen(application.schema.xml fdmodules.schema.xml trigger.schema.xml
 
 daq_add_library(ReadoutApplication.cpp SmartDaqApplication.cpp
 	DFApplication.cpp DFOApplication.cpp TPWriterApplication.cpp FakeDataApplication.cpp FakeHSIApplication.cpp TriggerApplication.cpp MLTApplication.cpp HSIEventToTCApplication.cpp
- LINK_LIBRARIES conffwk::conffwk okssystem::okssystem
+ LINK_LIBRARIES conffwk::conffwk
   logging::logging confmodel::confmodel oks::oks ers::ers)
 
 daq_add_application(getAppsArguments get_apps_arguments.cxx
