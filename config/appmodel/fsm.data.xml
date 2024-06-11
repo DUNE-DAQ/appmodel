@@ -402,6 +402,7 @@
  <attr name="transition" type="string" val="drain_dataflow"/>
  <attr name="order" type="string">
   <data val="db-run-registry"/>
+  <data val="file-logbook"/>
  </attr>
 </obj>
 
