@@ -349,8 +349,8 @@
   <data val="db-run-registry"/>
  </attr>
  <attr name="mandatory" type="string">
-  <data val="db-run-registry"/>
   <data val="usvc-provided-run-number"/>
+  <data val="db-run-registry"/>
  </attr>
 </obj>
 
