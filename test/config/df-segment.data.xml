@@ -66,10 +66,10 @@
 <info name="" type="" num-of-items="17" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="glehmann" last-modified-on="np04-srv-019.cern.ch" last-modification-time="20240325T124934"/>
 
 <include>
- <file path="schema/coredal/dunedaq.schema.xml"/>
- <file path="schema/appdal/application.schema.xml"/>
- <file path="config/appdal/connections.data.xml"/>
- <file path="config/appdal/moduleconfs.data.xml"/>
+ <file path="schema/confmodel/dunedaq.schema.xml"/>
+ <file path="schema/appmodel/application.schema.xml"/>
+ <file path="config/appmodel/connections.data.xml"/>
+ <file path="config/appmodel/moduleconfs.data.xml"/>
  <file path="test/config/hosts.data.xml"/>
 </include>
 

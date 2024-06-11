@@ -12,19 +12,19 @@
 
 #include "conffwk/Configuration.hpp"
 
-#include "coredal/Session.hpp"
-#include "coredal/Connection.hpp"
-#include "coredal/DaqModule.hpp"
+#include "confmodel/Session.hpp"
+#include "confmodel/Connection.hpp"
+#include "confmodel/DaqModule.hpp"
 
-#include "appdal/DFApplication.hpp"
-#include "appdal/DFOApplication.hpp"
-#include "appdal/ReadoutApplication.hpp"
-#include "appdal/SmartDaqApplication.hpp"
-#include "appdal/TriggerApplication.hpp"
-#include "appdal/MLTApplication.hpp"
-#include "appdal/TPStreamWriterApplication.hpp"
+#include "appmodel/DFApplication.hpp"
+#include "appmodel/DFOApplication.hpp"
+#include "appmodel/ReadoutApplication.hpp"
+#include "appmodel/SmartDaqApplication.hpp"
+#include "appmodel/TriggerApplication.hpp"
+#include "appmodel/MLTApplication.hpp"
+#include "appmodel/TPStreamWriterApplication.hpp"
 
-#include "appdal/appdalIssues.hpp"
+#include "appmodel/appmodelIssues.hpp"
 
 #include <string>
 using namespace dunedaq;
@@ -48,26 +48,26 @@ int main(int argc, char* argv[]) {
     return 0;
   }
 
-  auto session = confdb->get<coredal::Session>(sessionName);
+  auto session = confdb->get<confmodel::Session>(sessionName);
   if (session == nullptr) {
     std::cout << "Failed to get Session " << sessionName
               << " from database\n";
     return 0;
   }
-  auto daqapp = confdb->get<appdal::SmartDaqApplication>(appName);
+  auto daqapp = confdb->get<appmodel::SmartDaqApplication>(appName);
   if (daqapp) {
     std::cout << appName << " is of class " << daqapp->class_name() << std::endl;
 
-    auto res = daqapp->cast<coredal::ResourceBase>();
+    auto res = daqapp->cast<confmodel::ResourceBase>();
     if (res && res->disabled(*session)) {
       std::cout << "Application " << appName << " is disabled" << std::endl;
       return 0;
     }
-    std::vector<const coredal::DaqModule*> modules;
+    std::vector<const confmodel::DaqModule*> modules;
     try {
       modules = daqapp->generate_modules(confdb, dbfile, session);
     }
-    catch (appdal::BadConf& exc) {
+    catch (appmodel::BadConf& exc) {
       std::cout << "Caught BadConf exception: " << exc << std::endl;
       exit(-1);
     }

@@ -12,32 +12,32 @@
 
 #include "conffwk/Configuration.hpp"
 
-#include "coredal/Connection.hpp"
-#include "coredal/DROStreamConf.hpp"
-#include "coredal/GeoId.hpp"
-#include "coredal/NetworkConnection.hpp"
-#include "coredal/ReadoutGroup.hpp"
-#include "coredal/ReadoutInterface.hpp"
-#include "coredal/ResourceSet.hpp"
-#include "coredal/Service.hpp"
-#include "coredal/Session.hpp"
+#include "confmodel/Connection.hpp"
+#include "confmodel/DROStreamConf.hpp"
+#include "confmodel/GeoId.hpp"
+#include "confmodel/NetworkConnection.hpp"
+#include "confmodel/ReadoutGroup.hpp"
+#include "confmodel/ReadoutInterface.hpp"
+#include "confmodel/ResourceSet.hpp"
+#include "confmodel/Service.hpp"
+#include "confmodel/Session.hpp"
 
-#include "appdal/DataReader.hpp"
-#include "appdal/DataReaderConf.hpp"
-#include "appdal/DataRecorder.hpp"
-#include "appdal/DataRecorderConf.hpp"
+#include "appmodel/DataReader.hpp"
+#include "appmodel/DataReaderConf.hpp"
+#include "appmodel/DataRecorder.hpp"
+#include "appmodel/DataRecorderConf.hpp"
 
-#include "appdal/FragmentAggregator.hpp"
-#include "appdal/NetworkConnectionDescriptor.hpp"
-#include "appdal/NetworkConnectionRule.hpp"
-#include "appdal/QueueConnectionRule.hpp"
-#include "appdal/QueueDescriptor.hpp"
-#include "appdal/ReadoutApplication.hpp"
-#include "appdal/RequestHandler.hpp"
-#include "appdal/ReadoutModule.hpp"
-#include "appdal/ReadoutModuleConf.hpp"
+#include "appmodel/FragmentAggregator.hpp"
+#include "appmodel/NetworkConnectionDescriptor.hpp"
+#include "appmodel/NetworkConnectionRule.hpp"
+#include "appmodel/QueueConnectionRule.hpp"
+#include "appmodel/QueueDescriptor.hpp"
+#include "appmodel/ReadoutApplication.hpp"
+#include "appmodel/RequestHandler.hpp"
+#include "appmodel/ReadoutModule.hpp"
+#include "appmodel/ReadoutModuleConf.hpp"
 
-#include "appdal/appdalIssues.hpp"
+#include "appmodel/appmodelIssues.hpp"
 
 #include "logging/Logging.hpp"
 
@@ -45,23 +45,23 @@
 #include <vector>
 
 using namespace dunedaq;
-using namespace dunedaq::appdal;
+using namespace dunedaq::appmodel;
 
 static ModuleFactory::Registrator __reg__("ReadoutApplication",
                                           [](const SmartDaqApplication* smartApp,
                                              conffwk::Configuration* confdb,
                                              const std::string& dbfile,
-                                             const coredal::Session* session) -> ModuleFactory::ReturnType {
+                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
                                             auto app = smartApp->cast<ReadoutApplication>();
                                             return app->generate_modules(confdb, dbfile, session);
                                           });
 
-std::vector<const coredal::DaqModule*>
+std::vector<const confmodel::DaqModule*>
 ReadoutApplication::generate_modules(conffwk::Configuration* confdb,
                                      const std::string& dbfile,
-                                     const coredal::Session* session) const
+                                     const confmodel::Session* session) const
 {
-  std::vector<const coredal::DaqModule*> modules;
+  std::vector<const confmodel::DaqModule*> modules;
 
   auto dlhConf = get_link_handler();
   auto dlhClass = dlhConf->get_template_for();
@@ -124,7 +124,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* confdb,
     throw(BadConf(ERS_HERE, "No fragment output queue descriptor given"));
   }
   conffwk::ConfigObject faQueueObj;
-  std::vector<const coredal::Connection*> faOutputQueues;
+  std::vector<const confmodel::Connection*> faOutputQueues;
 
   std::string faFragQueueUid(faOutputQDesc->get_uid_base());
   confdb->create(dbfile, "Queue", faFragQueueUid, faQueueObj);
@@ -174,7 +174,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* confdb,
     tpReqQueueObj.set_by_val<std::string>("queue_type", dlhReqInputQDesc->get_queue_type());
     tpReqQueueObj.set_by_val<uint32_t>("capacity", dlhReqInputQDesc->get_capacity());
     tpReqQueueObj.set_by_val<uint32_t>("source_id", tpsrc);
-    faOutputQueues.push_back(confdb->get<coredal::Connection>(tpReqQueueUid));
+    faOutputQueues.push_back(confdb->get<confmodel::Connection>(tpReqQueueUid));
 
     auto tpServiceObj = tpNetDesc->get_associated_service()->config_object();
     std::string tpStreamUid = tpNetDesc->get_uid_base() + UID();
@@ -226,12 +226,12 @@ ReadoutApplication::generate_modules(conffwk::Configuration* confdb,
     }
     TLOG() << "Processing ReadoutGroup " << roGroup->UID();
     // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader module
-    auto group_rset = roGroup->cast<coredal::ReadoutGroup>();
+    auto group_rset = roGroup->cast<confmodel::ReadoutGroup>();
 
     if (group_rset == nullptr) {
       throw(BadConf(ERS_HERE, "ReadoutApplication contains something other than ReadoutGroup"));
     }
-    std::vector<const coredal::Connection*> outputQueues;
+    std::vector<const confmodel::Connection*> outputQueues;
     if (group_rset->get_contains().empty()) {
       throw(BadConf(ERS_HERE, "ReadoutGroup does not contain interfaces"));
     }
@@ -244,14 +244,14 @@ ReadoutApplication::generate_modules(conffwk::Configuration* confdb,
         continue;
       }
       TLOG() << "Processing ReadoutInterface " << interface_rset->UID();
-      auto interface = interface_rset->cast<coredal::ReadoutInterface>();
+      auto interface = interface_rset->cast<confmodel::ReadoutInterface>();
       if (interface == nullptr) {
         throw(BadConf(ERS_HERE, "ReadoutGroup contains something othen than ReadoutInterface"));
       }
       ifObjs.push_back(&interface->config_object());
 
       for (auto res : interface->get_contains()) {
-        auto stream = res->cast<coredal::DROStreamConf>();
+        auto stream = res->cast<confmodel::DROStreamConf>();
         if (stream == nullptr) {
           throw(BadConf(ERS_HERE, "ReadoutInterface contains something other than DROStreamConf"));
         }
@@ -309,12 +309,12 @@ ReadoutApplication::generate_modules(conffwk::Configuration* confdb,
         reqQueueObj.set_by_val<uint32_t>("capacity", dlhReqInputQDesc->get_capacity());
         reqQueueObj.set_by_val<uint32_t>("source_id", stream->get_source_id());
         // Add the requessts queue dal pointer to the outputs of the FragmentAggregator
-        faOutputQueues.push_back(confdb->get<coredal::Connection>(reqQueueUid));
+        faOutputQueues.push_back(confdb->get<confmodel::Connection>(reqQueueUid));
 
         dlhObj.set_objs("inputs", { &queueObj, &reqQueueObj });
 
         // Add the input queue dal pointer to the outputs of the DataReader
-        outputQueues.push_back(confdb->get<coredal::Connection>(dataQueueUid));
+        outputQueues.push_back(confdb->get<confmodel::Connection>(dataQueueUid));
 
         modules.push_back(confdb->get<ReadoutModule>(uid));
       }

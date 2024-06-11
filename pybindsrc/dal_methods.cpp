@@ -10,20 +10,20 @@
 #include "pybind11/pybind11.h"
 #include "pybind11/stl.h"
 
-#include "coredal/DaqModule.hpp"
-#include "coredal/Session.hpp"
+#include "confmodel/DaqModule.hpp"
+#include "confmodel/Session.hpp"
 
-#include "appdal/DFApplication.hpp"
-#include "appdal/DFOApplication.hpp"
-#include "appdal/ReadoutApplication.hpp"
-#include "appdal/TriggerApplication.hpp"
-#include "appdal/TPStreamWriterApplication.hpp"
+#include "appmodel/DFApplication.hpp"
+#include "appmodel/DFOApplication.hpp"
+#include "appmodel/ReadoutApplication.hpp"
+#include "appmodel/TriggerApplication.hpp"
+#include "appmodel/TPStreamWriterApplication.hpp"
 
 #include <sstream>
 
 namespace py = pybind11;
 
-namespace dunedaq::appdal::python {
+namespace dunedaq::appmodel::python {
 
   struct ObjectLocator {
     ObjectLocator(const std::string& id_arg, const std::string& class_name_arg) :
@@ -43,7 +43,7 @@ namespace dunedaq::appdal::python {
     auto app =
       const_cast<conffwk::Configuration&>(confdb).get<ApplicationType>(app_id);
     auto session =
-      const_cast<conffwk::Configuration&>(confdb).get<coredal::Session>(session_id);
+      const_cast<conffwk::Configuration&>(confdb).get<confmodel::Session>(session_id);
 
     std::vector<ObjectLocator> mods;
     for (auto mod : app->generate_modules(
@@ -56,8 +56,8 @@ namespace dunedaq::appdal::python {
   std::vector<std::string> smart_daq_application_construct_commandline_parameters(const conffwk::Configuration& db,
                                                                                   const std::string& session_id,
                                                                                   const std::string& app_id) {
-    const auto* app = const_cast<conffwk::Configuration&>(db).get<dunedaq::appdal::SmartDaqApplication>(app_id);
-    const auto* session = const_cast<conffwk::Configuration&>(db).get<dunedaq::coredal::Session>(session_id);
+    const auto* app = const_cast<conffwk::Configuration&>(db).get<dunedaq::appmodel::SmartDaqApplication>(app_id);
+    const auto* session = const_cast<conffwk::Configuration&>(db).get<dunedaq::confmodel::Session>(session_id);
     return app->construct_commandline_parameters(db, session);
   }
 
@@ -78,4 +78,4 @@ register_dal_methods(py::module& m)
   m.def("smart_daq_application_construct_commandline_parameters", &smart_daq_application_construct_commandline_parameters, "Get a version of the command line agruments parsed");
 }
 
-} // namespace dunedaq::appdal::python
+} // namespace dunedaq::appmodel::python
