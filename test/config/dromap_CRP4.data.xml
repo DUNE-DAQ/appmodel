@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="134" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="crone" created-on="np04-srv-011.cern.ch" creation-time="20240308T134124" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240529T172508"/>
+<info name="" type="" num-of-items="128" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="crone" created-on="np04-srv-011.cern.ch" creation-time="20240308T134124" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240611T191027"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -96,292 +96,244 @@
  </rel>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-200">
+<obj class="DetectorStream" id="DROStream-200">
  <attr name="source_id" type="u32" val="200"/>
  <rel name="geo_id" class="GeoId" id="geoId-200"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-200"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-201">
+<obj class="DetectorStream" id="DROStream-201">
  <attr name="source_id" type="u32" val="201"/>
  <rel name="geo_id" class="GeoId" id="geoId-201"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-200"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-202">
+<obj class="DetectorStream" id="DROStream-202">
  <attr name="source_id" type="u32" val="202"/>
  <rel name="geo_id" class="GeoId" id="geoId-202"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-200"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-203">
+<obj class="DetectorStream" id="DROStream-203">
  <attr name="source_id" type="u32" val="203"/>
  <rel name="geo_id" class="GeoId" id="geoId-203"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-200"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-204">
+<obj class="DetectorStream" id="DROStream-204">
  <attr name="source_id" type="u32" val="204"/>
  <rel name="geo_id" class="GeoId" id="geoId-204"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-204"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-205">
+<obj class="DetectorStream" id="DROStream-205">
  <attr name="source_id" type="u32" val="205"/>
  <rel name="geo_id" class="GeoId" id="geoId-205"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-204"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-206">
+<obj class="DetectorStream" id="DROStream-206">
  <attr name="source_id" type="u32" val="206"/>
  <rel name="geo_id" class="GeoId" id="geoId-206"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-204"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-207">
+<obj class="DetectorStream" id="DROStream-207">
  <attr name="source_id" type="u32" val="207"/>
  <rel name="geo_id" class="GeoId" id="geoId-207"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-204"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-208">
+<obj class="DetectorStream" id="DROStream-208">
  <attr name="source_id" type="u32" val="208"/>
  <rel name="geo_id" class="GeoId" id="geoId-208"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-208"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-209">
+<obj class="DetectorStream" id="DROStream-209">
  <attr name="source_id" type="u32" val="209"/>
  <rel name="geo_id" class="GeoId" id="geoId-209"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-208"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-210">
+<obj class="DetectorStream" id="DROStream-210">
  <attr name="source_id" type="u32" val="210"/>
  <rel name="geo_id" class="GeoId" id="geoId-210"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-208"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-211">
+<obj class="DetectorStream" id="DROStream-211">
  <attr name="source_id" type="u32" val="211"/>
  <rel name="geo_id" class="GeoId" id="geoId-211"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-208"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-212">
+<obj class="DetectorStream" id="DROStream-212">
  <attr name="source_id" type="u32" val="212"/>
  <rel name="geo_id" class="GeoId" id="geoId-212"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-212"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-213">
+<obj class="DetectorStream" id="DROStream-213">
  <attr name="source_id" type="u32" val="213"/>
  <rel name="geo_id" class="GeoId" id="geoId-213"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-212"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-214">
+<obj class="DetectorStream" id="DROStream-214">
  <attr name="source_id" type="u32" val="214"/>
  <rel name="geo_id" class="GeoId" id="geoId-214"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-212"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-215">
+<obj class="DetectorStream" id="DROStream-215">
  <attr name="source_id" type="u32" val="215"/>
  <rel name="geo_id" class="GeoId" id="geoId-215"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-212"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-216">
+<obj class="DetectorStream" id="DROStream-216">
  <attr name="source_id" type="u32" val="216"/>
  <rel name="geo_id" class="GeoId" id="geoId-216"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-216"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-217">
+<obj class="DetectorStream" id="DROStream-217">
  <attr name="source_id" type="u32" val="217"/>
  <rel name="geo_id" class="GeoId" id="geoId-217"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-216"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-218">
+<obj class="DetectorStream" id="DROStream-218">
  <attr name="source_id" type="u32" val="218"/>
  <rel name="geo_id" class="GeoId" id="geoId-218"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-216"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-219">
+<obj class="DetectorStream" id="DROStream-219">
  <attr name="source_id" type="u32" val="219"/>
  <rel name="geo_id" class="GeoId" id="geoId-219"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-216"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-220">
+<obj class="DetectorStream" id="DROStream-220">
  <attr name="source_id" type="u32" val="220"/>
  <rel name="geo_id" class="GeoId" id="geoId-220"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-220"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-221">
+<obj class="DetectorStream" id="DROStream-221">
  <attr name="source_id" type="u32" val="221"/>
  <rel name="geo_id" class="GeoId" id="geoId-221"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-220"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-222">
+<obj class="DetectorStream" id="DROStream-222">
  <attr name="source_id" type="u32" val="222"/>
  <rel name="geo_id" class="GeoId" id="geoId-222"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-220"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-223">
+<obj class="DetectorStream" id="DROStream-223">
  <attr name="source_id" type="u32" val="223"/>
  <rel name="geo_id" class="GeoId" id="geoId-223"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-220"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-224">
+<obj class="DetectorStream" id="DROStream-224">
  <attr name="source_id" type="u32" val="224"/>
  <rel name="geo_id" class="GeoId" id="geoId-224"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-224"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-225">
+<obj class="DetectorStream" id="DROStream-225">
  <attr name="source_id" type="u32" val="225"/>
  <rel name="geo_id" class="GeoId" id="geoId-225"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-224"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-226">
+<obj class="DetectorStream" id="DROStream-226">
  <attr name="source_id" type="u32" val="226"/>
  <rel name="geo_id" class="GeoId" id="geoId-226"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-224"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-227">
+<obj class="DetectorStream" id="DROStream-227">
  <attr name="source_id" type="u32" val="227"/>
  <rel name="geo_id" class="GeoId" id="geoId-227"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-224"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-228">
+<obj class="DetectorStream" id="DROStream-228">
  <attr name="source_id" type="u32" val="228"/>
  <rel name="geo_id" class="GeoId" id="geoId-228"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-228"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-229">
+<obj class="DetectorStream" id="DROStream-229">
  <attr name="source_id" type="u32" val="229"/>
  <rel name="geo_id" class="GeoId" id="geoId-229"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-228"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-230">
+<obj class="DetectorStream" id="DROStream-230">
  <attr name="source_id" type="u32" val="230"/>
  <rel name="geo_id" class="GeoId" id="geoId-230"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-228"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-231">
+<obj class="DetectorStream" id="DROStream-231">
  <attr name="source_id" type="u32" val="231"/>
  <rel name="geo_id" class="GeoId" id="geoId-231"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-228"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-232">
+<obj class="DetectorStream" id="DROStream-232">
  <attr name="source_id" type="u32" val="232"/>
  <rel name="geo_id" class="GeoId" id="geoId-232"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-232"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-233">
+<obj class="DetectorStream" id="DROStream-233">
  <attr name="source_id" type="u32" val="233"/>
  <rel name="geo_id" class="GeoId" id="geoId-233"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-232"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-234">
+<obj class="DetectorStream" id="DROStream-234">
  <attr name="source_id" type="u32" val="234"/>
  <rel name="geo_id" class="GeoId" id="geoId-234"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-232"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-235">
+<obj class="DetectorStream" id="DROStream-235">
  <attr name="source_id" type="u32" val="235"/>
  <rel name="geo_id" class="GeoId" id="geoId-235"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-232"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-236">
+<obj class="DetectorStream" id="DROStream-236">
  <attr name="source_id" type="u32" val="236"/>
  <rel name="geo_id" class="GeoId" id="geoId-236"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-236"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-237">
+<obj class="DetectorStream" id="DROStream-237">
  <attr name="source_id" type="u32" val="237"/>
  <rel name="geo_id" class="GeoId" id="geoId-237"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-236"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-238">
+<obj class="DetectorStream" id="DROStream-238">
  <attr name="source_id" type="u32" val="238"/>
  <rel name="geo_id" class="GeoId" id="geoId-238"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-236"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-239">
+<obj class="DetectorStream" id="DROStream-239">
  <attr name="source_id" type="u32" val="239"/>
  <rel name="geo_id" class="GeoId" id="geoId-239"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-236"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-240">
+<obj class="DetectorStream" id="DROStream-240">
  <attr name="source_id" type="u32" val="240"/>
  <rel name="geo_id" class="GeoId" id="geoId-240"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-240"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-241">
+<obj class="DetectorStream" id="DROStream-241">
  <attr name="source_id" type="u32" val="241"/>
  <rel name="geo_id" class="GeoId" id="geoId-241"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-240"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-242">
+<obj class="DetectorStream" id="DROStream-242">
  <attr name="source_id" type="u32" val="242"/>
  <rel name="geo_id" class="GeoId" id="geoId-242"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-240"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-243">
+<obj class="DetectorStream" id="DROStream-243">
  <attr name="source_id" type="u32" val="243"/>
  <rel name="geo_id" class="GeoId" id="geoId-243"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-240"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-244">
+<obj class="DetectorStream" id="DROStream-244">
  <attr name="source_id" type="u32" val="244"/>
  <rel name="geo_id" class="GeoId" id="geoId-244"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-244"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-245">
+<obj class="DetectorStream" id="DROStream-245">
  <attr name="source_id" type="u32" val="245"/>
  <rel name="geo_id" class="GeoId" id="geoId-245"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-244"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-246">
+<obj class="DetectorStream" id="DROStream-246">
  <attr name="source_id" type="u32" val="246"/>
  <rel name="geo_id" class="GeoId" id="geoId-246"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-244"/>
 </obj>
 
-<obj class="DROStreamConf" id="DROStream-247">
+<obj class="DetectorStream" id="DROStream-247">
  <attr name="source_id" type="u32" val="247"/>
  <rel name="geo_id" class="GeoId" id="geoId-247"/>
- <rel name="stream_params" class="EthStreamParameters" id="pars-244"/>
 </obj>
 
 <obj class="DetectorToDaqConnection" id="crp4-connections">
@@ -389,102 +341,6 @@
   <ref class="ResourceSetAND" id="crp4-streams"/>
   <ref class="DPDKReceiver" id="dpdk-crp4-receiver"/>
  </rel>
-</obj>
-
-<obj class="EthStreamParameters" id="pars-200">
- <attr name="mode" type="enum" val="fix_rate"/>
- <attr name="protocol" type="enum" val="udp"/>
- <attr name="tx_mac" type="string" val="80:d3:36:00:52:64"/>
- <attr name="tx_ip" type="string" val="10.73.139.59"/>
- <attr name="tx_hostname" type="string" val="np02-wib-1001"/>
-</obj>
-
-<obj class="EthStreamParameters" id="pars-204">
- <attr name="mode" type="enum" val="fix_rate"/>
- <attr name="protocol" type="enum" val="udp"/>
- <attr name="tx_mac" type="string" val="80:d3:36:00:52:65"/>
- <attr name="tx_ip" type="string" val="10.73.139.58"/>
- <attr name="tx_hostname" type="string" val="np02-wib-1001"/>
-</obj>
-
-<obj class="EthStreamParameters" id="pars-208">
- <attr name="mode" type="enum" val="fix_rate"/>
- <attr name="protocol" type="enum" val="udp"/>
- <attr name="tx_mac" type="string" val="80:d3:36:00:52:66"/>
- <attr name="tx_ip" type="string" val="10.73.139.60"/>
- <attr name="tx_hostname" type="string" val="np02-wib-1002"/>
-</obj>
-
-<obj class="EthStreamParameters" id="pars-212">
- <attr name="mode" type="enum" val="fix_rate"/>
- <attr name="protocol" type="enum" val="udp"/>
- <attr name="tx_mac" type="string" val="80:d3:36:00:52:67"/>
- <attr name="tx_ip" type="string" val="10.73.139.61"/>
- <attr name="tx_hostname" type="string" val="np02-wib-1002"/>
-</obj>
-
-<obj class="EthStreamParameters" id="pars-216">
- <attr name="mode" type="enum" val="fix_rate"/>
- <attr name="protocol" type="enum" val="udp"/>
- <attr name="tx_mac" type="string" val="80:d3:36:00:52:68"/>
- <attr name="tx_ip" type="string" val="10.73.139.62"/>
- <attr name="tx_hostname" type="string" val="np02-wib-1003"/>
-</obj>
-
-<obj class="EthStreamParameters" id="pars-220">
- <attr name="mode" type="enum" val="fix_rate"/>
- <attr name="protocol" type="enum" val="udp"/>
- <attr name="tx_mac" type="string" val="80:d3:36:00:52:69"/>
- <attr name="tx_ip" type="string" val="10.73.139.63"/>
- <attr name="tx_hostname" type="string" val="np02-wib-1003"/>
-</obj>
-
-<obj class="EthStreamParameters" id="pars-224">
- <attr name="mode" type="enum" val="fix_rate"/>
- <attr name="protocol" type="enum" val="udp"/>
- <attr name="tx_mac" type="string" val="80:d3:36:00:52:6a"/>
- <attr name="tx_ip" type="string" val="10.73.139.65"/>
- <attr name="tx_hostname" type="string" val="np02-wib-1004"/>
-</obj>
-
-<obj class="EthStreamParameters" id="pars-228">
- <attr name="mode" type="enum" val="fix_rate"/>
- <attr name="protocol" type="enum" val="udp"/>
- <attr name="tx_mac" type="string" val="80:d3:36:00:52:6b"/>
- <attr name="tx_ip" type="string" val="10.73.139.64"/>
- <attr name="tx_hostname" type="string" val="np02-wib-1004"/>
-</obj>
-
-<obj class="EthStreamParameters" id="pars-232">
- <attr name="mode" type="enum" val="fix_rate"/>
- <attr name="protocol" type="enum" val="udp"/>
- <attr name="tx_mac" type="string" val="80:d3:36:00:52:6c"/>
- <attr name="tx_ip" type="string" val="10.73.139.66"/>
- <attr name="tx_hostname" type="string" val="np02-wib-1005"/>
-</obj>
-
-<obj class="EthStreamParameters" id="pars-236">
- <attr name="mode" type="enum" val="fix_rate"/>
- <attr name="protocol" type="enum" val="udp"/>
- <attr name="tx_mac" type="string" val="80:d3:36:00:52:6d"/>
- <attr name="tx_ip" type="string" val="10.73.139.67"/>
- <attr name="tx_hostname" type="string" val="np02-wib-1005"/>
-</obj>
-
-<obj class="EthStreamParameters" id="pars-240">
- <attr name="mode" type="enum" val="fix_rate"/>
- <attr name="protocol" type="enum" val="udp"/>
- <attr name="tx_mac" type="string" val="80:d3:36:00:52:6e"/>
- <attr name="tx_ip" type="string" val="10.73.139.68"/>
- <attr name="tx_hostname" type="string" val="np02-wib-1006"/>
-</obj>
-
-<obj class="EthStreamParameters" id="pars-244">
- <attr name="mode" type="enum" val="fix_rate"/>
- <attr name="protocol" type="enum" val="udp"/>
- <attr name="tx_mac" type="string" val="80:d3:36:00:52:6f"/>
- <attr name="tx_ip" type="string" val="10.73.139.69"/>
- <attr name="tx_hostname" type="string" val="np02-wib-1006"/>
 </obj>
 
 <obj class="GeoId" id="geoId-200">
@@ -809,130 +665,154 @@
  <attr name="stream_id" type="u32" val="67"/>
 </obj>
 
-<obj class="HermesController" id="hermes_10_10_0">
- <attr name="uri" type="string" val="ipbusudp-2.0://np02-wib-1001:50001"/>
+<obj class="HermesDataSender" id="hds-np02-wib-1001-10g-0">
  <attr name="port" type="u32" val="17476"/>
- <rel name="address_table" class="IpbusAddressTable" id="Hermes-addrtab"/>
- <rel name="links">
-  <ref class="HermesLinkConf" id="hermes_10_10_0-0"/>
-  <ref class="HermesLinkConf" id="hermes_10_10_0-1"/>
+ <attr name="control_host" type="string" val="np02-wib-1001"/>
+ <rel name="contains">
+  <ref class="DetectorStream" id="DROStream-200"/>
+  <ref class="DetectorStream" id="DROStream-201"/>
+  <ref class="DetectorStream" id="DROStream-202"/>
+  <ref class="DetectorStream" id="DROStream-203"/>
  </rel>
+ <rel name="uses" class="NetworkInterface" id="nw-np02-wib-1001-10g-0"/>
 </obj>
 
-<obj class="HermesController" id="hermes_10_10_1">
- <attr name="uri" type="string" val="ipbusudp-2.0://np02-wib-1002:50001"/>
+<obj class="HermesDataSender" id="hds-np02-wib-1001-10g-1">
+ <attr name="link_id" type="u32" val="1"/>
  <attr name="port" type="u32" val="17476"/>
- <rel name="address_table" class="IpbusAddressTable" id="Hermes-addrtab"/>
- <rel name="links">
-  <ref class="HermesLinkConf" id="hermes_10_10_1-0"/>
-  <ref class="HermesLinkConf" id="hermes_10_10_1-1"/>
+ <attr name="control_host" type="string" val="np02-wib-1001"/>
+ <rel name="contains">
+  <ref class="DetectorStream" id="DROStream-204"/>
+  <ref class="DetectorStream" id="DROStream-205"/>
+  <ref class="DetectorStream" id="DROStream-206"/>
+  <ref class="DetectorStream" id="DROStream-207"/>
  </rel>
+ <rel name="uses" class="NetworkInterface" id="nw-np02-wib-1001-10g-1"/>
 </obj>
 
-<obj class="HermesController" id="hermes_10_10_2">
- <attr name="uri" type="string" val="ipbusudp-2.0://np02-wib-1003:50001"/>
+<obj class="HermesDataSender" id="hds-np02-wib-1002-10g-0">
  <attr name="port" type="u32" val="17476"/>
- <rel name="address_table" class="IpbusAddressTable" id="Hermes-addrtab"/>
- <rel name="links">
-  <ref class="HermesLinkConf" id="hermes_10_10_2-0"/>
-  <ref class="HermesLinkConf" id="hermes_10_10_2-1"/>
+ <attr name="control_host" type="string" val="np02-wib-1002"/>
+ <rel name="contains">
+  <ref class="DetectorStream" id="DROStream-208"/>
+  <ref class="DetectorStream" id="DROStream-209"/>
+  <ref class="DetectorStream" id="DROStream-210"/>
+  <ref class="DetectorStream" id="DROStream-211"/>
  </rel>
+ <rel name="uses" class="NetworkInterface" id="nw-np02-wib-1002-10g-0"/>
 </obj>
 
-<obj class="HermesController" id="hermes_10_10_3">
- <attr name="uri" type="string" val="ipbusudp-2.0://np02-wib-1004:50001"/>
+<obj class="HermesDataSender" id="hds-np02-wib-1002-10g-1">
+ <attr name="link_id" type="u32" val="1"/>
  <attr name="port" type="u32" val="17476"/>
- <rel name="address_table" class="IpbusAddressTable" id="Hermes-addrtab"/>
- <rel name="links">
-  <ref class="HermesLinkConf" id="hermes_10_10_3-0"/>
-  <ref class="HermesLinkConf" id="hermes_10_10_3-1"/>
+ <attr name="control_host" type="string" val="np02-wib-1002"/>
+ <rel name="contains">
+  <ref class="DetectorStream" id="DROStream-212"/>
+  <ref class="DetectorStream" id="DROStream-213"/>
+  <ref class="DetectorStream" id="DROStream-214"/>
+  <ref class="DetectorStream" id="DROStream-215"/>
  </rel>
+ <rel name="uses" class="NetworkInterface" id="nw-np02-wib-1002-10g-1"/>
 </obj>
 
-<obj class="HermesController" id="hermes_10_10_4">
- <attr name="uri" type="string" val="ipbusudp-2.0://np02-wib-1005:50001"/>
+<obj class="HermesDataSender" id="hds-np02-wib-1003-10g-0">
  <attr name="port" type="u32" val="17476"/>
- <rel name="address_table" class="IpbusAddressTable" id="Hermes-addrtab"/>
- <rel name="links">
-  <ref class="HermesLinkConf" id="hermes_10_10_4-0"/>
-  <ref class="HermesLinkConf" id="hermes_10_10_4-1"/>
+ <attr name="control_host" type="string" val="np02-wib-1003"/>
+ <rel name="contains">
+  <ref class="DetectorStream" id="DROStream-216"/>
+  <ref class="DetectorStream" id="DROStream-217"/>
+  <ref class="DetectorStream" id="DROStream-218"/>
+  <ref class="DetectorStream" id="DROStream-219"/>
  </rel>
+ <rel name="uses" class="NetworkInterface" id="nw-np02-wib-1003-10g-0"/>
 </obj>
 
-<obj class="HermesController" id="hermes_10_10_5">
- <attr name="uri" type="string" val="ipbusudp-2.0://np02-wib-1006:50001"/>
+<obj class="HermesDataSender" id="hds-np02-wib-1003-10g-1">
+ <attr name="link_id" type="u32" val="1"/>
  <attr name="port" type="u32" val="17476"/>
- <rel name="address_table" class="IpbusAddressTable" id="Hermes-addrtab"/>
- <rel name="links">
-  <ref class="HermesLinkConf" id="hermes_10_10_5-0"/>
-  <ref class="HermesLinkConf" id="hermes_10_10_5-1"/>
+ <attr name="control_host" type="string" val="np02-wib-1003"/>
+ <rel name="contains">
+  <ref class="DetectorStream" id="DROStream-220"/>
+  <ref class="DetectorStream" id="DROStream-221"/>
+  <ref class="DetectorStream" id="DROStream-222"/>
+  <ref class="DetectorStream" id="DROStream-223"/>
  </rel>
+ <rel name="uses" class="NetworkInterface" id="nw-np02-wib-1003-10g-1"/>
 </obj>
 
-<obj class="HermesLinkConf" id="hermes_10_10_0-0">
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-200"/>
+<obj class="HermesDataSender" id="hds-np02-wib-1004-10g-0">
+ <attr name="port" type="u32" val="17476"/>
+ <attr name="control_host" type="string" val="np02-wib-1004"/>
+ <rel name="contains">
+  <ref class="DetectorStream" id="DROStream-224"/>
+  <ref class="DetectorStream" id="DROStream-225"/>
+  <ref class="DetectorStream" id="DROStream-226"/>
+  <ref class="DetectorStream" id="DROStream-227"/>
+ </rel>
+ <rel name="uses" class="NetworkInterface" id="nw-np02-wib-1004-10g-0"/>
 </obj>
 
-<obj class="HermesLinkConf" id="hermes_10_10_0-1">
+<obj class="HermesDataSender" id="hds-np02-wib-1004-10g-1">
  <attr name="link_id" type="u32" val="1"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-204"/>
+ <attr name="port" type="u32" val="17476"/>
+ <attr name="control_host" type="string" val="np02-wib-1004"/>
+ <rel name="contains">
+  <ref class="DetectorStream" id="DROStream-228"/>
+  <ref class="DetectorStream" id="DROStream-229"/>
+  <ref class="DetectorStream" id="DROStream-230"/>
+  <ref class="DetectorStream" id="DROStream-231"/>
+ </rel>
+ <rel name="uses" class="NetworkInterface" id="nw-np02-wib-1004-10g-1"/>
 </obj>
 
-<obj class="HermesLinkConf" id="hermes_10_10_1-0">
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-208"/>
+<obj class="HermesDataSender" id="hds-np02-wib-1005-10g-0">
+ <attr name="port" type="u32" val="17476"/>
+ <attr name="control_host" type="string" val="np02-wib-1005"/>
+ <rel name="contains">
+  <ref class="DetectorStream" id="DROStream-232"/>
+  <ref class="DetectorStream" id="DROStream-233"/>
+  <ref class="DetectorStream" id="DROStream-234"/>
+  <ref class="DetectorStream" id="DROStream-235"/>
+ </rel>
+ <rel name="uses" class="NetworkInterface" id="nw-np02-wib-1005-10g-0"/>
 </obj>
 
-<obj class="HermesLinkConf" id="hermes_10_10_1-1">
+<obj class="HermesDataSender" id="hds-np02-wib-1005-10g-1">
  <attr name="link_id" type="u32" val="1"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-212"/>
+ <attr name="port" type="u32" val="17476"/>
+ <attr name="control_host" type="string" val="np02-wib-1005"/>
+ <rel name="contains">
+  <ref class="DetectorStream" id="DROStream-236"/>
+  <ref class="DetectorStream" id="DROStream-237"/>
+  <ref class="DetectorStream" id="DROStream-238"/>
+  <ref class="DetectorStream" id="DROStream-239"/>
+ </rel>
+ <rel name="uses" class="NetworkInterface" id="nw-np02-wib-1005-10g-1"/>
 </obj>
 
-<obj class="HermesLinkConf" id="hermes_10_10_2-0">
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-216"/>
+<obj class="HermesDataSender" id="hds-np02-wib-1006-10g-0">
+ <attr name="port" type="u32" val="17476"/>
+ <attr name="control_host" type="string" val="np02-wib-1006"/>
+ <rel name="contains">
+  <ref class="DetectorStream" id="DROStream-240"/>
+  <ref class="DetectorStream" id="DROStream-241"/>
+  <ref class="DetectorStream" id="DROStream-242"/>
+  <ref class="DetectorStream" id="DROStream-243"/>
+ </rel>
+ <rel name="uses" class="NetworkInterface" id="nw-np02-wib-1006-10g-0"/>
 </obj>
 
-<obj class="HermesLinkConf" id="hermes_10_10_2-1">
+<obj class="HermesDataSender" id="hds-np02-wib-1006-10g-1">
  <attr name="link_id" type="u32" val="1"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-220"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_3-0">
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-224"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_3-1">
- <attr name="link_id" type="u32" val="1"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-228"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_4-0">
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-232"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_4-1">
- <attr name="link_id" type="u32" val="1"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-236"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_5-0">
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-240"/>
-</obj>
-
-<obj class="HermesLinkConf" id="hermes_10_10_5-1">
- <attr name="link_id" type="u32" val="1"/>
- <rel name="destination" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="source" class="DROStreamConf" id="DROStream-244"/>
+ <attr name="port" type="u32" val="17476"/>
+ <attr name="control_host" type="string" val="np02-wib-1006"/>
+ <rel name="contains">
+  <ref class="DetectorStream" id="DROStream-244"/>
+  <ref class="DetectorStream" id="DROStream-245"/>
+  <ref class="DetectorStream" id="DROStream-246"/>
+  <ref class="DetectorStream" id="DROStream-247"/>
+ </rel>
+ <rel name="uses" class="NetworkInterface" id="nw-np02-wib-1006-10g-1"/>
 </obj>
 
 <obj class="IpbusAddressTable" id="Hermes-addrtab">
@@ -940,10 +820,11 @@
 </obj>
 
 <obj class="NICInterface" id="nic-np02-srv-003">
- <attr name="numa_id" type="s16" val="1"/>
+ <attr name="numa_id" type="u8" val="1"/>
+ <attr name="mac_address" type="string" val="6c:fe:54:4b:20:f1"/>
+ <attr name="ip_address" type="string" val="10.73.139.82"/>
+ <attr name="network_name" type="enum" val="Control"/>
  <attr name="pcie_addr" type="string" val="0000:98:00.1"/>
- <attr name="mac" type="string" val="6c:fe:54:4b:20:f1"/>
- <attr name="ip" type="string" val="10.73.139.82"/>
 </obj>
 
 <obj class="NICStatsConf" id="nicStats-np02_WIB_CRP4">
@@ -951,6 +832,78 @@
  <attr name="expected_packet_size" type="u32" val="7243"/>
  <attr name="expected_seq_id_step" type="u32" val="1"/>
  <attr name="expected_timestamp_step" type="s32" val="-999"/>
+</obj>
+
+<obj class="NetworkInterface" id="nw-np02-wib-1001-10g-0">
+ <attr name="mac_address" type="string" val="80:d3:36:00:52:64"/>
+ <attr name="ip_address" type="string" val="10.73.139.59"/>
+ <attr name="network_name" type="enum" val="Control"/>
+</obj>
+
+<obj class="NetworkInterface" id="nw-np02-wib-1001-10g-1">
+ <attr name="mac_address" type="string" val="80:d3:36:00:52:65"/>
+ <attr name="ip_address" type="string" val="10.73.139.58"/>
+ <attr name="network_name" type="enum" val="Control"/>
+</obj>
+
+<obj class="NetworkInterface" id="nw-np02-wib-1002-10g-0">
+ <attr name="mac_address" type="string" val="80:d3:36:00:52:66"/>
+ <attr name="ip_address" type="string" val="10.73.139.60"/>
+ <attr name="network_name" type="enum" val="Control"/>
+</obj>
+
+<obj class="NetworkInterface" id="nw-np02-wib-1002-10g-1">
+ <attr name="mac_address" type="string" val="80:d3:36:00:52:67"/>
+ <attr name="ip_address" type="string" val="10.73.139.61"/>
+ <attr name="network_name" type="enum" val="Control"/>
+</obj>
+
+<obj class="NetworkInterface" id="nw-np02-wib-1003-10g-0">
+ <attr name="mac_address" type="string" val="80:d3:36:00:52:68"/>
+ <attr name="ip_address" type="string" val="10.73.139.62"/>
+ <attr name="network_name" type="enum" val="Control"/>
+</obj>
+
+<obj class="NetworkInterface" id="nw-np02-wib-1003-10g-1">
+ <attr name="mac_address" type="string" val="80:d3:36:00:52:69"/>
+ <attr name="ip_address" type="string" val="10.73.139.63"/>
+ <attr name="network_name" type="enum" val="Control"/>
+</obj>
+
+<obj class="NetworkInterface" id="nw-np02-wib-1004-10g-0">
+ <attr name="mac_address" type="string" val="80:d3:36:00:52:6a"/>
+ <attr name="ip_address" type="string" val="10.73.139.65"/>
+ <attr name="network_name" type="enum" val="Control"/>
+</obj>
+
+<obj class="NetworkInterface" id="nw-np02-wib-1004-10g-1">
+ <attr name="mac_address" type="string" val="80:d3:36:00:52:6b"/>
+ <attr name="ip_address" type="string" val="10.73.139.64"/>
+ <attr name="network_name" type="enum" val="Control"/>
+</obj>
+
+<obj class="NetworkInterface" id="nw-np02-wib-1005-10g-0">
+ <attr name="mac_address" type="string" val="80:d3:36:00:52:6c"/>
+ <attr name="ip_address" type="string" val="10.73.139.66"/>
+ <attr name="network_name" type="enum" val="Control"/>
+</obj>
+
+<obj class="NetworkInterface" id="nw-np02-wib-1005-10g-1">
+ <attr name="mac_address" type="string" val="80:d3:36:00:52:6d"/>
+ <attr name="ip_address" type="string" val="10.73.139.67"/>
+ <attr name="network_name" type="enum" val="Control"/>
+</obj>
+
+<obj class="NetworkInterface" id="nw-np02-wib-1006-10g-0">
+ <attr name="mac_address" type="string" val="80:d3:36:00:52:6e"/>
+ <attr name="ip_address" type="string" val="10.73.139.68"/>
+ <attr name="network_name" type="enum" val="Control"/>
+</obj>
+
+<obj class="NetworkInterface" id="nw-np02-wib-1006-10g-1">
+ <attr name="mac_address" type="string" val="80:d3:36:00:52:6f"/>
+ <attr name="ip_address" type="string" val="10.73.139.69"/>
+ <attr name="network_name" type="enum" val="Control"/>
 </obj>
 
 <obj class="ProcessingResource" id="crp4-lcores">
@@ -966,54 +919,54 @@
 
 <obj class="ResourceSetAND" id="crp4-streams">
  <rel name="contains">
-  <ref class="DROStreamConf" id="DROStream-200"/>
-  <ref class="DROStreamConf" id="DROStream-201"/>
-  <ref class="DROStreamConf" id="DROStream-202"/>
-  <ref class="DROStreamConf" id="DROStream-203"/>
-  <ref class="DROStreamConf" id="DROStream-204"/>
-  <ref class="DROStreamConf" id="DROStream-205"/>
-  <ref class="DROStreamConf" id="DROStream-206"/>
-  <ref class="DROStreamConf" id="DROStream-207"/>
-  <ref class="DROStreamConf" id="DROStream-208"/>
-  <ref class="DROStreamConf" id="DROStream-209"/>
-  <ref class="DROStreamConf" id="DROStream-210"/>
-  <ref class="DROStreamConf" id="DROStream-211"/>
-  <ref class="DROStreamConf" id="DROStream-212"/>
-  <ref class="DROStreamConf" id="DROStream-213"/>
-  <ref class="DROStreamConf" id="DROStream-214"/>
-  <ref class="DROStreamConf" id="DROStream-215"/>
-  <ref class="DROStreamConf" id="DROStream-216"/>
-  <ref class="DROStreamConf" id="DROStream-217"/>
-  <ref class="DROStreamConf" id="DROStream-218"/>
-  <ref class="DROStreamConf" id="DROStream-219"/>
-  <ref class="DROStreamConf" id="DROStream-220"/>
-  <ref class="DROStreamConf" id="DROStream-221"/>
-  <ref class="DROStreamConf" id="DROStream-222"/>
-  <ref class="DROStreamConf" id="DROStream-223"/>
-  <ref class="DROStreamConf" id="DROStream-224"/>
-  <ref class="DROStreamConf" id="DROStream-225"/>
-  <ref class="DROStreamConf" id="DROStream-226"/>
-  <ref class="DROStreamConf" id="DROStream-227"/>
-  <ref class="DROStreamConf" id="DROStream-228"/>
-  <ref class="DROStreamConf" id="DROStream-229"/>
-  <ref class="DROStreamConf" id="DROStream-230"/>
-  <ref class="DROStreamConf" id="DROStream-231"/>
-  <ref class="DROStreamConf" id="DROStream-232"/>
-  <ref class="DROStreamConf" id="DROStream-233"/>
-  <ref class="DROStreamConf" id="DROStream-234"/>
-  <ref class="DROStreamConf" id="DROStream-235"/>
-  <ref class="DROStreamConf" id="DROStream-236"/>
-  <ref class="DROStreamConf" id="DROStream-237"/>
-  <ref class="DROStreamConf" id="DROStream-238"/>
-  <ref class="DROStreamConf" id="DROStream-239"/>
-  <ref class="DROStreamConf" id="DROStream-240"/>
-  <ref class="DROStreamConf" id="DROStream-241"/>
-  <ref class="DROStreamConf" id="DROStream-242"/>
-  <ref class="DROStreamConf" id="DROStream-243"/>
-  <ref class="DROStreamConf" id="DROStream-244"/>
-  <ref class="DROStreamConf" id="DROStream-245"/>
-  <ref class="DROStreamConf" id="DROStream-246"/>
-  <ref class="DROStreamConf" id="DROStream-247"/>
+  <ref class="DetectorStream" id="DROStream-200"/>
+  <ref class="DetectorStream" id="DROStream-201"/>
+  <ref class="DetectorStream" id="DROStream-202"/>
+  <ref class="DetectorStream" id="DROStream-203"/>
+  <ref class="DetectorStream" id="DROStream-204"/>
+  <ref class="DetectorStream" id="DROStream-205"/>
+  <ref class="DetectorStream" id="DROStream-206"/>
+  <ref class="DetectorStream" id="DROStream-207"/>
+  <ref class="DetectorStream" id="DROStream-208"/>
+  <ref class="DetectorStream" id="DROStream-209"/>
+  <ref class="DetectorStream" id="DROStream-210"/>
+  <ref class="DetectorStream" id="DROStream-211"/>
+  <ref class="DetectorStream" id="DROStream-212"/>
+  <ref class="DetectorStream" id="DROStream-213"/>
+  <ref class="DetectorStream" id="DROStream-214"/>
+  <ref class="DetectorStream" id="DROStream-215"/>
+  <ref class="DetectorStream" id="DROStream-216"/>
+  <ref class="DetectorStream" id="DROStream-217"/>
+  <ref class="DetectorStream" id="DROStream-218"/>
+  <ref class="DetectorStream" id="DROStream-219"/>
+  <ref class="DetectorStream" id="DROStream-220"/>
+  <ref class="DetectorStream" id="DROStream-221"/>
+  <ref class="DetectorStream" id="DROStream-222"/>
+  <ref class="DetectorStream" id="DROStream-223"/>
+  <ref class="DetectorStream" id="DROStream-224"/>
+  <ref class="DetectorStream" id="DROStream-225"/>
+  <ref class="DetectorStream" id="DROStream-226"/>
+  <ref class="DetectorStream" id="DROStream-227"/>
+  <ref class="DetectorStream" id="DROStream-228"/>
+  <ref class="DetectorStream" id="DROStream-229"/>
+  <ref class="DetectorStream" id="DROStream-230"/>
+  <ref class="DetectorStream" id="DROStream-231"/>
+  <ref class="DetectorStream" id="DROStream-232"/>
+  <ref class="DetectorStream" id="DROStream-233"/>
+  <ref class="DetectorStream" id="DROStream-234"/>
+  <ref class="DetectorStream" id="DROStream-235"/>
+  <ref class="DetectorStream" id="DROStream-236"/>
+  <ref class="DetectorStream" id="DROStream-237"/>
+  <ref class="DetectorStream" id="DROStream-238"/>
+  <ref class="DetectorStream" id="DROStream-239"/>
+  <ref class="DetectorStream" id="DROStream-240"/>
+  <ref class="DetectorStream" id="DROStream-241"/>
+  <ref class="DetectorStream" id="DROStream-242"/>
+  <ref class="DetectorStream" id="DROStream-243"/>
+  <ref class="DetectorStream" id="DROStream-244"/>
+  <ref class="DetectorStream" id="DROStream-245"/>
+  <ref class="DetectorStream" id="DROStream-246"/>
+  <ref class="DetectorStream" id="DROStream-247"/>
  </rel>
 </obj>
 

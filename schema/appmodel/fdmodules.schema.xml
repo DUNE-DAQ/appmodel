@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="18" oks-format="schema" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240606T114540"/>
+<info name="" type="" num-of-items="18" oks-format="schema" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240611T170050"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -127,7 +127,6 @@
  </class>
 
  <class name="FelixInterface" description="Specialization of ReadoutInterface for the FLX card. ">
-  <superclass name="Resource"/>
   <superclass name="DetDataReceiver"/>
   <attribute name="card" description="Card ID in readout host." type="u8" range="0..1" init-value="0" is-not-null="yes"/>
   <attribute name="slr" description="Super logic region of a FLX card" type="u16" init-value="0" is-not-null="yes"/>
@@ -154,6 +153,7 @@
   <superclass name="NWDetDataSender"/>
   <attribute name="link_id" type="u32" is-not-null="yes"/>
   <attribute name="port" type="u32" init-value="17476" is-not-null="yes"/>
+  <attribute name="control_host" type="string" init-value="localhost" is-not-null="yes"/>
  </class>
 
  <class name="HermesModuleConf">
