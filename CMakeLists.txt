@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(appdal VERSION 1.1.1)
+project(appmodel VERSION 1.1.1)
 
 find_package(daq-cmake REQUIRED)
 
@@ -11,27 +11,31 @@ find_package(oksdalgen REQUIRED)
 find_package(ers REQUIRED)
 find_package(logging REQUIRED)
 find_package(conffwk REQUIRED)
-find_package(coredal REQUIRED)
+find_package(confmodel REQUIRED)
 
 
 #find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 
 daq_oks_codegen(application.schema.xml fdmodules.schema.xml trigger.schema.xml
-  NAMESPACE dunedaq::appdal DEP_PKGS coredal)
+  NAMESPACE dunedaq::appmodel DEP_PKGS confmodel)
 
 
 daq_add_library(ReadoutApplication.cpp SmartDaqApplication.cpp
 	DFApplication.cpp DFOApplication.cpp TPWriterApplication.cpp FakeDataApplication.cpp FakeHSIApplication.cpp TriggerApplication.cpp MLTApplication.cpp HSIEventToTCApplication.cpp
  LINK_LIBRARIES conffwk::conffwk okssystem::okssystem
-  logging::logging coredal::coredal oks::oks ers::ers)
+  logging::logging confmodel::confmodel oks::oks ers::ers)
 
 daq_add_application(getAppsArguments get_apps_arguments.cxx
-  LINK_LIBRARIES coredal::coredal appdal conffwk::conffwk)
+  LINK_LIBRARIES confmodel::confmodel appmodel conffwk::conffwk)
 
-daq_add_python_bindings(*.cpp LINK_LIBRARIES appdal coredal::coredal)
+daq_add_python_bindings(*.cpp LINK_LIBRARIES appmodel confmodel::confmodel)
 
 daq_add_application(generate_modules_test generate_modules_test.cxx
- TEST LINK_LIBRARIES appdal coredal::coredal conffwk::conffwk
+ TEST LINK_LIBRARIES appmodel confmodel::confmodel conffwk::conffwk
+ logging::logging)
+
+daq_add_application(print_detailed_config_info print_detailed_config_info.cxx
+ TEST LINK_LIBRARIES appmodel confmodel::confmodel conffwk::conffwk
  logging::logging)
 
 ##############################################################################

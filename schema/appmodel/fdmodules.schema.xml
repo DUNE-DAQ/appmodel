@@ -83,8 +83,8 @@
 <info name="" type="" num-of-items="18" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="rsipos" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240530T133422"/>
 
 <include>
- <file path="schema/coredal/dunedaq.schema.xml"/>
- <file path="schema/appdal/application.schema.xml"/>
+ <file path="schema/confmodel/dunedaq.schema.xml"/>
+ <file path="schema/appmodel/application.schema.xml"/>
 </include>
 
 

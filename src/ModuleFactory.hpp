@@ -2,7 +2,7 @@
 #define MODULEFACTORY_HPP
 
 #include "logging/Logging.hpp"
-#include "appdal/appdalIssues.hpp"
+#include "appmodel/appmodelIssues.hpp"
 
 #include <functional>
 #include <map>
@@ -10,29 +10,29 @@
 #include <string>
 #include <vector>
 
-#include "coredal/DaqModule.hpp"
-#include "coredal/Session.hpp"
-#include "appdal/SmartDaqApplication.hpp"
+#include "confmodel/DaqModule.hpp"
+#include "confmodel/Session.hpp"
+#include "appmodel/SmartDaqApplication.hpp"
 #include "conffwk/Configuration.hpp"
 
-namespace dunedaq::coredal {
+namespace dunedaq::confmodel {
   class DaqModule;
   class Session;
 }
 namespace dunedaq::conffwk {
   class Configuration;
 }
-namespace dunedaq::appdal {
+namespace dunedaq::appmodel {
   class SmartDaqApplication;
 
   class ModuleFactory {
   public:
-    typedef std::vector<const dunedaq::coredal::DaqModule*> ReturnType;
+    typedef std::vector<const dunedaq::confmodel::DaqModule*> ReturnType;
 
     typedef std::function<
       ReturnType(const SmartDaqApplication*,
       dunedaq::conffwk::Configuration*, const std::string&,
-      const dunedaq::coredal::Session*)> Generator;
+      const dunedaq::confmodel::Session*)> Generator;
 
     struct Registrator {
       /**
@@ -64,7 +64,7 @@ namespace dunedaq::appdal {
                         const SmartDaqApplication* app,
                         conffwk::Configuration* confdb,
                         const std::string& dbfile,
-                        const coredal::Session* session) {
+                        const confmodel::Session* session) {
       std::unique_lock lock(m_mutex);
       auto it = m_generators.find(type);
       if (it != m_generators.end()) {
@@ -104,5 +104,5 @@ namespace dunedaq::appdal {
 
   }; // ModuleFactory
 
-} // namespace dunedaq::appdal
+} // namespace dunedaq::appmodel
 #endif // MODULEFACTORY

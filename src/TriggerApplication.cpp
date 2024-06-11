@@ -12,31 +12,31 @@
 
 #include "conffwk/Configuration.hpp"
 
-#include "coredal/Connection.hpp"
-#include "coredal/NetworkConnection.hpp"
-#include "coredal/ReadoutGroup.hpp"
-#include "coredal/ReadoutInterface.hpp"
-#include "coredal/ResourceSet.hpp"
-#include "coredal/Service.hpp"
-#include "coredal/Session.hpp"
+#include "confmodel/Connection.hpp"
+#include "confmodel/NetworkConnection.hpp"
+#include "confmodel/ReadoutGroup.hpp"
+#include "confmodel/ReadoutInterface.hpp"
+#include "confmodel/ResourceSet.hpp"
+#include "confmodel/Service.hpp"
+#include "confmodel/Session.hpp"
 
-#include "appdal/DataSubscriber.hpp"
-#include "appdal/DataReaderConf.hpp"
-#include "appdal/DataRecorderConf.hpp"
+#include "appmodel/DataSubscriber.hpp"
+#include "appmodel/DataReaderConf.hpp"
+#include "appmodel/DataRecorderConf.hpp"
 
-#include "appdal/ReadoutModule.hpp"
-#include "appdal/ReadoutModuleConf.hpp"
+#include "appmodel/ReadoutModule.hpp"
+#include "appmodel/ReadoutModuleConf.hpp"
 
-#include "appdal/NetworkConnectionRule.hpp"
-#include "appdal/QueueConnectionRule.hpp"
+#include "appmodel/NetworkConnectionRule.hpp"
+#include "appmodel/QueueConnectionRule.hpp"
 
-#include "appdal/QueueDescriptor.hpp"
-#include "appdal/NetworkConnectionDescriptor.hpp"
+#include "appmodel/QueueDescriptor.hpp"
+#include "appmodel/NetworkConnectionDescriptor.hpp"
 
-#include "appdal/SourceIDConf.hpp"
+#include "appmodel/SourceIDConf.hpp"
 
-#include "appdal/TriggerApplication.hpp"
-#include "appdal/appdalIssues.hpp"
+#include "appmodel/TriggerApplication.hpp"
+#include "appmodel/appmodelIssues.hpp"
 
 #include "logging/Logging.hpp"
 
@@ -44,13 +44,13 @@
 #include <vector>
 
 using namespace dunedaq;
-using namespace dunedaq::appdal;
+using namespace dunedaq::appmodel;
 
 static ModuleFactory::Registrator __reg__("TriggerApplication",
                                           [](const SmartDaqApplication* smartApp,
                                              conffwk::Configuration* confdb,
                                              const std::string& dbfile,
-                                             const coredal::Session* session) -> ModuleFactory::ReturnType {
+                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
                                             auto app = smartApp->cast<TriggerApplication>();
                                             return app->generate_modules(confdb, dbfile, session);
                                           });
@@ -81,12 +81,12 @@ create_network_connection(std::string uid,
   return ntObj;
 }
 
-std::vector<const coredal::DaqModule*>
+std::vector<const confmodel::DaqModule*>
 TriggerApplication::generate_modules(conffwk::Configuration* confdb,
                                      const std::string& dbfile,
-                                     const coredal::Session* session) const
+                                     const confmodel::Session* /*session*/) const
 {
-  std::vector<const coredal::DaqModule*> modules;
+  std::vector<const confmodel::DaqModule*> modules;
 
   auto ti_conf = get_trigger_inputs_handler();
   auto ti_class = ti_conf->get_template_for();
@@ -158,7 +158,7 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
   conffwk::ConfigObject tin_net_obj;
   conffwk::ConfigObject tout_net_obj;
   conffwk::ConfigObject tset_out_net_obj;
-  auto handlerConf = get_trigger_inputs_handler();
+  //auto handlerConf = get_trigger_inputs_handler();
   
   if ( req_net_desc== nullptr) {
       throw (BadConf(ERS_HERE, "No network descriptor given to receive request and send data was set"));

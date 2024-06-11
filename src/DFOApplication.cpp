@@ -12,42 +12,42 @@
 
 #include "conffwk/Configuration.hpp"
 #include "oks/kernel.hpp"
-#include "coredal/Connection.hpp"
-#include "coredal/NetworkConnection.hpp"
-#include "appdal/DFOApplication.hpp"
-#include "appdal/DFOConf.hpp"
-#include "appdal/DataFlowOrchestrator.hpp"
-#include "appdal/NetworkConnectionRule.hpp"
-#include "appdal/NetworkConnectionDescriptor.hpp"
-#include "appdal/QueueConnectionRule.hpp"
-#include "appdal/QueueDescriptor.hpp"
-#include "coredal/Service.hpp"
-#include "appdal/appdalIssues.hpp"
+#include "confmodel/Connection.hpp"
+#include "confmodel/NetworkConnection.hpp"
+#include "appmodel/DFOApplication.hpp"
+#include "appmodel/DFOConf.hpp"
+#include "appmodel/DataFlowOrchestrator.hpp"
+#include "appmodel/NetworkConnectionRule.hpp"
+#include "appmodel/NetworkConnectionDescriptor.hpp"
+#include "appmodel/QueueConnectionRule.hpp"
+#include "appmodel/QueueDescriptor.hpp"
+#include "confmodel/Service.hpp"
+#include "appmodel/appmodelIssues.hpp"
 #include "logging/Logging.hpp"
 
 #include <string>
 #include <vector>
 
 using namespace dunedaq;
-using namespace dunedaq::appdal;
+using namespace dunedaq::appmodel;
 
 static ModuleFactory::Registrator
 __reg__("DFOApplication", [] (const SmartDaqApplication* smartApp,
                              conffwk::Configuration* confdb,
                              const std::string& dbfile,
-                             const coredal::Session* session) -> ModuleFactory::ReturnType
+                             const confmodel::Session* session) -> ModuleFactory::ReturnType
   {
     auto app = smartApp->cast<DFOApplication>();
     return app->generate_modules(confdb, dbfile, session);
   }
   );
 
-std::vector<const coredal::DaqModule*> 
+std::vector<const confmodel::DaqModule*> 
 DFOApplication::generate_modules(conffwk::Configuration* confdb,
                                      const std::string& dbfile,
-                                     const coredal::Session* session) const
+                                     const confmodel::Session* /*session*/) const
 {
-  std::vector<const coredal::DaqModule*> modules;
+  std::vector<const confmodel::DaqModule*> modules;
 
 
   std::string dfoUid("DFO-" + UID());

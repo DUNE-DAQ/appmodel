@@ -2,15 +2,15 @@
 
 #include "conffwk/Configuration.hpp"
 
-#include "coredal/Component.hpp"
-#include "coredal/DaqApplication.hpp"
-#include "coredal/RCApplication.hpp"
-#include "coredal/DaqModule.hpp"
-#include "coredal/ResourceSet.hpp"
-#include "coredal/Segment.hpp"
-#include "coredal/Session.hpp"
+#include "confmodel/Component.hpp"
+#include "confmodel/DaqApplication.hpp"
+#include "confmodel/RCApplication.hpp"
+#include "confmodel/DaqModule.hpp"
+#include "confmodel/ResourceSet.hpp"
+#include "confmodel/Segment.hpp"
+#include "confmodel/Session.hpp"
 
-#include "appdal/SmartDaqApplication.hpp"
+#include "appmodel/SmartDaqApplication.hpp"
 
 #include <iostream>
 #include <string>
@@ -19,8 +19,8 @@ using namespace dunedaq;
 
 
 void print_segment_application_commandline(
-  const dunedaq::coredal::Segment* segment,
-  const dunedaq::coredal::Session* session,
+  const dunedaq::confmodel::Segment* segment,
+  const dunedaq::confmodel::Session* session,
   conffwk::Configuration* db) {
 
   auto const* controller = segment->get_controller();
@@ -33,10 +33,10 @@ void print_segment_application_commandline(
       std::cout << "\n" << app->UID() << "\n";
       std::vector<std::string> CLAs;
       if (app->castable("SmartDaqApplication")) {
-        auto const* sdapp = db->get<dunedaq::appdal::SmartDaqApplication>(app->UID());
+        auto const* sdapp = db->get<dunedaq::appmodel::SmartDaqApplication>(app->UID());
         CLAs = sdapp->construct_commandline_parameters(*db, session);
       } else if (app->castable("DaqApplication")) {
-        auto const* dapp = db->get<dunedaq::appdal::SmartDaqApplication>(app->UID());
+        auto const* dapp = db->get<dunedaq::appmodel::SmartDaqApplication>(app->UID());
         CLAs = dapp->construct_commandline_parameters(*db, session);
       } else {
         CLAs = app->get_commandline_parameters();
@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
   auto confdb = new conffwk::Configuration(confimpl);
 
   std::string sessionName(argv[1]);
-  auto session = confdb->get<coredal::Session>(sessionName);
+  auto session = confdb->get<confmodel::Session>(sessionName);
   if (session==nullptr) {
     std::cerr << "Session " << sessionName << " not found in database\n";
     return -1;
