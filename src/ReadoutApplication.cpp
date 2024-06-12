@@ -84,7 +84,7 @@ class ReadoutObjFactory {
   conffwk::ConfigObject create_queue_sid_obj(const QueueDescriptor* qdesc, uint32_t src_id) {
     conffwk::ConfigObject queue_obj;
 
-    std::string queue_uid(fmt::format("{}{}", qdesc->get_uid_base(), stream->get_source_id()));
+    std::string queue_uid(fmt::format("{}{}", qdesc->get_uid_base(), src_id));
     config->create(this->dbfile, "QueueWithSourceId", queue_uid, queue_obj);
     queue_obj.set_by_val<std::string>("data_type", qdesc->get_data_type());
     queue_obj.set_by_val<std::string>("queue_type", qdesc->get_queue_type());
@@ -123,6 +123,7 @@ class ReadoutObjFactory {
 
 };
 
+//-----------------------------------------------------------------------------
 std::vector<const confmodel::DaqModule*>
 ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::string& dbfile, const confmodel::Session* session) const
 {
@@ -203,6 +204,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   if (fa_output_qdesc == nullptr) {
     throw(BadConf(ERS_HERE, "No fragment output queue descriptor given"));
   }
+  std::vector<const confmodel::Connection*> req_queues;
   conffwk::ConfigObject frag_queue_obj = obj_fac.create_queue_obj(fa_output_qdesc);
 
   //
@@ -302,21 +304,18 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   }
   reader_obj.set_objs("interfaces", rcvr_objs);
 
-  // Create the dataqueues
+  // Create the raw data queues 
+  std::vector<const conffwk::ConfigObject*> data_queue_objs;
+  // keep a map for convenience
   std::map<uint32_t, const confmodel::Connection*> data_queues_by_sid;
-  // Create data queue ids
+
+  // Create data queues
   for (auto ds : det_streams) {
-
     conffwk::ConfigObject queue_obj = obj_fac.create_queue_sid_obj(dlh_input_qdesc, ds);
-
+    data_queue_objs.push_back(&queue_obj);
     data_queues_by_sid[ds->get_source_id()] = config->get<confmodel::Connection>(queue_obj.UID());
   }
 
-  // Prepare data reader output queues
-  std::vector<const conffwk::ConfigObject*> data_queue_objs;
-  for (auto const& [sid, q] : data_queues_by_sid) {
-    data_queue_objs.push_back(&q->config_object());
-  }
   reader_obj.set_objs("outputs", data_queue_objs);
 
   modules.push_back(config->get<confmodel::DaqModule>(reader_uid));
@@ -347,7 +346,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
 
     // Create tp data requests queue from Fragment Aggregator
     tpreq_queue_obj = obj_fac.create_queue_sid_obj(dlh_reqinput_qdesc, tpsrc);
-    req_queues.push_back(config->get<confmodel::Connection>(tpreq_queue_uid));
+    req_queues.push_back(config->get<confmodel::Connection>(tpreq_queue_obj.UID()));
 
     // Create the tp(set) publishing service
     conffwk::ConfigObject tp_net_obj = obj_fac.create_net_obj(tp_net_desc);
@@ -386,7 +385,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
     dlh_ins.push_back(&data_queues_by_sid.at(sid)->config_object());
 
     // Create request queue
-    req_queue_obj = obj_fac.create_queue_sid_obj(dlh_reqinput_qdesc, ds);
+    conffwk::ConfigObject req_queue_obj = obj_fac.create_queue_sid_obj(dlh_reqinput_qdesc, ds);
 
 
     // Add the requessts queue dal pointer to the outputs of the FragmentAggregator
