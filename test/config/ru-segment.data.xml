@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="10" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105615" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240612T151554"/>
+<info name="" type="" num-of-items="10" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105615" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240612T203623"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -91,6 +91,7 @@
  <comment creation-time="20240611T141410" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="readoutapp"/>
  <comment creation-time="20240611T172304" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="nic data reader"/>
  <comment creation-time="20240612T151554" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="tp source id updated"/>
+ <comment creation-time="20240612T203623" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="adding dummy connections to ru-02"/>
 </comments>
 
 
@@ -140,7 +141,7 @@
  <attr name="tp_source_id" type="u32" val="200"/>
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="contains">
-  <ref class="DetectorToDaqConnection" id="det-2-connections"/>
+  <ref class="DetectorToDaqConnection" id="conn_apa1"/>
  </rel>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="exposes_service">

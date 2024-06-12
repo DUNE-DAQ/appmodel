@@ -139,6 +139,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   if (reader_conf == 0) {
     throw(BadConf(ERS_HERE, "No DataReader configuration given"));
   }
+  std::string reader_class = reader_conf->get_template_for();
 
   // Link handler
   auto dlh_conf = get_link_handler();
@@ -218,9 +219,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
 
   // Collect all streams
   std::vector<const confmodel::DetectorStream*> det_streams;
-
-  // Collect all det receiver objects
-  std::vector<const confmodel::DetDataReceiver*> det_receivers;
+  std::vector<const conffwk::ConfigObject*> d2d_conn_objs;
 
   uint16_t conn_idx = 0;
   for (auto d2d_connection : get_contains()) {
@@ -231,21 +230,23 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
       continue;
     }
 
+    d2d_conn_objs.push_back(&d2d_connection->config_object());
+
     TLOG() << "Processing DetectorToDaqConnection " << d2d_connection->UID();
     // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader module
-    auto d2d_conn_rset = d2d_connection->cast<confmodel::DetectorToDaqConnection>();
+    auto d2d_conn = d2d_connection->cast<confmodel::DetectorToDaqConnection>();
 
-    if (d2d_conn_rset == nullptr) {
+    if (d2d_conn == nullptr) {
       throw(BadConf(ERS_HERE, "ReadoutApplication contains something other than DetectorToDaqConnection"));
     }
 
-    if (d2d_conn_rset->get_contains().empty()) {
+    if (d2d_conn->get_contains().empty()) {
       throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain sebders or receivers"));
     }
 
     // Loop over detector 2 daq connections to find senders and receivers
-    auto det_senders = d2d_conn_rset->get_senders();
-    auto det_receiver = d2d_conn_rset->get_receiver();
+    auto det_senders = d2d_conn->get_senders();
+    auto det_receiver = d2d_conn->get_receiver();
 
     // Loop over senders
     for (auto s : det_senders) {
@@ -255,33 +256,30 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
       }
     }
 
+
     // Here I want to resolve the type of connection (network, felix, or?)
     // Rules of engagement: if the receiver interface is network or felix, the receivers should be castable to the counterpart
-    if (det_receiver->cast<appmodel::NWDetDataReceiver>() != nullptr) {
+    if (reader_class == "DPDKReader") {
+      if (!det_receiver->cast<appmodel::DPDKReceiver>()) {
+        throw(BadConf(ERS_HERE, fmt::format("DPDKReader requires NWDetDataReceiver, found {} of class {}", det_receiver->UID(), det_receiver->class_name())));
+      }
+
       bool all_nw_senders = true;
       for (auto s : det_senders) {
         all_nw_senders &= (s->cast<appmodel::NWDetDataSender>() != nullptr);
       }
+
       // Ensure that all senders are compatible with receiver
       if (!all_nw_senders) {
         throw(BadConf(ERS_HERE, "Non-network DetDataSener found with NWreceiver"));
       }
-    } else {
-      throw(BadConf(ERS_HERE, fmt::format("Unsupported transport type {} ({})", det_receiver->class_name(), det_receiver->UID())));
     }
-
-    det_receivers.push_back(det_receiver);
   }
 
   //-----------------------------------------------------------------
   //
   // Create DataReader object
   //
-  std::string reader_class = reader_conf->get_template_for();
-  // Check reader class (DPDKReader only for the moment)
-  if (reader_class != "DPDKReader") {
-    throw(BadConf(ERS_HERE, fmt::format("Unsupported receiver type {}", reader_class)));
-  }
 
   //
   // Instantiate DataReader of type DPDKReader
@@ -296,13 +294,8 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   // Populate configuration and interfaces (leave output queues for later)
   reader_obj.set_obj("configuration", &reader_conf->config_object());
 
-  // Prepare the list of receivers for the DPDK reader
-  std::vector<const conffwk::ConfigObject*> rcvr_objs;
-  for (auto det_rcvr : det_receivers) {
-    if (det_rcvr->cast<appmodel::DPDKReceiver>())
-      rcvr_objs.push_back(&det_rcvr->config_object());
-  }
-  reader_obj.set_objs("interfaces", rcvr_objs);
+
+  reader_obj.set_objs("connections", d2d_conn_objs);
 
   // Create the raw data queues 
   std::vector<const conffwk::ConfigObject*> data_queue_objs;

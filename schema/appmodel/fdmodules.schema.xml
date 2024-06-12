@@ -80,19 +80,13 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="18" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240611T131922"/>
+<info name="" type="" num-of-items="18" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240612T204322"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
  <file path="schema/appmodel/application.schema.xml"/>
 </include>
 
-
- <class name="DPDKReceiver">
-  <superclass name="NWDetDataReceiver"/>
-  <relationship name="uses" class-type="NICInterface" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="configuration" class-type="DPDKPortConfiguration" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
 
  <class name="DPDKPortConfiguration">
   <attribute name="flow_control" type="bool" init-value="1"/>
@@ -106,6 +100,21 @@
   <attribute name="lcore_sleep_us" type="u32" init-value="10" is-not-null="yes"/>
   <attribute name="source_to_rx_queue_multiplexing" description="Indicates how many source streams are put onto one rx queue" type="s16" init-value="1" is-not-null="yes"/>
   <relationship name="used_lcores" description="associates CPUs to the data reception workload." class-type="ProcessingResource" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="DPDKReader">
+  <superclass name="DataReader"/>
+ </class>
+
+ <class name="DPDKReaderConf">
+  <superclass name="DataReaderConf"/>
+  <attribute name="eal_args" type="string" is-not-null="yes"/>
+ </class>
+
+ <class name="DPDKReceiver">
+  <superclass name="NWDetDataReceiver"/>
+  <relationship name="uses" class-type="NICInterface" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="configuration" class-type="DPDKPortConfiguration" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="FDDataLinkHandler">
@@ -173,15 +182,6 @@
  <class name="NICInterface">
   <superclass name="NetworkDevice"/>
   <attribute name="iface" type="s16" init-value="0" is-not-null="yes"/>
- </class>
-
- <class name="DPDKReader">
-  <superclass name="DataReader"/>
- </class>
-
- <class name="DPDKReaderConf">
-  <superclass name="DataReaderConf"/>
-  <attribute name="eal_args" type="string" is-not-null="yes"/>
  </class>
 
  <class name="NICStatsConf">
