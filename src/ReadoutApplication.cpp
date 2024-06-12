@@ -60,7 +60,68 @@ static ModuleFactory::Registrator __reg__("ReadoutApplication", [](const SmartDa
   return app->generate_modules(config, dbfile, session);
 });
 
+class ReadoutObjFactory {
+  public:
 
+  conffwk::Configuration* config;
+  std::string dbfile;
+  std::string app_uid;
+
+  //---
+  conffwk::ConfigObject create_queue_obj(const QueueDescriptor* qdesc) {
+    conffwk::ConfigObject queue_obj;
+
+    std::string queue_uid(qdesc->get_uid_base());
+    config->create(this->dbfile, "Queue", queue_uid, queue_obj);
+    queue_obj.set_by_val<std::string>("data_type", qdesc->get_data_type());
+    queue_obj.set_by_val<std::string>("queue_type", qdesc->get_queue_type());
+    queue_obj.set_by_val<uint32_t>("capacity", qdesc->get_capacity());
+
+    return queue_obj;
+  }
+
+  //---
+  conffwk::ConfigObject create_queue_sid_obj(const QueueDescriptor* qdesc, uint32_t src_id) {
+    conffwk::ConfigObject queue_obj;
+
+    std::string queue_uid(fmt::format("{}{}", qdesc->get_uid_base(), stream->get_source_id()));
+    config->create(this->dbfile, "QueueWithSourceId", queue_uid, queue_obj);
+    queue_obj.set_by_val<std::string>("data_type", qdesc->get_data_type());
+    queue_obj.set_by_val<std::string>("queue_type", qdesc->get_queue_type());
+    queue_obj.set_by_val<uint32_t>("capacity", qdesc->get_capacity());
+    queue_obj.set_by_val<uint32_t>("source_id", src_id);
+
+    return queue_obj;
+  }
+
+  //---
+  conffwk::ConfigObject create_queue_sid_obj(const QueueDescriptor* qdesc, const confmodel::DetectorStream* stream) {
+    return this->create_queue_sid_obj(qdesc, stream->get_source_id());
+  }
+
+
+  
+  //---
+  conffwk::ConfigObject create_net_obj(const NetworkConnectionDescriptor* ndesc, std::string uid) {
+    conffwk::ConfigObject net_obj;
+
+    auto svc_obj = ndesc->get_associated_service()->config_object();
+    std::string net_id = ndesc->get_uid_base() + uid;
+    config->create(this->dbfile, "NetworkConnection", net_id, net_obj);
+    net_obj.set_by_val<std::string>("data_type", ndesc->get_data_type());
+    net_obj.set_by_val<std::string>("connection_type", ndesc->get_connection_type());
+    net_obj.set_obj("associated_service", &svc_obj);
+
+    return net_obj;
+
+  }
+
+  conffwk::ConfigObject create_net_obj(const NetworkConnectionDescriptor* ndesc) {
+    return this->create_net_obj(ndesc, this->app_uid);
+  }
+
+
+};
 
 std::vector<const confmodel::DaqModule*>
 ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::string& dbfile, const confmodel::Session* session) const
@@ -68,6 +129,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
 
   TLOG() << "Generating modules for application " << this->UID();
 
+  ReadoutObjFactory obj_fac{config, dbfile, this->UID()};
   //
   // Extract basic configuration objects
   //
@@ -141,14 +203,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   if (fa_output_qdesc == nullptr) {
     throw(BadConf(ERS_HERE, "No fragment output queue descriptor given"));
   }
-  conffwk::ConfigObject frag_queue_obj;
-  std::vector<const confmodel::Connection*> req_queues;
-
-  std::string fa_frag_queue_uid(fa_output_qdesc->get_uid_base());
-  config->create(dbfile, "Queue", fa_frag_queue_uid, frag_queue_obj);
-  frag_queue_obj.set_by_val<std::string>("data_type", fa_output_qdesc->get_data_type());
-  frag_queue_obj.set_by_val<std::string>("queue_type", fa_output_qdesc->get_queue_type());
-  frag_queue_obj.set_by_val<uint32_t>("capacity", fa_output_qdesc->get_capacity());
+  conffwk::ConfigObject frag_queue_obj = obj_fac.create_queue_obj(fa_output_qdesc);
 
   //
   // Scan Detector 2 DAQ connections to extract sender, receiver and stream information
@@ -251,15 +306,10 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   std::map<uint32_t, const confmodel::Connection*> data_queues_by_sid;
   // Create data queue ids
   for (auto ds : det_streams) {
-    std::string data_queue_uid(dlh_input_qdesc->get_uid_base() + std::to_string(ds->get_source_id()));
-    conffwk::ConfigObject queue_obj;
-    config->create(dbfile, "QueueWithSourceId", data_queue_uid, queue_obj);
-    queue_obj.set_by_val<std::string>("data_type", dlh_input_qdesc->get_data_type());
-    queue_obj.set_by_val<std::string>("queue_type", dlh_input_qdesc->get_queue_type());
-    queue_obj.set_by_val<uint32_t>("capacity", dlh_input_qdesc->get_capacity());
-    queue_obj.set_by_val<uint32_t>("source_id", ds->get_source_id());
 
-    data_queues_by_sid[ds->get_source_id()] = config->get<confmodel::Connection>(data_queue_uid);
+    conffwk::ConfigObject queue_obj = obj_fac.create_queue_sid_obj(dlh_input_qdesc, ds);
+
+    data_queues_by_sid[ds->get_source_id()] = config->get<confmodel::Connection>(queue_obj.UID());
   }
 
   // Prepare data reader output queues
@@ -280,9 +330,6 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
 
   if (tph_conf) {
 
-    conffwk::ConfigObject tp_net_obj;
-    conffwk::ConfigObject ta_net_obj;
-
     auto tpsrc = get_tp_source_id();
     
     // Create TP handler object
@@ -294,39 +341,19 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
     tph_obj.set_obj("module_configuration", &tph_conf_obj);
 
     // Create the TPs aggregator queue (from RawData Handlers to TP handlers)
-    std::string tp_queue_uid(tp_input_qdesc->get_uid_base());
-    config->create(dbfile, "Queue", tp_queue_uid, tp_queue_obj);
-    tp_queue_obj.set_by_val<std::string>("data_type", tp_input_qdesc->get_data_type());
-    tp_queue_obj.set_by_val<std::string>("queue_type", tp_input_qdesc->get_queue_type());
-    tp_queue_obj.set_by_val<uint32_t>("capacity", tp_input_qdesc->get_capacity());
+    tp_queue_obj = obj_fac.create_queue_obj(tp_input_qdesc);
     tp_queue_obj.set_by_val<uint32_t>("recv_timeout_ms", 1);
     tp_queue_obj.set_by_val<uint32_t>("send_timeout_ms", 1);
 
     // Create tp data requests queue from Fragment Aggregator
-    std::string tpreq_queue_uid(fmt::format("{}{}", dlh_reqinput_qdesc->get_uid_base(),tpsrc));
-    config->create(dbfile, "QueueWithSourceId", tpreq_queue_uid, tpreq_queue_obj);
-    tpreq_queue_obj.set_by_val<std::string>("data_type", dlh_reqinput_qdesc->get_data_type());
-    tpreq_queue_obj.set_by_val<std::string>("queue_type", dlh_reqinput_qdesc->get_queue_type());
-    tpreq_queue_obj.set_by_val<uint32_t>("capacity", dlh_reqinput_qdesc->get_capacity());
-    tpreq_queue_obj.set_by_val<uint32_t>("source_id", tpsrc);
+    tpreq_queue_obj = obj_fac.create_queue_sid_obj(dlh_reqinput_qdesc, tpsrc);
     req_queues.push_back(config->get<confmodel::Connection>(tpreq_queue_uid));
 
     // Create the tp(set) publishing service
-    auto tp_service_obj = tp_net_desc->get_associated_service()->config_object();
-    std::string tp_streamu_id = tp_net_desc->get_uid_base() + UID();
-    config->create(dbfile, "NetworkConnection", tp_streamu_id, tp_net_obj);
-    tp_net_obj.set_by_val<std::string>("data_type", tp_net_desc->get_data_type());
-    tp_net_obj.set_by_val<std::string>("connection_type", tp_net_desc->get_connection_type());
-    tp_net_obj.set_obj("associated_service", &tp_service_obj);
+    conffwk::ConfigObject tp_net_obj = obj_fac.create_net_obj(tp_net_desc);
 
     // Create the ta(set) publishing service
-    auto ta_service_obj = ta_net_desc->get_associated_service()->config_object();
-    std::string ta_stream_uid = ta_net_desc->get_uid_base() + UID();
-    config->create(dbfile, "NetworkConnection", ta_stream_uid, ta_net_obj);
-    ta_net_obj.set_by_val<std::string>("data_type", ta_net_desc->get_data_type());
-    ta_net_obj.set_by_val<std::string>("connection_type", ta_net_desc->get_connection_type());
-    ta_net_obj.set_obj("associated_service", &ta_service_obj);
-
+    conffwk::ConfigObject ta_net_obj = obj_fac.create_net_obj(ta_net_desc);
 
     // Register queues with tp hankder
     tph_obj.set_objs("inputs", { &tp_queue_obj, &tpreq_queue_obj });
@@ -358,28 +385,20 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
     // Add datalink-handler queue to the inputs
     dlh_ins.push_back(&data_queues_by_sid.at(sid)->config_object());
 
-    std::string req_queue_uid(dlh_reqinput_qdesc->get_uid_base() + std::to_string(sid));
-    conffwk::ConfigObject req_queue_obj;
-    config->create(dbfile, "QueueWithSourceId", req_queue_uid, req_queue_obj);
-    req_queue_obj.set_by_val<std::string>("data_type", dlh_reqinput_qdesc->get_data_type());
-    req_queue_obj.set_by_val<std::string>("queue_type", dlh_reqinput_qdesc->get_queue_type());
-    req_queue_obj.set_by_val<uint32_t>("capacity", dlh_reqinput_qdesc->get_capacity());
-    req_queue_obj.set_by_val<uint32_t>("source_id", ds->get_source_id());
+    // Create request queue
+    req_queue_obj = obj_fac.create_queue_sid_obj(dlh_reqinput_qdesc, ds);
+
+
     // Add the requessts queue dal pointer to the outputs of the FragmentAggregator
-    req_queues.push_back(config->get<confmodel::Connection>(req_queue_uid));
+    req_queues.push_back(config->get<confmodel::Connection>(req_queue_obj.UID()));
     dlh_ins.push_back(&req_queue_obj);
     dlh_outs.push_back(&frag_queue_obj);
 
 
     // Time Sync network connection
     if (dlh_conf->get_generate_timesync()) {
-      std::string ts_stream_uid = ts_net_desc->get_uid_base() + std::to_string(sid);
-      auto ts_service_obj = ts_net_desc->get_associated_service()->config_object();
-      conffwk::ConfigObject ts_net_obj;
-      config->create(dbfile, "NetworkConnection", ts_stream_uid, ts_net_obj);
-      ts_net_obj.set_by_val<std::string>("connection_type", ts_net_desc->get_connection_type());
-      ts_net_obj.set_by_val<std::string>("data_type", ts_net_desc->get_data_type());
-      ts_net_obj.set_obj("associated_service", &ts_service_obj);
+      // Add timestamp endpoint
+      conffwk::ConfigObject ts_net_obj = obj_fac.create_net_obj(ts_net_desc, std::to_string(sid));
 
       dlh_outs.push_back(&ts_net_obj);
     }
@@ -402,13 +421,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   config->create(dbfile, "FragmentAggregator", faUid, frag_aggr);
 
   // Add network connection to TRBs
-  auto fa_service_obj = fa_net_desc->get_associated_service()->config_object();
-  std::string fa_net_uid = fa_net_desc->get_uid_base() + UID();
-  conffwk::ConfigObject fa_net_obj;
-  config->create(dbfile, "NetworkConnection", fa_net_uid, fa_net_obj);
-  fa_net_obj.set_by_val<std::string>("connection_type", fa_net_desc->get_connection_type());
-  fa_net_obj.set_by_val<std::string>("data_type", fa_net_desc->get_data_type());
-  fa_net_obj.set_obj("associated_service", &fa_service_obj);
+  conffwk::ConfigObject fa_net_obj = obj_fac.create_net_obj(fa_net_desc);
 
   // Add output queueus of data requests
   std::vector<const conffwk::ConfigObject*> req_queue_objs;
