@@ -58,6 +58,14 @@ generate **DaqModules** on the fly, are also included here.
 The Trigger applications, which are also **SmartDaqApplication** which
 generate **DaqModules** on the fly, are also included here.
 
+## WIEC application
+
+  ![WIEC](wiec_app.png)
+
+The WIEC application is a **SmartDaqApplication** which generates **HermesController** modules , and in future WIB modules, on the fly.
+It extends from **ResourceSetAND** and contains **DetectorToDaqConnection**s, which each contains a **DetDataReceiver** and **DetDataSender**s containing **DetectorSrteam**s 
+
+
 
 ###Testing SmartDaqApplication module generation
 
