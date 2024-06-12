@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="47" oks-format="schema" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240606T112758"/>
+<info name="" type="" num-of-items="47" oks-format="schema" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240612T160058"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -90,7 +90,7 @@
  <class name="DFApplication">
   <superclass name="SmartDaqApplication"/>
   <relationship name="trb" description="Configuration of the TRB to be generated my get_modules()" class-type="TRBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="data_writer" class-type="DataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="data_writer" class-type="DataWriterConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="uses" class-type="DFHWConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
@@ -225,12 +225,11 @@
  </class>
 
  <class name="FilenameParams">
-  <attribute name="overall_prefix" type="string" init-value="minidaq" is-not-null="yes"/>
+  <attribute name="file_type_prefix" type="enum" range="raw,tp" init-value="raw" is-not-null="yes"/>
   <attribute name="run_number_prefix" type="string" init-value="run" is-not-null="yes"/>
   <attribute name="digits_for_run_number" type="s32" init-value="6" is-not-null="yes"/>
   <attribute name="file_index_prefix" type="string"/>
   <attribute name="digits_for_file_index" type="s32" init-value="4" is-not-null="yes"/>
-  <attribute name="writer_identifier" type="string"/>
   <attribute name="trigger_number_prefix" type="string"/>
   <attribute name="digits_for_trigger_number" type="s32" init-value="8" is-not-null="yes"/>
  </class>
