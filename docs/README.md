@@ -63,11 +63,9 @@ generate **DaqModules** on the fly, are also included here.
   ![WIEC](wiec_app.png)
 
 The WIEC application is a **SmartDaqApplication** which generates **HermesController** modules , and in future WIB modules, on the fly.
-It extends from **ResourceSetAND** and contains **DetectorToDaqConnection**s, which each contains a **DetDataReceiver** and **DetDataSender**s containing **DetectorSrteam**s 
+It extends from **ResourceSetAND** and contains **DetectorToDaqConnection**s, which each contains a **DetDataReceiver** and **DetDataSender**s containing **DetectorSrteam**s.
 
-
-
-###Testing SmartDaqApplication module generation
+## Testing SmartDaqApplication module generation
 
 This package also provides a program `generate_modules_test` for
 testing the generate_modules method of SmartDaqApplications. It reads
