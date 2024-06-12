@@ -222,21 +222,21 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   std::vector<const conffwk::ConfigObject*> d2d_conn_objs;
 
   uint16_t conn_idx = 0;
-  for (auto d2d_connection : get_contains()) {
+  for (auto d2d_conn_res : get_contains()) {
 
     // Are we sure?
-    if (d2d_connection->disabled(*session)) {
-      TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_connection->UID();
+    if (d2d_conn_res->disabled(*session)) {
+      TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn_res->UID();
       continue;
     }
 
-    d2d_conn_objs.push_back(&d2d_connection->config_object());
+    d2d_conn_objs.push_back(&d2d_conn_res->config_object());
 
-    TLOG() << "Processing DetectorToDaqConnection " << d2d_connection->UID();
+    TLOG() << "Processing DetectorToDaqConnection " << d2d_conn_res->UID();
     // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader module
-    auto d2d_conn = d2d_connection->cast<confmodel::DetectorToDaqConnection>();
+    auto d2d_conn = d2d_conn_res->cast<confmodel::DetectorToDaqConnection>();
 
-    if (d2d_conn == nullptr) {
+    if (!d2d_conn) {
       throw(BadConf(ERS_HERE, "ReadoutApplication contains something other than DetectorToDaqConnection"));
     }
 
@@ -249,12 +249,18 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
     auto det_receiver = d2d_conn->get_receiver();
 
     // Loop over senders
-    for (auto s : det_senders) {
-      // loop over streams
-      for (auto ds : s->get_contains()) {
-        det_streams.push_back(ds->cast<confmodel::DetectorStream>());
+    for (auto stream : d2d_conn->get_streams()) {
+
+      // Are we sure?
+      if (stream->disabled(*session)) {
+        TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
+        continue;
       }
+      
+      // loop over streams
+      det_streams.push_back(stream);
     }
+
 
 
     // Here I want to resolve the type of connection (network, felix, or?)
@@ -293,8 +299,6 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
 
   // Populate configuration and interfaces (leave output queues for later)
   reader_obj.set_obj("configuration", &reader_conf->config_object());
-
-
   reader_obj.set_objs("connections", d2d_conn_objs);
 
   // Create the raw data queues 
