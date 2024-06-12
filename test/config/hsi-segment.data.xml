@@ -109,7 +109,7 @@
  <rel name="exposes_service">
   <ref class="Service" id="hsi-01_control">
  </rel>
- <rel name="link_handler" class="ReadoutModuleConf" id="def-hsi-handler"/>
+ <rel name="link_handler" class="DataHandlerConf" id="def-hsi-handler"/>
  <rel name="generator" class="FakeHSIEventGeneratorConf" id="fakehsi"/>
 </obj>
 
@@ -144,7 +144,7 @@
  <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
 </obj>
 
-<obj class="ReadoutModuleConf" id="def-hsi-handler">
+<obj class="DataHandlerConf" id="def-hsi-handler">
  <attr name="template_for" type="class" val="HSIDataLinkHandler"/>
  <attr name="input_data_type" type="string" val="HSIFrame"/>
  <attr name="generate_timesync" type="bool" val="1"/>

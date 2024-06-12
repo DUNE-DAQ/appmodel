@@ -113,15 +113,15 @@
  </rel>
 </obj>
 
-<obj class="ALink" id="FakeHSIApplication-2-ReadoutModuleConf-via-link_handler">
+<obj class="ALink" id="FakeHSIApplication-2-DataHandlerConf-via-link_handler">
  <attr name="Name" type="string" val="link_handler"/>
  <rel name="From" class="Class" id="FakeHSIApplication"/>
- <rel name="To" class="Class" id="ReadoutModuleConf"/>
+ <rel name="To" class="Class" id="DataHandlerConf"/>
  <rel name="Points">
-  <ref class="Point" id="1 FakeHSIApplication-2-ReadoutModuleConf-via-link_handler"/>
-  <ref class="Point" id="2 FakeHSIApplication-2-ReadoutModuleConf-via-link_handler"/>
-  <ref class="Point" id="3 FakeHSIApplication-2-ReadoutModuleConf-via-link_handler"/>
-  <ref class="Point" id="4 FakeHSIApplication-2-ReadoutModuleConf-via-link_handler"/>
+  <ref class="Point" id="1 FakeHSIApplication-2-DataHandlerConf-via-link_handler"/>
+  <ref class="Point" id="2 FakeHSIApplication-2-DataHandlerConf-via-link_handler"/>
+  <ref class="Point" id="3 FakeHSIApplication-2-DataHandlerConf-via-link_handler"/>
+  <ref class="Point" id="4 FakeHSIApplication-2-DataHandlerConf-via-link_handler"/>
  </rel>
 </obj>
 
@@ -233,39 +233,39 @@
  </rel>
 </obj>
 
-<obj class="ALink" id="ReadoutModuleConf-2-DataProcessor-via-data_processor">
+<obj class="ALink" id="DataHandlerConf-2-DataProcessor-via-data_processor">
  <attr name="Name" type="string" val="data_processor"/>
- <rel name="From" class="Class" id="ReadoutModuleConf"/>
+ <rel name="From" class="Class" id="DataHandlerConf"/>
  <rel name="To" class="Class" id="DataProcessor"/>
  <rel name="Points">
-  <ref class="Point" id="1 ReadoutModuleConf-2-DataProcessor-via-data_processor"/>
-  <ref class="Point" id="2 ReadoutModuleConf-2-DataProcessor-via-data_processor"/>
-  <ref class="Point" id="3 ReadoutModuleConf-2-DataProcessor-via-data_processor"/>
-  <ref class="Point" id="4 ReadoutModuleConf-2-DataProcessor-via-data_processor"/>
+  <ref class="Point" id="1 DataHandlerConf-2-DataProcessor-via-data_processor"/>
+  <ref class="Point" id="2 DataHandlerConf-2-DataProcessor-via-data_processor"/>
+  <ref class="Point" id="3 DataHandlerConf-2-DataProcessor-via-data_processor"/>
+  <ref class="Point" id="4 DataHandlerConf-2-DataProcessor-via-data_processor"/>
  </rel>
 </obj>
 
-<obj class="ALink" id="ReadoutModuleConf-2-LatencyBuffer-via-latency_buffer">
+<obj class="ALink" id="DataHandlerConf-2-LatencyBuffer-via-latency_buffer">
  <attr name="Name" type="string" val="latency_buffer"/>
- <rel name="From" class="Class" id="ReadoutModuleConf"/>
+ <rel name="From" class="Class" id="DataHandlerConf"/>
  <rel name="To" class="Class" id="LatencyBuffer"/>
  <rel name="Points">
-  <ref class="Point" id="1 ReadoutModuleConf-2-LatencyBuffer-via-latency_buffer"/>
-  <ref class="Point" id="2 ReadoutModuleConf-2-LatencyBuffer-via-latency_buffer"/>
-  <ref class="Point" id="3 ReadoutModuleConf-2-LatencyBuffer-via-latency_buffer"/>
-  <ref class="Point" id="4 ReadoutModuleConf-2-LatencyBuffer-via-latency_buffer"/>
+  <ref class="Point" id="1 DataHandlerConf-2-LatencyBuffer-via-latency_buffer"/>
+  <ref class="Point" id="2 DataHandlerConf-2-LatencyBuffer-via-latency_buffer"/>
+  <ref class="Point" id="3 DataHandlerConf-2-LatencyBuffer-via-latency_buffer"/>
+  <ref class="Point" id="4 DataHandlerConf-2-LatencyBuffer-via-latency_buffer"/>
  </rel>
 </obj>
 
-<obj class="ALink" id="ReadoutModuleConf-2-RequestHandler-via-request_handler">
+<obj class="ALink" id="DataHandlerConf-2-RequestHandler-via-request_handler">
  <attr name="Name" type="string" val="request_handler"/>
- <rel name="From" class="Class" id="ReadoutModuleConf"/>
+ <rel name="From" class="Class" id="DataHandlerConf"/>
  <rel name="To" class="Class" id="RequestHandler"/>
  <rel name="Points">
-  <ref class="Point" id="1 ReadoutModuleConf-2-RequestHandler-via-request_handler"/>
-  <ref class="Point" id="2 ReadoutModuleConf-2-RequestHandler-via-request_handler"/>
-  <ref class="Point" id="3 ReadoutModuleConf-2-RequestHandler-via-request_handler"/>
-  <ref class="Point" id="4 ReadoutModuleConf-2-RequestHandler-via-request_handler"/>
+  <ref class="Point" id="1 DataHandlerConf-2-RequestHandler-via-request_handler"/>
+  <ref class="Point" id="2 DataHandlerConf-2-RequestHandler-via-request_handler"/>
+  <ref class="Point" id="3 DataHandlerConf-2-RequestHandler-via-request_handler"/>
+  <ref class="Point" id="4 DataHandlerConf-2-RequestHandler-via-request_handler"/>
  </rel>
 </obj>
 
@@ -329,15 +329,15 @@
  </rel>
 </obj>
 
-<obj class="ALink" id="TriggerApplication-2-ReadoutModuleConf-via-trigger_inputs_handler">
+<obj class="ALink" id="TriggerApplication-2-DataHandlerConf-via-trigger_inputs_handler">
  <attr name="Name" type="string" val="trigger_inputs_handler"/>
  <rel name="From" class="Class" id="TriggerApplication"/>
- <rel name="To" class="Class" id="ReadoutModuleConf"/>
+ <rel name="To" class="Class" id="DataHandlerConf"/>
  <rel name="Points">
-  <ref class="Point" id="1 TriggerApplication-2-ReadoutModuleConf-via-trigger_inputs_handler"/>
-  <ref class="Point" id="2 TriggerApplication-2-ReadoutModuleConf-via-trigger_inputs_handler"/>
-  <ref class="Point" id="3 TriggerApplication-2-ReadoutModuleConf-via-trigger_inputs_handler"/>
-  <ref class="Point" id="4 TriggerApplication-2-ReadoutModuleConf-via-trigger_inputs_handler"/>
+  <ref class="Point" id="1 TriggerApplication-2-DataHandlerConf-via-trigger_inputs_handler"/>
+  <ref class="Point" id="2 TriggerApplication-2-DataHandlerConf-via-trigger_inputs_handler"/>
+  <ref class="Point" id="3 TriggerApplication-2-DataHandlerConf-via-trigger_inputs_handler"/>
+  <ref class="Point" id="4 TriggerApplication-2-DataHandlerConf-via-trigger_inputs_handler"/>
  </rel>
 </obj>
 
@@ -441,7 +441,7 @@
  <attr name="y" type="s16" val="537"/>
 </obj>
 
-<obj class="Class" id="ReadoutModuleConf">
+<obj class="Class" id="DataHandlerConf">
  <attr name="x" type="s16" val="1403"/>
  <attr name="y" type="s16" val="265"/>
 </obj>
@@ -747,7 +747,7 @@
  <attr name="y" type="s16" val="51"/>
 </obj>
 
-<obj class="Point" id="1 FakeHSIApplication-2-ReadoutModuleConf-via-link_handler">
+<obj class="Point" id="1 FakeHSIApplication-2-DataHandlerConf-via-link_handler">
  <attr name="x" type="s16" val="99"/>
  <attr name="y" type="s16" val="51"/>
 </obj>
@@ -797,17 +797,17 @@
  <attr name="y" type="s16" val="38"/>
 </obj>
 
-<obj class="Point" id="1 ReadoutModuleConf-2-DataProcessor-via-data_processor">
+<obj class="Point" id="1 DataHandlerConf-2-DataProcessor-via-data_processor">
  <attr name="x" type="s16" val="174"/>
  <attr name="y" type="s16" val="78"/>
 </obj>
 
-<obj class="Point" id="1 ReadoutModuleConf-2-LatencyBuffer-via-latency_buffer">
+<obj class="Point" id="1 DataHandlerConf-2-LatencyBuffer-via-latency_buffer">
  <attr name="x" type="s16" val="174"/>
  <attr name="y" type="s16" val="78"/>
 </obj>
 
-<obj class="Point" id="1 ReadoutModuleConf-2-RequestHandler-via-request_handler">
+<obj class="Point" id="1 DataHandlerConf-2-RequestHandler-via-request_handler">
  <attr name="x" type="s16" val="174"/>
  <attr name="y" type="s16" val="78"/>
 </obj>
@@ -892,7 +892,7 @@
  <attr name="y" type="s16" val="65"/>
 </obj>
 
-<obj class="Point" id="1 TriggerApplication-2-ReadoutModuleConf-via-trigger_inputs_handler">
+<obj class="Point" id="1 TriggerApplication-2-DataHandlerConf-via-trigger_inputs_handler">
  <attr name="x" type="s16" val="191"/>
  <attr name="y" type="s16" val="65"/>
 </obj>
@@ -942,7 +942,7 @@
  <attr name="y" type="s16" val="245"/>
 </obj>
 
-<obj class="Point" id="2 FakeHSIApplication-2-ReadoutModuleConf-via-link_handler">
+<obj class="Point" id="2 FakeHSIApplication-2-DataHandlerConf-via-link_handler">
  <attr name="x" type="s16" val="99"/>
  <attr name="y" type="s16" val="295"/>
 </obj>
@@ -992,17 +992,17 @@
  <attr name="y" type="s16" val="856"/>
 </obj>
 
-<obj class="Point" id="2 ReadoutModuleConf-2-DataProcessor-via-data_processor">
+<obj class="Point" id="2 DataHandlerConf-2-DataProcessor-via-data_processor">
  <attr name="x" type="s16" val="174"/>
  <attr name="y" type="s16" val="351"/>
 </obj>
 
-<obj class="Point" id="2 ReadoutModuleConf-2-LatencyBuffer-via-latency_buffer">
+<obj class="Point" id="2 DataHandlerConf-2-LatencyBuffer-via-latency_buffer">
  <attr name="x" type="s16" val="174"/>
  <attr name="y" type="s16" val="354"/>
 </obj>
 
-<obj class="Point" id="2 ReadoutModuleConf-2-RequestHandler-via-request_handler">
+<obj class="Point" id="2 DataHandlerConf-2-RequestHandler-via-request_handler">
  <attr name="x" type="s16" val="174"/>
  <attr name="y" type="s16" val="312"/>
 </obj>
@@ -1087,7 +1087,7 @@
  <attr name="y" type="s16" val="183"/>
 </obj>
 
-<obj class="Point" id="2 TriggerApplication-2-ReadoutModuleConf-via-trigger_inputs_handler">
+<obj class="Point" id="2 TriggerApplication-2-DataHandlerConf-via-trigger_inputs_handler">
  <attr name="x" type="s16" val="191"/>
  <attr name="y" type="s16" val="271"/>
 </obj>
@@ -1137,7 +1137,7 @@
  <attr name="y" type="s16" val="245"/>
 </obj>
 
-<obj class="Point" id="3 FakeHSIApplication-2-ReadoutModuleConf-via-link_handler">
+<obj class="Point" id="3 FakeHSIApplication-2-DataHandlerConf-via-link_handler">
  <attr name="y" type="s16" val="295"/>
 </obj>
 
@@ -1186,17 +1186,17 @@
  <attr name="y" type="s16" val="856"/>
 </obj>
 
-<obj class="Point" id="3 ReadoutModuleConf-2-DataProcessor-via-data_processor">
+<obj class="Point" id="3 DataHandlerConf-2-DataProcessor-via-data_processor">
  <attr name="x" type="s16" val="59"/>
  <attr name="y" type="s16" val="351"/>
 </obj>
 
-<obj class="Point" id="3 ReadoutModuleConf-2-LatencyBuffer-via-latency_buffer">
+<obj class="Point" id="3 DataHandlerConf-2-LatencyBuffer-via-latency_buffer">
  <attr name="x" type="s16" val="45"/>
  <attr name="y" type="s16" val="354"/>
 </obj>
 
-<obj class="Point" id="3 ReadoutModuleConf-2-RequestHandler-via-request_handler">
+<obj class="Point" id="3 DataHandlerConf-2-RequestHandler-via-request_handler">
  <attr name="x" type="s16" val="52"/>
  <attr name="y" type="s16" val="312"/>
 </obj>
@@ -1281,7 +1281,7 @@
  <attr name="y" type="s16" val="183"/>
 </obj>
 
-<obj class="Point" id="3 TriggerApplication-2-ReadoutModuleConf-via-trigger_inputs_handler">
+<obj class="Point" id="3 TriggerApplication-2-DataHandlerConf-via-trigger_inputs_handler">
  <attr name="x" type="s16" val="58"/>
  <attr name="y" type="s16" val="271"/>
 </obj>
@@ -1331,7 +1331,7 @@
  <attr name="y" type="s16" val="39"/>
 </obj>
 
-<obj class="Point" id="4 FakeHSIApplication-2-ReadoutModuleConf-via-link_handler">
+<obj class="Point" id="4 FakeHSIApplication-2-DataHandlerConf-via-link_handler">
  <attr name="y" type="s16" val="26"/>
 </obj>
 
@@ -1380,17 +1380,17 @@
  <attr name="y" type="s16" val="26"/>
 </obj>
 
-<obj class="Point" id="4 ReadoutModuleConf-2-DataProcessor-via-data_processor">
+<obj class="Point" id="4 DataHandlerConf-2-DataProcessor-via-data_processor">
  <attr name="x" type="s16" val="59"/>
  <attr name="y" type="s16" val="17"/>
 </obj>
 
-<obj class="Point" id="4 ReadoutModuleConf-2-LatencyBuffer-via-latency_buffer">
+<obj class="Point" id="4 DataHandlerConf-2-LatencyBuffer-via-latency_buffer">
  <attr name="x" type="s16" val="45"/>
  <attr name="y" type="s16" val="35"/>
 </obj>
 
-<obj class="Point" id="4 ReadoutModuleConf-2-RequestHandler-via-request_handler">
+<obj class="Point" id="4 DataHandlerConf-2-RequestHandler-via-request_handler">
  <attr name="x" type="s16" val="52"/>
  <attr name="y" type="s16" val="39"/>
 </obj>
@@ -1475,7 +1475,7 @@
  <attr name="y" type="s16" val="17"/>
 </obj>
 
-<obj class="Point" id="4 TriggerApplication-2-ReadoutModuleConf-via-trigger_inputs_handler">
+<obj class="Point" id="4 TriggerApplication-2-DataHandlerConf-via-trigger_inputs_handler">
  <attr name="x" type="s16" val="58"/>
  <attr name="y" type="s16" val="26"/>
 </obj>

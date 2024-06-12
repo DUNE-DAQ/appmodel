@@ -109,7 +109,7 @@
  </class>
 
  <class name="FDDataLinkHandler">
-  <superclass name="ReadoutModule"/>
+  <superclass name="DataHandler"/>
  </class>
 
  <class name="FDFakeCardReader">
@@ -175,11 +175,11 @@
   <attribute name="iface" type="s16" init-value="0" is-not-null="yes"/>
  </class>
 
- <class name="NICReceiver">
+ <class name="DPDKReader">
   <superclass name="DataReader"/>
  </class>
 
- <class name="NICReceiverConf">
+ <class name="DPDKReaderConf">
   <superclass name="DataReaderConf"/>
   <attribute name="eal_args" type="string" is-not-null="yes"/>
  </class>

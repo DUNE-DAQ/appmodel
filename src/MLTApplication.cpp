@@ -33,8 +33,8 @@
 #include "appmodel/DataReaderConf.hpp"
 #include "appmodel/DataRecorderConf.hpp"
 
-#include "appmodel/ReadoutModule.hpp"
-#include "appmodel/ReadoutModuleConf.hpp"
+#include "appmodel/DataHandler.hpp"
+#include "appmodel/DataHandlerConf.hpp"
 #include "appmodel/TCDataProcessor.hpp"
 
 #include "appmodel/ModuleLevelTrigger.hpp"
@@ -381,7 +381,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
   // ti_obj.set_objs("outputs", {&output_queue_obj});
 
   // // Add to our list of modules to return
-  //  modules.push_back(confdb->get<ReadoutModule>(ti_uid));
+  //  modules.push_back(confdb->get<DataHandler>(ti_uid));
 
   // /**************************************************************
   //  * Instantiate the ModuleLevelTrigger module

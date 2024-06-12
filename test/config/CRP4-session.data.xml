@@ -131,9 +131,9 @@
   <ref class="NetworkConnectionRule" id="data-req-readout-net-rule"/>
  </rel>
  <rel name="uses" class="RoHwConfig" id="rohw-group-247"/>
- <rel name="link_handler" class="ReadoutModuleConf" id="def-link-handler"/>
- <rel name="tp_handler" class="ReadoutModuleConf" id="def-tp-handler"/>
- <rel name="data_reader" class="NICReceiverConf" id="def-nic-receiver-conf"/>
+ <rel name="link_handler" class="DataHandlerConf" id="def-link-handler"/>
+ <rel name="tp_handler" class="DataHandlerConf" id="def-tp-handler"/>
+ <rel name="data_reader" class="DPDKReaderConf" id="def-nic-receiver-conf"/>
 </obj>
 
 <obj class="RoHwConfig" id="rohw-group-247">

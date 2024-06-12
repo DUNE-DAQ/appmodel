@@ -158,12 +158,12 @@
  <attr name="y" type="s16" val="258"/>
 </obj>
 
-<obj class="Class" id="NICReceiver">
+<obj class="Class" id="DPDKReader">
  <attr name="x" type="s16" val="288"/>
  <attr name="y" type="s16" val="4"/>
 </obj>
 
-<obj class="Class" id="NICReceiverConf">
+<obj class="Class" id="DPDKReaderConf">
  <attr name="x" type="s16" val="385"/>
  <attr name="y" type="s16" val="229"/>
 </obj>
@@ -199,25 +199,25 @@
  </rel>
 </obj>
 
-<obj class="GLink" id="DataReader-2-NICReceiver">
+<obj class="GLink" id="DataReader-2-DPDKReader">
  <rel name="From" class="Class" id="DataReader"/>
- <rel name="To" class="Class" id="NICReceiver"/>
+ <rel name="To" class="Class" id="DPDKReader"/>
  <rel name="Points">
-  <ref class="Point" id="1 DataReader-2-NICReceiver"/>
-  <ref class="Point" id="2 DataReader-2-NICReceiver"/>
-  <ref class="Point" id="3 DataReader-2-NICReceiver"/>
-  <ref class="Point" id="4 DataReader-2-NICReceiver"/>
+  <ref class="Point" id="1 DataReader-2-DPDKReader"/>
+  <ref class="Point" id="2 DataReader-2-DPDKReader"/>
+  <ref class="Point" id="3 DataReader-2-DPDKReader"/>
+  <ref class="Point" id="4 DataReader-2-DPDKReader"/>
  </rel>
 </obj>
 
-<obj class="GLink" id="DataReaderConf-2-NICReceiverConf">
+<obj class="GLink" id="DataReaderConf-2-DPDKReaderConf">
  <rel name="From" class="Class" id="DataReaderConf"/>
- <rel name="To" class="Class" id="NICReceiverConf"/>
+ <rel name="To" class="Class" id="DPDKReaderConf"/>
  <rel name="Points">
-  <ref class="Point" id="1 DataReaderConf-2-NICReceiverConf"/>
-  <ref class="Point" id="2 DataReaderConf-2-NICReceiverConf"/>
-  <ref class="Point" id="3 DataReaderConf-2-NICReceiverConf"/>
-  <ref class="Point" id="4 DataReaderConf-2-NICReceiverConf"/>
+  <ref class="Point" id="1 DataReaderConf-2-DPDKReaderConf"/>
+  <ref class="Point" id="2 DataReaderConf-2-DPDKReaderConf"/>
+  <ref class="Point" id="3 DataReaderConf-2-DPDKReaderConf"/>
+  <ref class="Point" id="4 DataReaderConf-2-DPDKReaderConf"/>
  </rel>
 </obj>
 
@@ -291,7 +291,7 @@
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 DataReader-2-NICReceiver">
+<obj class="Point" id="1 DataReader-2-DPDKReader">
  <attr name="x" type="s16" val="57"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
@@ -301,7 +301,7 @@
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 DataReaderConf-2-NICReceiverConf">
+<obj class="Point" id="1 DataReaderConf-2-DPDKReaderConf">
  <attr name="x" type="s16" val="64"/>
  <attr name="y" type="s16" val="51"/>
 </obj>
@@ -351,7 +351,7 @@
  <attr name="y" type="s16" val="23"/>
 </obj>
 
-<obj class="Point" id="2 DataReader-2-NICReceiver">
+<obj class="Point" id="2 DataReader-2-DPDKReader">
  <attr name="x" type="s16" val="57"/>
  <attr name="y" type="s16" val="23"/>
 </obj>
@@ -361,7 +361,7 @@
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="2 DataReaderConf-2-NICReceiverConf">
+<obj class="Point" id="2 DataReaderConf-2-DPDKReaderConf">
  <attr name="x" type="s16" val="64"/>
  <attr name="y" type="s16" val="203"/>
 </obj>
@@ -411,7 +411,7 @@
  <attr name="y" type="s16" val="23"/>
 </obj>
 
-<obj class="Point" id="3 DataReader-2-NICReceiver">
+<obj class="Point" id="3 DataReader-2-DPDKReader">
  <attr name="x" type="s16" val="20"/>
  <attr name="y" type="s16" val="23"/>
 </obj>
@@ -421,7 +421,7 @@
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="3 DataReaderConf-2-NICReceiverConf">
+<obj class="Point" id="3 DataReaderConf-2-DPDKReaderConf">
  <attr name="x" type="s16" val="63"/>
  <attr name="y" type="s16" val="203"/>
 </obj>
@@ -471,7 +471,7 @@
  <attr name="y" type="s16" val="8"/>
 </obj>
 
-<obj class="Point" id="4 DataReader-2-NICReceiver">
+<obj class="Point" id="4 DataReader-2-DPDKReader">
  <attr name="x" type="s16" val="20"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
@@ -481,7 +481,7 @@
  <attr name="y" type="s16" val="8"/>
 </obj>
 
-<obj class="Point" id="4 DataReaderConf-2-NICReceiverConf">
+<obj class="Point" id="4 DataReaderConf-2-DPDKReaderConf">
  <attr name="x" type="s16" val="63"/>
  <attr name="y" type="s16" val="12"/>
 </obj>

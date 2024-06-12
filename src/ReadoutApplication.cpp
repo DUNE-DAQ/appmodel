@@ -21,6 +21,10 @@
 #include "appmodel/NWDetDataSender.hpp"
 #include "appmodel/NWDetDataReceiver.hpp"
 
+#include "appmodel/DPDKReceiver.hpp"
+#include "confmodel/QueueWithSourceId.hpp"
+
+
 
 #include "confmodel/Connection.hpp"
 #include "confmodel/GeoId.hpp"
@@ -43,8 +47,8 @@
 #include "appmodel/QueueConnectionRule.hpp"
 #include "appmodel/QueueDescriptor.hpp"
 #include "appmodel/RequestHandler.hpp"
-#include "appmodel/ReadoutModule.hpp"
-#include "appmodel/ReadoutModuleConf.hpp"
+#include "appmodel/DataHandler.hpp"
+#include "appmodel/DataHandlerConf.hpp"
 
 #include "appmodel/appmodelIssues.hpp"
 
@@ -74,8 +78,9 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config,
 
   TLOG() << "Generating modules for application " << this->UID();
 
-
-  // Retrieve configuration objects
+  //
+  // Extract basic configuration objects
+  //
   // Data reader
   auto reader_conf = get_data_reader();
   if (reader_conf == 0) {
@@ -87,7 +92,72 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config,
   // What is template for?
   auto dlh_class = dlh_conf->get_template_for();
 
+  auto tph_conf = get_tp_handler();
+  std::string tph_class = "";
+  if (tph_conf!=nullptr) {
+    tph_class = tph_conf->get_template_for();
+  }
 
+  //
+  // Process the queue rules looking for inputs to our DL/TP handler modules
+  //
+  //
+  const QueueDescriptor* dlh_input_qdesc = nullptr;
+  const QueueDescriptor* dlh_reqinput_qdesc = nullptr;
+  const QueueDescriptor* tp_input_qdesc = nullptr;
+  // const QueueDescriptor* tpReqInputQDesc = nullptr;
+  const QueueDescriptor* fa_output_qdesc = nullptr;
+
+  for (auto rule : get_queue_rules()) {
+    auto destination_class = rule->get_destination_class();
+    auto data_type = rule->get_descriptor()->get_data_type();
+    if (destination_class == "DataHandler" || destination_class == dlh_class || destination_class == tph_class) {
+      if (data_type == "DataRequest") {
+        dlh_reqinput_qdesc = rule->get_descriptor();
+      } else if (data_type == "TriggerPrimitive") {
+        tp_input_qdesc = rule->get_descriptor();
+      } else {
+        dlh_input_qdesc = rule->get_descriptor();
+      }
+    } else if (destination_class == "FragmentAggregator") {
+      fa_output_qdesc = rule->get_descriptor();
+    }
+  }
+  //
+  // Process the network rules looking for the Fragment Aggregator and TP handler data reuest inputs
+  //
+  const NetworkConnectionDescriptor* faNetDesc = nullptr;
+  const NetworkConnectionDescriptor* tpNetDesc = nullptr;
+  const NetworkConnectionDescriptor* taNetDesc = nullptr;
+  const NetworkConnectionDescriptor* tsNetDesc = nullptr;
+  for (auto rule : get_network_rules()) {
+    auto endpoint_class = rule->get_endpoint_class();
+    auto data_type = rule->get_descriptor()->get_data_type();
+
+    if (endpoint_class == "FragmentAggregator") {
+      faNetDesc = rule->get_descriptor();
+    }
+    else if (data_type == "TPSet") {
+        tpNetDesc = rule->get_descriptor();
+    } 
+    else if (data_type == "TriggerActivity") {
+        taNetDesc = rule->get_descriptor();
+    }
+    else if (data_type == "TimeSync") {
+        tsNetDesc = rule->get_descriptor();
+    }
+    
+  }
+
+  // Create here the Queue on which all data fragments are forwarded to the fragment aggregator
+  // and a container for the queues of data request to TP handler and DLH
+  if (fa_output_qdesc == nullptr) {
+    throw(BadConf(ERS_HERE, "No fragment output queue descriptor given"));
+  }
+
+
+  //
+  // Scan Detector 2 DAQ connections to extract 
   //
 
   std::vector<const confmodel::DaqModule*> modules;
@@ -97,6 +167,9 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config,
 
   // Collect all streams    
   std::vector<const confmodel::DetectorStream*> det_streams;
+
+  // Collect all det receiver objects
+  std::vector<const confmodel::DetDataReceiver*> det_receivers;
 
   uint16_t conn_idx = 0;
   for (auto d2d_connection : get_contains()) {
@@ -146,27 +219,24 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config,
     } else {
       throw(BadConf(ERS_HERE, fmt::format("Unsupported transport type {} ({})", det_receiver->class_name(), det_receiver->UID())));
     } 
+    
+    det_receivers.push_back(det_receiver);
+  }
 
     //
     // Create data reader object
     //
     std::string reader_class = reader_conf->get_template_for();
-    // Create a NIC Receiver 
-    if ( reader_class != "NICReceiver ") { 
-      throw(BadConf(ERS_HERE, "Unsupported receiver type"));
+    // Check reader class (DPDKReader only for the moment) 
+    if ( reader_class != "DPDKReader") { 
+      throw(BadConf(ERS_HERE, fmt::format("Unsupported receiver type {}", reader_class)));
     }
 
     //
-    // Instantiate a NICReceiver
+    // Instantiate a DataHandler of type DPDKReader
     //
-    // Collect all det receiver objects
-    std::vector<const conffwk::ConfigObject*> det_rcvr_objs;
-    for (auto d2d_connection : get_contains()) {
-      det_rcvr_objs.push_back(d2d_connection.get_receiver()->config_object());
-    }
 
-
-    // Create the NICReceiver object
+    // Create the DPDKReader object
     std::string reader_uid(fmt::format("datareader-{}-{}",this->UID(),std::to_string(conn_idx++)));
     conffwk::ConfigObject reader_obj;
     TLOG() << fmt::format("creating OKS configuration object for Data reader class {} with id {}", reader_class, reader_uid);
@@ -174,38 +244,71 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config,
 
     // Populate configuration and interfaces (leave output queues for later)
     reader_obj.set_obj("configuration", &reader_conf->config_object());
-    reader_obj.set_objs("interfaces", det_rcvr_objs);
+
+    // Prepare the list of receivers for the DPDK reader
+    std::vector<const conffwk::ConfigObject*> rcvr_objs;
+    for (auto det_rcvr : det_receivers) {
+      if ( det_rcvr->cast<appmodel::DPDKReceiver>()) 
+      rcvr_objs.push_back(&det_rcvr->config_object());
+    }
+    reader_obj.set_objs("interfaces", rcvr_objs);
+
+    // Create the dataqueues 
+    std::map<uint32_t, const confmodel::Connection*> data_queues_by_sid;
+    // Create data queue ids
+    for (auto ds : det_streams) {
+      std::string data_queue_uid(dlh_input_qdesc->get_uid_base() + std::to_string(ds->get_source_id()));
+      conffwk::ConfigObject queue_obj;
+      config->create(dbfile, "QueueWithSourceId", data_queue_uid, queue_obj);
+      queue_obj.set_by_val<std::string>("data_type", dlh_input_qdesc->get_data_type());
+      queue_obj.set_by_val<std::string>("queue_type", dlh_input_qdesc->get_queue_type());
+      queue_obj.set_by_val<uint32_t>("capacity", dlh_input_qdesc->get_capacity());
+      queue_obj.set_by_val<uint32_t>("source_id", ds->get_source_id());
+
+      data_queues_by_sid[ds->get_source_id()] = config->get<confmodel::Connection>(data_queue_uid);
+    }
 
     // Prepare output queues
-    // std::vector<const conffwk::ConfigObject*> qObjs;
-    // for (auto q : outputQueues) {
-    //   qObjs.push_back(&q->config_object());
-    // }
-    // reader_obj.set_objs("outputs", qObjs);
+    std::vector<const conffwk::ConfigObject*> data_queue_objs;
+    for (auto const& [sid, q] : data_queues_by_sid) {
+      data_queue_objs.push_back(&q->config_object());
+    }
+    reader_obj.set_objs("outputs", data_queue_objs);
 
-    // reader_obj.set_obj("configuration", &reader_conf->config_object());
-    // reader_obj.set_objs("interfaces", if_objs);
     modules.push_back(config->get<DataReader>(reader_uid));
 
 
     //
     // Create datalink handlers
     //
+    auto emulation_mode = reader_conf->get_emulation_mode();
     for (auto ds : det_streams) {
+      uint32_t sid = ds->get_source_id();
     //   TLOG() << "Processing stream " << ds->UID() << ", id " << ds->get_source_id() << ", det_id " << ds->get_geo_id()->get_detector_id();
       TLOG() << fmt::format("Processing stream {}, id {}, det id {}", ds->UID(), ds->get_source_id(), ds->get_geo_id()->get_detector_id());
-      auto id = ds->get_source_id();
-      std::string uid("DLH-" + std::to_string(id));
+      std::string uid (fmt::format("DLH-{}", sid));
       conffwk::ConfigObject dlh_obj;
-      TLOG() << fmt::format("creating OKS configuration object for Data Link Handler class {}, if {}", dlh_class, id);
+      TLOG() << fmt::format("creating OKS configuration object for Data Link Handler class {}, if {}", dlh_class, sid);
       config->create(dbfile, dlh_class, uid, dlh_obj);
-      // dlh_obj.set_by_val<uint32_t>("source_id", id);
-      // dlh_obj.set_by_val<bool>("emulation_mode", emulation_mode);
-      // dlh_obj.set_obj("geo_id", &stream->get_geo_id()->config_object());
-      // dlh_obj.set_obj("module_configuration", &dlh_conf->config_object());
+      dlh_obj.set_by_val<uint32_t>("source_id", sid);
+      dlh_obj.set_by_val<bool>("emulation_mode", emulation_mode);
+      dlh_obj.set_obj("geo_id", &ds->get_geo_id()->config_object());
+      dlh_obj.set_obj("module_configuration", &dlh_conf->config_object());
+
+      // Time Sync network connection
+      if (dlhConf->get_generate_timesync()) {
+        std::string ts_stream_uid = ts_net_desc->get_uid_base() + std::to_string(id);
+        auto tsServiceObj = ts_net_desc->get_associated_service()->config_object();
+        conffwk::ConfigObject ts_net_obj;
+        config->create(dbfile, "NetworkConnection", ts_stream_uid, ts_net_obj);
+        ts_net_obj.set_by_val<std::string>("connection_type", ts_net_desc->get_connection_type());
+        ts_net_obj.set_by_val<std::string>("data_type", ts_net_desc->get_data_type());
+        ts_net_obj.set_obj("associated_service", &tsServiceObj);
+
+
+      modules.push_back(config->get<DataHandler>(uid));
     }
 
-  }
 
 
   return modules;
@@ -239,7 +342,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config,
 //   for (auto rule : get_queue_rules()) {
 //     auto destination_class = rule->get_destination_class();
 //     auto data_type = rule->get_descriptor()->get_data_type();
-//     if (destination_class == "ReadoutModule" || destination_class == dlh_class || destination_class == tph_class) {
+//     if (destination_class == "DataHandler" || destination_class == dlh_class || destination_class == tph_class) {
 //       if (data_type == "DataRequest") {
 //         dlh_req_inputq_desc = rule->get_descriptor();
 //       } else if (data_type == "TriggerPrimitive") {
@@ -331,7 +434,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config,
 //     tpQueueObj.set_by_val<uint32_t>("send_timeout_ms", 1);
 
 //     std::string tpReqQueueUid(dlh_req_inputq_desc->get_uid_base() + std::to_string(tpsrc));
-//     config->create(dbfile, "QueueWithId", tpReqQueueUid, tpReqQueueObj);
+//     config->create(dbfile, "QueueWithSourceId", tpReqQueueUid, tpReqQueueObj);
 //     tpReqQueueObj.set_by_val<std::string>("data_type", dlh_req_inputq_desc->get_data_type());
 //     tpReqQueueObj.set_by_val<std::string>("queue_type", dlh_req_inputq_desc->get_queue_type());
 //     tpReqQueueObj.set_by_val<uint32_t>("capacity", dlh_req_inputq_desc->get_capacity());
@@ -362,7 +465,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config,
 //     tpObj.set_objs("outputs", { &tpNetObj, &taNetObj, &fa_queue_obj });
 
 //     // Add to our list of modules to return
-//     modules.push_back(config->get<ReadoutModule>(tpUid));
+//     modules.push_back(config->get<DataHandler>(tpUid));
 //   }
 
 //   // Now create the DataReader objects, one per group of data streams
@@ -503,7 +606,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config,
 //         }
 //         std::string dataQueueUid(dlh_inputq_desc->get_uid_base() + std::to_string(id));
 //         conffwk::ConfigObject queueObj;
-//         config->create(dbfile, "QueueWithId", dataQueueUid, queueObj);
+//         config->create(dbfile, "QueueWithSourceId", dataQueueUid, queueObj);
 //         queueObj.set_by_val<std::string>("data_type", dlh_inputq_desc->get_data_type());
 //         queueObj.set_by_val<std::string>("queue_type", dlh_inputq_desc->get_queue_type());
 //         queueObj.set_by_val<uint32_t>("capacity", dlh_inputq_desc->get_capacity());
@@ -511,7 +614,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config,
 
 //         std::string reqQueueUid(dlh_req_inputq_desc->get_uid_base() + std::to_string(id));
 //         conffwk::ConfigObject reqQueueObj;
-//         config->create(dbfile, "QueueWithId", reqQueueUid, reqQueueObj);
+//         config->create(dbfile, "QueueWithSourceId", reqQueueUid, reqQueueObj);
 //         reqQueueObj.set_by_val<std::string>("data_type", dlh_req_inputq_desc->get_data_type());
 //         reqQueueObj.set_by_val<std::string>("queue_type", dlh_req_inputq_desc->get_queue_type());
 //         reqQueueObj.set_by_val<uint32_t>("capacity", dlh_req_inputq_desc->get_capacity());
@@ -524,7 +627,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config,
 //         // Add the input queue dal pointer to the outputs of the DataReader
 //         outputQueues.push_back(config->get<confmodel::Connection>(dataQueueUid));
 
-//         modules.push_back(config->get<ReadoutModule>(uid));
+//         modules.push_back(config->get<DataHandler>(uid));
 //       }
 //     }
 //     std::string reader_uid("datareader-" + UID() + "-" + std::to_string(rnum++));
