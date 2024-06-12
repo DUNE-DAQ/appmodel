@@ -65,15 +65,15 @@
 
 <info name="" type="" num-of-items="76" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="glehmann" created-on="np04-srv-024.cern.ch" creation-time="20240527T144916" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240527T144918"/>
 
-<obj class="ALink" id="DPDK_NICInterfaceConfiguration-2-ProcessingResource-via-used_lcores">
+<obj class="ALink" id="DPDKPortConfiguration-2-ProcessingResource-via-used_lcores">
  <attr name="Name" type="string" val="used_lcores"/>
- <rel name="From" class="Class" id="DPDK_NICInterfaceConfiguration"/>
+ <rel name="From" class="Class" id="DPDKPortConfiguration"/>
  <rel name="To" class="Class" id="ProcessingResource"/>
  <rel name="Points">
-  <ref class="Point" id="1 DPDK_NICInterfaceConfiguration-2-ProcessingResource-via-used_lcores"/>
-  <ref class="Point" id="2 DPDK_NICInterfaceConfiguration-2-ProcessingResource-via-used_lcores"/>
-  <ref class="Point" id="3 DPDK_NICInterfaceConfiguration-2-ProcessingResource-via-used_lcores"/>
-  <ref class="Point" id="4 DPDK_NICInterfaceConfiguration-2-ProcessingResource-via-used_lcores"/>
+  <ref class="Point" id="1 DPDKPortConfiguration-2-ProcessingResource-via-used_lcores"/>
+  <ref class="Point" id="2 DPDKPortConfiguration-2-ProcessingResource-via-used_lcores"/>
+  <ref class="Point" id="3 DPDKPortConfiguration-2-ProcessingResource-via-used_lcores"/>
+  <ref class="Point" id="4 DPDKPortConfiguration-2-ProcessingResource-via-used_lcores"/>
  </rel>
 </obj>
 
@@ -113,7 +113,7 @@
  </rel>
 </obj>
 
-<obj class="Class" id="DPDK_NICInterfaceConfiguration">
+<obj class="Class" id="DPDKPortConfiguration">
  <attr name="x" type="s16" val="521"/>
  <attr name="y" type="s16" val="319"/>
 </obj>
@@ -221,14 +221,14 @@
  </rel>
 </obj>
 
-<obj class="GLink" id="NICInterfaceConfiguration-2-DPDK_NICInterfaceConfiguration">
+<obj class="GLink" id="NICInterfaceConfiguration-2-DPDKPortConfiguration">
  <rel name="From" class="Class" id="NICInterfaceConfiguration"/>
- <rel name="To" class="Class" id="DPDK_NICInterfaceConfiguration"/>
+ <rel name="To" class="Class" id="DPDKPortConfiguration"/>
  <rel name="Points">
-  <ref class="Point" id="1 NICInterfaceConfiguration-2-DPDK_NICInterfaceConfiguration"/>
-  <ref class="Point" id="2 NICInterfaceConfiguration-2-DPDK_NICInterfaceConfiguration"/>
-  <ref class="Point" id="3 NICInterfaceConfiguration-2-DPDK_NICInterfaceConfiguration"/>
-  <ref class="Point" id="4 NICInterfaceConfiguration-2-DPDK_NICInterfaceConfiguration"/>
+  <ref class="Point" id="1 NICInterfaceConfiguration-2-DPDKPortConfiguration"/>
+  <ref class="Point" id="2 NICInterfaceConfiguration-2-DPDKPortConfiguration"/>
+  <ref class="Point" id="3 NICInterfaceConfiguration-2-DPDKPortConfiguration"/>
+  <ref class="Point" id="4 NICInterfaceConfiguration-2-DPDKPortConfiguration"/>
  </rel>
 </obj>
 
@@ -276,7 +276,7 @@
  </rel>
 </obj>
 
-<obj class="Point" id="1 DPDK_NICInterfaceConfiguration-2-ProcessingResource-via-used_lcores">
+<obj class="Point" id="1 DPDKPortConfiguration-2-ProcessingResource-via-used_lcores">
  <attr name="x" type="s16" val="188"/>
  <attr name="y" type="s16" val="159"/>
 </obj>
@@ -311,7 +311,7 @@
  <attr name="y" type="s16" val="78"/>
 </obj>
 
-<obj class="Point" id="1 NICInterfaceConfiguration-2-DPDK_NICInterfaceConfiguration">
+<obj class="Point" id="1 NICInterfaceConfiguration-2-DPDKPortConfiguration">
  <attr name="x" type="s16" val="114"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
@@ -336,7 +336,7 @@
  <attr name="y" type="s16" val="38"/>
 </obj>
 
-<obj class="Point" id="2 DPDK_NICInterfaceConfiguration-2-ProcessingResource-via-used_lcores">
+<obj class="Point" id="2 DPDKPortConfiguration-2-ProcessingResource-via-used_lcores">
  <attr name="x" type="s16" val="188"/>
  <attr name="y" type="s16" val="363"/>
 </obj>
@@ -371,7 +371,7 @@
  <attr name="y" type="s16" val="188"/>
 </obj>
 
-<obj class="Point" id="2 NICInterfaceConfiguration-2-DPDK_NICInterfaceConfiguration">
+<obj class="Point" id="2 NICInterfaceConfiguration-2-DPDKPortConfiguration">
  <attr name="x" type="s16" val="114"/>
  <attr name="y" type="s16" val="284"/>
 </obj>
@@ -396,7 +396,7 @@
  <attr name="y" type="s16" val="102"/>
 </obj>
 
-<obj class="Point" id="3 DPDK_NICInterfaceConfiguration-2-ProcessingResource-via-used_lcores">
+<obj class="Point" id="3 DPDKPortConfiguration-2-ProcessingResource-via-used_lcores">
  <attr name="x" type="s16" val="32"/>
  <attr name="y" type="s16" val="363"/>
 </obj>
@@ -431,7 +431,7 @@
  <attr name="y" type="s16" val="188"/>
 </obj>
 
-<obj class="Point" id="3 NICInterfaceConfiguration-2-DPDK_NICInterfaceConfiguration">
+<obj class="Point" id="3 NICInterfaceConfiguration-2-DPDKPortConfiguration">
  <attr name="x" type="s16" val="62"/>
  <attr name="y" type="s16" val="284"/>
 </obj>
@@ -456,7 +456,7 @@
  <attr name="y" type="s16" val="102"/>
 </obj>
 
-<obj class="Point" id="4 DPDK_NICInterfaceConfiguration-2-ProcessingResource-via-used_lcores">
+<obj class="Point" id="4 DPDKPortConfiguration-2-ProcessingResource-via-used_lcores">
  <attr name="x" type="s16" val="32"/>
  <attr name="y" type="s16" val="12"/>
 </obj>
@@ -491,7 +491,7 @@
  <attr name="y" type="s16" val="32"/>
 </obj>
 
-<obj class="Point" id="4 NICInterfaceConfiguration-2-DPDK_NICInterfaceConfiguration">
+<obj class="Point" id="4 NICInterfaceConfiguration-2-DPDKPortConfiguration">
  <attr name="x" type="s16" val="62"/>
  <attr name="y" type="s16" val="53"/>
 </obj>

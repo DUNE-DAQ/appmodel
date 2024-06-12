@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="10" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105615" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240603T150525"/>
+<info name="" type="" num-of-items="10" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105615" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240611T172304"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -88,6 +88,8 @@
  <comment creation-time="20240312T122552" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="added information about services exposed by app; used to infer whether an app responds to data reuqests."/>
  <comment creation-time="20240325T124934" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="Unknown" text="adjusted to name changes in connections"/>
  <comment creation-time="20240603T150525" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="glehmann" text="updated test session to new readout schema"/>
+ <comment creation-time="20240611T141410" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="readoutapp"/>
+ <comment creation-time="20240611T172304" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="nic data reader"/>
 </comments>
 
 
@@ -105,7 +107,7 @@
  <attr name="tp_source_id" type="u32" val="100"/>
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="contains">
-  <ref class="DetectorToDaqConnection" id="det-1-connections"/>
+  <ref class="DetectorToDaqConnection" id="conn_apa1"/>
  </rel>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="exposes_service">
@@ -130,7 +132,7 @@
  <rel name="uses" class="RoHwConfig" id="rohw-1"/>
  <rel name="link_handler" class="ReadoutModuleConf" id="def-link-handler"/>
  <rel name="tp_handler" class="ReadoutModuleConf" id="def-tp-handler"/>
- <rel name="data_reader" class="NICReceiverConf" id="def-emu-nic-receiver-conf"/>
+ <rel name="data_reader" class="NICReceiverConf" id="def-nic-receiver-conf"/>
 </obj>
 
 <obj class="ReadoutApplication" id="ru-02">

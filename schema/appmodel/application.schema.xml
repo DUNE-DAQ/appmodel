@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="47" oks-format="schema" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240606T112758"/>
+<info name="" type="" num-of-items="47" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240611T131922"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -273,12 +273,12 @@
   <attribute name="preallocation" type="bool" init-value="true"/>
  </class>
 
- <class name="NWDetDataReceiver">
+ <class name="NWDetDataReceiver" is-abstract="yes">
   <superclass name="DetDataReceiver"/>
   <relationship name="uses" class-type="NetworkInterface" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="NWDetDataSender">
+ <class name="NWDetDataSender" is-abstract="yes">
   <superclass name="DetDataSender"/>
   <relationship name="uses" class-type="NetworkInterface" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>

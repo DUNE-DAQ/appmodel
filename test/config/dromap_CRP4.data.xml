@@ -79,10 +79,10 @@
 
 <obj class="DPDKReceiver" id="dpdk-crp4-receiver">
  <rel name="uses" class="NICInterface" id="nic-np02-srv-003"/>
- <rel name="configuration" class="DPDK_NICInterfaceConfiguration" id="nic-config-CRP4"/>
+ <rel name="configuration" class="DPDKPortConfiguration" id="nic-config-CRP4"/>
 </obj>
 
-<obj class="DPDK_NICInterfaceConfiguration" id="nic-config-CRP4">
+<obj class="DPDKPortConfiguration" id="nic-config-CRP4">
  <attr name="flow_control" type="bool" val="1"/>
  <attr name="mtu" type="u32" val="9000"/>
  <attr name="rx_ring_size" type="u32" val="4096"/>

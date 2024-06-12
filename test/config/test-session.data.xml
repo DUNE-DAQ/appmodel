@@ -63,13 +63,12 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="21" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240603T150546"/>
+<info name="" type="" num-of-items="36" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240611T203112"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
  <file path="config/appmodel/fsm.data.xml"/>
  <file path="test/config/hosts.data.xml"/>
- <file path="test/config/dummy-readoutmap.data.xml"/>
  <file path="test/config/ru-segment.data.xml"/>
  <file path="test/config/df-segment.data.xml"/>
  <file path="test/config/hsi-segment.data.xml"/>
@@ -87,13 +86,133 @@
  <comment creation-time="20240403T064226" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="glehmann" text="simplify"/>
  <comment creation-time="20240403T081943" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="glehmann" text="add all pieces back"/>
  <comment creation-time="20240603T150546" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="glehmann" text=" "/>
+ <comment creation-time="20240611T125011" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="geos"/>
+ <comment creation-time="20240611T125116" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="geos"/>
+ <comment creation-time="20240611T125146" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="geos"/>
+ <comment creation-time="20240611T125446" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="streams"/>
+ <comment creation-time="20240611T125550" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="streams"/>
+ <comment creation-time="20240611T125948" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="network interface"/>
+ <comment creation-time="20240611T130050" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="ni"/>
+ <comment creation-time="20240611T130248" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="nwdatasender"/>
+ <comment creation-time="20240611T130934" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="nic"/>
+ <comment creation-time="20240611T132515" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="dpdk"/>
+ <comment creation-time="20240611T135456" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="boh"/>
+ <comment creation-time="20240611T141150" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="readout conf"/>
+ <comment creation-time="20240611T141410" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="readoutapp"/>
+ <comment creation-time="20240611T203112" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="stream ids fixed"/>
 </comments>
 
+
+<obj class="DPDKPortConfiguration" id="dpdk_e810_conf">
+ <attr name="flow_control" type="bool" val="1"/>
+ <attr name="mtu" type="u32" val="9000"/>
+ <attr name="rx_ring_size" type="u32" val="4096"/>
+ <attr name="tx_ring_size" type="u32" val="1024"/>
+ <attr name="num_bufs" type="u32" val="16384"/>
+ <attr name="burst_size" type="u32" val="2048"/>
+ <attr name="lcore_sleep_us" type="u32" val="10"/>
+ <attr name="source_to_rx_queue_multiplexing" type="s16" val="1"/>
+ <rel name="used_lcores">
+  <ref class="ProcessingResource" id="localhost_cpus"/>
+ </rel>
+</obj>
+
+<obj class="DPDKReceiver" id="ru-1-rcv">
+ <rel name="uses" class="NICInterface" id="ru_1_readout"/>
+ <rel name="configuration" class="DPDKPortConfiguration" id="dpdk_e810_conf"/>
+</obj>
 
 <obj class="DetectorConfig" id="dummy-detector">
  <attr name="tpg_channel_map" type="string" val="PD2HDChannelMap"/>
  <attr name="clock_speed_hz" type="u32" val="62500000"/>
  <attr name="op_env" type="string" val="test"/>
+</obj>
+
+<obj class="DetectorStream" id="stream_100">
+ <attr name="source_id" type="u32" val="100"/>
+ <rel name="geo_id" class="GeoId" id="g_3_1_1_0"/>
+</obj>
+
+<obj class="DetectorStream" id="stream_101">
+ <attr name="source_id" type="u32" val="101"/>
+ <rel name="geo_id" class="GeoId" id="g_3_1_1_1"/>
+</obj>
+
+<obj class="DetectorStream" id="stream_102">
+ <attr name="source_id" type="u32" val="102"/>
+ <rel name="geo_id" class="GeoId" id="g_3_1_1_2"/>
+</obj>
+
+<obj class="DetectorStream" id="stream_103">
+ <attr name="source_id" type="u32" val="103"/>
+ <rel name="geo_id" class="GeoId" id="g_3_1_1_3"/>
+</obj>
+
+<obj class="DetectorToDaqConnection" id="conn_apa1">
+ <rel name="contains">
+  <ref class="HermesDataSender" id="wib_101_link0"/>
+  <ref class="DPDKReceiver" id="ru-1-rcv"/>
+ </rel>
+</obj>
+
+<obj class="GeoId" id="g_3_1_1_0">
+ <attr name="detector_id" type="u32" val="3"/>
+ <attr name="crate_id" type="u32" val="1"/>
+ <attr name="slot_id" type="u32" val="1"/>
+</obj>
+
+<obj class="GeoId" id="g_3_1_1_1">
+ <attr name="detector_id" type="u32" val="3"/>
+ <attr name="crate_id" type="u32" val="1"/>
+ <attr name="slot_id" type="u32" val="1"/>
+ <attr name="stream_id" type="u32" val="1"/>
+</obj>
+
+<obj class="GeoId" id="g_3_1_1_2">
+ <attr name="detector_id" type="u32" val="3"/>
+ <attr name="crate_id" type="u32" val="1"/>
+ <attr name="slot_id" type="u32" val="1"/>
+ <attr name="stream_id" type="u32" val="2"/>
+</obj>
+
+<obj class="GeoId" id="g_3_1_1_3">
+ <attr name="detector_id" type="u32" val="3"/>
+ <attr name="crate_id" type="u32" val="1"/>
+ <attr name="slot_id" type="u32" val="1"/>
+ <attr name="stream_id" type="u32" val="3"/>
+</obj>
+
+<obj class="HermesDataSender" id="wib_101_link0">
+ <attr name="port" type="u32" val="17476"/>
+ <rel name="contains">
+  <ref class="DetectorStream" id="stream_100"/>
+  <ref class="DetectorStream" id="stream_101"/>
+  <ref class="DetectorStream" id="stream_102"/>
+  <ref class="DetectorStream" id="stream_103"/>
+ </rel>
+ <rel name="uses" class="NetworkInterface" id="wib_101_hermes0"/>
+</obj>
+
+<obj class="NICInterface" id="ru_1_readout">
+ <attr name="mac_address" type="string" val="00:00:00:00:00:00"/>
+ <attr name="ip_address" type="string" val="123.456.101.501"/>
+ <attr name="interface_name" type="string" val="data0"/>
+ <attr name="network_name" type="enum" val="Control"/>
+ <attr name="pcie_addr" type="string" val="0"/>
+</obj>
+
+<obj class="NetworkInterface" id="wib_101_hermes0">
+ <attr name="mac_address" type="string" val="00:00:00:00:00:00"/>
+ <attr name="ip_address" type="string" val="123.456.101.000"/>
+ <attr name="interface_name" type="string" val="hermes0"/>
+ <attr name="network_name" type="enum" val="Control"/>
+</obj>
+
+<obj class="NetworkInterface" id="wib_101_hermes1">
+ <attr name="mac_address" type="string" val="00:00:00:00:00:00"/>
+ <attr name="ip_address" type="string" val="123.456.101.001"/>
+ <attr name="interface_name" type="string" val="hermes1"/>
+ <attr name="network_name" type="enum" val="Control"/>
 </obj>
 
 <obj class="OpMonService" id="cern-opmon-application-service">

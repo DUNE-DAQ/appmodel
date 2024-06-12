@@ -12,6 +12,7 @@ find_package(ers REQUIRED)
 find_package(logging REQUIRED)
 find_package(conffwk REQUIRED)
 find_package(confmodel REQUIRED)
+find_package(fmt REQUIRED)
 
 
 #find_package(Boost COMPONENTS unit_test_framework REQUIRED)
@@ -22,7 +23,7 @@ daq_oks_codegen(application.schema.xml fdmodules.schema.xml trigger.schema.xml
 
 daq_add_library(ReadoutApplication.cpp SmartDaqApplication.cpp
 	DFApplication.cpp DFOApplication.cpp TPWriterApplication.cpp FakeDataApplication.cpp FakeHSIApplication.cpp TriggerApplication.cpp MLTApplication.cpp HSIEventToTCApplication.cpp
- LINK_LIBRARIES conffwk::conffwk okssystem::okssystem
+ LINK_LIBRARIES conffwk::conffwk fmt::fmt
   logging::logging confmodel::confmodel oks::oks ers::ers)
 
 daq_add_application(getAppsArguments get_apps_arguments.cxx
