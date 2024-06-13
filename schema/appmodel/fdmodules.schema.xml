@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="18" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240612T204322"/>
+<info name="" type="" num-of-items="18" oks-format="schema" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240611T170050"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -162,6 +162,7 @@
   <superclass name="NWDetDataSender"/>
   <attribute name="link_id" type="u32" is-not-null="yes"/>
   <attribute name="port" type="u32" init-value="17476" is-not-null="yes"/>
+  <attribute name="control_host" type="string" init-value="localhost" is-not-null="yes"/>
  </class>
 
  <class name="HermesModuleConf">

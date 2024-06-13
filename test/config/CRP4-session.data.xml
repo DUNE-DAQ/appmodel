@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="8" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20240306T144154" last-modified-by="thea" last-modified-on="np02-srv-001.cern.ch" last-modification-time="20240430T135211"/>
+<info name="" type="" num-of-items="10" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20240306T144154" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240611T191027"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -86,23 +86,16 @@
 </comments>
 
 
-<obj class="DaqApplication" id="hermes-CRP4">
- <attr name="application_name" type="string" val="daq_application"/>
- <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
- <rel name="modules">
-  <ref class="HermesController" id="hermes_10_10_5"/>
-  <ref class="HermesController" id="hermes_10_10_4"/>
-  <ref class="HermesController" id="hermes_10_10_3"/>
-  <ref class="HermesController" id="hermes_10_10_2"/>
-  <ref class="HermesController" id="hermes_10_10_1"/>
-  <ref class="HermesController" id="hermes_10_10_0"/>
- </rel>
-</obj>
-
 <obj class="DetectorConfig" id="dummy-detector">
  <attr name="tpg_channel_map" type="string" val="PD2HDChannelMap"/>
  <attr name="clock_speed_hz" type="u32" val="62500000"/>
  <attr name="op_env" type="string" val="swtest"/>
+</obj>
+
+<obj class="HermesModuleConf" id="def-hermes-conf">
+ <attr name="ipbus_type" type="string" val="ipbusudp-2.0"/>
+ <attr name="ipbus_port" type="u32" val="50001"/>
+ <rel name="address_table" class="IpbusAddressTable" id="Hermes-addrtab"/>
 </obj>
 
 <obj class="RCApplication" id="ru-controller">
@@ -145,7 +138,7 @@
   <ref class="Segment" id="df-segment"/>
  </rel>
  <rel name="applications">
-  <ref class="DaqApplication" id="hermes-CRP4"/>
+  <ref class="WIECApplication" id="hermes-CRP4"/>
   <ref class="ReadoutApplication" id="runp02srv003eth0"/>
  </rel>
  <rel name="controller" class="RCApplication" id="ru-controller"/>
@@ -163,6 +156,19 @@
  <attr name="data_rate_slowdown_factor" type="u32" val="1"/>
  <rel name="segment" class="Segment" id="ru-segment"/>
  <rel name="detector_configuration" class="DetectorConfig" id="dummy-detector"/>
+</obj>
+
+<obj class="WIBModuleConf" id="dummy">
+</obj>
+
+<obj class="WIECApplication" id="hermes-CRP4">
+ <attr name="application_name" type="string" val="daq_application"/>
+ <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="contains">
+  <ref class="DetectorToDaqConnection" id="crp4-connections"/>
+ </rel>
+ <rel name="wib_module_conf" class="WIBModuleConf" id="dummy"/>
+ <rel name="hermes_module_conf" class="HermesModuleConf" id="def-hermes-conf"/>
 </obj>
 
 </oks-data>

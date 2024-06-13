@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="10" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105615" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240612T203623"/>
+<info name="" type="" num-of-items="10" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105615" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240611T172946"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -141,7 +141,7 @@
  <attr name="tp_source_id" type="u32" val="200"/>
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="contains">
-  <ref class="DetectorToDaqConnection" id="conn_apa1"/>
+  <ref class="DetectorToDaqConnection" id="det-4-connections"/>
  </rel>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="exposes_service">
