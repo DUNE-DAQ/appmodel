@@ -413,10 +413,4 @@
  </attr>
 </obj>
 
- <obj class="FSMxTransition" id="post_drain_dataflow_test">
- <attr name="transition" type="string" val="drain_dataflow"/>
- <attr name="order" type="string">
-  <data val="file-logbook"/>
- </attr>
-</obj>
 </oks-data>
