@@ -361,7 +361,6 @@
   <data val="file-run-registry"/>
  </attr>
  <attr name="mandatory" type="string">
-<<<<<<< HEAD
   <data val="usvc-provided-run-number"/>
   <data val="-run-registry"/>
  </attr>
@@ -374,8 +373,6 @@
   <data val="file-run-registry"/>
  </attr>
  <attr name="mandatory" type="string">
-=======
->>>>>>> titavare/usvc-run-reg
   <data val="file-run-registry"/>
   <data val="user-provided-run-number"/>
  </attr>
@@ -412,9 +409,6 @@
  </attr>
 </obj>
 
-<<<<<<< HEAD
-<obj class="FSMxTransition" id="post_drain_dataflow_prod">
-=======
 
 <obj class="FSMxTransition" id="post_drain_dataflow_prod">
  <attr name="transition" type="string" val="drain_dataflow"/>
@@ -425,7 +419,6 @@
 </obj>
 
  <obj class="FSMxTransition" id="post_drain_dataflow_test">
->>>>>>> titavare/usvc-run-reg
  <attr name="transition" type="string" val="drain_dataflow"/>
  <attr name="order" type="string">
   <data val="file-logbook"/>
