@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="6" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105615" last-modified-by="glehmann" last-modified-on="np04-srv-019.cern.ch" last-modification-time="20240402T164754"/>
+<info name="" type="" num-of-items="10" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105615" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240611T172946"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -87,48 +87,33 @@
  <comment creation-time="20240301T164311" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="activate TA"/>
  <comment creation-time="20240312T122552" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="added information about services exposed by app; used to infer whether an app responds to data reuqests."/>
  <comment creation-time="20240325T124934" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="Unknown" text="adjusted to name changes in connections"/>
+ <comment creation-time="20240603T150525" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="glehmann" text="updated test session to new readout schema"/>
+ <comment creation-time="20240611T141410" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="readoutapp"/>
+ <comment creation-time="20240611T172304" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="nic data reader"/>
+ <comment creation-time="20240612T151554" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="tp source id updated"/>
+ <comment creation-time="20240612T203623" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="adding dummy connections to ru-02"/>
 </comments>
 
-
-<obj class="Service" id="ru-controller_control">
-  <attr name="protocol" val="grpc"/>
-  <attr name="port" val="5500"/>
-</obj>
-
-<obj class="Service" id="ru-01_control">
-  <attr name="protocol" val="rest"/>
-  <attr name="port" val="5501"/>
-</obj>
-
-<obj class="Service" id="ru-02_control">
-  <attr name="protocol" val="rest"/>
-  <attr name="port" val="5502"/>
-</obj>
-
-<obj class="Service" id="ru-03_control">
-  <attr name="protocol" val="rest"/>
-  <attr name="port" val="5503"/>
-</obj>
 
 <obj class="RCApplication" id="ru-controller">
  <attr name="application_name" type="string" val="drunc-controller"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="exposes_service">
+  <ref class="Service" id="ru-controller_control"/>
+ </rel>
  <rel name="fsm" class="FSMconfiguration" id="FSMconfiguration_noAction"/>
  <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
- <rel name="exposes_service">
-  <ref class="Service" id="ru-controller_control">
- </rel>
 </obj>
 
 <obj class="ReadoutApplication" id="ru-01">
- <attr name="tp_source_id" type="u32" val="100"/>
+ <attr name="tp_source_id" type="u32" val="1000"/>
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="contains">
-  <ref class="ReadoutGroup" id="rog-1"/>
+  <ref class="DetectorToDaqConnection" id="conn_apa1"/>
  </rel>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="exposes_service">
-  <ref class="Service" id="ru-01_control">
+  <ref class="Service" id="ru-01_control"/>
   <ref class="Service" id="dataRequests"/>
   <ref class="Service" id="timeSyncs"/>
   <ref class="Service" id="triggerActivities"/>
@@ -149,18 +134,18 @@
  <rel name="uses" class="RoHwConfig" id="rohw-1"/>
  <rel name="link_handler" class="ReadoutModuleConf" id="def-link-handler"/>
  <rel name="tp_handler" class="ReadoutModuleConf" id="def-tp-handler"/>
- <rel name="data_reader" class="NICReceiverConf" id="def-emu-nic-receiver-conf"/>
+ <rel name="data_reader" class="NICReceiverConf" id="def-nic-receiver-conf"/>
 </obj>
 
 <obj class="ReadoutApplication" id="ru-02">
  <attr name="tp_source_id" type="u32" val="200"/>
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="contains">
-  <ref class="ReadoutGroup" id="rog-2"/>
+  <ref class="DetectorToDaqConnection" id="det-4-connections"/>
  </rel>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="exposes_service">
-  <ref class="Service" id="ru-02_control">
+  <ref class="Service" id="ru-02_control"/>
  </rel>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="fa-queue-rule"/>
@@ -184,11 +169,11 @@
  <attr name="tp_source_id" type="u32" val="300"/>
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="contains">
-  <ref class="ReadoutGroup" id="rog-3"/>
+  <ref class="DetectorToDaqConnection" id="det-3-connections"/>
  </rel>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="exposes_service">
-  <ref class="Service" id="ru-03_control">
+  <ref class="Service" id="ru-03_control"/>
  </rel>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="fa-queue-rule"/>
@@ -214,8 +199,30 @@
 <obj class="Segment" id="ru-segment">
  <rel name="applications">
   <ref class="ReadoutApplication" id="ru-01"/>
+  <ref class="ReadoutApplication" id="ru-02"/>
+  <ref class="ReadoutApplication" id="ru-03"/>
  </rel>
  <rel name="controller" class="RCApplication" id="ru-controller"/>
+</obj>
+
+<obj class="Service" id="ru-01_control">
+ <attr name="protocol" type="string" val="rest"/>
+ <attr name="port" type="u16" val="5501"/>
+</obj>
+
+<obj class="Service" id="ru-02_control">
+ <attr name="protocol" type="string" val="rest"/>
+ <attr name="port" type="u16" val="5502"/>
+</obj>
+
+<obj class="Service" id="ru-03_control">
+ <attr name="protocol" type="string" val="rest"/>
+ <attr name="port" type="u16" val="5503"/>
+</obj>
+
+<obj class="Service" id="ru-controller_control">
+ <attr name="protocol" type="string" val="grpc"/>
+ <attr name="port" type="u16" val="5500"/>
 </obj>
 
 </oks-data>

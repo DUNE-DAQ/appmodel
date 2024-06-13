@@ -21,7 +21,7 @@ know how to connect the modules internally and to network endpoints.
  implemetation calls the generate_modules() implementation of the
  specific subclass using a 'magic' map of class names to generate functions.
 
-Readout and Dataflow applications extend from **SmartDaqApplication**
+Readout, HSI, Hermes andDataflow and Trigger applications extend from **SmartDaqApplication**
 ## ReadoutApplication
 
  ![ReadoutApplication schema class diagram not including classes whose
@@ -30,9 +30,9 @@ Readout and Dataflow applications extend from **SmartDaqApplication**
  The **ReadoutApplication** inherits from both **SmartDaqApplication**
 and **ResourceSetAND**. This means it has a contains relationship that
 can contain any class inheriting from **ResourceBase** but should only
-contain **ReadoutGroups**. The `generate_modules()` method will
-generate a **DataReader** for each **ReadoutGroup** associated wit the application, and set of **ReadoutModule** objects, i.e. **DLH** for each
-**DROStreamConf** plus a single **TPHandlerModule**. Optionally **DataRecorder** modules may be created (not supported yet)). The modules are created
+contain **DetectorToDaqConnection**s. The `generate_modules()` method will
+generate a **DataReader** for each **DetectorToDaqConnection** associated with the application, and set of **ReadoutModule** objects, i.e. **DLH** for each
+**DetectorStream** plus a single **TPHandlerModule** (FIXME: this shall become a TPHandler per detector plane). Optionally **DataRecorder** modules may be created (not supported yet)). The modules are created
 according to the configuration given by the data_reader, link_handler, data_recorder
 and tp_handler relationships respectively. Connections between pairs
 of modules are configured according to the queue_rules relationship
@@ -58,8 +58,14 @@ generate **DaqModules** on the fly, are also included here.
 The Trigger applications, which are also **SmartDaqApplication** which
 generate **DaqModules** on the fly, are also included here.
 
+## WIEC application
 
-###Testing SmartDaqApplication module generation
+  ![WIEC](wiec_app.png)
+
+The WIEC application is a **SmartDaqApplication** which generates **HermesController** modules , and in future WIB modules, on the fly.
+It extends from **ResourceSetAND** and contains **DetectorToDaqConnection**s, which each contains a **DetDataReceiver** and **DetDataSender**s containing **DetectorSrteam**s.
+
+## Testing SmartDaqApplication module generation
 
 This package also provides a program `generate_modules_test` for
 testing the generate_modules method of SmartDaqApplications. It reads

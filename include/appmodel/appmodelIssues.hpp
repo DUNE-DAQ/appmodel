@@ -1,5 +1,5 @@
-#ifndef APPMODELISSUES_HPP
-#define APPMODELISSUES_HPP
+#ifndef APPDALISSUES_HPP
+#define APPDALISSUES_HPP
 
 #include "ers/Issue.hpp"
 
@@ -11,4 +11,4 @@ namespace dunedaq {
 }
 
 
-#endif // APPMODELISSUES_HPP
+#endif // APPDALISSUES_HPP

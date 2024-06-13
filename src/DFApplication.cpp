@@ -33,6 +33,7 @@
 
 #include <string>
 #include <vector>
+#include <fmt/core.h>
 
 using namespace dunedaq;
 using namespace dunedaq::appmodel;
@@ -170,7 +171,7 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
 
   // Get TRB Config Object
   auto trbConf = get_trb();
-  if (trbConf == 0) {
+  if (trbConf == nullptr) {
     throw(BadConf(ERS_HERE, "No DataWriter or TRB configuration given"));
   }
   auto trbConfObj = trbConf->config_object();
@@ -186,22 +187,27 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
   modules.push_back(confdb->get<TriggerRecordBuilder>(trbUid));
 
   // Get DataWriter Config Object (only one for now, maybe more later?)
-  auto dwrConf = get_data_writer();
-  if (dwrConf == 0) {
+  auto dwrConfs = get_data_writers();
+  if (dwrConfs.size() == 0) {
     throw(BadConf(ERS_HERE, "No DataWriter or TRB configuration given"));
   }
-  auto fnParamsObj = dwrConf->get_data_store_params()->get_filename_params()->config_object();
-  fnParamsObj.set_by_val<std::string>("writer_identifier", UID() + "_datawriter-1");
-  auto dwrConfObj = dwrConf->config_object();
-  // Prepare DataWriter Module Object and assign its Config Object.
-  conffwk::ConfigObject dwrObj;
-  std::string dwrUid(UID() + "-dw-1");
-  confdb->create(dbfile, "DataWriter", dwrUid, dwrObj);
-  dwrObj.set_obj("configuration", &dwrConfObj);
-  dwrObj.set_objs("inputs", { &trQueueObj });
-  dwrObj.set_objs("outputs", { &tokenNetObj });
-  // Push DataWriter Module Object from confdb
-  modules.push_back(confdb->get<DataWriter>(dwrUid));
+  uint dw_idx = 0;
+  for ( auto dwrConf :dwrConfs ) {
+    auto fnParamsObj = dwrConf->get_data_store_params()->get_filename_params()->config_object();
+    fnParamsObj.set_by_val<std::string>("writer_identifier", fmt::format("{}_datawriter-{}", UID(), dw_idx));
+    auto dwrConfObj = dwrConf->config_object();
+
+    // Prepare DataWriter Module Object and assign its Config Object.
+    conffwk::ConfigObject dwrObj;
+    std::string dwrUid(fmt::format("{}-dw-{}", UID(), dw_idx));
+    confdb->create(dbfile, "DataWriter", dwrUid, dwrObj);
+    dwrObj.set_obj("configuration", &dwrConfObj);
+    dwrObj.set_objs("inputs", { &trQueueObj });
+    dwrObj.set_objs("outputs", { &tokenNetObj });
+    // Push DataWriter Module Object from confdb
+    modules.push_back(confdb->get<DataWriter>(dwrUid));
+    ++dw_idx;
+  }
 
   return modules;
 }

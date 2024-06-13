@@ -14,8 +14,6 @@
 
 #include "confmodel/Connection.hpp"
 #include "confmodel/NetworkConnection.hpp"
-#include "confmodel/ReadoutGroup.hpp"
-#include "confmodel/ReadoutInterface.hpp"
 #include "confmodel/ResourceSet.hpp"
 #include "confmodel/Service.hpp"
 #include "confmodel/Session.hpp"
@@ -110,7 +108,7 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
     auto endpoint_class = rule->get_endpoint_class();
     auto data_type = rule->get_descriptor()->get_data_type();
 
-    if (data_type == "DataRequest") { 
+    if (data_type == "DataRequest") {
       req_net_desc = rule->get_descriptor();
     }
     else if (data_type == "TASet" || data_type == "TCSet"){
@@ -144,7 +142,7 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
     }
     else if (data_type == "TriggerActivity" || data_type == "TriggerCandidate"){
       tout_net_desc = rule->get_descriptor();
-      if (data_type == "TriggerActivity") 
+      if (data_type == "TriggerActivity")
 	      handler_name = "tphandler";
       else
 	      handler_name = "tahandler";
@@ -159,7 +157,7 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
   conffwk::ConfigObject tout_net_obj;
   conffwk::ConfigObject tset_out_net_obj;
   //auto handlerConf = get_trigger_inputs_handler();
-  
+
   if ( req_net_desc== nullptr) {
       throw (BadConf(ERS_HERE, "No network descriptor given to receive request and send data was set"));
   }
@@ -172,7 +170,7 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
   if (ti_inputq_desc == nullptr) {
       throw (BadConf(ERS_HERE, "No data input queue descriptor given"));
   }
-    
+
   std::string queue_uid(ti_inputq_desc->get_uid_base());
   confdb->create(dbfile, "Queue", queue_uid, input_queue_obj);
   input_queue_obj.set_by_val<std::string>("data_type", ti_inputq_desc->get_data_type());
@@ -192,7 +190,7 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
   tin_net_obj.set_by_val<std::string>("data_type", tin_net_desc->get_data_type());
   tin_net_obj.set_by_val<std::string>("connection_type", tin_net_desc->get_connection_type());
   tin_net_obj.set_obj("associated_service", &tin_service_obj);
- 
+
   auto tout_service_obj = tout_net_desc->get_associated_service()->config_object();
   std::string t_stream_uid(tout_net_desc->get_uid_base()+UID());
   confdb->create(dbfile, "NetworkConnection", t_stream_uid, tout_net_obj);
@@ -230,7 +228,7 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
   }
   // Add to our list of modules to return
    modules.push_back(confdb->get<ReadoutModule>(ti_uid));
-  
+
 
   // Now create the DataSubscriber object
   auto rdr_conf = get_data_subscriber();
@@ -238,7 +236,7 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
     throw (BadConf(ERS_HERE, "No DataReader configuration given"));
   }
 
-  // Create a DataReader 
+  // Create a DataReader
 
   std::string reader_uid("data-reader-"+UID());
   std::string reader_class = rdr_conf->get_template_for();
