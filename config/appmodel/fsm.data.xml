@@ -250,7 +250,7 @@
   <ref class="Variable" id="file-logbook-file-name"/>
  </rel>
 </obj>
-<obj class="FSMaction" id=elisa-logbook">
+<obj class="FSMaction" id="elisa-logbook">
  <attr name="name" type="string" val="elisa-logbook"/>
 </obj>
 <obj class="Variable" id="file-logbook-file-name">
