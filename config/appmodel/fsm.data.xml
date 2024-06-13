@@ -361,20 +361,8 @@
   <data val="file-run-registry"/>
  </attr>
  <attr name="mandatory" type="string">
-  <data val="usvc-provided-run-number"/>
-  <data val="-run-registry"/>
- </attr>
-</obj>
-
-<obj class="FSMxTransition" id="pre_start_test">
- <attr name="transition" type="string" val="start"/>
- <attr name="order" type="string">
   <data val="user-provided-run-number"/>
   <data val="file-run-registry"/>
- </attr>
- <attr name="mandatory" type="string">
-  <data val="file-run-registry"/>
-  <data val="user-provided-run-number"/>
  </attr>
 </obj>
 
