@@ -90,7 +90,7 @@
  <class name="DFApplication">
   <superclass name="SmartDaqApplication"/>
   <relationship name="trb" description="Configuration of the TRB to be generated my get_modules()" class-type="TRBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="data_writer" class-type="DataWriterConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="data_writers" class-type="DataWriterConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="uses" class-type="DFHWConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
