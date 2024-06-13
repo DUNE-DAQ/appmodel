@@ -144,6 +144,7 @@
  <rel name="actions">
   <ref class="FSMaction" id="usvc-provided-run-number">
   <ref class="FSMaction" id="file-logbook">
+  <ref class="FSMaction" id="elisa-logbook">
   <ref class="FSMaction" id="db-run-registry">
   <ref class="FSMaction" id="thread-pinning">
  </rel>
@@ -248,6 +249,9 @@
  <rel name="parameters">
   <ref class="Variable" id="file-logbook-file-name"/>
  </rel>
+</obj>
+<obj class="FSMaction" id="usvc-elisa-logbook">
+ <attr name="name" type="string" val="usvc-elisa-logbook"/>
 </obj>
 <obj class="Variable" id="file-logbook-file-name">
  <attr name="name" type="string" val="file_name"/>
@@ -371,9 +375,11 @@
  <attr name="order" type="string">
   <data val="file-logbook"/>
   <data val="thread-pinning"/>
+  <data val="elisa-logbook"/>
  </attr>
  <attr name="mandatory" type="string">
   <data val="thread-pinning"/>
+  <data val="elisa-logbook"/>
  </attr>
 </obj>
 
@@ -403,6 +409,7 @@
  <attr name="order" type="string">
   <data val="db-run-registry"/>
   <data val="file-logbook"/>
+  <data val="elisa-logbook"/>
  </attr>
 </obj>
 
