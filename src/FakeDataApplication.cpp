@@ -143,7 +143,7 @@ FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
 
   //     std::string reqQueueUid(dlhReqInputQDesc->get_uid_base() + std::to_string(id));
   //     conffwk::ConfigObject reqQueueObj;
-  //     confdb->create(dbfile, "QueueWithSourceId", reqQueueUid, reqQueueObj);
+  //     confdb->create(dbfile, "QueueWithId", reqQueueUid, reqQueueObj);
   //     reqQueueObj.set_by_val<std::string>("data_type", dlhReqInputQDesc->get_data_type());
   //     reqQueueObj.set_by_val<std::string>("queue_type", dlhReqInputQDesc->get_queue_type());
   //     reqQueueObj.set_by_val<uint32_t>("capacity", dlhReqInputQDesc->get_capacity());

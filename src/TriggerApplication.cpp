@@ -22,8 +22,8 @@
 #include "appmodel/DataReaderConf.hpp"
 #include "appmodel/DataRecorderConf.hpp"
 
-#include "appmodel/DataHandler.hpp"
-#include "appmodel/DataHandlerConf.hpp"
+#include "appmodel/ReadoutModule.hpp"
+#include "appmodel/ReadoutModuleConf.hpp"
 
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
@@ -95,7 +95,7 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
   for (auto rule : get_queue_rules()) {
     auto destination_class = rule->get_destination_class();
     auto data_type = rule->get_descriptor()->get_data_type();
-    if (destination_class == "DataHandler" || destination_class == ti_class) {
+    if (destination_class == "ReadoutModule" || destination_class == ti_class) {
       ti_inputq_desc = rule->get_descriptor();
     }
   }
@@ -227,7 +227,7 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
     ti_obj.set_objs("outputs", {&tout_net_obj});
   }
   // Add to our list of modules to return
-   modules.push_back(confdb->get<DataHandler>(ti_uid));
+   modules.push_back(confdb->get<ReadoutModule>(ti_uid));
   
 
   // Now create the DataSubscriber object

@@ -157,15 +157,15 @@
  <attr name="td_readout_limit" type="u32" val="1"/>
 </obj>
 
-<obj class="DPDKReaderConf" id="def-emu-nic-receiver-conf">
+<obj class="NICReceiverConf" id="def-emu-nic-receiver-conf">
  <attr name="template_for" type="class" val="FDFakeCardReader"/>
  <attr name="emulation_mode" type="bool" val="1"/>
  <attr name="eal_args" type="string" val=""/>
  <rel name="emulation_conf" class="StreamEmulationParameters" id="stream-emu"/>
 </obj>
 
-<obj class="DPDKReaderConf" id="def-nic-receiver-conf">
- <attr name="template_for" type="class" val="DPDKReader"/>
+<obj class="NICReceiverConf" id="def-nic-receiver-conf">
+ <attr name="template_for" type="class" val="NICReceiver"/>
  <attr name="emulation_mode" type="bool" val="0"/>
  <attr name="eal_args" type="string" val=""/>
 </obj>
@@ -188,7 +188,7 @@
  <attr name="channel_map" type="string" val="PD2HDChannelMap"/>
 </obj>
 
-<obj class="DataHandlerConf" id="def-link-handler">
+<obj class="ReadoutModuleConf" id="def-link-handler">
  <attr name="template_for" type="class" val="FDDataLinkHandler"/>
  <attr name="input_data_type" type="string" val="WIBEthFrame"/>
  <attr name="generate_timesync" type="bool" val="1"/>
@@ -197,7 +197,7 @@
  <rel name="data_processor" class="RawDataProcessor" id="def-wib-processor"/>
 </obj>
 
-<obj class="DataHandlerConf" id="def-tp-handler">
+<obj class="ReadoutModuleConf" id="def-tp-handler">
  <attr name="template_for" type="class" val="TriggerDataHandler"/>
  <attr name="input_data_type" type="string" val="TriggerPrimitive"/>
  <attr name="generate_timesync" type="bool" val="0"/>
@@ -206,7 +206,7 @@
  <rel name="data_processor" class="TPDataProcessor" id="tp-processor"/>
 </obj>
 
-<obj class="DataHandlerConf" id="trg-tp-handler">
+<obj class="ReadoutModuleConf" id="trg-tp-handler">
  <attr name="template_for" type="class" val="TriggerDataHandler"/>
  <attr name="input_data_type" type="string" val="TriggerPrimitive"/>
  <attr name="generate_timesync" type="bool" val="0"/>

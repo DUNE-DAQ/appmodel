@@ -102,11 +102,11 @@
   <relationship name="used_lcores" description="associates CPUs to the data reception workload." class-type="ProcessingResource" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="DPDKReader">
+ <class name="NICReceiver">
   <superclass name="DataReader"/>
  </class>
 
- <class name="DPDKReaderConf">
+ <class name="NICReceiverConf">
   <superclass name="DataReaderConf"/>
   <attribute name="eal_args" type="string" is-not-null="yes"/>
  </class>
@@ -118,7 +118,7 @@
  </class>
 
  <class name="FDDataLinkHandler">
-  <superclass name="DataHandler"/>
+  <superclass name="ReadoutModule"/>
  </class>
 
  <class name="FDFakeCardReader">

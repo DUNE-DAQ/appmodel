@@ -197,7 +197,7 @@
   <ref class="NetworkConnectionRule" id="ts-net-rule"/>
  </rel>
  <rel name="data_subscriber" class="DataReaderConf" id="tc-subscriber-1"/>
- <rel name="trigger_inputs_handler" class="DataHandlerConf" id="def-tc-handler"/>
+ <rel name="trigger_inputs_handler" class="ReadoutModuleConf" id="def-tc-handler"/>
  <rel name="mlt_conf" class="ModuleLevelTriggerConf" id="def-mlt-conf"/>
  <rel name="standalone_candidate_maker_confs">
   <ref class="RandomTriggerCandidateMakerConf" id="random-tc-generator"/>
@@ -222,7 +222,7 @@
  <attr name="time_distribution" type="enum" val="kUniform"/>
 </obj>
 
-<obj class="DataHandlerConf" id="def-ta-handler">
+<obj class="ReadoutModuleConf" id="def-ta-handler">
  <attr name="template_for" type="class" val="TriggerDataHandler"/>
  <attr name="input_data_type" type="string" val="TriggerActivity"/>
  <attr name="generate_timesync" type="bool" val="0"/>
@@ -231,7 +231,7 @@
  <rel name="data_processor" class="TADataProcessor" id="def-ta-processor"/>
 </obj>
 
-<obj class="DataHandlerConf" id="def-tc-handler">
+<obj class="ReadoutModuleConf" id="def-tc-handler">
  <attr name="template_for" type="class" val="TriggerDataHandler"/>
  <attr name="input_data_type" type="string" val="TriggerCandidate"/>
  <attr name="generate_timesync" type="bool" val="0"/>
@@ -366,7 +366,7 @@
   <ref class="NetworkConnectionRule" id="data-req-trig-net-rule"/>
  </rel>
  <rel name="data_subscriber" class="DataReaderConf" id="ta-subscriber-1"/>
- <rel name="trigger_inputs_handler" class="DataHandlerConf" id="def-ta-handler"/>
+ <rel name="trigger_inputs_handler" class="ReadoutModuleConf" id="def-ta-handler"/>
 </obj>
 
 <obj class="TriggerCandidateMakerPrescalePlugin" id="tc-pass-through-algo">

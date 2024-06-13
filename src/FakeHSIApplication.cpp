@@ -17,8 +17,8 @@
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
 #include "appmodel/QueueDescriptor.hpp"
-#include "appmodel/DataHandler.hpp"
-#include "appmodel/DataHandlerConf.hpp"
+#include "appmodel/ReadoutModule.hpp"
+#include "appmodel/ReadoutModuleConf.hpp"
 #include "appmodel/SourceIDConf.hpp"
 #include "appmodel/appmodelIssues.hpp"
 #include "confmodel/Connection.hpp"
@@ -59,7 +59,7 @@ FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
   for (auto rule : get_queue_rules()) {
     auto destination_class = rule->get_destination_class();
     auto data_type = rule->get_descriptor()->get_data_type();
-    if (destination_class == "DataHandler" || destination_class == dlhClass) {
+    if (destination_class == "ReadoutModule" || destination_class == dlhClass) {
       dlhInputQDesc = rule->get_descriptor();
     }
   }
@@ -72,7 +72,7 @@ FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
     auto endpoint_class = rule->get_endpoint_class();
     auto data_type = rule->get_descriptor()->get_data_type();
 
-    if (endpoint_class == "DataHandler" || endpoint_class == dlhClass) {
+    if (endpoint_class == "ReadoutModule" || endpoint_class == dlhClass) {
       if (data_type == "TimeSync") {
         tsNetDesc = rule->get_descriptor();
       }
@@ -130,7 +130,7 @@ FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
   }
   std::string dataQueueUid(dlhInputQDesc->get_uid_base() + std::to_string(id));
   conffwk::ConfigObject queueObj;
-  confdb->create(dbfile, "QueueWithSourceId", dataQueueUid, queueObj);
+  confdb->create(dbfile, "QueueWithId", dataQueueUid, queueObj);
   queueObj.set_by_val<std::string>("data_type", dlhInputQDesc->get_data_type());
   queueObj.set_by_val<std::string>("queue_type", dlhInputQDesc->get_queue_type());
   queueObj.set_by_val<uint32_t>("capacity", dlhInputQDesc->get_capacity());
@@ -146,7 +146,7 @@ FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
 
   dlhObj.set_objs("inputs", { &queueObj, &faNetObj });
 
-  modules.push_back(confdb->get<DataHandler>(uid));
+  modules.push_back(confdb->get<ReadoutModule>(uid));
 
   auto hsiServiceObj = hsiNetDesc->get_associated_service()->config_object();
   std::string hsiNetUid = hsiNetDesc->get_uid_base();

@@ -31,7 +31,7 @@ Readout and Dataflow applications extend from **SmartDaqApplication**
 and **ResourceSetAND**. This means it has a contains relationship that
 can contain any class inheriting from **ResourceBase** but should only
 contain **ReadoutGroups**. The `generate_modules()` method will
-generate a **DataReader** for each **ReadoutGroup** associated wit the application, and set of **DataHandler** objects, i.e. **DLH** for each
+generate a **DataReader** for each **ReadoutGroup** associated wit the application, and set of **ReadoutModule** objects, i.e. **DLH** for each
 **DROStreamConf** plus a single **TPHandlerModule**. Optionally **DataRecorder** modules may be created (not supported yet)). The modules are created
 according to the configuration given by the data_reader, link_handler, data_recorder
 and tp_handler relationships respectively. Connections between pairs

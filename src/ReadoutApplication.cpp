@@ -21,7 +21,7 @@
 #include "appmodel/NWDetDataSender.hpp"
 
 #include "appmodel/DPDKReceiver.hpp"
-#include "confmodel/QueueWithSourceId.hpp"
+#include "confmodel/QueueWithId.hpp"
 
 #include "confmodel/Connection.hpp"
 #include "confmodel/DetectorToDaqConnection.hpp"
@@ -35,8 +35,8 @@
 #include "appmodel/DataRecorder.hpp"
 #include "appmodel/DataRecorderConf.hpp"
 
-#include "appmodel/DataHandler.hpp"
-#include "appmodel/DataHandlerConf.hpp"
+#include "appmodel/ReadoutModule.hpp"
+#include "appmodel/ReadoutModuleConf.hpp"
 #include "appmodel/FragmentAggregator.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
@@ -85,7 +85,7 @@ class ReadoutObjFactory {
     conffwk::ConfigObject queue_obj;
 
     std::string queue_uid(fmt::format("{}{}", qdesc->get_uid_base(), src_id));
-    config->create(this->dbfile, "QueueWithSourceId", queue_uid, queue_obj);
+    config->create(this->dbfile, "QueueWithId", queue_uid, queue_obj);
     queue_obj.set_by_val<std::string>("data_type", qdesc->get_data_type());
     queue_obj.set_by_val<std::string>("queue_type", qdesc->get_queue_type());
     queue_obj.set_by_val<uint32_t>("capacity", qdesc->get_capacity());
@@ -165,7 +165,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
     auto destination_class = rule->get_destination_class();
     auto data_type = rule->get_descriptor()->get_data_type();
     // Why datahander here?
-    if (destination_class == "DataHandler" || destination_class == dlh_class || destination_class == tph_class) {
+    if (destination_class == "ReadoutModule" || destination_class == dlh_class || destination_class == tph_class) {
       if (data_type == "DataRequest") {
         dlh_reqinput_qdesc = rule->get_descriptor();
       } else if (data_type == "TriggerPrimitive") {
@@ -265,9 +265,9 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
 
     // Here I want to resolve the type of connection (network, felix, or?)
     // Rules of engagement: if the receiver interface is network or felix, the receivers should be castable to the counterpart
-    if (reader_class == "DPDKReader") {
+    if (reader_class == "NICReceiver") {
       if (!det_receiver->cast<appmodel::DPDKReceiver>()) {
-        throw(BadConf(ERS_HERE, fmt::format("DPDKReader requires NWDetDataReceiver, found {} of class {}", det_receiver->UID(), det_receiver->class_name())));
+        throw(BadConf(ERS_HERE, fmt::format("NICReceiver requires NWDetDataReceiver, found {} of class {}", det_receiver->UID(), det_receiver->class_name())));
       }
 
       bool all_nw_senders = true;
@@ -288,10 +288,10 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   //
 
   //
-  // Instantiate DataReader of type DPDKReader
+  // Instantiate DataReader of type NICReceiver
   //
 
-  // Create the DPDKReader object
+  // Create the NICReceiver object
   std::string reader_uid(fmt::format("datareader-{}-{}", this->UID(), std::to_string(conn_idx++)));
   conffwk::ConfigObject reader_obj;
   TLOG() << fmt::format("creating OKS configuration object for Data reader class {} with id {}", reader_class, reader_uid);
