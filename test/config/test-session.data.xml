@@ -104,7 +104,7 @@
 <obj class="RCApplication" id="root-controller">
  <attr name="application_name" type="string" val="drunc-controller"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
- <rel name="fsm" class="FSMconfiguration" id="fsmConf-1"/>
+ <rel name="fsm" class="FSMconfiguration" id="fsmConf-test"/>
  <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
  <rel name="exposes_service">
    <ref class="Service" id="root-controller_control">
@@ -185,7 +185,7 @@
  <attr name="data_rate_slowdown_factor" type="u32" val="1"/>
  <attr name="rte_script" type="string" val="">
  <rel name="infrastructure_applications">
-  <ref class="OpMonService" id="cern-opmon-application-service">
+ <ref class="OpMonService" id="cern-opmon-application-service">
   <!--   <ref name="connectivity_service" id="session-connectivity_service"> -->
  </rel>
  <rel name="environment">
@@ -212,7 +212,7 @@
 
 <obj class="Variable" id="daqapp-cli-configuration">
  <attr name="name" type="string" val="DAQAPP_CLI_CONFIG_SVC"/>
- <attr name="value" type="string" val="oksconflibs:test/config/test-session.data.xml"/>
+ <attr name="value" type="string" val="oksconfig:test/config/test-session.data.xml"/>
 </obj>
 
 <obj class="Variable" id="daqapp-cli-monitoring">
