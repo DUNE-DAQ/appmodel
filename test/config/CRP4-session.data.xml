@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="8" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20240306T144154" last-modified-by="thea" last-modified-on="np02-srv-001.cern.ch" last-modification-time="20240430T135211"/>
+<info name="" type="" num-of-items="17" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20240306T144154" last-modified-by="rsipos" last-modified-on="np02-srv-004.cern.ch" last-modification-time="20240613T135746"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -83,8 +83,24 @@
  <comment creation-time="20240307T133917" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="disable TPG"/>
  <comment creation-time="20240426T073141" created-by="thea" created-on="np02-srv-001.cern.ch" author="thea" text="enabling callbacks"/>
  <comment creation-time="20240430T135210" created-by="thea" created-on="np02-srv-001.cern.ch" author="thea" text="Removed ta source id"/>
+ <comment creation-time="20240613T081813" created-by="rsipos" created-on="np04-srv-031.cern.ch" author="rsipos" text="wib app"/>
+ <comment creation-time="20240613T084542" created-by="rsipos" created-on="np04-srv-031.cern.ch" author="rsipos" text="wib modules"/>
+ <comment creation-time="20240613T084730" created-by="rsipos" created-on="np04-srv-031.cern.ch" author="rsipos" text="wib app"/>
+ <comment creation-time="20240613T123312" created-by="rsipos" created-on="np04-srv-004.cern.ch" author="rsipos" text="cold adc defaults"/>
+ <comment creation-time="20240613T135746" created-by="rsipos" created-on="np02-srv-004.cern.ch" author="rsipos" text="coldadc and pulser settings"/>
 </comments>
 
+
+<obj class="ColdADCSettings" id="def-coldadc-settings">
+ <attr name="reg_0" type="u8" val="35"/>
+ <attr name="reg_4" type="u8" val="59"/>
+ <attr name="reg_24" type="u8" val="223"/>
+ <attr name="reg_25" type="u8" val="51"/>
+ <attr name="reg_26" type="u8" val="137"/>
+ <attr name="reg_27" type="u8" val="103"/>
+ <attr name="reg_29" type="u8" val="39"/>
+ <attr name="reg_30" type="u8" val="39"/>
+</obj>
 
 <obj class="DaqApplication" id="hermes-CRP4">
  <attr name="application_name" type="string" val="daq_application"/>
@@ -96,6 +112,19 @@
   <ref class="HermesController" id="hermes_10_10_2"/>
   <ref class="HermesController" id="hermes_10_10_1"/>
   <ref class="HermesController" id="hermes_10_10_0"/>
+ </rel>
+</obj>
+
+<obj class="DaqApplication" id="wib-CRP4">
+ <attr name="application_name" type="string" val="daq_application"/>
+ <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="modules">
+  <ref class="WIBConfigurator" id="wib1001"/>
+  <ref class="WIBConfigurator" id="wib1002"/>
+  <ref class="WIBConfigurator" id="wib1003"/>
+  <ref class="WIBConfigurator" id="wib1004"/>
+  <ref class="WIBConfigurator" id="wib1005"/>
+  <ref class="WIBConfigurator" id="wib1006"/>
  </rel>
 </obj>
 
@@ -164,6 +193,39 @@
  <rel name="segment" class="Segment" id="ru-segment"/>
  <rel name="detector_configuration" class="DetectorConfig" id="dummy-detector"/>
  <rel name="readout_map" class="ReadoutMap" id="readoutmap"/>
+</obj>
+
+<obj class="WIBConfigurator" id="wib1001">
+ <rel name="conf" class="WIBConf" id="wib1001-conf"/>
+</obj>
+
+<obj class="WIBConfigurator" id="wib1002">
+ <rel name="conf" class="WIBConf" id="wib1002-conf"/>
+</obj>
+
+<obj class="WIBConfigurator" id="wib1003">
+ <rel name="conf" class="WIBConf" id="wib1003-conf"/>
+</obj>
+
+<obj class="WIBConfigurator" id="wib1004">
+ <rel name="conf" class="WIBConf" id="wib1004-conf"/>
+</obj>
+
+<obj class="WIBConfigurator" id="wib1005">
+ <rel name="conf" class="WIBConf" id="wib1005-conf"/>
+</obj>
+
+<obj class="WIBConfigurator" id="wib1006">
+ <rel name="conf" class="WIBConf" id="wib1006-conf"/>
+</obj>
+
+<obj class="WIBPulserSettings" id="def-wib-pulser-setting">
+ <attr name="enabled_0" type="bool" val="0"/>
+ <attr name="enabled_1" type="bool" val="0"/>
+ <attr name="enabled_2" type="bool" val="0"/>
+ <attr name="enabled_3" type="bool" val="0"/>
+ <attr name="pulse_period" type="u32" val="2000"/>
+ <attr name="pulse_duration" type="u32" val="255"/>
 </obj>
 
 </oks-data>

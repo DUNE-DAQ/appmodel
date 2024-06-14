@@ -34,6 +34,11 @@
       "exec": "daq_application_ssh",
       "host": "hermes",
       "port": 3334
+    },
+    "wib-CRP4": {
+      "exec": "daq_application_ssh",
+      "host": "hermes",
+      "port": 3334
     }
   },
   "env": {

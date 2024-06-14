@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="17" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240307T202444"/>
+<info name="" type="" num-of-items="31" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="rsipos" last-modified-on="np02-srv-004.cern.ch" last-modification-time="20240613T135746"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -93,6 +93,14 @@
  <comment creation-time="20240305T162137" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="add delay"/>
  <comment creation-time="20240305T172822" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text=" adjust TA prescaling&#xA;"/>
  <comment creation-time="20240307T133917" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="disable TPG"/>
+ <comment creation-time="20240611T131345" created-by="rsipos" created-on="np02-srv-003.cern.ch" author="rsipos" text="eal args"/>
+ <comment creation-time="20240611T131946" created-by="rsipos" created-on="np02-srv-003.cern.ch" author="rsipos" text="asd"/>
+ <comment creation-time="20240611T132324" created-by="rsipos" created-on="np02-srv-003.cern.ch" author="rsipos" text="asd"/>
+ <comment creation-time="20240613T073351" created-by="rsipos" created-on="np04-srv-031.cern.ch" author="rsipos" text="asd"/>
+ <comment creation-time="20240613T075347" created-by="rsipos" created-on="np04-srv-031.cern.ch" author="rsipos" text="wib configs"/>
+ <comment creation-time="20240613T123404" created-by="rsipos" created-on="np04-srv-004.cern.ch" author="rsipos" text="ref coldadc settings"/>
+ <comment creation-time="20240613T131029" created-by="rsipos" created-on="np04-srv-004.cern.ch" author="rsipos" text="line driver settings"/>
+ <comment creation-time="20240613T135746" created-by="rsipos" created-on="np02-srv-004.cern.ch" author="rsipos" text="coldadc and pulser settings"/>
 </comments>
 
 
@@ -114,7 +122,6 @@
  <attr name="emulation_mode" type="bool" val="0"/>
 </obj>
 
-
 <obj class="DataReaderConf" id="tpset-subscriber-1">
  <attr name="template_for" type="class" val="DataSubscriber"/>
  <attr name="emulation_mode" type="bool" val="0"/>
@@ -126,6 +133,23 @@
  <attr name="max_write_retry_time_ms" type="s32" val="1000"/>
  <attr name="write_retry_time_increase_factor" type="s32" val="2"/>
  <rel name="data_store_params" class="DataStoreConf" id="default"/>
+</obj>
+
+<obj class="FEMBSettings" id="def-femb-settings">
+ <attr name="enabled" type="bool" val="1"/>
+ <attr name="test_cap" type="bool" val="0"/>
+ <attr name="peak_time" type="u8" val="3"/>
+ <attr name="baseline" type="u8" val="2"/>
+ <attr name="gain_match" type="bool" val="1"/>
+ <attr name="leak_10x" type="bool" val="0"/>
+ <attr name="ac_couple" type="bool" val="0"/>
+ <attr name="strobe_skip" type="u8" val="255"/>
+ <attr name="strobe_delay" type="u8" val="255"/>
+ <attr name="strobe_length" type="u8" val="255"/>
+ <attr name="line_driver" type="u8">
+  <data val="0"/>
+  <data val="0"/>
+ </attr>
 </obj>
 
 <obj class="HSI2TCTranslatorConf" id="hsi-to-tc-conf">
@@ -152,6 +176,7 @@
 </obj>
 
 <obj class="ModuleLevelTriggerConf" id="def-mlt-conf">
+ <attr name="template_for" type="class" val="ModuleLevelTrigger"/>
  <attr name="td_out_of_timeout" type="bool" val="1"/>
  <attr name="buffer_timeout" type="u32" val="1"/>
  <attr name="td_readout_limit" type="u32" val="1"/>
@@ -160,14 +185,13 @@
 <obj class="NICReceiverConf" id="def-emu-nic-receiver-conf">
  <attr name="template_for" type="class" val="FDFakeCardReader"/>
  <attr name="emulation_mode" type="bool" val="1"/>
- <attr name="eal_args" type="string" val=""/>
  <rel name="emulation_conf" class="StreamEmulationParameters" id="stream-emu"/>
 </obj>
 
 <obj class="NICReceiverConf" id="def-nic-receiver-conf">
  <attr name="template_for" type="class" val="NICReceiver"/>
  <attr name="emulation_mode" type="bool" val="0"/>
- <attr name="eal_args" type="string" val=""/>
+ <attr name="eal_args" type="string" val="-l 0,1,3,5,7,59,61,63"/>
 </obj>
 
 <obj class="NICStatsConf" id="def-nic-stats">
@@ -271,6 +295,48 @@
 
 <obj class="TriggerActivityMakerPrescalePlugin" id="dummy-ta-maker">
  <attr name="prescale" type="u32" val="1000"/>
+</obj>
+
+<obj class="WIBConf" id="wib1001-conf">
+ <attr name="wib_addr" type="string" val="tcp://10.73.137.126:1234"/>
+ <rel name="settings" class="WIBSettings" id="def-wib-settings"/>
+</obj>
+
+<obj class="WIBConf" id="wib1002-conf">
+ <attr name="wib_addr" type="string" val="tcp://10.73.137.127:1234"/>
+ <rel name="settings" class="WIBSettings" id="def-wib-settings"/>
+</obj>
+
+<obj class="WIBConf" id="wib1003-conf">
+ <attr name="wib_addr" type="string" val="tcp://10.73.137.128:1234"/>
+ <rel name="settings" class="WIBSettings" id="def-wib-settings"/>
+</obj>
+
+<obj class="WIBConf" id="wib1004-conf">
+ <attr name="wib_addr" type="string" val="tcp://10.73.137.137:1234"/>
+ <rel name="settings" class="WIBSettings" id="def-wib-settings"/>
+</obj>
+
+<obj class="WIBConf" id="wib1005-conf">
+ <attr name="wib_addr" type="string" val="tcp://10.73.137.129:1234"/>
+ <rel name="settings" class="WIBSettings" id="def-wib-settings"/>
+</obj>
+
+<obj class="WIBConf" id="wib1006-conf">
+ <attr name="wib_addr" type="string" val="tcp://10.73.137.130:1234"/>
+ <rel name="settings" class="WIBSettings" id="def-wib-settings"/>
+</obj>
+
+<obj class="WIBSettings" id="def-wib-settings">
+ <attr name="cold" type="bool" val="0"/>
+ <attr name="pulser" type="bool" val="0"/>
+ <attr name="adc_test_pattern" type="bool" val="0"/>
+ <rel name="femb0" class="FEMBSettings" id="def-femb-settings"/>
+ <rel name="femb1" class="FEMBSettings" id="def-femb-settings"/>
+ <rel name="femb2" class="FEMBSettings" id="def-femb-settings"/>
+ <rel name="femb3" class="FEMBSettings" id="def-femb-settings"/>
+ <rel name="coldadc_settings" class="ColdADCSettings" id="def-coldadc-settings"/>
+ <rel name="wib_pulser" class="WIBPulserSettings" id="def-wib-pulser-setting"/>
 </obj>
 
 </oks-data>
