@@ -1,0 +1,684 @@
+<?xml version="1.0" encoding="ASCII"?>
+
+<!-- oks-data version 2.2 -->
+
+
+<!DOCTYPE oks-data [
+  <!ELEMENT oks-data (info, (include)?, (comments)?, (obj)+)>
+  <!ELEMENT info EMPTY>
+  <!ATTLIST info
+      name CDATA #IMPLIED
+      type CDATA #IMPLIED
+      num-of-items CDATA #REQUIRED
+      oks-format CDATA #FIXED "data"
+      oks-version CDATA #REQUIRED
+      created-by CDATA #IMPLIED
+      created-on CDATA #IMPLIED
+      creation-time CDATA #IMPLIED
+      last-modified-by CDATA #IMPLIED
+      last-modified-on CDATA #IMPLIED
+      last-modification-time CDATA #IMPLIED
+  >
+  <!ELEMENT include (file)*>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+      path CDATA #REQUIRED
+  >
+  <!ELEMENT comments (comment)*>
+  <!ELEMENT comment EMPTY>
+  <!ATTLIST comment
+      creation-time CDATA #REQUIRED
+      created-by CDATA #REQUIRED
+      created-on CDATA #REQUIRED
+      author CDATA #REQUIRED
+      text CDATA #REQUIRED
+  >
+  <!ELEMENT obj (attr | rel)*>
+  <!ATTLIST obj
+      class CDATA #REQUIRED
+      id CDATA #REQUIRED
+  >
+  <!ELEMENT attr (data)*>
+  <!ATTLIST attr
+      name CDATA #REQUIRED
+      type (bool|s8|u8|s16|u16|s32|u32|s64|u64|float|double|date|time|string|uid|enum|class|-) "-"
+      val CDATA ""
+  >
+  <!ELEMENT data EMPTY>
+  <!ATTLIST data
+      val CDATA #REQUIRED
+  >
+  <!ELEMENT rel (ref)*>
+  <!ATTLIST rel
+      name CDATA #REQUIRED
+      class CDATA ""
+      id CDATA ""
+  >
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref
+      class CDATA #REQUIRED
+      id CDATA #REQUIRED
+  >
+]>
+
+<oks-data>
+
+<info name="" type="" num-of-items="101" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="glehmann" created-on="np04-srv-024.cern.ch" creation-time="20240611T170545" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240611T170545"/>
+
+<obj class="ALink" id="HermesController-2-HermesDataSender-via-links">
+ <attr name="Name" type="string" val="links"/>
+ <rel name="From" class="Class" id="HermesController"/>
+ <rel name="To" class="Class" id="HermesDataSender"/>
+ <rel name="Points">
+  <ref class="Point" id="1 HermesController-2-HermesDataSender-via-links"/>
+  <ref class="Point" id="2 HermesController-2-HermesDataSender-via-links"/>
+  <ref class="Point" id="3 HermesController-2-HermesDataSender-via-links"/>
+  <ref class="Point" id="4 HermesController-2-HermesDataSender-via-links"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="HermesController-2-NetworkInterface-via-destination">
+ <attr name="Name" type="string" val="destination"/>
+ <rel name="From" class="Class" id="HermesController"/>
+ <rel name="To" class="Class" id="NetworkInterface"/>
+ <rel name="Points">
+  <ref class="Point" id="1 HermesController-2-NetworkInterface-via-destination"/>
+  <ref class="Point" id="2 HermesController-2-NetworkInterface-via-destination"/>
+  <ref class="Point" id="3 HermesController-2-NetworkInterface-via-destination"/>
+  <ref class="Point" id="4 HermesController-2-NetworkInterface-via-destination"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="HermesModuleConf-2-IpbusAddressTable-via-address_table">
+ <attr name="Name" type="string" val="address_table"/>
+ <rel name="From" class="Class" id="HermesModuleConf"/>
+ <rel name="To" class="Class" id="IpbusAddressTable"/>
+ <rel name="Points">
+  <ref class="Point" id="1 HermesModuleConf-2-IpbusAddressTable-via-address_table"/>
+  <ref class="Point" id="2 HermesModuleConf-2-IpbusAddressTable-via-address_table"/>
+  <ref class="Point" id="3 HermesModuleConf-2-IpbusAddressTable-via-address_table"/>
+  <ref class="Point" id="4 HermesModuleConf-2-IpbusAddressTable-via-address_table"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="IpbusDevice-2-IpbusAddressTable-via-address_table">
+ <attr name="Name" type="string" val="address_table"/>
+ <rel name="From" class="Class" id="IpbusDevice"/>
+ <rel name="To" class="Class" id="IpbusAddressTable"/>
+ <rel name="Points">
+  <ref class="Point" id="1 IpbusDevice-2-IpbusAddressTable-via-address_table"/>
+  <ref class="Point" id="2 IpbusDevice-2-IpbusAddressTable-via-address_table"/>
+  <ref class="Point" id="3 IpbusDevice-2-IpbusAddressTable-via-address_table"/>
+  <ref class="Point" id="4 IpbusDevice-2-IpbusAddressTable-via-address_table"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="NWDetDataSender-2-NetworkInterface-via-uses">
+ <attr name="Name" type="string" val="uses"/>
+ <rel name="From" class="Class" id="NWDetDataSender"/>
+ <rel name="To" class="Class" id="NetworkInterface"/>
+ <rel name="Points">
+  <ref class="Point" id="1 NWDetDataSender-2-NetworkInterface-via-uses"/>
+  <ref class="Point" id="2 NWDetDataSender-2-NetworkInterface-via-uses"/>
+  <ref class="Point" id="3 NWDetDataSender-2-NetworkInterface-via-uses"/>
+  <ref class="Point" id="4 NWDetDataSender-2-NetworkInterface-via-uses"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="ResourceSet-2-ResourceBase-via-contains">
+ <attr name="Name" type="string" val="contains"/>
+ <rel name="From" class="Class" id="ResourceSet"/>
+ <rel name="To" class="Class" id="ResourceBase"/>
+ <rel name="Points">
+  <ref class="Point" id="1 ResourceSet-2-ResourceBase-via-contains"/>
+  <ref class="Point" id="2 ResourceSet-2-ResourceBase-via-contains"/>
+  <ref class="Point" id="3 ResourceSet-2-ResourceBase-via-contains"/>
+  <ref class="Point" id="4 ResourceSet-2-ResourceBase-via-contains"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="WIECApplication-2-HermesModuleConf-via-hermes_module_conf">
+ <attr name="Name" type="string" val="hermes_module_conf"/>
+ <rel name="From" class="Class" id="WIECApplication"/>
+ <rel name="To" class="Class" id="HermesModuleConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 WIECApplication-2-HermesModuleConf-via-hermes_module_conf"/>
+  <ref class="Point" id="2 WIECApplication-2-HermesModuleConf-via-hermes_module_conf"/>
+  <ref class="Point" id="3 WIECApplication-2-HermesModuleConf-via-hermes_module_conf"/>
+  <ref class="Point" id="4 WIECApplication-2-HermesModuleConf-via-hermes_module_conf"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="WIECApplication-2-WIBModuleConf-via-wib_module_conf">
+ <attr name="Name" type="string" val="wib_module_conf"/>
+ <rel name="From" class="Class" id="WIECApplication"/>
+ <rel name="To" class="Class" id="WIBModuleConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 WIECApplication-2-WIBModuleConf-via-wib_module_conf"/>
+  <ref class="Point" id="2 WIECApplication-2-WIBModuleConf-via-wib_module_conf"/>
+  <ref class="Point" id="3 WIECApplication-2-WIBModuleConf-via-wib_module_conf"/>
+  <ref class="Point" id="4 WIECApplication-2-WIBModuleConf-via-wib_module_conf"/>
+ </rel>
+</obj>
+
+<obj class="Class" id="DetDataSender">
+ <attr name="x" type="s16" val="514"/>
+ <attr name="y" type="s16" val="161"/>
+</obj>
+
+<obj class="Class" id="DetectorStream">
+ <attr name="x" type="s16" val="566"/>
+ <attr name="y" type="s16" val="264"/>
+</obj>
+
+<obj class="Class" id="HermesController">
+ <attr name="x" type="s16" val="8"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Class" id="HermesDataSender">
+ <attr name="x" type="s16" val="131"/>
+ <attr name="y" type="s16" val="140"/>
+</obj>
+
+<obj class="Class" id="HermesModuleConf">
+ <attr name="x" type="s16" val="87"/>
+ <attr name="y" type="s16" val="311"/>
+</obj>
+
+<obj class="Class" id="IpbusAddressTable">
+ <attr name="x" type="s16" val="17"/>
+ <attr name="y" type="s16" val="415"/>
+</obj>
+
+<obj class="Class" id="IpbusDevice">
+ <attr name="x" type="s16" val="11"/>
+ <attr name="y" type="s16" val="76"/>
+</obj>
+
+<obj class="Class" id="NWDetDataSender">
+ <attr name="x" type="s16" val="326"/>
+ <attr name="y" type="s16" val="173"/>
+</obj>
+
+<obj class="Class" id="NetworkInterface">
+ <attr name="x" type="s16" val="209"/>
+ <attr name="y" type="s16" val="4"/>
+</obj>
+
+<obj class="Class" id="Resource">
+ <attr name="x" type="s16" val="656"/>
+ <attr name="y" type="s16" val="220"/>
+</obj>
+
+<obj class="Class" id="ResourceBase">
+ <attr name="x" type="s16" val="637"/>
+ <attr name="y" type="s16" val="153"/>
+</obj>
+
+<obj class="Class" id="ResourceSet">
+ <attr name="x" type="s16" val="556"/>
+ <attr name="y" type="s16" val="12"/>
+</obj>
+
+<obj class="Class" id="ResourceSetAND">
+ <attr name="x" type="s16" val="459"/>
+ <attr name="y" type="s16" val="92"/>
+</obj>
+
+<obj class="Class" id="WIBModuleConf">
+ <attr name="x" type="s16" val="785"/>
+ <attr name="y" type="s16" val="95"/>
+</obj>
+
+<obj class="Class" id="WIECApplication">
+ <attr name="x" type="s16" val="728"/>
+ <attr name="y" type="s16" val="11"/>
+</obj>
+
+<obj class="GLink" id="DetDataSender-2-NWDetDataSender">
+ <rel name="From" class="Class" id="DetDataSender"/>
+ <rel name="To" class="Class" id="NWDetDataSender"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DetDataSender-2-NWDetDataSender"/>
+  <ref class="Point" id="2 DetDataSender-2-NWDetDataSender"/>
+  <ref class="Point" id="3 DetDataSender-2-NWDetDataSender"/>
+  <ref class="Point" id="4 DetDataSender-2-NWDetDataSender"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="IpbusDevice-2-HermesController">
+ <rel name="From" class="Class" id="IpbusDevice"/>
+ <rel name="To" class="Class" id="HermesController"/>
+ <rel name="Points">
+  <ref class="Point" id="1 IpbusDevice-2-HermesController"/>
+  <ref class="Point" id="2 IpbusDevice-2-HermesController"/>
+  <ref class="Point" id="3 IpbusDevice-2-HermesController"/>
+  <ref class="Point" id="4 IpbusDevice-2-HermesController"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="NWDetDataSender-2-HermesDataSender">
+ <rel name="From" class="Class" id="NWDetDataSender"/>
+ <rel name="To" class="Class" id="HermesDataSender"/>
+ <rel name="Points">
+  <ref class="Point" id="1 NWDetDataSender-2-HermesDataSender"/>
+  <ref class="Point" id="2 NWDetDataSender-2-HermesDataSender"/>
+  <ref class="Point" id="3 NWDetDataSender-2-HermesDataSender"/>
+  <ref class="Point" id="4 NWDetDataSender-2-HermesDataSender"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="Resource-2-DetectorStream">
+ <rel name="From" class="Class" id="Resource"/>
+ <rel name="To" class="Class" id="DetectorStream"/>
+ <rel name="Points">
+  <ref class="Point" id="1 Resource-2-DetectorStream"/>
+  <ref class="Point" id="2 Resource-2-DetectorStream"/>
+  <ref class="Point" id="3 Resource-2-DetectorStream"/>
+  <ref class="Point" id="4 Resource-2-DetectorStream"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="ResourceBase-2-Resource">
+ <rel name="From" class="Class" id="ResourceBase"/>
+ <rel name="To" class="Class" id="Resource"/>
+ <rel name="Points">
+  <ref class="Point" id="1 ResourceBase-2-Resource"/>
+  <ref class="Point" id="2 ResourceBase-2-Resource"/>
+  <ref class="Point" id="3 ResourceBase-2-Resource"/>
+  <ref class="Point" id="4 ResourceBase-2-Resource"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="ResourceBase-2-ResourceSet">
+ <rel name="From" class="Class" id="ResourceBase"/>
+ <rel name="To" class="Class" id="ResourceSet"/>
+ <rel name="Points">
+  <ref class="Point" id="1 ResourceBase-2-ResourceSet"/>
+  <ref class="Point" id="2 ResourceBase-2-ResourceSet"/>
+  <ref class="Point" id="3 ResourceBase-2-ResourceSet"/>
+  <ref class="Point" id="4 ResourceBase-2-ResourceSet"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="ResourceSet-2-ResourceSetAND">
+ <rel name="From" class="Class" id="ResourceSet"/>
+ <rel name="To" class="Class" id="ResourceSetAND"/>
+ <rel name="Points">
+  <ref class="Point" id="1 ResourceSet-2-ResourceSetAND"/>
+  <ref class="Point" id="2 ResourceSet-2-ResourceSetAND"/>
+  <ref class="Point" id="3 ResourceSet-2-ResourceSetAND"/>
+  <ref class="Point" id="4 ResourceSet-2-ResourceSetAND"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="ResourceSetAND-2-DetDataSender">
+ <rel name="From" class="Class" id="ResourceSetAND"/>
+ <rel name="To" class="Class" id="DetDataSender"/>
+ <rel name="Points">
+  <ref class="Point" id="1 ResourceSetAND-2-DetDataSender"/>
+  <ref class="Point" id="2 ResourceSetAND-2-DetDataSender"/>
+  <ref class="Point" id="3 ResourceSetAND-2-DetDataSender"/>
+  <ref class="Point" id="4 ResourceSetAND-2-DetDataSender"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="ResourceSetAND-2-WIECApplication">
+ <rel name="From" class="Class" id="ResourceSetAND"/>
+ <rel name="To" class="Class" id="WIECApplication"/>
+ <rel name="Points">
+  <ref class="Point" id="1 ResourceSetAND-2-WIECApplication"/>
+  <ref class="Point" id="2 ResourceSetAND-2-WIECApplication"/>
+  <ref class="Point" id="3 ResourceSetAND-2-WIECApplication"/>
+  <ref class="Point" id="4 ResourceSetAND-2-WIECApplication"/>
+ </rel>
+</obj>
+
+<obj class="Point" id="1 DetDataSender-2-NWDetDataSender">
+ <attr name="x" type="s16" val="71"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 HermesController-2-HermesDataSender-via-links">
+ <attr name="x" type="s16" val="79"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 HermesController-2-NetworkInterface-via-destination">
+ <attr name="x" type="s16" val="79"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 HermesModuleConf-2-IpbusAddressTable-via-address_table">
+ <attr name="x" type="s16" val="151"/>
+ <attr name="y" type="s16" val="51"/>
+</obj>
+
+<obj class="Point" id="1 IpbusDevice-2-HermesController">
+ <attr name="x" type="s16" val="60"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 IpbusDevice-2-IpbusAddressTable-via-address_table">
+ <attr name="x" type="s16" val="60"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 NWDetDataSender-2-HermesDataSender">
+ <attr name="x" type="s16" val="86"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 NWDetDataSender-2-NetworkInterface-via-uses">
+ <attr name="x" type="s16" val="86"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 Resource-2-DetectorStream">
+ <attr name="x" type="s16" val="47"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 ResourceBase-2-Resource">
+ <attr name="x" type="s16" val="68"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 ResourceBase-2-ResourceSet">
+ <attr name="x" type="s16" val="68"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 ResourceSet-2-ResourceBase-via-contains">
+ <attr name="x" type="s16" val="60"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 ResourceSet-2-ResourceSetAND">
+ <attr name="x" type="s16" val="60"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 ResourceSetAND-2-DetDataSender">
+ <attr name="x" type="s16" val="81"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 ResourceSetAND-2-WIECApplication">
+ <attr name="x" type="s16" val="28"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 WIECApplication-2-HermesModuleConf-via-hermes_module_conf">
+ <attr name="x" type="s16" val="30"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 WIECApplication-2-WIBModuleConf-via-wib_module_conf">
+ <attr name="x" type="s16" val="78"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="2 DetDataSender-2-NWDetDataSender">
+ <attr name="x" type="s16" val="71"/>
+ <attr name="y" type="s16" val="181"/>
+</obj>
+
+<obj class="Point" id="2 HermesController-2-HermesDataSender-via-links">
+ <attr name="x" type="s16" val="79"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="2 HermesController-2-NetworkInterface-via-destination">
+ <attr name="x" type="s16" val="79"/>
+</obj>
+
+<obj class="Point" id="2 HermesModuleConf-2-IpbusAddressTable-via-address_table">
+ <attr name="x" type="s16" val="151"/>
+ <attr name="y" type="s16" val="319"/>
+</obj>
+
+<obj class="Point" id="2 IpbusDevice-2-HermesController">
+ <attr name="x" type="s16" val="60"/>
+ <attr name="y" type="s16" val="18"/>
+</obj>
+
+<obj class="Point" id="2 IpbusDevice-2-IpbusAddressTable-via-address_table">
+ <attr name="x" type="s16" val="60"/>
+ <attr name="y" type="s16" val="107"/>
+</obj>
+
+<obj class="Point" id="2 NWDetDataSender-2-HermesDataSender">
+ <attr name="x" type="s16" val="86"/>
+ <attr name="y" type="s16" val="188"/>
+</obj>
+
+<obj class="Point" id="2 NWDetDataSender-2-NetworkInterface-via-uses">
+ <attr name="x" type="s16" val="86"/>
+ <attr name="y" type="s16" val="88"/>
+</obj>
+
+<obj class="Point" id="2 Resource-2-DetectorStream">
+ <attr name="x" type="s16" val="47"/>
+ <attr name="y" type="s16" val="233"/>
+</obj>
+
+<obj class="Point" id="2 ResourceBase-2-Resource">
+ <attr name="x" type="s16" val="68"/>
+ <attr name="y" type="s16" val="172"/>
+</obj>
+
+<obj class="Point" id="2 ResourceBase-2-ResourceSet">
+ <attr name="x" type="s16" val="68"/>
+ <attr name="y" type="s16" val="37"/>
+</obj>
+
+<obj class="Point" id="2 ResourceSet-2-ResourceBase-via-contains">
+ <attr name="x" type="s16" val="60"/>
+ <attr name="y" type="s16" val="74"/>
+</obj>
+
+<obj class="Point" id="2 ResourceSet-2-ResourceSetAND">
+ <attr name="x" type="s16" val="60"/>
+ <attr name="y" type="s16" val="18"/>
+</obj>
+
+<obj class="Point" id="2 ResourceSetAND-2-DetDataSender">
+ <attr name="x" type="s16" val="81"/>
+ <attr name="y" type="s16" val="106"/>
+</obj>
+
+<obj class="Point" id="2 ResourceSetAND-2-WIECApplication">
+ <attr name="x" type="s16" val="28"/>
+</obj>
+
+<obj class="Point" id="2 WIECApplication-2-HermesModuleConf-via-hermes_module_conf">
+ <attr name="x" type="s16" val="30"/>
+ <attr name="y" type="s16" val="346"/>
+</obj>
+
+<obj class="Point" id="2 WIECApplication-2-WIBModuleConf-via-wib_module_conf">
+ <attr name="x" type="s16" val="78"/>
+ <attr name="y" type="s16" val="101"/>
+</obj>
+
+<obj class="Point" id="3 DetDataSender-2-NWDetDataSender">
+ <attr name="x" type="s16" val="28"/>
+ <attr name="y" type="s16" val="181"/>
+</obj>
+
+<obj class="Point" id="3 HermesController-2-HermesDataSender-via-links">
+ <attr name="x" type="s16" val="6"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="3 HermesController-2-NetworkInterface-via-destination">
+ <attr name="x" type="s16" val="104"/>
+</obj>
+
+<obj class="Point" id="3 HermesModuleConf-2-IpbusAddressTable-via-address_table">
+ <attr name="x" type="s16" val="138"/>
+ <attr name="y" type="s16" val="319"/>
+</obj>
+
+<obj class="Point" id="3 IpbusDevice-2-HermesController">
+ <attr name="x" type="s16" val="26"/>
+ <attr name="y" type="s16" val="18"/>
+</obj>
+
+<obj class="Point" id="3 IpbusDevice-2-IpbusAddressTable-via-address_table">
+ <attr name="x" type="s16" val="36"/>
+ <attr name="y" type="s16" val="107"/>
+</obj>
+
+<obj class="Point" id="3 NWDetDataSender-2-HermesDataSender">
+ <attr name="x" type="s16" val="29"/>
+ <attr name="y" type="s16" val="188"/>
+</obj>
+
+<obj class="Point" id="3 NWDetDataSender-2-NetworkInterface-via-uses">
+ <attr name="x" type="s16" val="60"/>
+ <attr name="y" type="s16" val="88"/>
+</obj>
+
+<obj class="Point" id="3 Resource-2-DetectorStream">
+ <attr name="x" type="s16" val="23"/>
+ <attr name="y" type="s16" val="233"/>
+</obj>
+
+<obj class="Point" id="3 ResourceBase-2-Resource">
+ <attr name="x" type="s16" val="15"/>
+ <attr name="y" type="s16" val="172"/>
+</obj>
+
+<obj class="Point" id="3 ResourceBase-2-ResourceSet">
+ <attr name="x" type="s16" val="20"/>
+ <attr name="y" type="s16" val="37"/>
+</obj>
+
+<obj class="Point" id="3 ResourceSet-2-ResourceBase-via-contains">
+ <attr name="x" type="s16" val="22"/>
+ <attr name="y" type="s16" val="74"/>
+</obj>
+
+<obj class="Point" id="3 ResourceSet-2-ResourceSetAND">
+ <attr name="x" type="s16" val="57"/>
+ <attr name="y" type="s16" val="18"/>
+</obj>
+
+<obj class="Point" id="3 ResourceSetAND-2-DetDataSender">
+ <attr name="x" type="s16" val="23"/>
+ <attr name="y" type="s16" val="106"/>
+</obj>
+
+<obj class="Point" id="3 ResourceSetAND-2-WIECApplication">
+ <attr name="x" type="s16" val="26"/>
+</obj>
+
+<obj class="Point" id="3 WIECApplication-2-HermesModuleConf-via-hermes_module_conf">
+ <attr name="x" type="s16" val="143"/>
+ <attr name="y" type="s16" val="346"/>
+</obj>
+
+<obj class="Point" id="3 WIECApplication-2-WIBModuleConf-via-wib_module_conf">
+ <attr name="x" type="s16" val="25"/>
+ <attr name="y" type="s16" val="101"/>
+</obj>
+
+<obj class="Point" id="4 DetDataSender-2-NWDetDataSender">
+ <attr name="x" type="s16" val="28"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 HermesController-2-HermesDataSender-via-links">
+ <attr name="x" type="s16" val="6"/>
+ <attr name="y" type="s16" val="17"/>
+</obj>
+
+<obj class="Point" id="4 HermesController-2-NetworkInterface-via-destination">
+ <attr name="x" type="s16" val="104"/>
+ <attr name="y" type="s16" val="30"/>
+</obj>
+
+<obj class="Point" id="4 HermesModuleConf-2-IpbusAddressTable-via-address_table">
+ <attr name="x" type="s16" val="138"/>
+ <attr name="y" type="s16" val="12"/>
+</obj>
+
+<obj class="Point" id="4 IpbusDevice-2-HermesController">
+ <attr name="x" type="s16" val="26"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 IpbusDevice-2-IpbusAddressTable-via-address_table">
+ <attr name="x" type="s16" val="36"/>
+ <attr name="y" type="s16" val="12"/>
+</obj>
+
+<obj class="Point" id="4 NWDetDataSender-2-HermesDataSender">
+ <attr name="x" type="s16" val="29"/>
+ <attr name="y" type="s16" val="17"/>
+</obj>
+
+<obj class="Point" id="4 NWDetDataSender-2-NetworkInterface-via-uses">
+ <attr name="x" type="s16" val="60"/>
+ <attr name="y" type="s16" val="30"/>
+</obj>
+
+<obj class="Point" id="4 Resource-2-DetectorStream">
+ <attr name="x" type="s16" val="23"/>
+ <attr name="y" type="s16" val="12"/>
+</obj>
+
+<obj class="Point" id="4 ResourceBase-2-Resource">
+ <attr name="x" type="s16" val="15"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 ResourceBase-2-ResourceSet">
+ <attr name="x" type="s16" val="20"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 ResourceSet-2-ResourceBase-via-contains">
+ <attr name="x" type="s16" val="22"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 ResourceSet-2-ResourceSetAND">
+ <attr name="x" type="s16" val="57"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 ResourceSetAND-2-DetDataSender">
+ <attr name="x" type="s16" val="23"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 ResourceSetAND-2-WIECApplication">
+ <attr name="x" type="s16" val="26"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 WIECApplication-2-HermesModuleConf-via-hermes_module_conf">
+ <attr name="x" type="s16" val="143"/>
+ <attr name="y" type="s16" val="17"/>
+</obj>
+
+<obj class="Point" id="4 WIECApplication-2-WIBModuleConf-via-wib_module_conf">
+ <attr name="x" type="s16" val="25"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="View" id="Unknown">
+ <attr name="drawing area x margin" type="u16" val="6"/>
+ <attr name="drawing area y margin" type="u16" val="4"/>
+ <attr name="font x margin" type="u16" val="3"/>
+ <attr name="font y margin" type="u16" val="2"/>
+ <attr name="font name" type="string" val="-adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1"/>
+ <attr name="aggregation sign size" type="u16" val="18"/>
+ <attr name="generalization sign size" type="u16" val="16"/>
+</obj>
+
+</oks-data>
