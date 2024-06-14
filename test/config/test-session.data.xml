@@ -263,7 +263,7 @@
  <rel name="exposes_service">
   <ref class="Service" id="root-controller_control"/>
  </rel>
- <rel name="fsm" class="FSMconfiguration" id="fsmConf-1"/>
+ <rel name="fsm" class="FSMconfiguration" id="fsmConf-test"/>
  <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
 </obj>
 
@@ -320,6 +320,7 @@
  <rel name="infrastructure_applications">
   <ref class="OpMonService" id="cern-opmon-application-service"/>
  </rel>
+ <attr name="rte_script" type="string" val="">
  <rel name="detector_configuration" class="DetectorConfig" id="dummy-detector"/>
 </obj>
 

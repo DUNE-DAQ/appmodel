@@ -100,7 +100,7 @@ class ReadoutObjFactory {
   }
 
 
-  
+
   //---
   conffwk::ConfigObject create_net_obj(const NetworkConnectionDescriptor* ndesc, std::string uid) {
     conffwk::ConfigObject net_obj;
@@ -256,7 +256,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
         TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
         continue;
       }
-      
+
       // loop over streams
       det_streams.push_back(stream);
     }
@@ -301,7 +301,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   reader_obj.set_obj("configuration", &reader_conf->config_object());
   reader_obj.set_objs("connections", d2d_conn_objs);
 
-  // Create the raw data queues 
+  // Create the raw data queues
   std::vector<const conffwk::ConfigObject*> data_queue_objs;
   // keep a map for convenience
   std::map<uint32_t, const confmodel::Connection*> data_queues_by_sid;
@@ -327,7 +327,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   if (tph_conf) {
 
     auto tpsrc = get_tp_source_id();
-    
+
     // Create TP handler object
     auto tph_conf_obj = tph_conf->config_object();
     conffwk::ConfigObject tph_obj;

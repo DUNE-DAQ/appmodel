@@ -217,7 +217,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
 
   conffwk::ConfigObject timesync_net_obj;
   if (timesync_net_desc != nullptr) {
-     timesync_net_obj = create_mlt_network_connection(timesync_net_desc->get_uid_base()+".*", timesync_net_desc, confdb, dbfile); 
+     timesync_net_obj = create_mlt_network_connection(timesync_net_desc->get_uid_base()+".*", timesync_net_desc, confdb, dbfile);
   }
 
 
@@ -258,9 +258,9 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
   modules.push_back(confdb->get<DataSubscriber>(reader_uid));
 
   /**************************************************************
-   * Create the readout map 
+   * Create the readout map
    **************************************************************/
-  
+
   std::vector<const dunedaq::confmodel::Application*> apps = session->get_all_applications();
 
   std::vector<const conffwk::ConfigObject*> sourceIds;
@@ -364,7 +364,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
         tcSourceIdConf->set_by_val<std::string>("subsystem", trg_app->get_source_id()->get_subsystem());
         sourceIds.push_back(tcSourceIdConf);
     }
-    
+
     // FIXME: add here same logics for HSI application(s)
     //
     auto hsi_app = app->cast<appmodel::FakeHSIApplication>();

@@ -1,4 +1,4 @@
-# Appdal 
+# Appmodel 
 
  This package extends the schema from the confmodel package
 to describe readout, dataflow and trigger  applications.
