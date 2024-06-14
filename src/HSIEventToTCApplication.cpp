@@ -14,7 +14,7 @@
 #include "oks/kernel.hpp"
 #include "confmodel/Connection.hpp"
 #include "confmodel/NetworkConnection.hpp"
-#include "appmodel/DataSubscriber.hpp"
+#include "appmodel/DataSubscriberModule.hpp"
 #include "appmodel/HSIEventToTCApplication.hpp"
 #include "appmodel/HSI2TCTranslatorConf.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
@@ -52,8 +52,8 @@ HSIEventToTCApplication::generate_modules(conffwk::Configuration* confdb,
 
   std::string hstcUid("module-" + UID());
   conffwk::ConfigObject hstcObj;
-  TLOG_DEBUG(7) << "creating OKS configuration object for the DataSubscriber class ";
-  confdb->create(dbfile, "DataSubscriber", hstcUid, hstcObj);
+  TLOG_DEBUG(7) << "creating OKS configuration object for the DataSubscriberModule class ";
+  confdb->create(dbfile, "DataSubscriberModule", hstcUid, hstcObj);
 
   auto hstcConf = get_hsevent_to_tc_conf();
   hstcObj.set_obj("configuration", &hstcConf->config_object());
@@ -101,7 +101,7 @@ HSIEventToTCApplication::generate_modules(conffwk::Configuration* confdb,
   hstcObj.set_objs("outputs", {&outObj});
 
   // Add to our list of modules to return
-  modules.push_back(confdb->get<DataSubscriber>(hstcUid));
+  modules.push_back(confdb->get<DataSubscriberModule>(hstcUid));
 
   return modules;
 }

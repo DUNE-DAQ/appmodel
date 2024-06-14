@@ -124,9 +124,9 @@
 
 
 
-<obj class="CustomTriggerCandidateMakerConf" id="cstm-tc-generator">
+<obj class="CustomTCMakerConf" id="cstm-tc-generator">
  <attr name="timestamp_method" type="enum" val="kTimeSync"/>
- <attr name="template_for" type="class" val="CustomTriggerCandidateMaker"/>
+ <attr name="template_for" type="class" val="CustomTCMaker"/>
  <attr name="trigger_types" type="u32">
   <data val="3"/>
   <data val="7"/>
@@ -196,11 +196,11 @@
   <ref class="NetworkConnectionRule" id="data-req-trig-net-rule"/>
   <ref class="NetworkConnectionRule" id="ts-net-rule"/>
  </rel>
- <rel name="data_subscriber" class="DataReaderConf" id="tc-subscriber-1"/>
- <rel name="trigger_inputs_handler" class="ReadoutModuleConf" id="def-tc-handler"/>
- <rel name="mlt_conf" class="ModuleLevelTriggerConf" id="def-mlt-conf"/>
+ <rel name="data_subscriber" class="DataReceiverConf" id="tc-subscriber-1"/>
+ <rel name="trigger_inputs_handler" class="DataHandlerConf" id="def-tc-handler"/>
+ <rel name="mlt_conf" class="MLTConf" id="def-mlt-conf"/>
  <rel name="standalone_candidate_maker_confs">
-  <ref class="RandomTriggerCandidateMakerConf" id="random-tc-generator"/>
+  <ref class="RandomTCMakerConf" id="random-tc-generator"/>
  </rel>
 </obj>
 
@@ -214,16 +214,16 @@
  <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
 </obj>
 
-<obj class="RandomTriggerCandidateMakerConf" id="random-tc-generator">
+<obj class="RandomTCMakerConf" id="random-tc-generator">
  <attr name="timestamp_method" type="enum" val="kTimeSync"/>
- <attr name="template_for" type="class" val="RandomTriggerCandidateMaker"/>
+ <attr name="template_for" type="class" val="RandomTCMakerModule"/>
  <attr name="trigger_interval_ticks" type="u32" val="125000000"/>
  <attr name="clock_frequency_hz" type="u32" val="62500000"/>
  <attr name="time_distribution" type="enum" val="kUniform"/>
 </obj>
 
-<obj class="ReadoutModuleConf" id="def-ta-handler">
- <attr name="template_for" type="class" val="TriggerDataHandler"/>
+<obj class="DataHandlerConf" id="def-ta-handler">
+ <attr name="template_for" type="class" val="TriggerDataHandlerModule"/>
  <attr name="input_data_type" type="string" val="TriggerActivity"/>
  <attr name="generate_timesync" type="bool" val="0"/>
  <rel name="request_handler" class="RequestHandler" id="def-ta-request-handler"/>
@@ -231,8 +231,8 @@
  <rel name="data_processor" class="TADataProcessor" id="def-ta-processor"/>
 </obj>
 
-<obj class="ReadoutModuleConf" id="def-tc-handler">
- <attr name="template_for" type="class" val="TriggerDataHandler"/>
+<obj class="DataHandlerConf" id="def-tc-handler">
+ <attr name="template_for" type="class" val="TriggerDataHandlerModule"/>
  <attr name="input_data_type" type="string" val="TriggerCandidate"/>
  <attr name="generate_timesync" type="bool" val="0"/>
  <rel name="request_handler" class="RequestHandler" id="def-tc-request-handler"/>
@@ -288,7 +288,7 @@
  <attr name="mask_processing" type="bool" val="0"/>
  <attr name="print_ta_info" type="bool" val="0"/>
  <rel name="algorithms">
-  <ref class="TriggerCandidateMakerPrescalePlugin" id="tc-pass-through-algo"/>
+  <ref class="TCMakerPrescaleAlgorithm" id="tc-pass-through-algo"/>
  </rel>
 </obj>
 
@@ -365,11 +365,11 @@
   <ref class="NetworkConnectionRule" id="tc-net-rule"/>
   <ref class="NetworkConnectionRule" id="data-req-trig-net-rule"/>
  </rel>
- <rel name="data_subscriber" class="DataReaderConf" id="ta-subscriber-1"/>
- <rel name="trigger_inputs_handler" class="ReadoutModuleConf" id="def-ta-handler"/>
+ <rel name="data_subscriber" class="DataReceiverConf" id="ta-subscriber-1"/>
+ <rel name="trigger_inputs_handler" class="DataHandlerConf" id="def-ta-handler"/>
 </obj>
 
-<obj class="TriggerCandidateMakerPrescalePlugin" id="tc-pass-through-algo">
+<obj class="TCMakerPrescaleAlgorithm" id="tc-pass-through-algo">
  <attr name="prescale" type="u32" val="100"/>
 </obj>
 

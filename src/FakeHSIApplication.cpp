@@ -11,14 +11,14 @@
 #include "ModuleFactory.hpp"
 
 #include "appmodel/FakeHSIApplication.hpp"
-#include "appmodel/FakeHSIEventGenerator.hpp"
+#include "appmodel/FakeHSIEventGeneratorModule.hpp"
 #include "appmodel/FakeHSIEventGeneratorConf.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
 #include "appmodel/QueueDescriptor.hpp"
-#include "appmodel/ReadoutModule.hpp"
-#include "appmodel/ReadoutModuleConf.hpp"
+#include "appmodel/DataHandlerModule.hpp"
+#include "appmodel/DataHandlerConf.hpp"
 #include "appmodel/SourceIDConf.hpp"
 #include "appmodel/appmodelIssues.hpp"
 #include "confmodel/Connection.hpp"
@@ -59,7 +59,7 @@ FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
   for (auto rule : get_queue_rules()) {
     auto destination_class = rule->get_destination_class();
     auto data_type = rule->get_descriptor()->get_data_type();
-    if (destination_class == "ReadoutModule" || destination_class == dlhClass) {
+    if (destination_class == "DataHandlerModule" || destination_class == dlhClass) {
       dlhInputQDesc = rule->get_descriptor();
     }
   }
@@ -72,7 +72,7 @@ FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
     auto endpoint_class = rule->get_endpoint_class();
     auto data_type = rule->get_descriptor()->get_data_type();
 
-    if (endpoint_class == "ReadoutModule" || endpoint_class == dlhClass) {
+    if (endpoint_class == "DataHandlerModule" || endpoint_class == dlhClass) {
       if (data_type == "TimeSync") {
         tsNetDesc = rule->get_descriptor();
       }
@@ -87,7 +87,7 @@ FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
 
   auto rdrConf = get_generator();
   if (rdrConf == 0) {
-    throw(BadConf(ERS_HERE, "No FakeHSIEventGenerator configuration given"));
+    throw(BadConf(ERS_HERE, "No FakeHSIEventGeneratorModule configuration given"));
   }
   if (dlhInputQDesc == nullptr) {
     throw(BadConf(ERS_HERE, "No DLH data input queue descriptor given"));
@@ -130,7 +130,7 @@ FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
   }
   std::string dataQueueUid(dlhInputQDesc->get_uid_base() + std::to_string(id));
   conffwk::ConfigObject queueObj;
-  confdb->create(dbfile, "QueueWithId", dataQueueUid, queueObj);
+  confdb->create(dbfile, "QueueWithSourceId", dataQueueUid, queueObj);
   queueObj.set_by_val<std::string>("data_type", dlhInputQDesc->get_data_type());
   queueObj.set_by_val<std::string>("queue_type", dlhInputQDesc->get_queue_type());
   queueObj.set_by_val<uint32_t>("capacity", dlhInputQDesc->get_capacity());
@@ -146,7 +146,7 @@ FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
 
   dlhObj.set_objs("inputs", { &queueObj, &faNetObj });
 
-  modules.push_back(confdb->get<ReadoutModule>(uid));
+  modules.push_back(confdb->get<DataHandlerModule>(uid));
 
   auto hsiServiceObj = hsiNetDesc->get_associated_service()->config_object();
   std::string hsiNetUid = hsiNetDesc->get_uid_base();
@@ -158,11 +158,11 @@ FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
   
   std::string genuid("FakeHSI-" + std::to_string(id));
   conffwk::ConfigObject fakehsiObj;
-  confdb->create(dbfile, "FakeHSIEventGenerator", genuid, fakehsiObj);
+  confdb->create(dbfile, "FakeHSIEventGeneratorModule", genuid, fakehsiObj);
   fakehsiObj.set_obj("configuration", &rdrConf->config_object());
   fakehsiObj.set_objs("outputs", { &queueObj, &hsiNetObj });
 
-  modules.push_back(confdb->get<FakeHSIEventGenerator>(genuid));
+  modules.push_back(confdb->get<FakeHSIEventGeneratorModule>(genuid));
 
   return modules;
 }

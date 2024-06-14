@@ -132,9 +132,9 @@
   <ref class="NetworkConnectionRule" id="tpset-net-rule"/>
  </rel>
  <rel name="uses" class="RoHwConfig" id="rohw-1"/>
- <rel name="link_handler" class="ReadoutModuleConf" id="def-link-handler"/>
- <rel name="tp_handler" class="ReadoutModuleConf" id="def-tp-handler"/>
- <rel name="data_reader" class="NICReceiverConf" id="def-nic-receiver-conf"/>
+ <rel name="link_handler" class="DataHandlerConf" id="def-link-handler"/>
+ <rel name="tp_handler" class="DataHandlerConf" id="def-tp-handler"/>
+ <rel name="data_reader" class="DPDKReaderConf" id="def-nic-receiver-conf"/>
 </obj>
 
 <obj class="ReadoutApplication" id="ru-02">
@@ -160,9 +160,9 @@
   <ref class="NetworkConnectionRule" id="tpset-net-rule"/>
  </rel>
  <rel name="uses" class="RoHwConfig" id="rohw-1"/>
- <rel name="link_handler" class="ReadoutModuleConf" id="def-link-handler"/>
- <rel name="tp_handler" class="ReadoutModuleConf" id="def-tp-handler"/>
- <rel name="data_reader" class="NICReceiverConf" id="def-emu-nic-receiver-conf"/>
+ <rel name="link_handler" class="DataHandlerConf" id="def-link-handler"/>
+ <rel name="tp_handler" class="DataHandlerConf" id="def-tp-handler"/>
+ <rel name="data_reader" class="DPDKReaderConf" id="def-emu-nic-receiver-conf"/>
 </obj>
 
 <obj class="ReadoutApplication" id="ru-03">
@@ -188,9 +188,9 @@
   <ref class="NetworkConnectionRule" id="tpset-net-rule"/>
  </rel>
  <rel name="uses" class="RoHwConfig" id="rohw-1"/>
- <rel name="link_handler" class="ReadoutModuleConf" id="def-link-handler"/>
- <rel name="tp_handler" class="ReadoutModuleConf" id="def-tp-handler"/>
- <rel name="data_reader" class="NICReceiverConf" id="def-emu-nic-receiver-conf"/>
+ <rel name="link_handler" class="DataHandlerConf" id="def-link-handler"/>
+ <rel name="tp_handler" class="DataHandlerConf" id="def-tp-handler"/>
+ <rel name="data_reader" class="DPDKReaderConf" id="def-emu-nic-receiver-conf"/>
 </obj>
 
 <obj class="RoHwConfig" id="rohw-1">

@@ -18,12 +18,12 @@
 #include "confmodel/Service.hpp"
 #include "confmodel/Session.hpp"
 
-#include "appmodel/DataSubscriber.hpp"
-#include "appmodel/DataReaderConf.hpp"
+#include "appmodel/DataSubscriberModule.hpp"
+#include "appmodel/DataReceiverConf.hpp"
 #include "appmodel/DataRecorderConf.hpp"
 
-#include "appmodel/ReadoutModule.hpp"
-#include "appmodel/ReadoutModuleConf.hpp"
+#include "appmodel/DataHandlerModule.hpp"
+#include "appmodel/DataHandlerConf.hpp"
 
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
@@ -95,7 +95,7 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
   for (auto rule : get_queue_rules()) {
     auto destination_class = rule->get_destination_class();
     auto data_type = rule->get_descriptor()->get_data_type();
-    if (destination_class == "ReadoutModule" || destination_class == ti_class) {
+    if (destination_class == "DataHandlerModule" || destination_class == ti_class) {
       ti_inputq_desc = rule->get_descriptor();
     }
   }
@@ -114,12 +114,12 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
     else if (data_type == "TASet" || data_type == "TCSet"){
       tset_out_net_desc = rule->get_descriptor();
     }
-    else if (endpoint_class == "DataSubscriber") {
+    else if (endpoint_class == "DataSubscriberModule") {
       if (!tin_net_desc) {
         tin_net_desc =  rule->get_descriptor();
       }
       else if (rule->get_descriptor()->get_data_type() == tin_net_desc->get_data_type()) {
-        // For now endpoint_class of DataSubscriber for both input and output
+        // For now endpoint_class of DataSubscriberModule for both input and output
         // with the same data type is not possible.
         throw (BadConf(ERS_HERE, "Have two network connections of the same data_type and the same endpoint_class"));
       }
@@ -227,16 +227,16 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
     ti_obj.set_objs("outputs", {&tout_net_obj});
   }
   // Add to our list of modules to return
-   modules.push_back(confdb->get<ReadoutModule>(ti_uid));
+   modules.push_back(confdb->get<DataHandlerModule>(ti_uid));
 
 
-  // Now create the DataSubscriber object
+  // Now create the DataSubscriberModule object
   auto rdr_conf = get_data_subscriber();
   if (rdr_conf == nullptr) {
-    throw (BadConf(ERS_HERE, "No DataReader configuration given"));
+    throw (BadConf(ERS_HERE, "No DataReceiverModule configuration given"));
   }
 
-  // Create a DataReader
+  // Create a DataReceiverModule
 
   std::string reader_uid("data-reader-"+UID());
   std::string reader_class = rdr_conf->get_template_for();
@@ -247,7 +247,7 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
   reader_obj.set_objs("outputs", {&input_queue_obj} );
   reader_obj.set_obj("configuration", &rdr_conf->config_object());
 
-  modules.push_back(confdb->get<DataSubscriber>(reader_uid));
+  modules.push_back(confdb->get<DataSubscriberModule>(reader_uid));
 
   return modules;
 }

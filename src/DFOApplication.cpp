@@ -16,7 +16,7 @@
 #include "confmodel/NetworkConnection.hpp"
 #include "appmodel/DFOApplication.hpp"
 #include "appmodel/DFOConf.hpp"
-#include "appmodel/DataFlowOrchestrator.hpp"
+#include "appmodel/DFOModule.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
@@ -52,8 +52,8 @@ DFOApplication::generate_modules(conffwk::Configuration* confdb,
 
   std::string dfoUid("DFO-" + UID());
   conffwk::ConfigObject dfoObj;
-  TLOG_DEBUG(7) << "creating OKS configuration object for DataFlowOrchestrator class ";
-  confdb->create(dbfile, "DataFlowOrchestrator", dfoUid, dfoObj);
+  TLOG_DEBUG(7) << "creating OKS configuration object for DFOModule class ";
+  confdb->create(dbfile, "DFOModule", dfoUid, dfoObj);
 
   auto dfoConf = get_dfo();
   dfoObj.set_obj("configuration", &dfoConf->config_object());
@@ -80,7 +80,7 @@ DFOApplication::generate_modules(conffwk::Configuration* confdb,
     connObj.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
     connObj.set_obj("associated_service", &serviceObj);
 
-    //if (endpoint_class == "DataFlowOrchestrator") {
+    //if (endpoint_class == "DFOModule") {
     if (descriptor->get_data_type() == "TriggerDecision") {
         tdInObj = connObj;
         input_conns.push_back(&tdInObj);
@@ -110,7 +110,7 @@ DFOApplication::generate_modules(conffwk::Configuration* confdb,
   dfoObj.set_objs("outputs", output_conns);
 
   // Add to our list of modules to return
-  modules.push_back(confdb->get<DataFlowOrchestrator>(dfoUid));
+  modules.push_back(confdb->get<DFOModule>(dfoUid));
 
   return modules;
 }

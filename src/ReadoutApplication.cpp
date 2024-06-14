@@ -21,7 +21,7 @@
 #include "appmodel/NWDetDataSender.hpp"
 
 #include "appmodel/DPDKReceiver.hpp"
-#include "confmodel/QueueWithId.hpp"
+#include "confmodel/QueueWithSourceId.hpp"
 
 #include "confmodel/Connection.hpp"
 #include "confmodel/DetectorToDaqConnection.hpp"
@@ -30,14 +30,14 @@
 #include "confmodel/ResourceSet.hpp"
 #include "confmodel/Service.hpp"
 
-#include "appmodel/DataReader.hpp"
-#include "appmodel/DataReaderConf.hpp"
-#include "appmodel/DataRecorder.hpp"
+#include "appmodel/DataReceiverModule.hpp"
+#include "appmodel/DataReceiverConf.hpp"
+#include "appmodel/DataRecorderModule.hpp"
 #include "appmodel/DataRecorderConf.hpp"
 
-#include "appmodel/ReadoutModule.hpp"
-#include "appmodel/ReadoutModuleConf.hpp"
-#include "appmodel/FragmentAggregator.hpp"
+#include "appmodel/DataHandlerModule.hpp"
+#include "appmodel/DataHandlerConf.hpp"
+#include "appmodel/FragmentAggregatorModule.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
@@ -85,7 +85,7 @@ class ReadoutObjFactory {
     conffwk::ConfigObject queue_obj;
 
     std::string queue_uid(fmt::format("{}{}", qdesc->get_uid_base(), src_id));
-    config->create(this->dbfile, "QueueWithId", queue_uid, queue_obj);
+    config->create(this->dbfile, "QueueWithSourceId", queue_uid, queue_obj);
     queue_obj.set_by_val<std::string>("data_type", qdesc->get_data_type());
     queue_obj.set_by_val<std::string>("queue_type", qdesc->get_queue_type());
     queue_obj.set_by_val<uint32_t>("capacity", qdesc->get_capacity());
@@ -137,7 +137,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   // Data reader
   auto reader_conf = get_data_reader();
   if (reader_conf == 0) {
-    throw(BadConf(ERS_HERE, "No DataReader configuration given"));
+    throw(BadConf(ERS_HERE, "No DataReceiverModule configuration given"));
   }
   std::string reader_class = reader_conf->get_template_for();
 
@@ -165,7 +165,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
     auto destination_class = rule->get_destination_class();
     auto data_type = rule->get_descriptor()->get_data_type();
     // Why datahander here?
-    if (destination_class == "ReadoutModule" || destination_class == dlh_class || destination_class == tph_class) {
+    if (destination_class == "DataHandlerModule" || destination_class == dlh_class || destination_class == tph_class) {
       if (data_type == "DataRequest") {
         dlh_reqinput_qdesc = rule->get_descriptor();
       } else if (data_type == "TriggerPrimitive") {
@@ -173,7 +173,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
       } else {
         dlh_input_qdesc = rule->get_descriptor();
       }
-    } else if (destination_class == "FragmentAggregator") {
+    } else if (destination_class == "FragmentAggregatorModule") {
       fa_output_qdesc = rule->get_descriptor();
     }
   }
@@ -189,7 +189,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
     auto endpoint_class = rule->get_endpoint_class();
     auto data_type = rule->get_descriptor()->get_data_type();
 
-    if (endpoint_class == "FragmentAggregator") {
+    if (endpoint_class == "FragmentAggregatorModule") {
       fa_net_desc = rule->get_descriptor();
     } else if (data_type == "TPSet") {
       tp_net_desc = rule->get_descriptor();
@@ -265,9 +265,9 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
 
     // Here I want to resolve the type of connection (network, felix, or?)
     // Rules of engagement: if the receiver interface is network or felix, the receivers should be castable to the counterpart
-    if (reader_class == "NICReceiver") {
+    if (reader_class == "DPDKReader") {
       if (!det_receiver->cast<appmodel::DPDKReceiver>()) {
-        throw(BadConf(ERS_HERE, fmt::format("NICReceiver requires NWDetDataReceiver, found {} of class {}", det_receiver->UID(), det_receiver->class_name())));
+        throw(BadConf(ERS_HERE, fmt::format("DPDKReader requires NWDetDataReceiver, found {} of class {}", det_receiver->UID(), det_receiver->class_name())));
       }
 
       bool all_nw_senders = true;
@@ -284,14 +284,14 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
 
   //-----------------------------------------------------------------
   //
-  // Create DataReader object
+  // Create DataReceiverModule object
   //
 
   //
-  // Instantiate DataReader of type NICReceiver
+  // Instantiate DataReceiverModule of type DPDKReader
   //
 
-  // Create the NICReceiver object
+  // Create the DPDKReader object
   std::string reader_uid(fmt::format("datareader-{}-{}", this->UID(), std::to_string(conn_idx++)));
   conffwk::ConfigObject reader_obj;
   TLOG() << fmt::format("creating OKS configuration object for Data reader class {} with id {}", reader_class, reader_uid);
@@ -385,7 +385,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
     conffwk::ConfigObject req_queue_obj = obj_fac.create_queue_sid_obj(dlh_reqinput_qdesc, ds);
 
 
-    // Add the requessts queue dal pointer to the outputs of the FragmentAggregator
+    // Add the requessts queue dal pointer to the outputs of the FragmentAggregatorModule
     req_queues.push_back(config->get<confmodel::Connection>(req_queue_obj.UID()));
     dlh_ins.push_back(&req_queue_obj);
     dlh_outs.push_back(&frag_queue_obj);
@@ -414,7 +414,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   std::string faUid("fragmentaggregator-" + UID());
   conffwk::ConfigObject frag_aggr;
   TLOG_DEBUG(7) << "creating OKS configuration object for Fragment Aggregator class ";
-  config->create(dbfile, "FragmentAggregator", faUid, frag_aggr);
+  config->create(dbfile, "FragmentAggregatorModule", faUid, frag_aggr);
 
   // Add network connection to TRBs
   conffwk::ConfigObject fa_net_obj = obj_fac.create_net_obj(fa_net_desc);

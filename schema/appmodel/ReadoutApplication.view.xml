@@ -101,51 +101,51 @@
  </rel>
 </obj>
 
-<obj class="ALink" id="DataReader-2-DataReaderConf-via-configuration">
+<obj class="ALink" id="DataReceiverModule-2-DataReceiverConf-via-configuration">
  <attr name="Name" type="string" val="configuration"/>
- <rel name="From" class="Class" id="DataReader"/>
- <rel name="To" class="Class" id="DataReaderConf"/>
+ <rel name="From" class="Class" id="DataReceiverModule"/>
+ <rel name="To" class="Class" id="DataReceiverConf"/>
  <rel name="Points">
-  <ref class="Point" id="1 DataReader-2-DataReaderConf-via-configuration"/>
-  <ref class="Point" id="2 DataReader-2-DataReaderConf-via-configuration"/>
-  <ref class="Point" id="3 DataReader-2-DataReaderConf-via-configuration"/>
-  <ref class="Point" id="4 DataReader-2-DataReaderConf-via-configuration"/>
+  <ref class="Point" id="1 DataReceiverModule-2-DataReceiverConf-via-configuration"/>
+  <ref class="Point" id="2 DataReceiverModule-2-DataReceiverConf-via-configuration"/>
+  <ref class="Point" id="3 DataReceiverModule-2-DataReceiverConf-via-configuration"/>
+  <ref class="Point" id="4 DataReceiverModule-2-DataReceiverConf-via-configuration"/>
  </rel>
 </obj>
 
-<obj class="ALink" id="DataReader-2-Resource-via-interfaces">
+<obj class="ALink" id="DataReceiverModule-2-Resource-via-interfaces">
  <attr name="Name" type="string" val="interfaces"/>
- <rel name="From" class="Class" id="DataReader"/>
+ <rel name="From" class="Class" id="DataReceiverModule"/>
  <rel name="To" class="Class" id="Resource"/>
  <rel name="Points">
-  <ref class="Point" id="1 DataReader-2-Resource-via-interfaces"/>
-  <ref class="Point" id="2 DataReader-2-Resource-via-interfaces"/>
-  <ref class="Point" id="3 DataReader-2-Resource-via-interfaces"/>
-  <ref class="Point" id="4 DataReader-2-Resource-via-interfaces"/>
+  <ref class="Point" id="1 DataReceiverModule-2-Resource-via-interfaces"/>
+  <ref class="Point" id="2 DataReceiverModule-2-Resource-via-interfaces"/>
+  <ref class="Point" id="3 DataReceiverModule-2-Resource-via-interfaces"/>
+  <ref class="Point" id="4 DataReceiverModule-2-Resource-via-interfaces"/>
  </rel>
 </obj>
 
-<obj class="ALink" id="DataReaderConf-2-StreamEmulationParameters-via-emulation_conf">
+<obj class="ALink" id="DataReceiverConf-2-StreamEmulationParameters-via-emulation_conf">
  <attr name="Name" type="string" val="emulation_conf"/>
- <rel name="From" class="Class" id="DataReaderConf"/>
+ <rel name="From" class="Class" id="DataReceiverConf"/>
  <rel name="To" class="Class" id="StreamEmulationParameters"/>
  <rel name="Points">
-  <ref class="Point" id="1 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf"/>
-  <ref class="Point" id="2 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf"/>
-  <ref class="Point" id="3 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf"/>
-  <ref class="Point" id="4 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf"/>
+  <ref class="Point" id="1 DataReceiverConf-2-StreamEmulationParameters-via-emulation_conf"/>
+  <ref class="Point" id="2 DataReceiverConf-2-StreamEmulationParameters-via-emulation_conf"/>
+  <ref class="Point" id="3 DataReceiverConf-2-StreamEmulationParameters-via-emulation_conf"/>
+  <ref class="Point" id="4 DataReceiverConf-2-StreamEmulationParameters-via-emulation_conf"/>
  </rel>
 </obj>
 
-<obj class="ALink" id="DataRecorder-2-DataRecorderConf-via-configuration">
+<obj class="ALink" id="DataRecorderModule-2-DataRecorderConf-via-configuration">
  <attr name="Name" type="string" val="configuration"/>
- <rel name="From" class="Class" id="DataRecorder"/>
+ <rel name="From" class="Class" id="DataRecorderModule"/>
  <rel name="To" class="Class" id="DataRecorderConf"/>
  <rel name="Points">
-  <ref class="Point" id="1 DataRecorder-2-DataRecorderConf-via-configuration"/>
-  <ref class="Point" id="2 DataRecorder-2-DataRecorderConf-via-configuration"/>
-  <ref class="Point" id="3 DataRecorder-2-DataRecorderConf-via-configuration"/>
-  <ref class="Point" id="4 DataRecorder-2-DataRecorderConf-via-configuration"/>
+  <ref class="Point" id="1 DataRecorderModule-2-DataRecorderConf-via-configuration"/>
+  <ref class="Point" id="2 DataRecorderModule-2-DataRecorderConf-via-configuration"/>
+  <ref class="Point" id="3 DataRecorderModule-2-DataRecorderConf-via-configuration"/>
+  <ref class="Point" id="4 DataRecorderModule-2-DataRecorderConf-via-configuration"/>
  </rel>
 </obj>
 
@@ -185,15 +185,15 @@
  </rel>
 </obj>
 
-<obj class="ALink" id="ReadoutApplication-2-DataReaderConf-via-data_reader">
+<obj class="ALink" id="ReadoutApplication-2-DataReceiverConf-via-data_reader">
  <attr name="Name" type="string" val="data_reader"/>
  <rel name="From" class="Class" id="ReadoutApplication"/>
- <rel name="To" class="Class" id="DataReaderConf"/>
+ <rel name="To" class="Class" id="DataReceiverConf"/>
  <rel name="Points">
-  <ref class="Point" id="1 ReadoutApplication-2-DataReaderConf-via-data_reader"/>
-  <ref class="Point" id="2 ReadoutApplication-2-DataReaderConf-via-data_reader"/>
-  <ref class="Point" id="3 ReadoutApplication-2-DataReaderConf-via-data_reader"/>
-  <ref class="Point" id="4 ReadoutApplication-2-DataReaderConf-via-data_reader"/>
+  <ref class="Point" id="1 ReadoutApplication-2-DataReceiverConf-via-data_reader"/>
+  <ref class="Point" id="2 ReadoutApplication-2-DataReceiverConf-via-data_reader"/>
+  <ref class="Point" id="3 ReadoutApplication-2-DataReceiverConf-via-data_reader"/>
+  <ref class="Point" id="4 ReadoutApplication-2-DataReceiverConf-via-data_reader"/>
  </rel>
 </obj>
 
@@ -209,27 +209,27 @@
  </rel>
 </obj>
 
-<obj class="ALink" id="ReadoutApplication-2-ReadoutModuleConf-via-link_handler">
+<obj class="ALink" id="ReadoutApplication-2-DataHandlerConf-via-link_handler">
  <attr name="Name" type="string" val="link_handler"/>
  <rel name="From" class="Class" id="ReadoutApplication"/>
- <rel name="To" class="Class" id="ReadoutModuleConf"/>
+ <rel name="To" class="Class" id="DataHandlerConf"/>
  <rel name="Points">
-  <ref class="Point" id="1 ReadoutApplication-2-ReadoutModuleConf-via-link_handler"/>
-  <ref class="Point" id="2 ReadoutApplication-2-ReadoutModuleConf-via-link_handler"/>
-  <ref class="Point" id="3 ReadoutApplication-2-ReadoutModuleConf-via-link_handler"/>
-  <ref class="Point" id="4 ReadoutApplication-2-ReadoutModuleConf-via-link_handler"/>
+  <ref class="Point" id="1 ReadoutApplication-2-DataHandlerConf-via-link_handler"/>
+  <ref class="Point" id="2 ReadoutApplication-2-DataHandlerConf-via-link_handler"/>
+  <ref class="Point" id="3 ReadoutApplication-2-DataHandlerConf-via-link_handler"/>
+  <ref class="Point" id="4 ReadoutApplication-2-DataHandlerConf-via-link_handler"/>
  </rel>
 </obj>
 
-<obj class="ALink" id="ReadoutApplication-2-ReadoutModuleConf-via-tp_handler">
+<obj class="ALink" id="ReadoutApplication-2-DataHandlerConf-via-tp_handler">
  <attr name="Name" type="string" val="tp_handler"/>
  <rel name="From" class="Class" id="ReadoutApplication"/>
- <rel name="To" class="Class" id="ReadoutModuleConf"/>
+ <rel name="To" class="Class" id="DataHandlerConf"/>
  <rel name="Points">
-  <ref class="Point" id="1 ReadoutApplication-2-ReadoutModuleConf-via-tp_handler"/>
-  <ref class="Point" id="2 ReadoutApplication-2-ReadoutModuleConf-via-tp_handler"/>
-  <ref class="Point" id="3 ReadoutApplication-2-ReadoutModuleConf-via-tp_handler"/>
-  <ref class="Point" id="4 ReadoutApplication-2-ReadoutModuleConf-via-tp_handler"/>
+  <ref class="Point" id="1 ReadoutApplication-2-DataHandlerConf-via-tp_handler"/>
+  <ref class="Point" id="2 ReadoutApplication-2-DataHandlerConf-via-tp_handler"/>
+  <ref class="Point" id="3 ReadoutApplication-2-DataHandlerConf-via-tp_handler"/>
+  <ref class="Point" id="4 ReadoutApplication-2-DataHandlerConf-via-tp_handler"/>
  </rel>
 </obj>
 
@@ -245,63 +245,63 @@
  </rel>
 </obj>
 
-<obj class="ALink" id="ReadoutModule-2-GeoId-via-geo_id">
+<obj class="ALink" id="DataHandlerModule-2-GeoId-via-geo_id">
  <attr name="Name" type="string" val="geo_id"/>
- <rel name="From" class="Class" id="ReadoutModule"/>
+ <rel name="From" class="Class" id="DataHandlerModule"/>
  <rel name="To" class="Class" id="GeoId"/>
  <rel name="Points">
-  <ref class="Point" id="1 ReadoutModule-2-GeoId-via-geo_id"/>
-  <ref class="Point" id="2 ReadoutModule-2-GeoId-via-geo_id"/>
-  <ref class="Point" id="3 ReadoutModule-2-GeoId-via-geo_id"/>
-  <ref class="Point" id="4 ReadoutModule-2-GeoId-via-geo_id"/>
+  <ref class="Point" id="1 DataHandlerModule-2-GeoId-via-geo_id"/>
+  <ref class="Point" id="2 DataHandlerModule-2-GeoId-via-geo_id"/>
+  <ref class="Point" id="3 DataHandlerModule-2-GeoId-via-geo_id"/>
+  <ref class="Point" id="4 DataHandlerModule-2-GeoId-via-geo_id"/>
  </rel>
 </obj>
 
-<obj class="ALink" id="ReadoutModule-2-ReadoutModuleConf-via-module_configuration">
+<obj class="ALink" id="DataHandlerModule-2-DataHandlerConf-via-module_configuration">
  <attr name="Name" type="string" val="module_configuration"/>
- <rel name="From" class="Class" id="ReadoutModule"/>
- <rel name="To" class="Class" id="ReadoutModuleConf"/>
+ <rel name="From" class="Class" id="DataHandlerModule"/>
+ <rel name="To" class="Class" id="DataHandlerConf"/>
  <rel name="Points">
-  <ref class="Point" id="1 ReadoutModule-2-ReadoutModuleConf-via-module_configuration"/>
-  <ref class="Point" id="2 ReadoutModule-2-ReadoutModuleConf-via-module_configuration"/>
-  <ref class="Point" id="3 ReadoutModule-2-ReadoutModuleConf-via-module_configuration"/>
-  <ref class="Point" id="4 ReadoutModule-2-ReadoutModuleConf-via-module_configuration"/>
+  <ref class="Point" id="1 DataHandlerModule-2-DataHandlerConf-via-module_configuration"/>
+  <ref class="Point" id="2 DataHandlerModule-2-DataHandlerConf-via-module_configuration"/>
+  <ref class="Point" id="3 DataHandlerModule-2-DataHandlerConf-via-module_configuration"/>
+  <ref class="Point" id="4 DataHandlerModule-2-DataHandlerConf-via-module_configuration"/>
  </rel>
 </obj>
 
-<obj class="ALink" id="ReadoutModuleConf-2-DataProcessor-via-data_processor">
+<obj class="ALink" id="DataHandlerConf-2-DataProcessor-via-data_processor">
  <attr name="Name" type="string" val="data_processor"/>
- <rel name="From" class="Class" id="ReadoutModuleConf"/>
+ <rel name="From" class="Class" id="DataHandlerConf"/>
  <rel name="To" class="Class" id="DataProcessor"/>
  <rel name="Points">
-  <ref class="Point" id="1 ReadoutModuleConf-2-DataProcessor-via-data_processor"/>
-  <ref class="Point" id="2 ReadoutModuleConf-2-DataProcessor-via-data_processor"/>
-  <ref class="Point" id="3 ReadoutModuleConf-2-DataProcessor-via-data_processor"/>
-  <ref class="Point" id="4 ReadoutModuleConf-2-DataProcessor-via-data_processor"/>
+  <ref class="Point" id="1 DataHandlerConf-2-DataProcessor-via-data_processor"/>
+  <ref class="Point" id="2 DataHandlerConf-2-DataProcessor-via-data_processor"/>
+  <ref class="Point" id="3 DataHandlerConf-2-DataProcessor-via-data_processor"/>
+  <ref class="Point" id="4 DataHandlerConf-2-DataProcessor-via-data_processor"/>
  </rel>
 </obj>
 
-<obj class="ALink" id="ReadoutModuleConf-2-LatencyBuffer-via-latency_buffer">
+<obj class="ALink" id="DataHandlerConf-2-LatencyBuffer-via-latency_buffer">
  <attr name="Name" type="string" val="latency_buffer"/>
- <rel name="From" class="Class" id="ReadoutModuleConf"/>
+ <rel name="From" class="Class" id="DataHandlerConf"/>
  <rel name="To" class="Class" id="LatencyBuffer"/>
  <rel name="Points">
-  <ref class="Point" id="1 ReadoutModuleConf-2-LatencyBuffer-via-latency_buffer"/>
-  <ref class="Point" id="2 ReadoutModuleConf-2-LatencyBuffer-via-latency_buffer"/>
-  <ref class="Point" id="3 ReadoutModuleConf-2-LatencyBuffer-via-latency_buffer"/>
-  <ref class="Point" id="4 ReadoutModuleConf-2-LatencyBuffer-via-latency_buffer"/>
+  <ref class="Point" id="1 DataHandlerConf-2-LatencyBuffer-via-latency_buffer"/>
+  <ref class="Point" id="2 DataHandlerConf-2-LatencyBuffer-via-latency_buffer"/>
+  <ref class="Point" id="3 DataHandlerConf-2-LatencyBuffer-via-latency_buffer"/>
+  <ref class="Point" id="4 DataHandlerConf-2-LatencyBuffer-via-latency_buffer"/>
  </rel>
 </obj>
 
-<obj class="ALink" id="ReadoutModuleConf-2-RequestHandler-via-request_handler">
+<obj class="ALink" id="DataHandlerConf-2-RequestHandler-via-request_handler">
  <attr name="Name" type="string" val="request_handler"/>
- <rel name="From" class="Class" id="ReadoutModuleConf"/>
+ <rel name="From" class="Class" id="DataHandlerConf"/>
  <rel name="To" class="Class" id="RequestHandler"/>
  <rel name="Points">
-  <ref class="Point" id="1 ReadoutModuleConf-2-RequestHandler-via-request_handler"/>
-  <ref class="Point" id="2 ReadoutModuleConf-2-RequestHandler-via-request_handler"/>
-  <ref class="Point" id="3 ReadoutModuleConf-2-RequestHandler-via-request_handler"/>
-  <ref class="Point" id="4 ReadoutModuleConf-2-RequestHandler-via-request_handler"/>
+  <ref class="Point" id="1 DataHandlerConf-2-RequestHandler-via-request_handler"/>
+  <ref class="Point" id="2 DataHandlerConf-2-RequestHandler-via-request_handler"/>
+  <ref class="Point" id="3 DataHandlerConf-2-RequestHandler-via-request_handler"/>
+  <ref class="Point" id="4 DataHandlerConf-2-RequestHandler-via-request_handler"/>
  </rel>
 </obj>
 
@@ -416,17 +416,17 @@
  <attr name="y" type="s16" val="445"/>
 </obj>
 
-<obj class="Class" id="DataReader">
+<obj class="Class" id="DataReceiverModule">
  <attr name="x" type="s16" val="753"/>
  <attr name="y" type="s16" val="321"/>
 </obj>
 
-<obj class="Class" id="DataReaderConf">
+<obj class="Class" id="DataReceiverConf">
  <attr name="x" type="s16" val="961"/>
  <attr name="y" type="s16" val="277"/>
 </obj>
 
-<obj class="Class" id="DataRecorder">
+<obj class="Class" id="DataRecorderModule">
  <attr name="x" type="s16" val="574"/>
  <attr name="y" type="s16" val="738"/>
 </obj>
@@ -521,12 +521,12 @@
  <attr name="y" type="s16" val="545"/>
 </obj>
 
-<obj class="Class" id="ReadoutModule">
+<obj class="Class" id="DataHandlerModule">
  <attr name="x" type="s16" val="937"/>
  <attr name="y" type="s16" val="428"/>
 </obj>
 
-<obj class="Class" id="ReadoutModuleConf">
+<obj class="Class" id="DataHandlerConf">
  <attr name="x" type="s16" val="957"/>
  <attr name="y" type="s16" val="580"/>
 </obj>
@@ -603,36 +603,36 @@
  </rel>
 </obj>
 
-<obj class="GLink" id="DaqModule-2-DataReader">
+<obj class="GLink" id="DaqModule-2-DataReceiverModule">
  <rel name="From" class="Class" id="DaqModule"/>
- <rel name="To" class="Class" id="DataReader"/>
+ <rel name="To" class="Class" id="DataReceiverModule"/>
  <rel name="Points">
-  <ref class="Point" id="1 DaqModule-2-DataReader"/>
-  <ref class="Point" id="2 DaqModule-2-DataReader"/>
-  <ref class="Point" id="3 DaqModule-2-DataReader"/>
-  <ref class="Point" id="4 DaqModule-2-DataReader"/>
+  <ref class="Point" id="1 DaqModule-2-DataReceiverModule"/>
+  <ref class="Point" id="2 DaqModule-2-DataReceiverModule"/>
+  <ref class="Point" id="3 DaqModule-2-DataReceiverModule"/>
+  <ref class="Point" id="4 DaqModule-2-DataReceiverModule"/>
  </rel>
 </obj>
 
-<obj class="GLink" id="DaqModule-2-DataRecorder">
+<obj class="GLink" id="DaqModule-2-DataRecorderModule">
  <rel name="From" class="Class" id="DaqModule"/>
- <rel name="To" class="Class" id="DataRecorder"/>
+ <rel name="To" class="Class" id="DataRecorderModule"/>
  <rel name="Points">
-  <ref class="Point" id="1 DaqModule-2-DataRecorder"/>
-  <ref class="Point" id="2 DaqModule-2-DataRecorder"/>
-  <ref class="Point" id="3 DaqModule-2-DataRecorder"/>
-  <ref class="Point" id="4 DaqModule-2-DataRecorder"/>
+  <ref class="Point" id="1 DaqModule-2-DataRecorderModule"/>
+  <ref class="Point" id="2 DaqModule-2-DataRecorderModule"/>
+  <ref class="Point" id="3 DaqModule-2-DataRecorderModule"/>
+  <ref class="Point" id="4 DaqModule-2-DataRecorderModule"/>
  </rel>
 </obj>
 
-<obj class="GLink" id="DaqModule-2-ReadoutModule">
+<obj class="GLink" id="DaqModule-2-DataHandlerModule">
  <rel name="From" class="Class" id="DaqModule"/>
- <rel name="To" class="Class" id="ReadoutModule"/>
+ <rel name="To" class="Class" id="DataHandlerModule"/>
  <rel name="Points">
-  <ref class="Point" id="1 DaqModule-2-ReadoutModule"/>
-  <ref class="Point" id="2 DaqModule-2-ReadoutModule"/>
-  <ref class="Point" id="3 DaqModule-2-ReadoutModule"/>
-  <ref class="Point" id="4 DaqModule-2-ReadoutModule"/>
+  <ref class="Point" id="1 DaqModule-2-DataHandlerModule"/>
+  <ref class="Point" id="2 DaqModule-2-DataHandlerModule"/>
+  <ref class="Point" id="3 DaqModule-2-DataHandlerModule"/>
+  <ref class="Point" id="4 DaqModule-2-DataHandlerModule"/>
  </rel>
 </obj>
 
@@ -810,12 +810,12 @@
  <attr name="y" type="s16" val="32"/>
 </obj>
 
-<obj class="Point" id="1 DaqModule-2-DataReader">
+<obj class="Point" id="1 DaqModule-2-DataReceiverModule">
  <attr name="x" type="s16" val="71"/>
  <attr name="y" type="s16" val="32"/>
 </obj>
 
-<obj class="Point" id="1 DaqModule-2-DataRecorder">
+<obj class="Point" id="1 DaqModule-2-DataRecorderModule">
  <attr name="x" type="s16" val="56"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
@@ -825,7 +825,7 @@
  <attr name="y" type="s16" val="32"/>
 </obj>
 
-<obj class="Point" id="1 DaqModule-2-ReadoutModule">
+<obj class="Point" id="1 DaqModule-2-DataHandlerModule">
  <attr name="x" type="s16" val="37"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
@@ -835,22 +835,22 @@
  <attr name="y" type="s16" val="51"/>
 </obj>
 
-<obj class="Point" id="1 DataReader-2-DataReaderConf-via-configuration">
+<obj class="Point" id="1 DataReceiverModule-2-DataReceiverConf-via-configuration">
  <attr name="x" type="s16" val="25"/>
  <attr name="y" type="s16" val="32"/>
 </obj>
 
-<obj class="Point" id="1 DataReader-2-Resource-via-interfaces">
+<obj class="Point" id="1 DataReceiverModule-2-Resource-via-interfaces">
  <attr name="x" type="s16" val="57"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf">
+<obj class="Point" id="1 DataReceiverConf-2-StreamEmulationParameters-via-emulation_conf">
  <attr name="x" type="s16" val="150"/>
  <attr name="y" type="s16" val="51"/>
 </obj>
 
-<obj class="Point" id="1 DataRecorder-2-DataRecorderConf-via-configuration">
+<obj class="Point" id="1 DataRecorderModule-2-DataRecorderConf-via-configuration">
  <attr name="x" type="s16" val="65"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
@@ -885,7 +885,7 @@
  <attr name="y" type="s16" val="38"/>
 </obj>
 
-<obj class="Point" id="1 ReadoutApplication-2-DataReaderConf-via-data_reader">
+<obj class="Point" id="1 ReadoutApplication-2-DataReceiverConf-via-data_reader">
  <attr name="x" type="s16" val="149"/>
  <attr name="y" type="s16" val="51"/>
 </obj>
@@ -895,12 +895,12 @@
  <attr name="y" type="s16" val="65"/>
 </obj>
 
-<obj class="Point" id="1 ReadoutApplication-2-ReadoutModuleConf-via-link_handler">
+<obj class="Point" id="1 ReadoutApplication-2-DataHandlerConf-via-link_handler">
  <attr name="x" type="s16" val="151"/>
  <attr name="y" type="s16" val="65"/>
 </obj>
 
-<obj class="Point" id="1 ReadoutApplication-2-ReadoutModuleConf-via-tp_handler">
+<obj class="Point" id="1 ReadoutApplication-2-DataHandlerConf-via-tp_handler">
  <attr name="x" type="s16" val="191"/>
  <attr name="y" type="s16" val="65"/>
 </obj>
@@ -910,27 +910,27 @@
  <attr name="y" type="s16" val="51"/>
 </obj>
 
-<obj class="Point" id="1 ReadoutModule-2-GeoId-via-geo_id">
+<obj class="Point" id="1 DataHandlerModule-2-GeoId-via-geo_id">
  <attr name="x" type="s16" val="154"/>
  <attr name="y" type="s16" val="65"/>
 </obj>
 
-<obj class="Point" id="1 ReadoutModule-2-ReadoutModuleConf-via-module_configuration">
+<obj class="Point" id="1 DataHandlerModule-2-DataHandlerConf-via-module_configuration">
  <attr name="x" type="s16" val="75"/>
  <attr name="y" type="s16" val="51"/>
 </obj>
 
-<obj class="Point" id="1 ReadoutModuleConf-2-DataProcessor-via-data_processor">
+<obj class="Point" id="1 DataHandlerConf-2-DataProcessor-via-data_processor">
  <attr name="x" type="s16" val="220"/>
  <attr name="y" type="s16" val="65"/>
 </obj>
 
-<obj class="Point" id="1 ReadoutModuleConf-2-LatencyBuffer-via-latency_buffer">
+<obj class="Point" id="1 DataHandlerConf-2-LatencyBuffer-via-latency_buffer">
  <attr name="x" type="s16" val="174"/>
  <attr name="y" type="s16" val="65"/>
 </obj>
 
-<obj class="Point" id="1 ReadoutModuleConf-2-RequestHandler-via-request_handler">
+<obj class="Point" id="1 DataHandlerConf-2-RequestHandler-via-request_handler">
  <attr name="x" type="s16" val="174"/>
  <attr name="y" type="s16" val="65"/>
 </obj>
@@ -1045,12 +1045,12 @@
  <attr name="y" type="s16" val="184"/>
 </obj>
 
-<obj class="Point" id="2 DaqModule-2-DataReader">
+<obj class="Point" id="2 DaqModule-2-DataReceiverModule">
  <attr name="x" type="s16" val="71"/>
  <attr name="y" type="s16" val="313"/>
 </obj>
 
-<obj class="Point" id="2 DaqModule-2-DataRecorder">
+<obj class="Point" id="2 DaqModule-2-DataRecorderModule">
  <attr name="x" type="s16" val="56"/>
  <attr name="y" type="s16" val="270"/>
 </obj>
@@ -1060,7 +1060,7 @@
  <attr name="y" type="s16" val="268"/>
 </obj>
 
-<obj class="Point" id="2 DaqModule-2-ReadoutModule">
+<obj class="Point" id="2 DaqModule-2-DataHandlerModule">
  <attr name="x" type="s16" val="37"/>
  <attr name="y" type="s16" val="408"/>
 </obj>
@@ -1070,22 +1070,22 @@
  <attr name="y" type="s16" val="582"/>
 </obj>
 
-<obj class="Point" id="2 DataReader-2-DataReaderConf-via-configuration">
+<obj class="Point" id="2 DataReceiverModule-2-DataReceiverConf-via-configuration">
  <attr name="x" type="s16" val="25"/>
  <attr name="y" type="s16" val="327"/>
 </obj>
 
-<obj class="Point" id="2 DataReader-2-Resource-via-interfaces">
+<obj class="Point" id="2 DataReceiverModule-2-Resource-via-interfaces">
  <attr name="x" type="s16" val="57"/>
  <attr name="y" type="s16" val="187"/>
 </obj>
 
-<obj class="Point" id="2 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf">
+<obj class="Point" id="2 DataReceiverConf-2-StreamEmulationParameters-via-emulation_conf">
  <attr name="x" type="s16" val="150"/>
  <attr name="y" type="s16" val="307"/>
 </obj>
 
-<obj class="Point" id="2 DataRecorder-2-DataRecorderConf-via-configuration">
+<obj class="Point" id="2 DataRecorderModule-2-DataRecorderConf-via-configuration">
  <attr name="x" type="s16" val="65"/>
  <attr name="y" type="s16" val="761"/>
 </obj>
@@ -1120,7 +1120,7 @@
  <attr name="y" type="s16" val="424"/>
 </obj>
 
-<obj class="Point" id="2 ReadoutApplication-2-DataReaderConf-via-data_reader">
+<obj class="Point" id="2 ReadoutApplication-2-DataReceiverConf-via-data_reader">
  <attr name="x" type="s16" val="149"/>
  <attr name="y" type="s16" val="390"/>
 </obj>
@@ -1130,12 +1130,12 @@
  <attr name="y" type="s16" val="727"/>
 </obj>
 
-<obj class="Point" id="2 ReadoutApplication-2-ReadoutModuleConf-via-link_handler">
+<obj class="Point" id="2 ReadoutApplication-2-DataHandlerConf-via-link_handler">
  <attr name="x" type="s16" val="151"/>
  <attr name="y" type="s16" val="641"/>
 </obj>
 
-<obj class="Point" id="2 ReadoutApplication-2-ReadoutModuleConf-via-tp_handler">
+<obj class="Point" id="2 ReadoutApplication-2-DataHandlerConf-via-tp_handler">
  <attr name="x" type="s16" val="191"/>
  <attr name="y" type="s16" val="604"/>
 </obj>
@@ -1145,27 +1145,27 @@
  <attr name="y" type="s16" val="712"/>
 </obj>
 
-<obj class="Point" id="2 ReadoutModule-2-GeoId-via-geo_id">
+<obj class="Point" id="2 DataHandlerModule-2-GeoId-via-geo_id">
  <attr name="x" type="s16" val="154"/>
  <attr name="y" type="s16" val="399"/>
 </obj>
 
-<obj class="Point" id="2 ReadoutModule-2-ReadoutModuleConf-via-module_configuration">
+<obj class="Point" id="2 DataHandlerModule-2-DataHandlerConf-via-module_configuration">
  <attr name="x" type="s16" val="75"/>
  <attr name="y" type="s16" val="528"/>
 </obj>
 
-<obj class="Point" id="2 ReadoutModuleConf-2-DataProcessor-via-data_processor">
+<obj class="Point" id="2 DataHandlerConf-2-DataProcessor-via-data_processor">
  <attr name="x" type="s16" val="220"/>
  <attr name="y" type="s16" val="497"/>
 </obj>
 
-<obj class="Point" id="2 ReadoutModuleConf-2-LatencyBuffer-via-latency_buffer">
+<obj class="Point" id="2 DataHandlerConf-2-LatencyBuffer-via-latency_buffer">
  <attr name="x" type="s16" val="174"/>
  <attr name="y" type="s16" val="609"/>
 </obj>
 
-<obj class="Point" id="2 ReadoutModuleConf-2-RequestHandler-via-request_handler">
+<obj class="Point" id="2 DataHandlerConf-2-RequestHandler-via-request_handler">
  <attr name="x" type="s16" val="174"/>
  <attr name="y" type="s16" val="667"/>
 </obj>
@@ -1280,12 +1280,12 @@
  <attr name="y" type="s16" val="184"/>
 </obj>
 
-<obj class="Point" id="3 DaqModule-2-DataReader">
+<obj class="Point" id="3 DaqModule-2-DataReceiverModule">
  <attr name="x" type="s16" val="4"/>
  <attr name="y" type="s16" val="313"/>
 </obj>
 
-<obj class="Point" id="3 DaqModule-2-DataRecorder">
+<obj class="Point" id="3 DaqModule-2-DataRecorderModule">
  <attr name="x" type="s16" val="19"/>
  <attr name="y" type="s16" val="270"/>
 </obj>
@@ -1295,7 +1295,7 @@
  <attr name="y" type="s16" val="268"/>
 </obj>
 
-<obj class="Point" id="3 DaqModule-2-ReadoutModule">
+<obj class="Point" id="3 DaqModule-2-DataHandlerModule">
  <attr name="x" type="s16" val="32"/>
  <attr name="y" type="s16" val="408"/>
 </obj>
@@ -1305,22 +1305,22 @@
  <attr name="y" type="s16" val="582"/>
 </obj>
 
-<obj class="Point" id="3 DataReader-2-DataReaderConf-via-configuration">
+<obj class="Point" id="3 DataReceiverModule-2-DataReceiverConf-via-configuration">
  <attr name="x" type="s16" val="151"/>
  <attr name="y" type="s16" val="327"/>
 </obj>
 
-<obj class="Point" id="3 DataReader-2-Resource-via-interfaces">
+<obj class="Point" id="3 DataReceiverModule-2-Resource-via-interfaces">
  <attr name="x" type="s16" val="15"/>
  <attr name="y" type="s16" val="187"/>
 </obj>
 
-<obj class="Point" id="3 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf">
+<obj class="Point" id="3 DataReceiverConf-2-StreamEmulationParameters-via-emulation_conf">
  <attr name="x" type="s16" val="65"/>
  <attr name="y" type="s16" val="307"/>
 </obj>
 
-<obj class="Point" id="3 DataRecorder-2-DataRecorderConf-via-configuration">
+<obj class="Point" id="3 DataRecorderModule-2-DataRecorderConf-via-configuration">
  <attr name="x" type="s16" val="56"/>
  <attr name="y" type="s16" val="761"/>
 </obj>
@@ -1355,7 +1355,7 @@
  <attr name="y" type="s16" val="424"/>
 </obj>
 
-<obj class="Point" id="3 ReadoutApplication-2-DataReaderConf-via-data_reader">
+<obj class="Point" id="3 ReadoutApplication-2-DataReceiverConf-via-data_reader">
  <attr name="x" type="s16" val="102"/>
  <attr name="y" type="s16" val="390"/>
 </obj>
@@ -1365,12 +1365,12 @@
  <attr name="y" type="s16" val="727"/>
 </obj>
 
-<obj class="Point" id="3 ReadoutApplication-2-ReadoutModuleConf-via-link_handler">
+<obj class="Point" id="3 ReadoutApplication-2-DataHandlerConf-via-link_handler">
  <attr name="x" type="s16" val="58"/>
  <attr name="y" type="s16" val="641"/>
 </obj>
 
-<obj class="Point" id="3 ReadoutApplication-2-ReadoutModuleConf-via-tp_handler">
+<obj class="Point" id="3 ReadoutApplication-2-DataHandlerConf-via-tp_handler">
  <attr name="x" type="s16" val="58"/>
  <attr name="y" type="s16" val="604"/>
 </obj>
@@ -1380,27 +1380,27 @@
  <attr name="y" type="s16" val="712"/>
 </obj>
 
-<obj class="Point" id="3 ReadoutModule-2-GeoId-via-geo_id">
+<obj class="Point" id="3 DataHandlerModule-2-GeoId-via-geo_id">
  <attr name="x" type="s16" val="40"/>
  <attr name="y" type="s16" val="399"/>
 </obj>
 
-<obj class="Point" id="3 ReadoutModule-2-ReadoutModuleConf-via-module_configuration">
+<obj class="Point" id="3 DataHandlerModule-2-DataHandlerConf-via-module_configuration">
  <attr name="x" type="s16" val="55"/>
  <attr name="y" type="s16" val="528"/>
 </obj>
 
-<obj class="Point" id="3 ReadoutModuleConf-2-DataProcessor-via-data_processor">
+<obj class="Point" id="3 DataHandlerConf-2-DataProcessor-via-data_processor">
  <attr name="x" type="s16" val="59"/>
  <attr name="y" type="s16" val="497"/>
 </obj>
 
-<obj class="Point" id="3 ReadoutModuleConf-2-LatencyBuffer-via-latency_buffer">
+<obj class="Point" id="3 DataHandlerConf-2-LatencyBuffer-via-latency_buffer">
  <attr name="x" type="s16" val="45"/>
  <attr name="y" type="s16" val="609"/>
 </obj>
 
-<obj class="Point" id="3 ReadoutModuleConf-2-RequestHandler-via-request_handler">
+<obj class="Point" id="3 DataHandlerConf-2-RequestHandler-via-request_handler">
  <attr name="x" type="s16" val="57"/>
  <attr name="y" type="s16" val="667"/>
 </obj>
@@ -1514,12 +1514,12 @@
  <attr name="y" type="s16" val="12"/>
 </obj>
 
-<obj class="Point" id="4 DaqModule-2-DataReader">
+<obj class="Point" id="4 DaqModule-2-DataReceiverModule">
  <attr name="x" type="s16" val="4"/>
  <attr name="y" type="s16" val="17"/>
 </obj>
 
-<obj class="Point" id="4 DaqModule-2-DataRecorder">
+<obj class="Point" id="4 DaqModule-2-DataRecorderModule">
  <attr name="x" type="s16" val="19"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
@@ -1529,7 +1529,7 @@
  <attr name="y" type="s16" val="12"/>
 </obj>
 
-<obj class="Point" id="4 DaqModule-2-ReadoutModule">
+<obj class="Point" id="4 DaqModule-2-DataHandlerModule">
  <attr name="x" type="s16" val="32"/>
  <attr name="y" type="s16" val="12"/>
 </obj>
@@ -1539,22 +1539,22 @@
  <attr name="y" type="s16" val="35"/>
 </obj>
 
-<obj class="Point" id="4 DataReader-2-DataReaderConf-via-configuration">
+<obj class="Point" id="4 DataReceiverModule-2-DataReceiverConf-via-configuration">
  <attr name="x" type="s16" val="151"/>
  <attr name="y" type="s16" val="12"/>
 </obj>
 
-<obj class="Point" id="4 DataReader-2-Resource-via-interfaces">
+<obj class="Point" id="4 DataReceiverModule-2-Resource-via-interfaces">
  <attr name="x" type="s16" val="15"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
 
-<obj class="Point" id="4 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf">
+<obj class="Point" id="4 DataReceiverConf-2-StreamEmulationParameters-via-emulation_conf">
  <attr name="x" type="s16" val="65"/>
  <attr name="y" type="s16" val="44"/>
 </obj>
 
-<obj class="Point" id="4 DataRecorder-2-DataRecorderConf-via-configuration">
+<obj class="Point" id="4 DataRecorderModule-2-DataRecorderConf-via-configuration">
  <attr name="x" type="s16" val="56"/>
  <attr name="y" type="s16" val="26"/>
 </obj>
@@ -1589,7 +1589,7 @@
  <attr name="y" type="s16" val="17"/>
 </obj>
 
-<obj class="Point" id="4 ReadoutApplication-2-DataReaderConf-via-data_reader">
+<obj class="Point" id="4 ReadoutApplication-2-DataReceiverConf-via-data_reader">
  <attr name="x" type="s16" val="102"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
@@ -1599,12 +1599,12 @@
  <attr name="y" type="s16" val="26"/>
 </obj>
 
-<obj class="Point" id="4 ReadoutApplication-2-ReadoutModuleConf-via-link_handler">
+<obj class="Point" id="4 ReadoutApplication-2-DataHandlerConf-via-link_handler">
  <attr name="x" type="s16" val="58"/>
  <attr name="y" type="s16" val="21"/>
 </obj>
 
-<obj class="Point" id="4 ReadoutApplication-2-ReadoutModuleConf-via-tp_handler">
+<obj class="Point" id="4 ReadoutApplication-2-DataHandlerConf-via-tp_handler">
  <attr name="x" type="s16" val="58"/>
  <attr name="y" type="s16" val="21"/>
 </obj>
@@ -1614,27 +1614,27 @@
  <attr name="y" type="s16" val="8"/>
 </obj>
 
-<obj class="Point" id="4 ReadoutModule-2-GeoId-via-geo_id">
+<obj class="Point" id="4 DataHandlerModule-2-GeoId-via-geo_id">
  <attr name="x" type="s16" val="40"/>
  <attr name="y" type="s16" val="26"/>
 </obj>
 
-<obj class="Point" id="4 ReadoutModule-2-ReadoutModuleConf-via-module_configuration">
+<obj class="Point" id="4 DataHandlerModule-2-DataHandlerConf-via-module_configuration">
  <attr name="x" type="s16" val="55"/>
  <attr name="y" type="s16" val="21"/>
 </obj>
 
-<obj class="Point" id="4 ReadoutModuleConf-2-DataProcessor-via-data_processor">
+<obj class="Point" id="4 DataHandlerConf-2-DataProcessor-via-data_processor">
  <attr name="x" type="s16" val="59"/>
  <attr name="y" type="s16" val="17"/>
 </obj>
 
-<obj class="Point" id="4 ReadoutModuleConf-2-LatencyBuffer-via-latency_buffer">
+<obj class="Point" id="4 DataHandlerConf-2-LatencyBuffer-via-latency_buffer">
  <attr name="x" type="s16" val="45"/>
  <attr name="y" type="s16" val="35"/>
 </obj>
 
-<obj class="Point" id="4 ReadoutModuleConf-2-RequestHandler-via-request_handler">
+<obj class="Point" id="4 DataHandlerConf-2-RequestHandler-via-request_handler">
  <attr name="x" type="s16" val="57"/>
  <attr name="y" type="s16" val="35"/>
 </obj>

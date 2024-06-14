@@ -101,27 +101,27 @@
  </rel>
 </obj>
 
-<obj class="ALink" id="DataReader-2-DataReaderConf-via-configuration">
+<obj class="ALink" id="DataReceiverModule-2-DataReceiverConf-via-configuration">
  <attr name="Name" type="string" val="configuration"/>
- <rel name="From" class="Class" id="DataReader"/>
- <rel name="To" class="Class" id="DataReaderConf"/>
+ <rel name="From" class="Class" id="DataReceiverModule"/>
+ <rel name="To" class="Class" id="DataReceiverConf"/>
  <rel name="Points">
-  <ref class="Point" id="1 DataReader-2-DataReaderConf-via-configuration"/>
-  <ref class="Point" id="2 DataReader-2-DataReaderConf-via-configuration"/>
-  <ref class="Point" id="3 DataReader-2-DataReaderConf-via-configuration"/>
-  <ref class="Point" id="4 DataReader-2-DataReaderConf-via-configuration"/>
+  <ref class="Point" id="1 DataReceiverModule-2-DataReceiverConf-via-configuration"/>
+  <ref class="Point" id="2 DataReceiverModule-2-DataReceiverConf-via-configuration"/>
+  <ref class="Point" id="3 DataReceiverModule-2-DataReceiverConf-via-configuration"/>
+  <ref class="Point" id="4 DataReceiverModule-2-DataReceiverConf-via-configuration"/>
  </rel>
 </obj>
 
-<obj class="ALink" id="DataReader-2-Resource-via-interfaces">
+<obj class="ALink" id="DataReceiverModule-2-Resource-via-interfaces">
  <attr name="Name" type="string" val="interfaces"/>
- <rel name="From" class="Class" id="DataReader"/>
+ <rel name="From" class="Class" id="DataReceiverModule"/>
  <rel name="To" class="Class" id="Resource"/>
  <rel name="Points">
-  <ref class="Point" id="1 DataReader-2-Resource-via-interfaces"/>
-  <ref class="Point" id="2 DataReader-2-Resource-via-interfaces"/>
-  <ref class="Point" id="3 DataReader-2-Resource-via-interfaces"/>
-  <ref class="Point" id="4 DataReader-2-Resource-via-interfaces"/>
+  <ref class="Point" id="1 DataReceiverModule-2-Resource-via-interfaces"/>
+  <ref class="Point" id="2 DataReceiverModule-2-Resource-via-interfaces"/>
+  <ref class="Point" id="3 DataReceiverModule-2-Resource-via-interfaces"/>
+  <ref class="Point" id="4 DataReceiverModule-2-Resource-via-interfaces"/>
  </rel>
 </obj>
 
@@ -147,12 +147,12 @@
  <attr name="y" type="s16" val="317"/>
 </obj>
 
-<obj class="Class" id="DataReader">
+<obj class="Class" id="DataReceiverModule">
  <attr name="x" type="s16" val="508"/>
  <attr name="y" type="s16" val="12"/>
 </obj>
 
-<obj class="Class" id="DataReaderConf">
+<obj class="Class" id="DataReceiverConf">
  <attr name="x" type="s16" val="414"/>
  <attr name="y" type="s16" val="119"/>
 </obj>
@@ -162,7 +162,7 @@
  <attr name="y" type="s16" val="11"/>
 </obj>
 
-<obj class="Class" id="FelixCardReader">
+<obj class="Class" id="FelixReaderModule">
  <attr name="x" type="s16" val="280"/>
  <attr name="y" type="s16" val="62"/>
 </obj>
@@ -177,12 +177,12 @@
  <attr name="y" type="s16" val="492"/>
 </obj>
 
-<obj class="Class" id="NICReceiver">
+<obj class="Class" id="DPDKReader">
  <attr name="x" type="s16" val="288"/>
  <attr name="y" type="s16" val="4"/>
 </obj>
 
-<obj class="Class" id="NICReceiverConf">
+<obj class="Class" id="DPDKReaderConf">
  <attr name="x" type="s16" val="415"/>
  <attr name="y" type="s16" val="232"/>
 </obj>
@@ -217,36 +217,36 @@
  <attr name="y" type="s16" val="12"/>
 </obj>
 
-<obj class="GLink" id="DataReader-2-FelixCardReader">
- <rel name="From" class="Class" id="DataReader"/>
- <rel name="To" class="Class" id="FelixCardReader"/>
+<obj class="GLink" id="DataReceiverModule-2-FelixReaderModule">
+ <rel name="From" class="Class" id="DataReceiverModule"/>
+ <rel name="To" class="Class" id="FelixReaderModule"/>
  <rel name="Points">
-  <ref class="Point" id="1 DataReader-2-FelixCardReader"/>
-  <ref class="Point" id="2 DataReader-2-FelixCardReader"/>
-  <ref class="Point" id="3 DataReader-2-FelixCardReader"/>
-  <ref class="Point" id="4 DataReader-2-FelixCardReader"/>
+  <ref class="Point" id="1 DataReceiverModule-2-FelixReaderModule"/>
+  <ref class="Point" id="2 DataReceiverModule-2-FelixReaderModule"/>
+  <ref class="Point" id="3 DataReceiverModule-2-FelixReaderModule"/>
+  <ref class="Point" id="4 DataReceiverModule-2-FelixReaderModule"/>
  </rel>
 </obj>
 
-<obj class="GLink" id="DataReader-2-NICReceiver">
- <rel name="From" class="Class" id="DataReader"/>
- <rel name="To" class="Class" id="NICReceiver"/>
+<obj class="GLink" id="DataReceiverModule-2-DPDKReader">
+ <rel name="From" class="Class" id="DataReceiverModule"/>
+ <rel name="To" class="Class" id="DPDKReader"/>
  <rel name="Points">
-  <ref class="Point" id="1 DataReader-2-NICReceiver"/>
-  <ref class="Point" id="2 DataReader-2-NICReceiver"/>
-  <ref class="Point" id="3 DataReader-2-NICReceiver"/>
-  <ref class="Point" id="4 DataReader-2-NICReceiver"/>
+  <ref class="Point" id="1 DataReceiverModule-2-DPDKReader"/>
+  <ref class="Point" id="2 DataReceiverModule-2-DPDKReader"/>
+  <ref class="Point" id="3 DataReceiverModule-2-DPDKReader"/>
+  <ref class="Point" id="4 DataReceiverModule-2-DPDKReader"/>
  </rel>
 </obj>
 
-<obj class="GLink" id="DataReaderConf-2-NICReceiverConf">
- <rel name="From" class="Class" id="DataReaderConf"/>
- <rel name="To" class="Class" id="NICReceiverConf"/>
+<obj class="GLink" id="DataReceiverConf-2-DPDKReaderConf">
+ <rel name="From" class="Class" id="DataReceiverConf"/>
+ <rel name="To" class="Class" id="DPDKReaderConf"/>
  <rel name="Points">
-  <ref class="Point" id="1 DataReaderConf-2-NICReceiverConf"/>
-  <ref class="Point" id="2 DataReaderConf-2-NICReceiverConf"/>
-  <ref class="Point" id="3 DataReaderConf-2-NICReceiverConf"/>
-  <ref class="Point" id="4 DataReaderConf-2-NICReceiverConf"/>
+  <ref class="Point" id="1 DataReceiverConf-2-DPDKReaderConf"/>
+  <ref class="Point" id="2 DataReceiverConf-2-DPDKReaderConf"/>
+  <ref class="Point" id="3 DataReceiverConf-2-DPDKReaderConf"/>
+  <ref class="Point" id="4 DataReceiverConf-2-DPDKReaderConf"/>
  </rel>
 </obj>
 
@@ -331,26 +331,26 @@
  <attr name="y" type="s16" val="159"/>
 </obj>
 
-<obj class="Point" id="1 DataReader-2-DataReaderConf-via-configuration">
+<obj class="Point" id="1 DataReceiverModule-2-DataReceiverConf-via-configuration">
  <attr name="x" type="s16" val="53"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 DataReader-2-FelixCardReader">
+<obj class="Point" id="1 DataReceiverModule-2-FelixReaderModule">
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 DataReader-2-NICReceiver">
+<obj class="Point" id="1 DataReceiverModule-2-DPDKReader">
  <attr name="x" type="s16" val="57"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 DataReader-2-Resource-via-interfaces">
+<obj class="Point" id="1 DataReceiverModule-2-Resource-via-interfaces">
  <attr name="x" type="s16" val="57"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 DataReaderConf-2-NICReceiverConf">
+<obj class="Point" id="1 DataReceiverConf-2-DPDKReaderConf">
  <attr name="x" type="s16" val="64"/>
  <attr name="y" type="s16" val="51"/>
 </obj>
@@ -405,26 +405,26 @@
  <attr name="y" type="s16" val="363"/>
 </obj>
 
-<obj class="Point" id="2 DataReader-2-DataReaderConf-via-configuration">
+<obj class="Point" id="2 DataReceiverModule-2-DataReceiverConf-via-configuration">
  <attr name="x" type="s16" val="53"/>
  <attr name="y" type="s16" val="82"/>
 </obj>
 
-<obj class="Point" id="2 DataReader-2-FelixCardReader">
+<obj class="Point" id="2 DataReceiverModule-2-FelixReaderModule">
  <attr name="y" type="s16" val="77"/>
 </obj>
 
-<obj class="Point" id="2 DataReader-2-NICReceiver">
+<obj class="Point" id="2 DataReceiverModule-2-DPDKReader">
  <attr name="x" type="s16" val="57"/>
  <attr name="y" type="s16" val="23"/>
 </obj>
 
-<obj class="Point" id="2 DataReader-2-Resource-via-interfaces">
+<obj class="Point" id="2 DataReceiverModule-2-Resource-via-interfaces">
  <attr name="x" type="s16" val="57"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="2 DataReaderConf-2-NICReceiverConf">
+<obj class="Point" id="2 DataReceiverConf-2-DPDKReaderConf">
  <attr name="x" type="s16" val="64"/>
  <attr name="y" type="s16" val="216"/>
 </obj>
@@ -479,27 +479,27 @@
  <attr name="y" type="s16" val="363"/>
 </obj>
 
-<obj class="Point" id="3 DataReader-2-DataReaderConf-via-configuration">
+<obj class="Point" id="3 DataReceiverModule-2-DataReceiverConf-via-configuration">
  <attr name="x" type="s16" val="174"/>
  <attr name="y" type="s16" val="82"/>
 </obj>
 
-<obj class="Point" id="3 DataReader-2-FelixCardReader">
+<obj class="Point" id="3 DataReceiverModule-2-FelixReaderModule">
  <attr name="x" type="s16" val="26"/>
  <attr name="y" type="s16" val="77"/>
 </obj>
 
-<obj class="Point" id="3 DataReader-2-NICReceiver">
+<obj class="Point" id="3 DataReceiverModule-2-DPDKReader">
  <attr name="x" type="s16" val="20"/>
  <attr name="y" type="s16" val="23"/>
 </obj>
 
-<obj class="Point" id="3 DataReader-2-Resource-via-interfaces">
+<obj class="Point" id="3 DataReceiverModule-2-Resource-via-interfaces">
  <attr name="x" type="s16" val="15"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="3 DataReaderConf-2-NICReceiverConf">
+<obj class="Point" id="3 DataReceiverConf-2-DPDKReaderConf">
  <attr name="x" type="s16" val="63"/>
  <attr name="y" type="s16" val="216"/>
 </obj>
@@ -554,27 +554,27 @@
  <attr name="y" type="s16" val="12"/>
 </obj>
 
-<obj class="Point" id="4 DataReader-2-DataReaderConf-via-configuration">
+<obj class="Point" id="4 DataReceiverModule-2-DataReceiverConf-via-configuration">
  <attr name="x" type="s16" val="174"/>
  <attr name="y" type="s16" val="17"/>
 </obj>
 
-<obj class="Point" id="4 DataReader-2-FelixCardReader">
+<obj class="Point" id="4 DataReceiverModule-2-FelixReaderModule">
  <attr name="x" type="s16" val="26"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
 
-<obj class="Point" id="4 DataReader-2-NICReceiver">
+<obj class="Point" id="4 DataReceiverModule-2-DPDKReader">
  <attr name="x" type="s16" val="20"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
 
-<obj class="Point" id="4 DataReader-2-Resource-via-interfaces">
+<obj class="Point" id="4 DataReceiverModule-2-Resource-via-interfaces">
  <attr name="x" type="s16" val="15"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
 
-<obj class="Point" id="4 DataReaderConf-2-NICReceiverConf">
+<obj class="Point" id="4 DataReceiverConf-2-DPDKReaderConf">
  <attr name="x" type="s16" val="63"/>
  <attr name="y" type="s16" val="12"/>
 </obj>
