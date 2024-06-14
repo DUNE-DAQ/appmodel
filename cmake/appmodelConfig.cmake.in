@@ -10,6 +10,7 @@ find_dependency(logging)
 find_dependency(conffwk)
 find_dependency(oks)
 find_dependency(confmodel)
+find_dependency(fmt)
 
 # Figure out whether or not this dependency is an installed package or
 # in repo form
