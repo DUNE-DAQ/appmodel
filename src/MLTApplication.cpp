@@ -14,9 +14,12 @@
 
 #include "confmodel/Connection.hpp"
 #include "confmodel/NetworkConnection.hpp"
-#include "confmodel/ReadoutGroup.hpp"
-#include "confmodel/ReadoutInterface.hpp"
-#include "confmodel/DROStreamConf.hpp"
+// #include "confmodel/ReadoutGroup.hpp"
+// #include "confmodel/ReadoutInterface.hpp"
+// #include "confmodel/DetectorStream.hpp"
+#include "confmodel/DetectorToDaqConnection.hpp"
+#include "confmodel/DetectorStream.hpp"
+
 #include "confmodel/ResourceSet.hpp"
 #include "confmodel/Service.hpp"
 #include "confmodel/Session.hpp"
@@ -214,7 +217,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
 
   conffwk::ConfigObject timesync_net_obj;
   if (timesync_net_desc != nullptr) {
-     timesync_net_obj = create_mlt_network_connection(timesync_net_desc->get_uid_base()+".*", timesync_net_desc, confdb, dbfile); 
+     timesync_net_obj = create_mlt_network_connection(timesync_net_desc->get_uid_base()+".*", timesync_net_desc, confdb, dbfile);
   }
 
 
@@ -255,9 +258,9 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
   modules.push_back(confdb->get<DataSubscriber>(reader_uid));
 
   /**************************************************************
-   * Create the readout map 
+   * Create the readout map
    **************************************************************/
-  
+
   std::vector<const dunedaq::confmodel::Application*> apps = session->get_all_applications();
 
   std::vector<const conffwk::ConfigObject*> sourceIds;
@@ -267,57 +270,81 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
     if (ro_app != nullptr && !ro_app->disabled(*session)) {
   	auto resources = ro_app->get_contains();
         // Interate over all the readout groups
-        for (auto roGroup : resources) {
-           if (roGroup->disabled(*session)) {
-              TLOG_DEBUG(7) << "Ignoring disabled ReadoutGroup " << roGroup->UID();
+        for (auto d2d_conn_res : resources) {
+           if (d2d_conn_res->disabled(*session)) {
+              TLOG_DEBUG(7) << "Ignoring disabled Detector2DaqConnection " << d2d_conn_res->UID();
               continue;
         }
 
-        auto group_rset = roGroup->cast<confmodel::ReadoutGroup>();
-        if (group_rset == nullptr) {
-          throw(BadConf(ERS_HERE, "MLTApplication's readoutgroup list contains something other than ReadoutGroup"));
+        auto d2d_conn = d2d_conn_res->cast<confmodel::DetectorToDaqConnection>();
+        if (d2d_conn == nullptr) {
+          throw(BadConf(ERS_HERE, "MLTApplication's detectordaq connections list contains something other than DetectorToDaqConnection"));
         }
-        if (group_rset->get_contains().empty()) {
-          throw(BadConf(ERS_HERE, "ReadoutGroup does not contain interfaces"));
+        if (d2d_conn->get_contains().empty()) {
+          throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain interfaces"));
         }
 
-        // Iterate over each interface in per group
-        auto interfaces = group_rset->get_contains();
-        TLOG_DEBUG(7) << "Number of ReadoutInterfaces in that group : " << interfaces.size();
-        for (auto interface_rset : interfaces) {
-          if (interface_rset->disabled(*session)) {
-            TLOG_DEBUG(7) << "Ignoring disabled ReadoutInterface " << interface_rset->UID();
+
+        // Interate over all the streams
+        for (auto stream : d2d_conn->get_streams()) {
+          if (stream == nullptr) {
+            throw(BadConf(ERS_HERE, "ReadoutInterface contains something other than DetectorStream"));
+          }
+          if (stream->disabled(*session)) {
+            TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
             continue;
           }
-          auto interface = interface_rset->cast<confmodel::ReadoutInterface>();
-          if (interface == nullptr) {
-            throw(BadConf(ERS_HERE, "ReadoutGroup contains something othen than ReadoutInterface"));
-          }
-          auto streams = interface->get_contains();
-          TLOG_DEBUG(7) << "Number of streams in that interface: " << streams.size();
 
-          // Interate over all the streams
-          for (auto link : streams) {
-            auto stream = link->cast<confmodel::DROStreamConf>();
-            if (stream == nullptr) {
-              throw(BadConf(ERS_HERE, "ReadoutInterface contains something other than DROStreamConf"));
-            }
-            if (stream->disabled(*session)) {
-              TLOG_DEBUG(7) << "Ignoring disabled DROStreamConf " << stream->UID();
-              continue;
-            }
-
-            // Create SourceIDConf object for the MLT
-            auto id = stream->get_source_id();
-            conffwk::ConfigObject* sourceIdConf = new conffwk::ConfigObject();
-            std::string sourceIdConfUID = "dro-mlt-stream-config-" + std::to_string(id);
-            confdb->create(dbfile, "SourceIDConf", sourceIdConfUID, *sourceIdConf);
-            sourceIdConf->set_by_val<uint32_t>("sid", id);
-            // https://github.com/DUNE-DAQ/daqdataformats/blob/5b99506675a586c8a09123900e224f2371d96df9/include/daqdataformats/detail/SourceID.hxx#L108
-            sourceIdConf->set_by_val<std::string>("subsystem", "Detector_Readout");
-            sourceIds.push_back(sourceIdConf);
-          }
+          // Create SourceIDConf object for the MLT
+          auto id = stream->get_source_id();
+          conffwk::ConfigObject* sourceIdConf = new conffwk::ConfigObject();
+          std::string sourceIdConfUID = "dro-mlt-stream-config-" + std::to_string(id);
+          confdb->create(dbfile, "SourceIDConf", sourceIdConfUID, *sourceIdConf);
+          sourceIdConf->set_by_val<uint32_t>("sid", id);
+          // https://github.com/DUNE-DAQ/daqdataformats/blob/5b99506675a586c8a09123900e224f2371d96df9/include/daqdataformats/detail/SourceID.hxx#L108
+          sourceIdConf->set_by_val<std::string>("subsystem", "Detector_Readout");
+          sourceIds.push_back(sourceIdConf);
         }
+
+
+
+        // // Iterate over each interface in per group
+        // auto interfaces = group_rset->get_contains();
+        // TLOG_DEBUG(7) << "Number of ReadoutInterfaces in that group : " << interfaces.size();
+        // for (auto interface_rset : interfaces) {
+        //   if (interface_rset->disabled(*session)) {
+        //     TLOG_DEBUG(7) << "Ignoring disabled ReadoutInterface " << interface_rset->UID();
+        //     continue;
+        //   }
+        //   auto interface = interface_rset->cast<confmodel::ReadoutInterface>();
+        //   if (interface == nullptr) {
+        //     throw(BadConf(ERS_HERE, "ReadoutGroup contains something othen than ReadoutInterface"));
+        //   }
+        //   auto streams = interface->get_contains();
+        //   TLOG_DEBUG(7) << "Number of streams in that interface: " << streams.size();
+
+        //   // Interate over all the streams
+        //   for (auto link : streams) {
+        //     auto stream = link->cast<confmodel::DetectorStream>();
+        //     if (stream == nullptr) {
+        //       throw(BadConf(ERS_HERE, "ReadoutInterface contains something other than DetectorStream"));
+        //     }
+        //     if (stream->disabled(*session)) {
+        //       TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
+        //       continue;
+        //     }
+
+        //     // Create SourceIDConf object for the MLT
+        //     auto id = stream->get_source_id();
+        //     conffwk::ConfigObject* sourceIdConf = new conffwk::ConfigObject();
+        //     std::string sourceIdConfUID = "dro-mlt-stream-config-" + std::to_string(id);
+        //     confdb->create(dbfile, "SourceIDConf", sourceIdConfUID, *sourceIdConf);
+        //     sourceIdConf->set_by_val<uint32_t>("sid", id);
+        //     // https://github.com/DUNE-DAQ/daqdataformats/blob/5b99506675a586c8a09123900e224f2371d96df9/include/daqdataformats/detail/SourceID.hxx#L108
+        //     sourceIdConf->set_by_val<std::string>("subsystem", "Detector_Readout");
+        //     sourceIds.push_back(sourceIdConf);
+        //   }
+        // }
       }
       if (ro_app->get_tp_source_id()!= 0) {
          conffwk::ConfigObject* tpSourceIdConf = new conffwk::ConfigObject();
@@ -337,7 +364,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
         tcSourceIdConf->set_by_val<std::string>("subsystem", trg_app->get_source_id()->get_subsystem());
         sourceIds.push_back(tcSourceIdConf);
     }
-    
+
     // FIXME: add here same logics for HSI application(s)
     //
     auto hsi_app = app->cast<appmodel::FakeHSIApplication>();

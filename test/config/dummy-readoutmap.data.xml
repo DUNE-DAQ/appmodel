@@ -76,29 +76,49 @@
  <comment creation-time="20240208T093213" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="format"/>
 </comments>
 
+<obj class="DetectorToDaqConnection" id="det-1-connections">
+ <rel name="contains">
+  <ref class="DetDataSender" id="det-streams-1"/>
+  <ref class="DetDataReceiver" id="dummy-nic-1"/>
+ </rel>
+</obj>
 
-<obj class="DROStreamConf" id="dummyStream-1">
+<obj class="DetectorToDaqConnection" id="det-3-connections">
+ <rel name="contains">
+  <ref class="DetDataSender" id="det-streams-3"/>
+  <ref class="DetDataReceiver" id="dummy-nic-3"/>
+ </rel>
+</obj>
+
+<obj class="DetectorToDaqConnection" id="det-4-connections">
+ <rel name="contains">
+  <ref class="DetDataSender" id="det-streams-4"/>
+  <ref class="DetDataReceiver" id="dummy-nic-4"/>
+ </rel>
+</obj>
+
+<obj class="DetDataReceiver" id="dummy-nic-1"></obj>
+<obj class="DetDataReceiver" id="dummy-nic-3"></obj>
+<obj class="DetDataReceiver" id="dummy-nic-4"></obj>
+
+<obj class="DetectorStream" id="dummyStream-1">
  <attr name="source_id" type="u32" val="1"/>
  <rel name="geo_id" class="GeoId" id="dummyGeoId-1"/>
- <rel name="stream_params" class="StreamParameters" id="dummyStream-1"/>
 </obj>
 
-<obj class="DROStreamConf" id="dummyStream-2">
+<obj class="DetectorStream" id="dummyStream-2">
  <attr name="source_id" type="u32" val="2"/>
  <rel name="geo_id" class="GeoId" id="dummyGeoId-2"/>
- <rel name="stream_params" class="StreamParameters" id="dummyStream-1"/>
 </obj>
 
-<obj class="DROStreamConf" id="dummyStream-3">
+<obj class="DetectorStream" id="dummyStream-3">
  <attr name="source_id" type="u32" val="3"/>
  <rel name="geo_id" class="GeoId" id="dummyGeoId-3"/>
- <rel name="stream_params" class="StreamParameters" id="dummyStream-1"/>
 </obj>
 
-<obj class="DROStreamConf" id="dummyStream-4">
+<obj class="DetectorStream" id="dummyStream-4">
  <attr name="source_id" type="u32" val="4"/>
  <rel name="geo_id" class="GeoId" id="dummyGeoId-4"/>
- <rel name="stream_params" class="StreamParameters" id="dummyStream-1"/>
 </obj>
 
 <obj class="GeoId" id="dummyGeoId-1">
@@ -129,53 +149,23 @@
  <attr name="stream_id" type="u32" val="0"/>
 </obj>
 
-<obj class="ReadoutGroup" id="rog-1">
+<obj class="DetDataSender" id="det-streams-1">
  <rel name="contains">
-  <ref class="ReadoutInterface" id="ROInterface-1"/>
+  <ref class="DetectorStream" id="dummyStream-1"/>
+  <ref class="DetectorStream" id="dummyStream-2"/>
  </rel>
 </obj>
 
-<obj class="ReadoutGroup" id="rog-2">
+<obj class="DetDataSender" id="det-streams-3">
  <rel name="contains">
-  <ref class="ReadoutInterface" id="ROInterface-2"/>
+  <ref class="DetectorStream" id="dummyStream-3"/>
  </rel>
 </obj>
 
-<obj class="ReadoutGroup" id="rog-3">
+<obj class="DetDataSender" id="det-streams-4">
  <rel name="contains">
-  <ref class="ReadoutInterface" id="ROInterface-3"/>
+  <ref class="DetectorStream" id="dummyStream-4"/>
  </rel>
-</obj>
-
-<obj class="ReadoutInterface" id="ROInterface-1">
- <rel name="contains">
-  <ref class="DROStreamConf" id="dummyStream-1"/>
-  <ref class="DROStreamConf" id="dummyStream-2"/>
- </rel>
-</obj>
-
-<obj class="ReadoutInterface" id="ROInterface-2">
- <rel name="contains">
-  <ref class="DROStreamConf" id="dummyStream-3"/>
- </rel>
-</obj>
-
-<obj class="ReadoutInterface" id="ROInterface-3">
- <rel name="contains">
-  <ref class="DROStreamConf" id="dummyStream-4"/>
- </rel>
-</obj>
-
-<obj class="ReadoutMap" id="dummyRoMap">
- <rel name="groups">
-  <ref class="ReadoutGroup" id="rog-1"/>
-  <ref class="ReadoutGroup" id="rog-2"/>
-  <ref class="ReadoutGroup" id="rog-3"/>
- </rel>
-</obj>
-
-<obj class="StreamParameters" id="dummyStream-1">
- <attr name="mode" type="enum" val="fix_rate"/>
 </obj>
 
 </oks-data>
