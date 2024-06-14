@@ -11,7 +11,7 @@
 #include "ModuleFactory.hpp"
 
 #include "appmodel/DFApplication.hpp"
-#include "appmodel/DataWriter.hpp"
+#include "appmodel/DataWriterModule.hpp"
 #include "appmodel/DataWriterConf.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
@@ -22,7 +22,7 @@
 #include "appmodel/ReadoutApplication.hpp"
 #include "appmodel/SourceIDConf.hpp"
 #include "appmodel/TRBConf.hpp"
-#include "appmodel/TriggerRecordBuilder.hpp"
+#include "appmodel/TRBModule.hpp"
 #include "appmodel/appmodelIssues.hpp"
 #include "confmodel/Connection.hpp"
 #include "confmodel/NetworkConnection.hpp"
@@ -78,15 +78,15 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
 
   // -- First, we process expected Queue and Network connections and create their objects.
 
-  // Process the queue rules looking for the TriggerRecord queue between TRB and DataWriter
+  // Process the queue rules looking for the TriggerRecord queue between TRB and DataWriterModule
   const QueueDescriptor* trQDesc = nullptr;
   for (auto rule : get_queue_rules()) {
     auto destination_class = rule->get_destination_class();
-    if (destination_class == "DataWriter") {
+    if (destination_class == "DataWriterModule") {
       trQDesc = rule->get_descriptor();
     }
   }
-  if (trQDesc == nullptr) { // BadConf if no descriptor between TRB and DataWriter
+  if (trQDesc == nullptr) { // BadConf if no descriptor between TRB and DataWriterModule
     throw(BadConf(ERS_HERE, "Could not find queue descriptor rule for TriggerRecords!"));
   }
   // Create queue connection config object
@@ -119,7 +119,7 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
   if (trigdecNetDesc == nullptr) { // BadCond if no descriptor for TriggerDecisions into TRB
     throw(BadConf(ERS_HERE, "Could not find network descriptor rule for input TriggerDecisions!"));
   }
-  if (tokenNetDesc == nullptr) { // BadCond if no descriptor for Tokens out of DataWriter
+  if (tokenNetDesc == nullptr) { // BadCond if no descriptor for Tokens out of DataWriterModule
     throw(BadConf(ERS_HERE, "Could not find network descriptor rule for output TriggerDecisionTokens!"));
   }
   if (get_source_id() == nullptr) {
@@ -172,24 +172,24 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
   // Get TRB Config Object
   auto trbConf = get_trb();
   if (trbConf == nullptr) {
-    throw(BadConf(ERS_HERE, "No DataWriter or TRB configuration given"));
+    throw(BadConf(ERS_HERE, "No DataWriterModule or TRB configuration given"));
   }
   auto trbConfObj = trbConf->config_object();
   trbConfObj.set_by_val<uint32_t>("source_id", get_source_id()->get_sid());
   // Prepare TRB Module Object and assign its Config Object.
   conffwk::ConfigObject trbObj;
   std::string trbUid(UID() + "-trb");
-  confdb->create(dbfile, "TriggerRecordBuilder", trbUid, trbObj);
+  confdb->create(dbfile, "TRBModule", trbUid, trbObj);
   trbObj.set_obj("configuration", &trbConfObj);
   trbObj.set_objs("inputs", { &trigdecNetObj, &fragNetObj });
   trbObj.set_objs("outputs", trbOutputObjs);
   // Push TRB Module Object from confdb
-  modules.push_back(confdb->get<TriggerRecordBuilder>(trbUid));
+  modules.push_back(confdb->get<TRBModule>(trbUid));
 
-  // Get DataWriter Config Object (only one for now, maybe more later?)
+  // Get DataWriterModule Config Object (only one for now, maybe more later?)
   auto dwrConfs = get_data_writers();
   if (dwrConfs.size() == 0) {
-    throw(BadConf(ERS_HERE, "No DataWriter or TRB configuration given"));
+    throw(BadConf(ERS_HERE, "No DataWriterModule or TRB configuration given"));
   }
   uint dw_idx = 0;
   for ( auto dwrConf :dwrConfs ) {
@@ -197,15 +197,15 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
     fnParamsObj.set_by_val<std::string>("writer_identifier", fmt::format("{}_datawriter-{}", UID(), dw_idx));
     auto dwrConfObj = dwrConf->config_object();
 
-    // Prepare DataWriter Module Object and assign its Config Object.
+    // Prepare DataWriterModule Module Object and assign its Config Object.
     conffwk::ConfigObject dwrObj;
     std::string dwrUid(fmt::format("{}-dw-{}", UID(), dw_idx));
-    confdb->create(dbfile, "DataWriter", dwrUid, dwrObj);
+    confdb->create(dbfile, "DataWriterModule", dwrUid, dwrObj);
     dwrObj.set_obj("configuration", &dwrConfObj);
     dwrObj.set_objs("inputs", { &trQueueObj });
     dwrObj.set_objs("outputs", { &tokenNetObj });
-    // Push DataWriter Module Object from confdb
-    modules.push_back(confdb->get<DataWriter>(dwrUid));
+    // Push DataWriterModule Module Object from confdb
+    modules.push_back(confdb->get<DataWriterModule>(dwrUid));
     ++dw_idx;
   }
 

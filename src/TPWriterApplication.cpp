@@ -16,7 +16,7 @@
 #include "confmodel/Service.hpp"
 #include "confmodel/NetworkConnection.hpp"
 #include "appmodel/TPStreamWriterApplication.hpp"
-#include "appmodel/TPStreamWriter.hpp"
+#include "appmodel/TPStreamWriterModule.hpp"
 #include "appmodel/TPStreamWriterConf.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
@@ -52,7 +52,7 @@ TPStreamWriterApplication::generate_modules(conffwk::Configuration* confdb,
 
   auto tpwriterConf = get_tp_writer();
   if (tpwriterConf == 0) {
-    throw (BadConf(ERS_HERE, "No TPStreamWriter configuration given"));
+    throw (BadConf(ERS_HERE, "No TPStreamWriterModule configuration given"));
   }
   auto tpwriterConfObj = tpwriterConf->config_object();
 
@@ -101,12 +101,12 @@ TPStreamWriterApplication::generate_modules(conffwk::Configuration* confdb,
   }
 
   std::string tpwrUid("tpwriter-"+std::to_string(source_id->get_sid()));
-  confdb->create(dbfile, "TPStreamWriter", tpwrUid, tpwrObj);
+  confdb->create(dbfile, "TPStreamWriterModule", tpwrUid, tpwrObj);
   tpwrObj.set_by_val<uint32_t>("source_id", source_id->get_sid());
   tpwrObj.set_obj("configuration", &tpwriterConf->config_object());
   tpwrObj.set_objs("inputs", {&tset_in_net_obj} );
 
-  modules.push_back(confdb->get<TPStreamWriter>(tpwrUid));
+  modules.push_back(confdb->get<TPStreamWriterModule>(tpwrUid));
 
   return modules;
 }

@@ -65,27 +65,27 @@
 
 <info name="" type="" num-of-items="101" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="glehmann" created-on="np04-srv-024.cern.ch" creation-time="20240611T170545" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240611T170545"/>
 
-<obj class="ALink" id="HermesController-2-HermesDataSender-via-links">
+<obj class="ALink" id="HermesModule-2-HermesDataSender-via-links">
  <attr name="Name" type="string" val="links"/>
- <rel name="From" class="Class" id="HermesController"/>
+ <rel name="From" class="Class" id="HermesModule"/>
  <rel name="To" class="Class" id="HermesDataSender"/>
  <rel name="Points">
-  <ref class="Point" id="1 HermesController-2-HermesDataSender-via-links"/>
-  <ref class="Point" id="2 HermesController-2-HermesDataSender-via-links"/>
-  <ref class="Point" id="3 HermesController-2-HermesDataSender-via-links"/>
-  <ref class="Point" id="4 HermesController-2-HermesDataSender-via-links"/>
+  <ref class="Point" id="1 HermesModule-2-HermesDataSender-via-links"/>
+  <ref class="Point" id="2 HermesModule-2-HermesDataSender-via-links"/>
+  <ref class="Point" id="3 HermesModule-2-HermesDataSender-via-links"/>
+  <ref class="Point" id="4 HermesModule-2-HermesDataSender-via-links"/>
  </rel>
 </obj>
 
-<obj class="ALink" id="HermesController-2-NetworkInterface-via-destination">
+<obj class="ALink" id="HermesModule-2-NetworkInterface-via-destination">
  <attr name="Name" type="string" val="destination"/>
- <rel name="From" class="Class" id="HermesController"/>
+ <rel name="From" class="Class" id="HermesModule"/>
  <rel name="To" class="Class" id="NetworkInterface"/>
  <rel name="Points">
-  <ref class="Point" id="1 HermesController-2-NetworkInterface-via-destination"/>
-  <ref class="Point" id="2 HermesController-2-NetworkInterface-via-destination"/>
-  <ref class="Point" id="3 HermesController-2-NetworkInterface-via-destination"/>
-  <ref class="Point" id="4 HermesController-2-NetworkInterface-via-destination"/>
+  <ref class="Point" id="1 HermesModule-2-NetworkInterface-via-destination"/>
+  <ref class="Point" id="2 HermesModule-2-NetworkInterface-via-destination"/>
+  <ref class="Point" id="3 HermesModule-2-NetworkInterface-via-destination"/>
+  <ref class="Point" id="4 HermesModule-2-NetworkInterface-via-destination"/>
  </rel>
 </obj>
 
@@ -171,7 +171,7 @@
  <attr name="y" type="s16" val="264"/>
 </obj>
 
-<obj class="Class" id="HermesController">
+<obj class="Class" id="HermesModule">
  <attr name="x" type="s16" val="8"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
@@ -247,14 +247,14 @@
  </rel>
 </obj>
 
-<obj class="GLink" id="IpbusDevice-2-HermesController">
+<obj class="GLink" id="IpbusDevice-2-HermesModule">
  <rel name="From" class="Class" id="IpbusDevice"/>
- <rel name="To" class="Class" id="HermesController"/>
+ <rel name="To" class="Class" id="HermesModule"/>
  <rel name="Points">
-  <ref class="Point" id="1 IpbusDevice-2-HermesController"/>
-  <ref class="Point" id="2 IpbusDevice-2-HermesController"/>
-  <ref class="Point" id="3 IpbusDevice-2-HermesController"/>
-  <ref class="Point" id="4 IpbusDevice-2-HermesController"/>
+  <ref class="Point" id="1 IpbusDevice-2-HermesModule"/>
+  <ref class="Point" id="2 IpbusDevice-2-HermesModule"/>
+  <ref class="Point" id="3 IpbusDevice-2-HermesModule"/>
+  <ref class="Point" id="4 IpbusDevice-2-HermesModule"/>
  </rel>
 </obj>
 
@@ -340,12 +340,12 @@
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 HermesController-2-HermesDataSender-via-links">
+<obj class="Point" id="1 HermesModule-2-HermesDataSender-via-links">
  <attr name="x" type="s16" val="79"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 HermesController-2-NetworkInterface-via-destination">
+<obj class="Point" id="1 HermesModule-2-NetworkInterface-via-destination">
  <attr name="x" type="s16" val="79"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
@@ -355,7 +355,7 @@
  <attr name="y" type="s16" val="51"/>
 </obj>
 
-<obj class="Point" id="1 IpbusDevice-2-HermesController">
+<obj class="Point" id="1 IpbusDevice-2-HermesModule">
  <attr name="x" type="s16" val="60"/>
  <attr name="y" type="s16" val="38"/>
 </obj>
@@ -425,12 +425,12 @@
  <attr name="y" type="s16" val="181"/>
 </obj>
 
-<obj class="Point" id="2 HermesController-2-HermesDataSender-via-links">
+<obj class="Point" id="2 HermesModule-2-HermesDataSender-via-links">
  <attr name="x" type="s16" val="79"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="2 HermesController-2-NetworkInterface-via-destination">
+<obj class="Point" id="2 HermesModule-2-NetworkInterface-via-destination">
  <attr name="x" type="s16" val="79"/>
 </obj>
 
@@ -439,7 +439,7 @@
  <attr name="y" type="s16" val="319"/>
 </obj>
 
-<obj class="Point" id="2 IpbusDevice-2-HermesController">
+<obj class="Point" id="2 IpbusDevice-2-HermesModule">
  <attr name="x" type="s16" val="60"/>
  <attr name="y" type="s16" val="18"/>
 </obj>
@@ -508,12 +508,12 @@
  <attr name="y" type="s16" val="181"/>
 </obj>
 
-<obj class="Point" id="3 HermesController-2-HermesDataSender-via-links">
+<obj class="Point" id="3 HermesModule-2-HermesDataSender-via-links">
  <attr name="x" type="s16" val="6"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="3 HermesController-2-NetworkInterface-via-destination">
+<obj class="Point" id="3 HermesModule-2-NetworkInterface-via-destination">
  <attr name="x" type="s16" val="104"/>
 </obj>
 
@@ -522,7 +522,7 @@
  <attr name="y" type="s16" val="319"/>
 </obj>
 
-<obj class="Point" id="3 IpbusDevice-2-HermesController">
+<obj class="Point" id="3 IpbusDevice-2-HermesModule">
  <attr name="x" type="s16" val="26"/>
  <attr name="y" type="s16" val="18"/>
 </obj>
@@ -591,12 +591,12 @@
  <attr name="y" type="s16" val="8"/>
 </obj>
 
-<obj class="Point" id="4 HermesController-2-HermesDataSender-via-links">
+<obj class="Point" id="4 HermesModule-2-HermesDataSender-via-links">
  <attr name="x" type="s16" val="6"/>
  <attr name="y" type="s16" val="17"/>
 </obj>
 
-<obj class="Point" id="4 HermesController-2-NetworkInterface-via-destination">
+<obj class="Point" id="4 HermesModule-2-NetworkInterface-via-destination">
  <attr name="x" type="s16" val="104"/>
  <attr name="y" type="s16" val="30"/>
 </obj>
@@ -606,7 +606,7 @@
  <attr name="y" type="s16" val="12"/>
 </obj>
 
-<obj class="Point" id="4 IpbusDevice-2-HermesController">
+<obj class="Point" id="4 IpbusDevice-2-HermesModule">
  <attr name="x" type="s16" val="26"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
