@@ -21,9 +21,9 @@
 #include "confmodel/Session.hpp"
 
 #include "appmodel/FakeDataApplication.hpp"
-#include "appmodel/FakeDataProd.hpp"
+#include "appmodel/FakeDataProdModule.hpp"
 #include "appmodel/FakeDataProdConf.hpp"
-#include "appmodel/FragmentAggregator.hpp"
+#include "appmodel/FragmentAggregatorModule.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
@@ -64,11 +64,11 @@ FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
   // for (auto rule : get_queue_rules()) {
   //   auto destination_class = rule->get_destination_class();
   //   auto data_type = rule->get_descriptor()->get_data_type();
-  //   if (destination_class == "FakeDataProd") {
+  //   if (destination_class == "FakeDataProdModule") {
   //     if (data_type == "DataRequest") {
   //       dlhReqInputQDesc = rule->get_descriptor();
   //     }
-  //   } else if (destination_class == "FragmentAggregator") {
+  //   } else if (destination_class == "FragmentAggregatorModule") {
   //     faOutputQDesc = rule->get_descriptor();
   //   }
   // }
@@ -77,9 +77,9 @@ FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
   // const NetworkConnectionDescriptor* tsNetDesc = nullptr;
   // for (auto rule : get_network_rules()) {
   //   auto endpoint_class = rule->get_endpoint_class();
-  //   if (endpoint_class == "FragmentAggregator") {
+  //   if (endpoint_class == "FragmentAggregatorModule") {
   //     faNetDesc = rule->get_descriptor();
-  //   } else if (endpoint_class == "FakeDataProd") {
+  //   } else if (endpoint_class == "FakeDataProdModule") {
   //     tsNetDesc = rule->get_descriptor();
   //   }
   // }
@@ -102,7 +102,7 @@ FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
   //   throw(BadConf(ERS_HERE, "No DLH request input queue descriptor given"));
   // }
 
-  // // Create a FakeDataProd for each stream of this Readout Group
+  // // Create a FakeDataProdModule for each stream of this Readout Group
   // // for (auto roGroup : get_readout_groups()) {
   // for (auto roGroup : get_contains()) {
   //   if (roGroup->disabled(*session)) {
@@ -124,10 +124,10 @@ FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
   //       continue;
   //     }
   //     auto id = stream->get_source_id();
-  //     std::string uid("FakeDataProd-" + std::to_string(id));
+  //     std::string uid("FakeDataProdModule-" + std::to_string(id));
   //     conffwk::ConfigObject dlhObj;
-  //     TLOG_DEBUG(7) << "creating OKS configuration object for FakeDataProd";
-  //     confdb->create(dbfile, "FakeDataProd", uid, dlhObj);
+  //     TLOG_DEBUG(7) << "creating OKS configuration object for FakeDataProdModule";
+  //     confdb->create(dbfile, "FakeDataProdModule", uid, dlhObj);
   //     dlhObj.set_obj("configuration", &stream->config_object());
 
   //     // Time Sync network connection
@@ -143,17 +143,17 @@ FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
 
   //     std::string reqQueueUid(dlhReqInputQDesc->get_uid_base() + std::to_string(id));
   //     conffwk::ConfigObject reqQueueObj;
-  //     confdb->create(dbfile, "QueueWithId", reqQueueUid, reqQueueObj);
+  //     confdb->create(dbfile, "QueueWithSourceId", reqQueueUid, reqQueueObj);
   //     reqQueueObj.set_by_val<std::string>("data_type", dlhReqInputQDesc->get_data_type());
   //     reqQueueObj.set_by_val<std::string>("queue_type", dlhReqInputQDesc->get_queue_type());
   //     reqQueueObj.set_by_val<uint32_t>("capacity", dlhReqInputQDesc->get_capacity());
   //     reqQueueObj.set_by_val<uint32_t>("source_id", stream->get_source_id());
-  //     // Add the requessts queue dal pointer to the outputs of the FragmentAggregator
+  //     // Add the requessts queue dal pointer to the outputs of the FragmentAggregatorModule
   //     faOutputQueues.push_back(confdb->get<confmodel::Connection>(reqQueueUid));
 
   //     dlhObj.set_objs("inputs", { &reqQueueObj });
 
-  //     modules.push_back(confdb->get<FakeDataProd>(uid));
+  //     modules.push_back(confdb->get<FakeDataProdModule>(uid));
   //   }
   // }
 
@@ -161,7 +161,7 @@ FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
   // std::string faUid("fragmentaggregator-" + UID());
   // conffwk::ConfigObject faObj;
   // TLOG_DEBUG(7) << "creating OKS configuration object for Fragment Aggregator class ";
-  // confdb->create(dbfile, "FragmentAggregator", faUid, faObj);
+  // confdb->create(dbfile, "FragmentAggregatorModule", faUid, faObj);
 
   // // Add network connection to TRBs
   // auto faServiceObj = faNetDesc->get_associated_service()->config_object();
@@ -180,7 +180,7 @@ FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
   // faObj.set_objs("inputs", { &faNetObj, &faQueueObj });
   // faObj.set_objs("outputs", qObjs);
 
-  // modules.push_back(confdb->get<FragmentAggregator>(faUid));
+  // modules.push_back(confdb->get<FragmentAggregatorModule>(faUid));
 
   // oks::OksFile::set_nolock_mode(false);
   return modules;

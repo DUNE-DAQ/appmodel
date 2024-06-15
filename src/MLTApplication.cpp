@@ -32,16 +32,16 @@
 
 #include "appmodel/SourceIDConf.hpp"
 
-#include "appmodel/DataSubscriber.hpp"
-#include "appmodel/DataReaderConf.hpp"
+#include "appmodel/DataSubscriberModule.hpp"
+#include "appmodel/DataReceiverConf.hpp"
 #include "appmodel/DataRecorderConf.hpp"
 
-#include "appmodel/ReadoutModule.hpp"
-#include "appmodel/ReadoutModuleConf.hpp"
+#include "appmodel/DataHandlerModule.hpp"
+#include "appmodel/DataHandlerConf.hpp"
 #include "appmodel/TCDataProcessor.hpp"
 
-#include "appmodel/ModuleLevelTrigger.hpp"
-#include "appmodel/ModuleLevelTriggerConf.hpp"
+#include "appmodel/MLTModule.hpp"
+#include "appmodel/MLTConf.hpp"
 
 #include "appmodel/MLTApplication.hpp"
 #include "appmodel/ReadoutApplication.hpp"
@@ -49,8 +49,8 @@
 #include "appmodel/FakeHSIApplication.hpp"
 #include "appmodel/appmodelIssues.hpp"
 
-#include "appmodel/StandaloneCandidateMakerConf.hpp"
-#include "appmodel/StandaloneCandidateMaker.hpp"
+#include "appmodel/StandaloneTCMakerConf.hpp"
+#include "appmodel/StandaloneTCMakerModule.hpp"
 
 #include "logging/Logging.hpp"
 
@@ -234,7 +234,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
 	gen_obj.set_objs("inputs", {&timesync_net_obj});
      }
      gen_obj.set_objs("outputs", {&input_queue_obj});
-     modules.push_back(confdb->get<StandaloneCandidateMaker>(gen_conf->UID()));
+     modules.push_back(confdb->get<StandaloneTCMakerModule>(gen_conf->UID()));
    }
 
 
@@ -243,7 +243,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
    **************************************************************/
   auto rdr_conf = get_data_subscriber();
   if (rdr_conf == nullptr) {
-    throw (BadConf(ERS_HERE, "No DataReader configuration given"));
+    throw (BadConf(ERS_HERE, "No DataReceiverModule configuration given"));
   }
 
   std::string reader_uid("data-reader-"+UID());
@@ -255,7 +255,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
   reader_obj.set_objs("outputs", {&input_queue_obj} );
   reader_obj.set_obj("configuration", &rdr_conf->config_object());
 
-  modules.push_back(confdb->get<DataSubscriber>(reader_uid));
+  modules.push_back(confdb->get<DataSubscriberModule>(reader_uid));
 
   /**************************************************************
    * Create the readout map
@@ -407,10 +407,10 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
   ti_obj.set_objs("outputs", {&output_queue_obj});
 
   // Add to our list of modules to return
-   modules.push_back(confdb->get<ReadoutModule>(ti_uid));
+   modules.push_back(confdb->get<DataHandlerModule>(ti_uid));
 
   /**************************************************************
-   * Instantiate the ModuleLevelTrigger module
+   * Instantiate the MLTModule module
    **************************************************************/
 
    conffwk::ConfigObject mlt_obj;
@@ -418,7 +418,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
    mlt_obj.set_obj("configuration", &(mlt_conf->config_object()));
    mlt_obj.set_objs("inputs", {&output_queue_obj, &ti_net_obj});
    mlt_obj.set_objs("outputs", {&td_net_obj});
-   modules.push_back(confdb->get<ModuleLevelTrigger>(mlt_conf->UID()));
+   modules.push_back(confdb->get<MLTModule>(mlt_conf->UID()));
 
   return modules;
 }

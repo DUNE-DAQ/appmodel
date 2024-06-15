@@ -88,26 +88,26 @@
 </include>
 
 
- <class name="CustomTriggerCandidateMaker">
-  <superclass name="StandaloneCandidateMaker"/>
-  <relationship name="configuration" class-type="CustomTriggerCandidateMakerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ <class name="CustomTCMaker">
+  <superclass name="StandaloneTCMakerModule"/>
+  <relationship name="configuration" class-type="CustomTCMakerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="CustomTriggerCandidateMakerConf">
-  <superclass name="StandaloneCandidateMakerConf"/>
-  <attribute name="template_for" type="class" init-value="CustomTriggerCandidateMaker"/>
+ <class name="CustomTCMakerConf">
+  <superclass name="StandaloneTCMakerConf"/>
+  <attribute name="template_for" type="class" init-value="CustomTCMaker"/>
   <attribute name="trigger_types" type="u32" is-multi-value="yes" init-value="3,7" is-not-null="yes"/>
   <attribute name="trigger_intervals" type="u32" is-multi-value="yes" init-value="62500000,62500000" is-not-null="yes"/>
   <attribute name="clock_frequency_hz" type="u32" init-value="62500000"/>
  </class>
 
- <class name="DataSubscriber">
+ <class name="DataSubscriberModule">
   <superclass name="DaqModule"/>
-  <relationship name="configuration" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="configuration" class-type="DataReceiverConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="HSI2TCTranslatorConf">
-  <superclass name="DataReaderConf"/>
+  <superclass name="DataReceiverConf"/>
   <relationship name="signals" class-type="HSISignalWindow" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
@@ -128,20 +128,20 @@
  <class name="MLTApplication">
   <superclass name="TriggerApplication"/>
   <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
-  <relationship name="mlt_conf" class-type="ModuleLevelTriggerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="standalone_candidate_maker_confs" class-type="StandaloneCandidateMakerConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="mlt_conf" class-type="MLTConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="standalone_candidate_maker_confs" class-type="StandaloneTCMakerConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate daq module dal objects for MLTApplication on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
   </method>
  </class>
 
- <class name="ModuleLevelTrigger">
+ <class name="MLTModule">
   <superclass name="DaqModule"/>
-  <relationship name="configuration" class-type="ModuleLevelTriggerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="configuration" class-type="MLTConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="ModuleLevelTriggerConf">
-  <attribute name="template_for" type="class" init-value="ModuleLevelTrigger"/>
+ <class name="MLTConf">
+  <attribute name="template_for" type="class" init-value="MLTModule"/>
   <attribute name="td_out_of_timeout" type="bool" init-value="true" is-not-null="yes"/>
   <attribute name="buffer_timeout" type="u32" init-value="100" is-not-null="yes"/>
   <attribute name="td_readout_limit" type="u32" init-value="1000" is-not-null="yes"/>
@@ -154,26 +154,26 @@
   <attribute name="groups_selection_mode" type="enum" range="kRandom,kSequential" init-value="kRandom" is-not-null="yes"/>
  </class>
 
- <class name="RandomTriggerCandidateMaker">
-  <superclass name="StandaloneCandidateMaker"/>
+ <class name="RandomTCMakerModule">
+  <superclass name="StandaloneTCMakerModule"/>
   <attribute name="trigger_candidate_sink" type="string" is-not-null="yes"/>
-  <relationship name="configuration" class-type="RandomTriggerCandidateMakerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="configuration" class-type="RandomTCMakerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="RandomTriggerCandidateMakerConf">
-  <superclass name="StandaloneCandidateMakerConf"/>
-  <attribute name="template_for" type="class" init-value="RandomTriggerCandidateMaker"/>
+ <class name="RandomTCMakerConf">
+  <superclass name="StandaloneTCMakerConf"/>
+  <attribute name="template_for" type="class" init-value="RandomTCMakerModule"/>
   <attribute name="trigger_interval_ticks" type="u32" init-value="64000000" is-not-null="yes"/>
   <attribute name="clock_frequency_hz" type="u32" init-value="62500000" is-not-null="yes"/>
   <attribute name="time_distribution" type="enum" range="kUniform,kPoisson" init-value="kUniform" is-not-null="yes"/>
  </class>
 
- <class name="StandaloneCandidateMaker">
+ <class name="StandaloneTCMakerModule">
   <superclass name="DaqModule"/>
  </class>
 
- <class name="StandaloneCandidateMakerConf" is-abstract="yes">
-  <attribute name="template_for" type="class" init-value="StandaloneCandidateMaker" is-not-null="yes"/>
+ <class name="StandaloneTCMakerConf" is-abstract="yes">
+  <attribute name="template_for" type="class" init-value="StandaloneTCMakerModule" is-not-null="yes"/>
   <attribute name="timestamp_method" type="enum" range="kTimeSync,kSystemClock" init-value="kTimeSync" is-not-null="yes"/>
  </class>
 
@@ -193,7 +193,7 @@
   <attribute name="prescale" description="Prescale factor to apply to algorithm output" type="u32" init-value="1" is-not-null="yes"/>
  </class>
 
- <class name="TCCustom">
+ <class name="TCCustomAlgorithm">
   <superclass name="TCAlgorithm"/>
   <attribute name="trigger_types" type="u32" is-multi-value="yes"/>
   <attribute name="trigger_intervals" type="u32" is-multi-value="yes"/>
@@ -242,7 +242,7 @@
   <attribute name="time_after" type="u32" init-value="20000" is-not-null="yes"/>
  </class>
 
- <class name="TriggerActivityMakerHorizontalMuonPlugin">
+ <class name="TAMakerHorizontalMuonAlgorithm">
   <superclass name="TAAlgorithm"/>
   <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
   <attribute name="trigger_on_n_channels" description="Whether to trigger on N Channels" type="bool" init-value="false" is-not-null="yes"/>
@@ -253,7 +253,7 @@
   <attribute name="adjacency_tolerance" description="Tolerance for the number of allowed gaps for the adjacency algorithm" type="u32" init-value="4" is-not-null="yes"/>
  </class>
 
- <class name="TriggerActivityMakerPrescalePlugin">
+ <class name="TAMakerPrescaleAlgorithm">
   <superclass name="TAAlgorithm"/>
  </class>
 
@@ -261,14 +261,14 @@
   <superclass name="ResourceSetAND"/>
   <superclass name="SmartDaqApplication"/>
   <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
-  <relationship name="data_subscriber" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="trigger_inputs_handler" class-type="ReadoutModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="data_subscriber" class-type="DataReceiverConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="trigger_inputs_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate daq module dal objects for streams of thie TriggerApplication on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
   </method>
  </class>
 
- <class name="TriggerCandidateMakerHorizontalMuonPlugin">
+ <class name="TCMakerHorizontalMuonAlgorithm">
   <superclass name="TCAlgorithm"/>
   <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
   <attribute name="trigger_on_n_channels" description="Whether to trigger on N Channels" type="bool" init-value="false" is-not-null="yes"/>
@@ -277,12 +277,12 @@
   <attribute name="n_channels_threshold" description="Threshold for the N Channels algorithm" type="u32" init-value="8" is-not-null="yes"/>
  </class>
 
- <class name="TriggerCandidateMakerPrescalePlugin">
+ <class name="TCMakerPrescaleAlgorithm">
   <superclass name="TCAlgorithm"/>
  </class>
 
- <class name="TriggerDataHandler">
-  <superclass name="ReadoutModule"/>
+ <class name="TriggerDataHandlerModule">
+  <superclass name="DataHandlerModule"/>
   <relationship name="enabled_source_ids" description="List of source IDs enabled in this session: used by trigger to define the readout window for trigger decisions." class-type="SourceIDConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="mandatory_source_ids" description="Source Ids that will always be included in a trigger decision." class-type="SourceIDConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>

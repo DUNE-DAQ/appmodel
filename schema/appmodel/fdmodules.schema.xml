@@ -112,12 +112,12 @@
   <relationship name="used_lcores" description="associates CPUs to the data reception workload." class-type="ProcessingResource" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="NICReceiver">
-  <superclass name="DataReader"/>
+ <class name="DPDKReader">
+  <superclass name="DataReceiverModule"/>
  </class>
 
- <class name="NICReceiverConf">
-  <superclass name="DataReaderConf"/>
+ <class name="DPDKReaderConf">
+  <superclass name="DataReceiverConf"/>
   <attribute name="eal_args" type="string" is-not-null="yes"/>
  </class>
 
@@ -127,12 +127,12 @@
   <relationship name="configuration" class-type="DPDKPortConfiguration" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="FDDataLinkHandler">
-  <superclass name="ReadoutModule"/>
+ <class name="FDDataHandlerModule">
+  <superclass name="DataHandlerModule"/>
  </class>
 
  <class name="FDFakeCardReader">
-  <superclass name="DataReader"/>
+  <superclass name="DataReceiverModule"/>
  </class>
 
  <class name="FEMBSettings">
@@ -154,8 +154,8 @@
   <attribute name="pulse_channels" description="Array of up to 16 true/false values, for whether to send pulser to each corresponding channel per LArASIC." type="bool" is-multi-value="yes"/>
  </class>
 
- <class name="FelixCardReader" description="DAQModule which reads a Felix card">
-  <superclass name="DataReader"/>
+ <class name="FelixReaderModule" description="DAQModule which reads a Felix card">
+  <superclass name="DataReceiverModule"/>
  </class>
 
  <class name="FelixDataSender">
@@ -180,7 +180,7 @@
   <attribute name="links_enabled" description="Number of elinks configured." type="u32" is-multi-value="yes" init-value="0,1,2,3,4" is-not-null="yes"/>
  </class>
 
- <class name="HermesController">
+ <class name="HermesModule">
   <superclass name="DaqModule"/>
   <superclass name="IpbusDevice"/>
   <relationship name="links" class-type="HermesDataSender" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
