@@ -113,7 +113,7 @@
 
  <class name="DPDKReceiver">
   <superclass name="NWDetDataReceiver"/>
-  <relationship name="uses" class-type="NICInterface" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="uses" class-type="NetworkDevice" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="configuration" class-type="DPDKPortConfiguration" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
@@ -178,11 +178,6 @@
  <class name="IpbusDevice">
   <attribute name="uri" type="string" is-not-null="yes"/>
   <relationship name="address_table" class-type="IpbusAddressTable" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="NICInterface">
-  <superclass name="NetworkDevice"/>
-  <attribute name="iface" type="s16" init-value="0" is-not-null="yes"/>
  </class>
 
  <class name="NICStatsConf">

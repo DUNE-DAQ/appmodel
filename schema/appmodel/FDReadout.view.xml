@@ -77,15 +77,15 @@
  </rel>
 </obj>
 
-<obj class="ALink" id="DPDKReceiver-2-NICInterface-via-uses">
+<obj class="ALink" id="DPDKReceiver-2-NetworkDevice-via-uses">
  <attr name="Name" type="string" val="uses"/>
  <rel name="From" class="Class" id="DPDKReceiver"/>
- <rel name="To" class="Class" id="NICInterface"/>
+ <rel name="To" class="Class" id="NetworkDevice"/>
  <rel name="Points">
-  <ref class="Point" id="1 DPDKReceiver-2-NICInterface-via-uses"/>
-  <ref class="Point" id="2 DPDKReceiver-2-NICInterface-via-uses"/>
-  <ref class="Point" id="3 DPDKReceiver-2-NICInterface-via-uses"/>
-  <ref class="Point" id="4 DPDKReceiver-2-NICInterface-via-uses"/>
+  <ref class="Point" id="1 DPDKReceiver-2-NetworkDevice-via-uses"/>
+  <ref class="Point" id="2 DPDKReceiver-2-NetworkDevice-via-uses"/>
+  <ref class="Point" id="3 DPDKReceiver-2-NetworkDevice-via-uses"/>
+  <ref class="Point" id="4 DPDKReceiver-2-NetworkDevice-via-uses"/>
  </rel>
 </obj>
 
@@ -172,7 +172,7 @@
  <attr name="y" type="s16" val="22"/>
 </obj>
 
-<obj class="Class" id="NICInterface">
+<obj class="Class" id="NetworkDevice">
  <attr name="x" type="s16" val="903"/>
  <attr name="y" type="s16" val="492"/>
 </obj>
@@ -283,14 +283,14 @@
  </rel>
 </obj>
 
-<obj class="GLink" id="NetworkDevice-2-NICInterface">
+<obj class="GLink" id="NetworkDevice-2-NetworkDevice">
  <rel name="From" class="Class" id="NetworkDevice"/>
- <rel name="To" class="Class" id="NICInterface"/>
+ <rel name="To" class="Class" id="NetworkDevice"/>
  <rel name="Points">
-  <ref class="Point" id="1 NetworkDevice-2-NICInterface"/>
-  <ref class="Point" id="2 NetworkDevice-2-NICInterface"/>
-  <ref class="Point" id="3 NetworkDevice-2-NICInterface"/>
-  <ref class="Point" id="4 NetworkDevice-2-NICInterface"/>
+  <ref class="Point" id="1 NetworkDevice-2-NetworkDevice"/>
+  <ref class="Point" id="2 NetworkDevice-2-NetworkDevice"/>
+  <ref class="Point" id="3 NetworkDevice-2-NetworkDevice"/>
+  <ref class="Point" id="4 NetworkDevice-2-NetworkDevice"/>
  </rel>
 </obj>
 
@@ -321,7 +321,7 @@
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 DPDKReceiver-2-NICInterface-via-uses">
+<obj class="Point" id="1 DPDKReceiver-2-NetworkDevice-via-uses">
  <attr name="x" type="s16" val="70"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
@@ -375,7 +375,7 @@
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 NetworkDevice-2-NICInterface">
+<obj class="Point" id="1 NetworkDevice-2-NetworkDevice">
  <attr name="x" type="s16" val="98"/>
  <attr name="y" type="s16" val="38"/>
 </obj>
@@ -395,7 +395,7 @@
  <attr name="y" type="s16" val="348"/>
 </obj>
 
-<obj class="Point" id="2 DPDKReceiver-2-NICInterface-via-uses">
+<obj class="Point" id="2 DPDKReceiver-2-NetworkDevice-via-uses">
  <attr name="x" type="s16" val="70"/>
  <attr name="y" type="s16" val="504"/>
 </obj>
@@ -449,7 +449,7 @@
  <attr name="y" type="s16" val="222"/>
 </obj>
 
-<obj class="Point" id="2 NetworkDevice-2-NICInterface">
+<obj class="Point" id="2 NetworkDevice-2-NetworkDevice">
  <attr name="x" type="s16" val="98"/>
  <attr name="y" type="s16" val="415"/>
 </obj>
@@ -469,7 +469,7 @@
  <attr name="y" type="s16" val="348"/>
 </obj>
 
-<obj class="Point" id="3 DPDKReceiver-2-NICInterface-via-uses">
+<obj class="Point" id="3 DPDKReceiver-2-NetworkDevice-via-uses">
  <attr name="x" type="s16" val="23"/>
  <attr name="y" type="s16" val="504"/>
 </obj>
@@ -524,7 +524,7 @@
  <attr name="y" type="s16" val="222"/>
 </obj>
 
-<obj class="Point" id="3 NetworkDevice-2-NICInterface">
+<obj class="Point" id="3 NetworkDevice-2-NetworkDevice">
  <attr name="x" type="s16" val="23"/>
  <attr name="y" type="s16" val="415"/>
 </obj>
@@ -544,7 +544,7 @@
  <attr name="y" type="s16" val="53"/>
 </obj>
 
-<obj class="Point" id="4 DPDKReceiver-2-NICInterface-via-uses">
+<obj class="Point" id="4 DPDKReceiver-2-NetworkDevice-via-uses">
  <attr name="x" type="s16" val="23"/>
  <attr name="y" type="s16" val="12"/>
 </obj>
@@ -599,7 +599,7 @@
  <attr name="y" type="s16" val="30"/>
 </obj>
 
-<obj class="Point" id="4 NetworkDevice-2-NICInterface">
+<obj class="Point" id="4 NetworkDevice-2-NetworkDevice">
  <attr name="x" type="s16" val="23"/>
  <attr name="y" type="s16" val="12"/>
 </obj>

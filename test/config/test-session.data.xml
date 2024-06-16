@@ -118,7 +118,7 @@
 </obj>
 
 <obj class="DPDKReceiver" id="ru-1-rcv">
- <rel name="uses" class="NICInterface" id="ru_1_readout"/>
+ <rel name="uses" class="NetworkDevice" id="ru_1_readout"/>
  <rel name="configuration" class="DPDKPortConfiguration" id="dpdk_e810_conf"/>
 </obj>
 
@@ -193,7 +193,7 @@
  <rel name="uses" class="NetworkInterface" id="wib_101_hermes0"/>
 </obj>
 
-<obj class="NICInterface" id="ru_1_readout">
+<obj class="NetworkDevice" id="ru_1_readout">
  <attr name="mac_address" type="string" val="00:00:00:00:00:00"/>
  <attr name="ip_address" type="string" val="123.456.101.501"/>
  <attr name="interface_name" type="string" val="data0"/>
