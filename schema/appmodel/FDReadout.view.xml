@@ -177,7 +177,7 @@
  <attr name="y" type="s16" val="492"/>
 </obj>
 
-<obj class="Class" id="DPDKReader">
+<obj class="Class" id="DPDKReaderModule">
  <attr name="x" type="s16" val="288"/>
  <attr name="y" type="s16" val="4"/>
 </obj>
@@ -228,14 +228,14 @@
  </rel>
 </obj>
 
-<obj class="GLink" id="DataReceiverModule-2-DPDKReader">
+<obj class="GLink" id="DataReceiverModule-2-DPDKReaderModule">
  <rel name="From" class="Class" id="DataReceiverModule"/>
- <rel name="To" class="Class" id="DPDKReader"/>
+ <rel name="To" class="Class" id="DPDKReaderModule"/>
  <rel name="Points">
-  <ref class="Point" id="1 DataReceiverModule-2-DPDKReader"/>
-  <ref class="Point" id="2 DataReceiverModule-2-DPDKReader"/>
-  <ref class="Point" id="3 DataReceiverModule-2-DPDKReader"/>
-  <ref class="Point" id="4 DataReceiverModule-2-DPDKReader"/>
+  <ref class="Point" id="1 DataReceiverModule-2-DPDKReaderModule"/>
+  <ref class="Point" id="2 DataReceiverModule-2-DPDKReaderModule"/>
+  <ref class="Point" id="3 DataReceiverModule-2-DPDKReaderModule"/>
+  <ref class="Point" id="4 DataReceiverModule-2-DPDKReaderModule"/>
  </rel>
 </obj>
 
@@ -340,7 +340,7 @@
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 DataReceiverModule-2-DPDKReader">
+<obj class="Point" id="1 DataReceiverModule-2-DPDKReaderModule">
  <attr name="x" type="s16" val="57"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
@@ -414,7 +414,7 @@
  <attr name="y" type="s16" val="77"/>
 </obj>
 
-<obj class="Point" id="2 DataReceiverModule-2-DPDKReader">
+<obj class="Point" id="2 DataReceiverModule-2-DPDKReaderModule">
  <attr name="x" type="s16" val="57"/>
  <attr name="y" type="s16" val="23"/>
 </obj>
@@ -489,7 +489,7 @@
  <attr name="y" type="s16" val="77"/>
 </obj>
 
-<obj class="Point" id="3 DataReceiverModule-2-DPDKReader">
+<obj class="Point" id="3 DataReceiverModule-2-DPDKReaderModule">
  <attr name="x" type="s16" val="20"/>
  <attr name="y" type="s16" val="23"/>
 </obj>
@@ -564,7 +564,7 @@
  <attr name="y" type="s16" val="8"/>
 </obj>
 
-<obj class="Point" id="4 DataReceiverModule-2-DPDKReader">
+<obj class="Point" id="4 DataReceiverModule-2-DPDKReaderModule">
  <attr name="x" type="s16" val="20"/>
  <attr name="y" type="s16" val="8"/>
 </obj>

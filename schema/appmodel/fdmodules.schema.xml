@@ -102,7 +102,7 @@
   <relationship name="used_lcores" description="associates CPUs to the data reception workload." class-type="ProcessingResource" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="DPDKReader">
+ <class name="DPDKReaderModule">
   <superclass name="DataReceiverModule"/>
  </class>
 

@@ -165,7 +165,7 @@
 </obj>
 
 <obj class="DPDKReaderConf" id="def-nic-receiver-conf">
- <attr name="template_for" type="class" val="DPDKReader"/>
+ <attr name="template_for" type="class" val="DPDKReaderModule"/>
  <attr name="emulation_mode" type="bool" val="0"/>
  <attr name="eal_args" type="string" val=""/>
 </obj>
