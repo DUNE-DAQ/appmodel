@@ -98,10 +98,18 @@
  <rel name="address_table" class="IpbusAddressTable" id="Hermes-addrtab"/>
 </obj>
 
+<obj class="Service" id="root-controller_control">
+ <attr name="protocol" type="string" val="grpc"/>
+ <attr name="port" type="u16" val="13333"/>
+</obj>
+
 <obj class="RCApplication" id="ru-controller">
+ <rel name="exposes_service">
+  <ref class="Service" id="ru-controller_control"/>
+ </rel>
  <attr name="application_name" type="string" val="controller"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
- <rel name="fsm" class="FSMconfiguration" id="fsmConf-1"/>
+ <rel name="fsm" class="FSMconfiguration" id="fsmConf-prod"/>
 </obj>
 
 <obj class="ReadoutApplication" id="runp02srv003eth0">
@@ -149,13 +157,50 @@
  <attr name="port" type="u16" val="5000"/>
 </obj>
 
+<obj class="Service" id="daq-k8s-opmon-service">
+ <attr name="protocol" type="string" val="kafka"/>
+ <attr name="port" type="u16" val="30092"/>
+ <attr name="path" type="string" val="/opmon"/>
+</obj>
+
+<obj class="OpMonService" id="cern-opmon-application-service">
+ <attr name="application_name" type="string" val="sh"/>
+ <attr name="commandline_parameters" type="string">
+  <data val="-c"/>
+  <data val="echo Not starting kafka/grafana/postgres/influx"/>
+  <data val="&amp;&amp;"/>
+  <data val="sleep 10000"/>
+ </attr>
+ <rel name="runs_on" class="VirtualHost" id="kafka-cern-vhost"/>
+ <rel name="exposes_service">
+  <ref class="Service" id="daq-k8s-opmon-service"/>
+ </rel>
+</obj>
+
 <obj class="Session" id="crp4-oks-session">
  <attr name="use_connectivity_server" type="bool" val="1"/>
  <attr name="connectivity_service_interval_ms" type="u32" val="2000"/>
  <attr name="data_request_timeout_ms" type="u32" val="1000"/>
  <attr name="data_rate_slowdown_factor" type="u32" val="1"/>
+ <attr name="rte_script" type="string" val="">
  <rel name="segment" class="Segment" id="ru-segment"/>
  <rel name="detector_configuration" class="DetectorConfig" id="dummy-detector"/>
+ <rel name="environment">
+  <ref class="Variable" id="session-env-session-name-0"/>
+  <ref class="Variable" id="session-env-session-name-1"/>
+  <ref class="Variable" id="session-env-ers-verb"/>
+  <ref class="Variable" id="session-env-ers-info"/>
+  <ref class="Variable" id="session-env-ers-warning"/>
+  <ref class="Variable" id="session-env-ers-error"/>
+  <ref class="Variable" id="session-env-ers-fatal"/>
+  <ref class="Variable" id="session-env-connectivity-server"/>
+  <ref class="Variable" id="session-env-connectivity-port"/>
+  <ref class="Variable" id="daqapp-cli-monitoring"/>
+  <ref class="Variable" id="daqapp-cli-configuration"/>
+ </rel>
+ <rel name="infrastructure_applications">
+  <ref class="OpMonService" id="cern-opmon-application-service"/>
+ </rel>
 </obj>
 
 <obj class="WIBModuleConf" id="dummy">
@@ -169,6 +214,62 @@
  </rel>
  <rel name="wib_module_conf" class="WIBModuleConf" id="dummy"/>
  <rel name="hermes_module_conf" class="HermesModuleConf" id="def-hermes-conf"/>
+</obj>
+
+
+<obj class="Variable" id="daqapp-cli-configuration">
+ <attr name="name" type="string" val="DAQAPP_CLI_CONFIG_SVC"/>
+ <attr name="value" type="string" val="oksconflibs:test/config/CRP4-session.data.xml"/>
+</obj>
+
+<obj class="Variable" id="daqapp-cli-monitoring">
+ <attr name="name" type="string" val="DAQAPP_CLI_INFO_SVC"/>
+ <attr name="value" type="string" val="kafka://monkafka.cern.ch:30092/opmon"/>
+</obj>
+
+<obj class="Variable" id="session-env-connectivity-port">
+ <attr name="name" type="string" val="CONNECTION_PORT"/>
+ <attr name="value" type="string" val="30005"/>
+</obj>
+
+<obj class="Variable" id="session-env-connectivity-server">
+ <attr name="name" type="string" val="CONNECTION_SERVER"/>
+ <attr name="value" type="string" val="np04-srv-017"/>
+</obj>
+
+<obj class="Variable" id="session-env-ers-error">
+ <attr name="name" type="string" val="DUNEDAQ_ERS_ERROR"/>
+ <attr name="value" type="string" val="erstrace,throttle,lstdout,protobufstream(monkafka.cern.ch:30092)"/>
+</obj>
+
+<obj class="Variable" id="session-env-ers-fatal">
+ <attr name="name" type="string" val="DUNEDAQ_ERS_FATAL"/>
+ <attr name="value" type="string" val="erstrace,lstdout,protobufstream(monkafka.cern.ch:30092)"/>
+</obj>
+
+<obj class="Variable" id="session-env-ers-info">
+ <attr name="name" type="string" val="DUNEDAQ_ERS_INFO"/>
+ <attr name="value" type="string" val="erstrace,throttle,lstdout,protobufstream(monkafka.cern.ch:30092)"/>
+</obj>
+
+<obj class="Variable" id="session-env-ers-verb">
+ <attr name="name" type="string" val="DUNEDAQ_ERS_VERBOSITY_LEVEL"/>
+ <attr name="value" type="string" val="1"/>
+</obj>
+
+<obj class="Variable" id="session-env-ers-warning">
+ <attr name="name" type="string" val="DUNEDAQ_ERS_WARNING"/>
+ <attr name="value" type="string" val="erstrace,throttle,lstdout,protobufstream(monkafka.cern.ch:30092)"/>
+</obj>
+
+<obj class="Variable" id="session-env-session-name-0">
+ <attr name="name" type="string" val="DUNEDAQ_PARTITION"/>
+ <attr name="value" type="string" val="test-session"/>
+</obj>
+
+<obj class="Variable" id="session-env-session-name-1">
+ <attr name="name" type="string" val="DUNEDAQ_SESSION"/>
+ <attr name="value" type="string" val="test-session"/>
 </obj>
 
 </oks-data>
