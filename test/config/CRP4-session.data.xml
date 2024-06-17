@@ -260,7 +260,7 @@
   <ref class="Variable" id="daqapp-cli-monitoring"/>
   <ref class="Variable" id="daqapp-cli-configuration"/>
  </rel>
- <rel name="segment" class="Segment" id="ru-segment"/>
+ <rel name="segment" class="Segment" id="root-segment"/>
  <rel name="infrastructure_applications">
   <ref class="OpMonService" id="cern-opmon-application-service"/>
  </rel>
