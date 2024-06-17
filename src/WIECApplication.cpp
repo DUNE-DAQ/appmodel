@@ -109,29 +109,33 @@ WIECApplication::generate_modules(conffwk::Configuration* config,
 
     for( const auto& [ctrlhost, senders] : ctrlhost_sender_map ) {
 
-      conffwk::ConfigObject wib_obj;
-      std::string wib_uid = fmt::format("wib-ctrl-{}-{}", this->UID(), ctrlhost);
-      config->create(dbfile, "WIBConfigurator", wib_uid, wib_obj);
-      wib_obj.set_by_val<std::string>("wib_addr", fmt::format("{}://{}:{}", this->get_wib_module_conf()->get_communication_type(), ctrlhost, this->get_wib_module_conf()->get_communication_port()));
-      wib_obj.set_obj("conf", &this->get_wib_module_conf()->get_settings()->config_object());
-      modules.push_back(config->get<appmodel::WIBConfigurator>(wib_obj));
-
+      // Create WIBConfigurator
+      if ( this->get_wib_module_conf() ) {
+        conffwk::ConfigObject wib_obj;
+        std::string wib_uid = fmt::format("wib-ctrl-{}-{}", this->UID(), ctrlhost);
+        config->create(dbfile, "WIBConfigurator", wib_uid, wib_obj);
+        wib_obj.set_by_val<std::string>("wib_addr", fmt::format("{}://{}:{}", this->get_wib_module_conf()->get_communication_type(), ctrlhost, this->get_wib_module_conf()->get_communication_port()));
+        wib_obj.set_obj("conf", &this->get_wib_module_conf()->get_settings()->config_object());
+        modules.push_back(config->get<appmodel::WIBConfigurator>(wib_obj));
+      }
 
       // Create Hermes Modules
-      conffwk::ConfigObject hermes_obj;
-      std::string hermes_uid = fmt::format("hermes-ctrl-{}-{}", this->UID(), ctrlhost);
-      config->create(dbfile, "HermesModule", hermes_uid, hermes_obj);
-      hermes_obj.set_obj("address_table", &this->get_hermes_module_conf()->get_address_table()->config_object());
-      hermes_obj.set_by_val<std::string>("uri", fmt::format("{}://{}:{}", this->get_hermes_module_conf()->get_ipbus_type(), ctrlhost, this->get_hermes_module_conf()->get_ipbus_port()));
-      hermes_obj.set_obj("destination", &nw_receiver->get_uses()->config_object());
+      if (this->get_hermes_module_conf()) {
+        conffwk::ConfigObject hermes_obj;
+        std::string hermes_uid = fmt::format("hermes-ctrl-{}-{}", this->UID(), ctrlhost);
+        config->create(dbfile, "HermesModule", hermes_uid, hermes_obj);
+        hermes_obj.set_obj("address_table", &this->get_hermes_module_conf()->get_address_table()->config_object());
+        hermes_obj.set_by_val<std::string>("uri", fmt::format("{}://{}:{}", this->get_hermes_module_conf()->get_ipbus_type(), ctrlhost, this->get_hermes_module_conf()->get_ipbus_port()));
+        hermes_obj.set_obj("destination", &nw_receiver->get_uses()->config_object());
 
-      std::vector< const conffwk::ConfigObject * > links_obj; 
-      for ( const auto* sndr : senders ){
-        links_obj.push_back(&sndr->config_object());
+        std::vector< const conffwk::ConfigObject * > links_obj; 
+        for ( const auto* sndr : senders ){
+          links_obj.push_back(&sndr->config_object());
+        }
+        hermes_obj.set_objs("links", links_obj);
+
+        modules.push_back(config->get<appmodel::HermesModule>(hermes_obj));
       }
-      hermes_obj.set_objs("links", links_obj);
-
-      modules.push_back(config->get<appmodel::HermesModule>(hermes_obj));
 
 
     }
