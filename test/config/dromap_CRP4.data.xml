@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="128" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="crone" created-on="np04-srv-011.cern.ch" creation-time="20240308T134124" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240611T191027"/>
+<info name="" type="" num-of-items="128" oks-format="data" oks-version="862f2957270" created-by="crone" created-on="np04-srv-011.cern.ch" creation-time="20240308T134124" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240616T214043"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -74,13 +74,10 @@
 <comments>
  <comment creation-time="20240405T094240" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="Nic configuration updated"/>
  <comment creation-time="20240411T090553" created-by="thea" created-on="np04-srv-018.cern.ch" author="thea" text="dependency removed"/>
+ <comment creation-time="20240616T213718" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="adding hermes data streams to connection"/>
+ <comment creation-time="20240616T214043" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="adding all hermes streams to crp4"/>
 </comments>
 
-
-<obj class="DPDKReceiver" id="dpdk-crp4-receiver">
- <rel name="uses" class="NetworkDevice" id="nic-np02-srv-003"/>
- <rel name="configuration" class="DPDKPortConfiguration" id="nic-config-CRP4"/>
-</obj>
 
 <obj class="DPDKPortConfiguration" id="nic-config-CRP4">
  <attr name="flow_control" type="bool" val="1"/>
@@ -94,6 +91,11 @@
  <rel name="used_lcores">
   <ref class="ProcessingResource" id="crp4-lcores"/>
  </rel>
+</obj>
+
+<obj class="DPDKReceiver" id="dpdk-crp4-receiver">
+ <rel name="uses" class="NetworkDevice" id="nic-np02-srv-003"/>
+ <rel name="configuration" class="DPDKPortConfiguration" id="nic-config-CRP4"/>
 </obj>
 
 <obj class="DetectorStream" id="DetStream-200">
@@ -140,20 +142,22 @@
  <attr name="source_id" type="u32" val="208"/>
  <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1002-s00"/>
 </obj>
+
 <obj class="DetectorStream" id="DetStream-209">
  <attr name="source_id" type="u32" val="209"/>
- <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1002-s09"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1002-s01"/>
 </obj>
 
 <obj class="DetectorStream" id="DetStream-210">
  <attr name="source_id" type="u32" val="210"/>
- <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1002-s10"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1002-s02"/>
 </obj>
 
 <obj class="DetectorStream" id="DetStream-211">
  <attr name="source_id" type="u32" val="211"/>
- <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1002-s11"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1002-s03"/>
 </obj>
+
 <obj class="DetectorStream" id="DetStream-212">
  <attr name="source_id" type="u32" val="212"/>
  <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1002-s04"/>
@@ -336,8 +340,19 @@
 
 <obj class="DetectorToDaqConnection" id="crp4-connections">
  <rel name="contains">
-  <ref class="ResourceSetAND" id="crp4-streams"/>
   <ref class="DPDKReceiver" id="dpdk-crp4-receiver"/>
+  <ref class="HermesDataSender" id="hds-np02-wib-1001-10g-0"/>
+  <ref class="HermesDataSender" id="hds-np02-wib-1001-10g-1"/>
+  <ref class="HermesDataSender" id="hds-np02-wib-1002-10g-0"/>
+  <ref class="HermesDataSender" id="hds-np02-wib-1002-10g-1"/>
+  <ref class="HermesDataSender" id="hds-np02-wib-1003-10g-0"/>
+  <ref class="HermesDataSender" id="hds-np02-wib-1003-10g-1"/>
+  <ref class="HermesDataSender" id="hds-np02-wib-1004-10g-0"/>
+  <ref class="HermesDataSender" id="hds-np02-wib-1004-10g-1"/>
+  <ref class="HermesDataSender" id="hds-np02-wib-1005-10g-0"/>
+  <ref class="HermesDataSender" id="hds-np02-wib-1005-10g-1"/>
+  <ref class="HermesDataSender" id="hds-np02-wib-1006-10g-0"/>
+  <ref class="HermesDataSender" id="hds-np02-wib-1006-10g-1"/>
  </rel>
 </obj>
 
@@ -358,7 +373,7 @@
  <attr name="stream_id" type="u32" val="2"/>
 </obj>
 
-<obj class="GeoId" id="geoId-crp4-wib10012-s03">
+<obj class="GeoId" id="geoId-crp4-wib1001-s03">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="stream_id" type="u32" val="3"/>
@@ -817,19 +832,19 @@
  <attr name="uri" type="string" val="file://${HERMESMODULES_SHARE}/config/hermes_wib_v0.9.3/wib_eth_readout.xml"/>
 </obj>
 
+<obj class="NICStatsConf" id="nicStats-np02_WIB_CRP4">
+ <attr name="analyze_nth_packet" type="s32" val="1"/>
+ <attr name="expected_packet_size" type="u32" val="7243"/>
+ <attr name="expected_seq_id_step" type="u32" val="1"/>
+ <attr name="expected_timestamp_step" type="s32" val="-999"/>
+</obj>
+
 <obj class="NetworkDevice" id="nic-np02-srv-003">
  <attr name="numa_id" type="u8" val="1"/>
  <attr name="mac_address" type="string" val="6c:fe:54:4b:20:f1"/>
  <attr name="ip_address" type="string" val="10.73.139.82"/>
  <attr name="network_name" type="enum" val="Control"/>
  <attr name="pcie_addr" type="string" val="0000:98:00.1"/>
-</obj>
-
-<obj class="NICStatsConf" id="nicStats-np02_WIB_CRP4">
- <attr name="analyze_nth_packet" type="s32" val="1"/>
- <attr name="expected_packet_size" type="u32" val="7243"/>
- <attr name="expected_seq_id_step" type="u32" val="1"/>
- <attr name="expected_timestamp_step" type="s32" val="-999"/>
 </obj>
 
 <obj class="NetworkInterface" id="nw-np02-wib-1001-10g-0">
