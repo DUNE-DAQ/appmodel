@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="128" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="crone" created-on="np04-srv-011.cern.ch" creation-time="20240308T134124" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240611T191027"/>
+<info name="" type="" num-of-items="128" oks-format="data" oks-version="862f2957270" created-by="crone" created-on="np04-srv-011.cern.ch" creation-time="20240308T134124" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240616T214043"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -74,13 +74,10 @@
 <comments>
  <comment creation-time="20240405T094240" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="Nic configuration updated"/>
  <comment creation-time="20240411T090553" created-by="thea" created-on="np04-srv-018.cern.ch" author="thea" text="dependency removed"/>
+ <comment creation-time="20240616T213718" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="adding hermes data streams to connection"/>
+ <comment creation-time="20240616T214043" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="adding all hermes streams to crp4"/>
 </comments>
 
-
-<obj class="DPDKReceiver" id="dpdk-crp4-receiver">
- <rel name="uses" class="NetworkDevice" id="nic-np02-srv-003"/>
- <rel name="configuration" class="DPDKPortConfiguration" id="nic-config-CRP4"/>
-</obj>
 
 <obj class="DPDKPortConfiguration" id="nic-config-CRP4">
  <attr name="flow_control" type="bool" val="1"/>
@@ -96,569 +93,585 @@
  </rel>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-200">
+<obj class="DPDKReceiver" id="dpdk-crp4-receiver">
+ <rel name="uses" class="NetworkDevice" id="nic-np02-srv-003"/>
+ <rel name="configuration" class="DPDKPortConfiguration" id="nic-config-CRP4"/>
+</obj>
+
+<obj class="DetectorStream" id="DetStream-200">
  <attr name="source_id" type="u32" val="200"/>
- <rel name="geo_id" class="GeoId" id="geoId-200"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1001-s01"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-201">
+<obj class="DetectorStream" id="DetStream-201">
  <attr name="source_id" type="u32" val="201"/>
- <rel name="geo_id" class="GeoId" id="geoId-201"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1001-s01"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-202">
+<obj class="DetectorStream" id="DetStream-202">
  <attr name="source_id" type="u32" val="202"/>
- <rel name="geo_id" class="GeoId" id="geoId-202"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1001-s02"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-203">
+<obj class="DetectorStream" id="DetStream-203">
  <attr name="source_id" type="u32" val="203"/>
- <rel name="geo_id" class="GeoId" id="geoId-203"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1001-s03"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-204">
+<obj class="DetectorStream" id="DetStream-204">
  <attr name="source_id" type="u32" val="204"/>
- <rel name="geo_id" class="GeoId" id="geoId-204"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1001-s04"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-205">
+<obj class="DetectorStream" id="DetStream-205">
  <attr name="source_id" type="u32" val="205"/>
- <rel name="geo_id" class="GeoId" id="geoId-205"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1001-s05"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-206">
+<obj class="DetectorStream" id="DetStream-206">
  <attr name="source_id" type="u32" val="206"/>
- <rel name="geo_id" class="GeoId" id="geoId-206"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1001-s06"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-207">
+<obj class="DetectorStream" id="DetStream-207">
  <attr name="source_id" type="u32" val="207"/>
- <rel name="geo_id" class="GeoId" id="geoId-207"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1001-s07"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-208">
+<obj class="DetectorStream" id="DetStream-208">
  <attr name="source_id" type="u32" val="208"/>
- <rel name="geo_id" class="GeoId" id="geoId-208"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1002-s00"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-209">
+<obj class="DetectorStream" id="DetStream-209">
  <attr name="source_id" type="u32" val="209"/>
- <rel name="geo_id" class="GeoId" id="geoId-209"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1002-s01"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-210">
+<obj class="DetectorStream" id="DetStream-210">
  <attr name="source_id" type="u32" val="210"/>
- <rel name="geo_id" class="GeoId" id="geoId-210"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1002-s02"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-211">
+<obj class="DetectorStream" id="DetStream-211">
  <attr name="source_id" type="u32" val="211"/>
- <rel name="geo_id" class="GeoId" id="geoId-211"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1002-s03"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-212">
+<obj class="DetectorStream" id="DetStream-212">
  <attr name="source_id" type="u32" val="212"/>
- <rel name="geo_id" class="GeoId" id="geoId-212"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1002-s04"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-213">
+<obj class="DetectorStream" id="DetStream-213">
  <attr name="source_id" type="u32" val="213"/>
- <rel name="geo_id" class="GeoId" id="geoId-213"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1002-s05"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-214">
+<obj class="DetectorStream" id="DetStream-214">
  <attr name="source_id" type="u32" val="214"/>
- <rel name="geo_id" class="GeoId" id="geoId-214"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1002-s06"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-215">
+<obj class="DetectorStream" id="DetStream-215">
  <attr name="source_id" type="u32" val="215"/>
- <rel name="geo_id" class="GeoId" id="geoId-215"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1002-s07"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-216">
+<obj class="DetectorStream" id="DetStream-216">
  <attr name="source_id" type="u32" val="216"/>
- <rel name="geo_id" class="GeoId" id="geoId-216"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1003-s00"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-217">
+<obj class="DetectorStream" id="DetStream-217">
  <attr name="source_id" type="u32" val="217"/>
- <rel name="geo_id" class="GeoId" id="geoId-217"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1003-s01"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-218">
+<obj class="DetectorStream" id="DetStream-218">
  <attr name="source_id" type="u32" val="218"/>
- <rel name="geo_id" class="GeoId" id="geoId-218"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1003-s02"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-219">
+<obj class="DetectorStream" id="DetStream-219">
  <attr name="source_id" type="u32" val="219"/>
- <rel name="geo_id" class="GeoId" id="geoId-219"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1003-s03"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-220">
+<obj class="DetectorStream" id="DetStream-220">
  <attr name="source_id" type="u32" val="220"/>
- <rel name="geo_id" class="GeoId" id="geoId-220"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1003-s04"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-221">
+<obj class="DetectorStream" id="DetStream-221">
  <attr name="source_id" type="u32" val="221"/>
- <rel name="geo_id" class="GeoId" id="geoId-221"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1003-s05"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-222">
+<obj class="DetectorStream" id="DetStream-222">
  <attr name="source_id" type="u32" val="222"/>
- <rel name="geo_id" class="GeoId" id="geoId-222"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1003-s06"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-223">
+<obj class="DetectorStream" id="DetStream-223">
  <attr name="source_id" type="u32" val="223"/>
- <rel name="geo_id" class="GeoId" id="geoId-223"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1003-s07"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-224">
+<obj class="DetectorStream" id="DetStream-224">
  <attr name="source_id" type="u32" val="224"/>
- <rel name="geo_id" class="GeoId" id="geoId-224"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1004-s00"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-225">
+<obj class="DetectorStream" id="DetStream-225">
  <attr name="source_id" type="u32" val="225"/>
- <rel name="geo_id" class="GeoId" id="geoId-225"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1004-s01"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-226">
+<obj class="DetectorStream" id="DetStream-226">
  <attr name="source_id" type="u32" val="226"/>
- <rel name="geo_id" class="GeoId" id="geoId-226"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1004-s02"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-227">
+<obj class="DetectorStream" id="DetStream-227">
  <attr name="source_id" type="u32" val="227"/>
- <rel name="geo_id" class="GeoId" id="geoId-227"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1004-s03"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-228">
+<obj class="DetectorStream" id="DetStream-228">
  <attr name="source_id" type="u32" val="228"/>
- <rel name="geo_id" class="GeoId" id="geoId-228"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1004-s04"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-229">
+<obj class="DetectorStream" id="DetStream-229">
  <attr name="source_id" type="u32" val="229"/>
- <rel name="geo_id" class="GeoId" id="geoId-229"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1004-s05"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-230">
+<obj class="DetectorStream" id="DetStream-230">
  <attr name="source_id" type="u32" val="230"/>
- <rel name="geo_id" class="GeoId" id="geoId-230"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1004-s06"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-231">
+<obj class="DetectorStream" id="DetStream-231">
  <attr name="source_id" type="u32" val="231"/>
- <rel name="geo_id" class="GeoId" id="geoId-231"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1004-s07"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-232">
+<obj class="DetectorStream" id="DetStream-232">
  <attr name="source_id" type="u32" val="232"/>
- <rel name="geo_id" class="GeoId" id="geoId-232"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1005-s00"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-233">
+<obj class="DetectorStream" id="DetStream-233">
  <attr name="source_id" type="u32" val="233"/>
- <rel name="geo_id" class="GeoId" id="geoId-233"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1005-s01"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-234">
+<obj class="DetectorStream" id="DetStream-234">
  <attr name="source_id" type="u32" val="234"/>
- <rel name="geo_id" class="GeoId" id="geoId-234"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1005-s02"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-235">
+<obj class="DetectorStream" id="DetStream-235">
  <attr name="source_id" type="u32" val="235"/>
- <rel name="geo_id" class="GeoId" id="geoId-235"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1005-s03"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-236">
+<obj class="DetectorStream" id="DetStream-236">
  <attr name="source_id" type="u32" val="236"/>
- <rel name="geo_id" class="GeoId" id="geoId-236"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1005-s04"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-237">
+<obj class="DetectorStream" id="DetStream-237">
  <attr name="source_id" type="u32" val="237"/>
- <rel name="geo_id" class="GeoId" id="geoId-237"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1005-s05"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-238">
+<obj class="DetectorStream" id="DetStream-238">
  <attr name="source_id" type="u32" val="238"/>
- <rel name="geo_id" class="GeoId" id="geoId-238"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1005-s06"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-239">
+<obj class="DetectorStream" id="DetStream-239">
  <attr name="source_id" type="u32" val="239"/>
- <rel name="geo_id" class="GeoId" id="geoId-239"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1005-s07"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-240">
+<obj class="DetectorStream" id="DetStream-240">
  <attr name="source_id" type="u32" val="240"/>
- <rel name="geo_id" class="GeoId" id="geoId-240"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1006-s00"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-241">
+<obj class="DetectorStream" id="DetStream-241">
  <attr name="source_id" type="u32" val="241"/>
- <rel name="geo_id" class="GeoId" id="geoId-241"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1006-s01"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-242">
+<obj class="DetectorStream" id="DetStream-242">
  <attr name="source_id" type="u32" val="242"/>
- <rel name="geo_id" class="GeoId" id="geoId-242"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1006-s02"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-243">
+<obj class="DetectorStream" id="DetStream-243">
  <attr name="source_id" type="u32" val="243"/>
- <rel name="geo_id" class="GeoId" id="geoId-243"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1006-s03"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-244">
+<obj class="DetectorStream" id="DetStream-244">
  <attr name="source_id" type="u32" val="244"/>
- <rel name="geo_id" class="GeoId" id="geoId-244"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1006-s04"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-245">
+<obj class="DetectorStream" id="DetStream-245">
  <attr name="source_id" type="u32" val="245"/>
- <rel name="geo_id" class="GeoId" id="geoId-245"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1006-s05"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-246">
+<obj class="DetectorStream" id="DetStream-246">
  <attr name="source_id" type="u32" val="246"/>
- <rel name="geo_id" class="GeoId" id="geoId-246"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1006-s06"/>
 </obj>
 
-<obj class="DetectorStream" id="DROStream-247">
+<obj class="DetectorStream" id="DetStream-247">
  <attr name="source_id" type="u32" val="247"/>
- <rel name="geo_id" class="GeoId" id="geoId-247"/>
+ <rel name="geo_id" class="GeoId" id="geoId-crp4-wib1006-s07"/>
 </obj>
 
 <obj class="DetectorToDaqConnection" id="crp4-connections">
  <rel name="contains">
-  <ref class="ResourceSetAND" id="crp4-streams"/>
   <ref class="DPDKReceiver" id="dpdk-crp4-receiver"/>
+  <ref class="HermesDataSender" id="hds-np02-wib-1001-10g-0"/>
+  <ref class="HermesDataSender" id="hds-np02-wib-1001-10g-1"/>
+  <ref class="HermesDataSender" id="hds-np02-wib-1002-10g-0"/>
+  <ref class="HermesDataSender" id="hds-np02-wib-1002-10g-1"/>
+  <ref class="HermesDataSender" id="hds-np02-wib-1003-10g-0"/>
+  <ref class="HermesDataSender" id="hds-np02-wib-1003-10g-1"/>
+  <ref class="HermesDataSender" id="hds-np02-wib-1004-10g-0"/>
+  <ref class="HermesDataSender" id="hds-np02-wib-1004-10g-1"/>
+  <ref class="HermesDataSender" id="hds-np02-wib-1005-10g-0"/>
+  <ref class="HermesDataSender" id="hds-np02-wib-1005-10g-1"/>
+  <ref class="HermesDataSender" id="hds-np02-wib-1006-10g-0"/>
+  <ref class="HermesDataSender" id="hds-np02-wib-1006-10g-1"/>
  </rel>
 </obj>
 
-<obj class="GeoId" id="geoId-200">
+<obj class="GeoId" id="geoId-crp4-wib1001-s00">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
 </obj>
 
-<obj class="GeoId" id="geoId-201">
+<obj class="GeoId" id="geoId-crp4-wib1001-s01">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="stream_id" type="u32" val="1"/>
 </obj>
 
-<obj class="GeoId" id="geoId-202">
+<obj class="GeoId" id="geoId-crp4-wib1001-s02">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="stream_id" type="u32" val="2"/>
 </obj>
 
-<obj class="GeoId" id="geoId-203">
+<obj class="GeoId" id="geoId-crp4-wib1001-s03">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="stream_id" type="u32" val="3"/>
 </obj>
 
-<obj class="GeoId" id="geoId-204">
+<obj class="GeoId" id="geoId-crp4-wib1001-s04">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="stream_id" type="u32" val="64"/>
 </obj>
 
-<obj class="GeoId" id="geoId-205">
+<obj class="GeoId" id="geoId-crp4-wib1001-s05">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="stream_id" type="u32" val="65"/>
 </obj>
 
-<obj class="GeoId" id="geoId-206">
+<obj class="GeoId" id="geoId-crp4-wib1001-s06">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="stream_id" type="u32" val="66"/>
 </obj>
 
-<obj class="GeoId" id="geoId-207">
+<obj class="GeoId" id="geoId-crp4-wib1001-s07">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="stream_id" type="u32" val="67"/>
 </obj>
 
-<obj class="GeoId" id="geoId-208">
+<obj class="GeoId" id="geoId-crp4-wib1002-s00">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="1"/>
 </obj>
 
-<obj class="GeoId" id="geoId-209">
+<obj class="GeoId" id="geoId-crp4-wib1002-s01">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="1"/>
  <attr name="stream_id" type="u32" val="1"/>
 </obj>
 
-<obj class="GeoId" id="geoId-210">
+<obj class="GeoId" id="geoId-crp4-wib1002-s02">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="1"/>
  <attr name="stream_id" type="u32" val="2"/>
 </obj>
 
-<obj class="GeoId" id="geoId-211">
+<obj class="GeoId" id="geoId-crp4-wib1002-s03">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="1"/>
  <attr name="stream_id" type="u32" val="3"/>
 </obj>
 
-<obj class="GeoId" id="geoId-212">
+<obj class="GeoId" id="geoId-crp4-wib1002-s04">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="1"/>
  <attr name="stream_id" type="u32" val="64"/>
 </obj>
 
-<obj class="GeoId" id="geoId-213">
+<obj class="GeoId" id="geoId-crp4-wib1002-s05">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="1"/>
  <attr name="stream_id" type="u32" val="65"/>
 </obj>
 
-<obj class="GeoId" id="geoId-214">
+<obj class="GeoId" id="geoId-crp4-wib1002-s06">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="1"/>
  <attr name="stream_id" type="u32" val="66"/>
 </obj>
 
-<obj class="GeoId" id="geoId-215">
+<obj class="GeoId" id="geoId-crp4-wib1002-s07">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="1"/>
  <attr name="stream_id" type="u32" val="67"/>
 </obj>
 
-<obj class="GeoId" id="geoId-216">
+<obj class="GeoId" id="geoId-crp4-wib1003-s00">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="2"/>
 </obj>
 
-<obj class="GeoId" id="geoId-217">
+<obj class="GeoId" id="geoId-crp4-wib1003-s01">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="2"/>
  <attr name="stream_id" type="u32" val="1"/>
 </obj>
 
-<obj class="GeoId" id="geoId-218">
+<obj class="GeoId" id="geoId-crp4-wib1003-s02">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="2"/>
  <attr name="stream_id" type="u32" val="2"/>
 </obj>
 
-<obj class="GeoId" id="geoId-219">
+<obj class="GeoId" id="geoId-crp4-wib1003-s03">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="2"/>
  <attr name="stream_id" type="u32" val="3"/>
 </obj>
 
-<obj class="GeoId" id="geoId-220">
+<obj class="GeoId" id="geoId-crp4-wib1003-s04">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="2"/>
  <attr name="stream_id" type="u32" val="64"/>
 </obj>
 
-<obj class="GeoId" id="geoId-221">
+<obj class="GeoId" id="geoId-crp4-wib1003-s05">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="2"/>
  <attr name="stream_id" type="u32" val="65"/>
 </obj>
 
-<obj class="GeoId" id="geoId-222">
+<obj class="GeoId" id="geoId-crp4-wib1003-s06">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="2"/>
  <attr name="stream_id" type="u32" val="66"/>
 </obj>
 
-<obj class="GeoId" id="geoId-223">
+<obj class="GeoId" id="geoId-crp4-wib1003-s07">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="2"/>
  <attr name="stream_id" type="u32" val="67"/>
 </obj>
 
-<obj class="GeoId" id="geoId-224">
+<obj class="GeoId" id="geoId-crp4-wib1004-s00">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="3"/>
 </obj>
 
-<obj class="GeoId" id="geoId-225">
+<obj class="GeoId" id="geoId-crp4-wib1004-s01">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="3"/>
  <attr name="stream_id" type="u32" val="1"/>
 </obj>
 
-<obj class="GeoId" id="geoId-226">
+<obj class="GeoId" id="geoId-crp4-wib1004-s02">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="3"/>
  <attr name="stream_id" type="u32" val="2"/>
 </obj>
 
-<obj class="GeoId" id="geoId-227">
+<obj class="GeoId" id="geoId-crp4-wib1004-s03">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="3"/>
  <attr name="stream_id" type="u32" val="3"/>
 </obj>
 
-<obj class="GeoId" id="geoId-228">
+<obj class="GeoId" id="geoId-crp4-wib1004-s04">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="3"/>
  <attr name="stream_id" type="u32" val="64"/>
 </obj>
 
-<obj class="GeoId" id="geoId-229">
+<obj class="GeoId" id="geoId-crp4-wib1004-s05">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="3"/>
  <attr name="stream_id" type="u32" val="65"/>
 </obj>
 
-<obj class="GeoId" id="geoId-230">
+<obj class="GeoId" id="geoId-crp4-wib1004-s06">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="3"/>
  <attr name="stream_id" type="u32" val="66"/>
 </obj>
 
-<obj class="GeoId" id="geoId-231">
+<obj class="GeoId" id="geoId-crp4-wib1004-s07">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="3"/>
  <attr name="stream_id" type="u32" val="67"/>
 </obj>
 
-<obj class="GeoId" id="geoId-232">
+<obj class="GeoId" id="geoId-crp4-wib1005-s00">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="4"/>
 </obj>
 
-<obj class="GeoId" id="geoId-233">
+<obj class="GeoId" id="geoId-crp4-wib1005-s01">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="4"/>
  <attr name="stream_id" type="u32" val="1"/>
 </obj>
 
-<obj class="GeoId" id="geoId-234">
+<obj class="GeoId" id="geoId-crp4-wib1005-s02">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="4"/>
  <attr name="stream_id" type="u32" val="2"/>
 </obj>
 
-<obj class="GeoId" id="geoId-235">
+<obj class="GeoId" id="geoId-crp4-wib1005-s03">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="4"/>
  <attr name="stream_id" type="u32" val="3"/>
 </obj>
 
-<obj class="GeoId" id="geoId-236">
+<obj class="GeoId" id="geoId-crp4-wib1005-s04">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="4"/>
  <attr name="stream_id" type="u32" val="64"/>
 </obj>
 
-<obj class="GeoId" id="geoId-237">
+<obj class="GeoId" id="geoId-crp4-wib1005-s05">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="4"/>
  <attr name="stream_id" type="u32" val="65"/>
 </obj>
 
-<obj class="GeoId" id="geoId-238">
+<obj class="GeoId" id="geoId-crp4-wib1005-s06">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="4"/>
  <attr name="stream_id" type="u32" val="66"/>
 </obj>
 
-<obj class="GeoId" id="geoId-239">
+<obj class="GeoId" id="geoId-crp4-wib1005-s07">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="4"/>
  <attr name="stream_id" type="u32" val="67"/>
 </obj>
 
-<obj class="GeoId" id="geoId-240">
+<obj class="GeoId" id="geoId-crp4-wib1006-s00">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="5"/>
 </obj>
 
-<obj class="GeoId" id="geoId-241">
+<obj class="GeoId" id="geoId-crp4-wib1006-s01">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="5"/>
  <attr name="stream_id" type="u32" val="1"/>
 </obj>
 
-<obj class="GeoId" id="geoId-242">
+<obj class="GeoId" id="geoId-crp4-wib1006-s02">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="5"/>
  <attr name="stream_id" type="u32" val="2"/>
 </obj>
 
-<obj class="GeoId" id="geoId-243">
+<obj class="GeoId" id="geoId-crp4-wib1006-s03">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="5"/>
  <attr name="stream_id" type="u32" val="3"/>
 </obj>
 
-<obj class="GeoId" id="geoId-244">
+<obj class="GeoId" id="geoId-crp4-wib1006-s04">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="5"/>
  <attr name="stream_id" type="u32" val="64"/>
 </obj>
 
-<obj class="GeoId" id="geoId-245">
+<obj class="GeoId" id="geoId-crp4-wib1006-s05">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="5"/>
  <attr name="stream_id" type="u32" val="65"/>
 </obj>
 
-<obj class="GeoId" id="geoId-246">
+<obj class="GeoId" id="geoId-crp4-wib1006-s06">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="5"/>
  <attr name="stream_id" type="u32" val="66"/>
 </obj>
 
-<obj class="GeoId" id="geoId-247">
+<obj class="GeoId" id="geoId-crp4-wib1006-s07">
  <attr name="detector_id" type="u32" val="10"/>
  <attr name="crate_id" type="u32" val="10"/>
  <attr name="slot_id" type="u32" val="5"/>
@@ -669,10 +682,10 @@
  <attr name="port" type="u32" val="17476"/>
  <attr name="control_host" type="string" val="np02-wib-1001"/>
  <rel name="contains">
-  <ref class="DetectorStream" id="DROStream-200"/>
-  <ref class="DetectorStream" id="DROStream-201"/>
-  <ref class="DetectorStream" id="DROStream-202"/>
-  <ref class="DetectorStream" id="DROStream-203"/>
+  <ref class="DetectorStream" id="DetStream-200"/>
+  <ref class="DetectorStream" id="DetStream-201"/>
+  <ref class="DetectorStream" id="DetStream-202"/>
+  <ref class="DetectorStream" id="DetStream-203"/>
  </rel>
  <rel name="uses" class="NetworkInterface" id="nw-np02-wib-1001-10g-0"/>
 </obj>
@@ -682,10 +695,10 @@
  <attr name="port" type="u32" val="17476"/>
  <attr name="control_host" type="string" val="np02-wib-1001"/>
  <rel name="contains">
-  <ref class="DetectorStream" id="DROStream-204"/>
-  <ref class="DetectorStream" id="DROStream-205"/>
-  <ref class="DetectorStream" id="DROStream-206"/>
-  <ref class="DetectorStream" id="DROStream-207"/>
+  <ref class="DetectorStream" id="DetStream-204"/>
+  <ref class="DetectorStream" id="DetStream-205"/>
+  <ref class="DetectorStream" id="DetStream-206"/>
+  <ref class="DetectorStream" id="DetStream-207"/>
  </rel>
  <rel name="uses" class="NetworkInterface" id="nw-np02-wib-1001-10g-1"/>
 </obj>
@@ -694,10 +707,10 @@
  <attr name="port" type="u32" val="17476"/>
  <attr name="control_host" type="string" val="np02-wib-1002"/>
  <rel name="contains">
-  <ref class="DetectorStream" id="DROStream-208"/>
-  <ref class="DetectorStream" id="DROStream-209"/>
-  <ref class="DetectorStream" id="DROStream-210"/>
-  <ref class="DetectorStream" id="DROStream-211"/>
+  <ref class="DetectorStream" id="DetStream-208"/>
+  <ref class="DetectorStream" id="DetStream-209"/>
+  <ref class="DetectorStream" id="DetStream-210"/>
+  <ref class="DetectorStream" id="DetStream-211"/>
  </rel>
  <rel name="uses" class="NetworkInterface" id="nw-np02-wib-1002-10g-0"/>
 </obj>
@@ -707,10 +720,10 @@
  <attr name="port" type="u32" val="17476"/>
  <attr name="control_host" type="string" val="np02-wib-1002"/>
  <rel name="contains">
-  <ref class="DetectorStream" id="DROStream-212"/>
-  <ref class="DetectorStream" id="DROStream-213"/>
-  <ref class="DetectorStream" id="DROStream-214"/>
-  <ref class="DetectorStream" id="DROStream-215"/>
+  <ref class="DetectorStream" id="DetStream-212"/>
+  <ref class="DetectorStream" id="DetStream-213"/>
+  <ref class="DetectorStream" id="DetStream-214"/>
+  <ref class="DetectorStream" id="DetStream-215"/>
  </rel>
  <rel name="uses" class="NetworkInterface" id="nw-np02-wib-1002-10g-1"/>
 </obj>
@@ -719,10 +732,10 @@
  <attr name="port" type="u32" val="17476"/>
  <attr name="control_host" type="string" val="np02-wib-1003"/>
  <rel name="contains">
-  <ref class="DetectorStream" id="DROStream-216"/>
-  <ref class="DetectorStream" id="DROStream-217"/>
-  <ref class="DetectorStream" id="DROStream-218"/>
-  <ref class="DetectorStream" id="DROStream-219"/>
+  <ref class="DetectorStream" id="DetStream-216"/>
+  <ref class="DetectorStream" id="DetStream-217"/>
+  <ref class="DetectorStream" id="DetStream-218"/>
+  <ref class="DetectorStream" id="DetStream-219"/>
  </rel>
  <rel name="uses" class="NetworkInterface" id="nw-np02-wib-1003-10g-0"/>
 </obj>
@@ -732,10 +745,10 @@
  <attr name="port" type="u32" val="17476"/>
  <attr name="control_host" type="string" val="np02-wib-1003"/>
  <rel name="contains">
-  <ref class="DetectorStream" id="DROStream-220"/>
-  <ref class="DetectorStream" id="DROStream-221"/>
-  <ref class="DetectorStream" id="DROStream-222"/>
-  <ref class="DetectorStream" id="DROStream-223"/>
+  <ref class="DetectorStream" id="DetStream-220"/>
+  <ref class="DetectorStream" id="DetStream-221"/>
+  <ref class="DetectorStream" id="DetStream-222"/>
+  <ref class="DetectorStream" id="DetStream-223"/>
  </rel>
  <rel name="uses" class="NetworkInterface" id="nw-np02-wib-1003-10g-1"/>
 </obj>
@@ -744,10 +757,10 @@
  <attr name="port" type="u32" val="17476"/>
  <attr name="control_host" type="string" val="np02-wib-1004"/>
  <rel name="contains">
-  <ref class="DetectorStream" id="DROStream-224"/>
-  <ref class="DetectorStream" id="DROStream-225"/>
-  <ref class="DetectorStream" id="DROStream-226"/>
-  <ref class="DetectorStream" id="DROStream-227"/>
+  <ref class="DetectorStream" id="DetStream-224"/>
+  <ref class="DetectorStream" id="DetStream-225"/>
+  <ref class="DetectorStream" id="DetStream-226"/>
+  <ref class="DetectorStream" id="DetStream-227"/>
  </rel>
  <rel name="uses" class="NetworkInterface" id="nw-np02-wib-1004-10g-0"/>
 </obj>
@@ -757,10 +770,10 @@
  <attr name="port" type="u32" val="17476"/>
  <attr name="control_host" type="string" val="np02-wib-1004"/>
  <rel name="contains">
-  <ref class="DetectorStream" id="DROStream-228"/>
-  <ref class="DetectorStream" id="DROStream-229"/>
-  <ref class="DetectorStream" id="DROStream-230"/>
-  <ref class="DetectorStream" id="DROStream-231"/>
+  <ref class="DetectorStream" id="DetStream-228"/>
+  <ref class="DetectorStream" id="DetStream-229"/>
+  <ref class="DetectorStream" id="DetStream-230"/>
+  <ref class="DetectorStream" id="DetStream-231"/>
  </rel>
  <rel name="uses" class="NetworkInterface" id="nw-np02-wib-1004-10g-1"/>
 </obj>
@@ -769,10 +782,10 @@
  <attr name="port" type="u32" val="17476"/>
  <attr name="control_host" type="string" val="np02-wib-1005"/>
  <rel name="contains">
-  <ref class="DetectorStream" id="DROStream-232"/>
-  <ref class="DetectorStream" id="DROStream-233"/>
-  <ref class="DetectorStream" id="DROStream-234"/>
-  <ref class="DetectorStream" id="DROStream-235"/>
+  <ref class="DetectorStream" id="DetStream-232"/>
+  <ref class="DetectorStream" id="DetStream-233"/>
+  <ref class="DetectorStream" id="DetStream-234"/>
+  <ref class="DetectorStream" id="DetStream-235"/>
  </rel>
  <rel name="uses" class="NetworkInterface" id="nw-np02-wib-1005-10g-0"/>
 </obj>
@@ -782,10 +795,10 @@
  <attr name="port" type="u32" val="17476"/>
  <attr name="control_host" type="string" val="np02-wib-1005"/>
  <rel name="contains">
-  <ref class="DetectorStream" id="DROStream-236"/>
-  <ref class="DetectorStream" id="DROStream-237"/>
-  <ref class="DetectorStream" id="DROStream-238"/>
-  <ref class="DetectorStream" id="DROStream-239"/>
+  <ref class="DetectorStream" id="DetStream-236"/>
+  <ref class="DetectorStream" id="DetStream-237"/>
+  <ref class="DetectorStream" id="DetStream-238"/>
+  <ref class="DetectorStream" id="DetStream-239"/>
  </rel>
  <rel name="uses" class="NetworkInterface" id="nw-np02-wib-1005-10g-1"/>
 </obj>
@@ -794,10 +807,10 @@
  <attr name="port" type="u32" val="17476"/>
  <attr name="control_host" type="string" val="np02-wib-1006"/>
  <rel name="contains">
-  <ref class="DetectorStream" id="DROStream-240"/>
-  <ref class="DetectorStream" id="DROStream-241"/>
-  <ref class="DetectorStream" id="DROStream-242"/>
-  <ref class="DetectorStream" id="DROStream-243"/>
+  <ref class="DetectorStream" id="DetStream-240"/>
+  <ref class="DetectorStream" id="DetStream-241"/>
+  <ref class="DetectorStream" id="DetStream-242"/>
+  <ref class="DetectorStream" id="DetStream-243"/>
  </rel>
  <rel name="uses" class="NetworkInterface" id="nw-np02-wib-1006-10g-0"/>
 </obj>
@@ -807,10 +820,10 @@
  <attr name="port" type="u32" val="17476"/>
  <attr name="control_host" type="string" val="np02-wib-1006"/>
  <rel name="contains">
-  <ref class="DetectorStream" id="DROStream-244"/>
-  <ref class="DetectorStream" id="DROStream-245"/>
-  <ref class="DetectorStream" id="DROStream-246"/>
-  <ref class="DetectorStream" id="DROStream-247"/>
+  <ref class="DetectorStream" id="DetStream-244"/>
+  <ref class="DetectorStream" id="DetStream-245"/>
+  <ref class="DetectorStream" id="DetStream-246"/>
+  <ref class="DetectorStream" id="DetStream-247"/>
  </rel>
  <rel name="uses" class="NetworkInterface" id="nw-np02-wib-1006-10g-1"/>
 </obj>
@@ -819,19 +832,19 @@
  <attr name="uri" type="string" val="file://${HERMESMODULES_SHARE}/config/hermes_wib_v0.9.3/wib_eth_readout.xml"/>
 </obj>
 
+<obj class="NICStatsConf" id="nicStats-np02_WIB_CRP4">
+ <attr name="analyze_nth_packet" type="s32" val="1"/>
+ <attr name="expected_packet_size" type="u32" val="7243"/>
+ <attr name="expected_seq_id_step" type="u32" val="1"/>
+ <attr name="expected_timestamp_step" type="s32" val="-999"/>
+</obj>
+
 <obj class="NetworkDevice" id="nic-np02-srv-003">
  <attr name="numa_id" type="u8" val="1"/>
  <attr name="mac_address" type="string" val="6c:fe:54:4b:20:f1"/>
  <attr name="ip_address" type="string" val="10.73.139.82"/>
  <attr name="network_name" type="enum" val="Control"/>
  <attr name="pcie_addr" type="string" val="0000:98:00.1"/>
-</obj>
-
-<obj class="NICStatsConf" id="nicStats-np02_WIB_CRP4">
- <attr name="analyze_nth_packet" type="s32" val="1"/>
- <attr name="expected_packet_size" type="u32" val="7243"/>
- <attr name="expected_seq_id_step" type="u32" val="1"/>
- <attr name="expected_timestamp_step" type="s32" val="-999"/>
 </obj>
 
 <obj class="NetworkInterface" id="nw-np02-wib-1001-10g-0">
@@ -919,54 +932,54 @@
 
 <obj class="ResourceSetAND" id="crp4-streams">
  <rel name="contains">
-  <ref class="DetectorStream" id="DROStream-200"/>
-  <ref class="DetectorStream" id="DROStream-201"/>
-  <ref class="DetectorStream" id="DROStream-202"/>
-  <ref class="DetectorStream" id="DROStream-203"/>
-  <ref class="DetectorStream" id="DROStream-204"/>
-  <ref class="DetectorStream" id="DROStream-205"/>
-  <ref class="DetectorStream" id="DROStream-206"/>
-  <ref class="DetectorStream" id="DROStream-207"/>
-  <ref class="DetectorStream" id="DROStream-208"/>
-  <ref class="DetectorStream" id="DROStream-209"/>
-  <ref class="DetectorStream" id="DROStream-210"/>
-  <ref class="DetectorStream" id="DROStream-211"/>
-  <ref class="DetectorStream" id="DROStream-212"/>
-  <ref class="DetectorStream" id="DROStream-213"/>
-  <ref class="DetectorStream" id="DROStream-214"/>
-  <ref class="DetectorStream" id="DROStream-215"/>
-  <ref class="DetectorStream" id="DROStream-216"/>
-  <ref class="DetectorStream" id="DROStream-217"/>
-  <ref class="DetectorStream" id="DROStream-218"/>
-  <ref class="DetectorStream" id="DROStream-219"/>
-  <ref class="DetectorStream" id="DROStream-220"/>
-  <ref class="DetectorStream" id="DROStream-221"/>
-  <ref class="DetectorStream" id="DROStream-222"/>
-  <ref class="DetectorStream" id="DROStream-223"/>
-  <ref class="DetectorStream" id="DROStream-224"/>
-  <ref class="DetectorStream" id="DROStream-225"/>
-  <ref class="DetectorStream" id="DROStream-226"/>
-  <ref class="DetectorStream" id="DROStream-227"/>
-  <ref class="DetectorStream" id="DROStream-228"/>
-  <ref class="DetectorStream" id="DROStream-229"/>
-  <ref class="DetectorStream" id="DROStream-230"/>
-  <ref class="DetectorStream" id="DROStream-231"/>
-  <ref class="DetectorStream" id="DROStream-232"/>
-  <ref class="DetectorStream" id="DROStream-233"/>
-  <ref class="DetectorStream" id="DROStream-234"/>
-  <ref class="DetectorStream" id="DROStream-235"/>
-  <ref class="DetectorStream" id="DROStream-236"/>
-  <ref class="DetectorStream" id="DROStream-237"/>
-  <ref class="DetectorStream" id="DROStream-238"/>
-  <ref class="DetectorStream" id="DROStream-239"/>
-  <ref class="DetectorStream" id="DROStream-240"/>
-  <ref class="DetectorStream" id="DROStream-241"/>
-  <ref class="DetectorStream" id="DROStream-242"/>
-  <ref class="DetectorStream" id="DROStream-243"/>
-  <ref class="DetectorStream" id="DROStream-244"/>
-  <ref class="DetectorStream" id="DROStream-245"/>
-  <ref class="DetectorStream" id="DROStream-246"/>
-  <ref class="DetectorStream" id="DROStream-247"/>
+  <ref class="DetectorStream" id="DetStream-200"/>
+  <ref class="DetectorStream" id="DetStream-201"/>
+  <ref class="DetectorStream" id="DetStream-202"/>
+  <ref class="DetectorStream" id="DetStream-203"/>
+  <ref class="DetectorStream" id="DetStream-204"/>
+  <ref class="DetectorStream" id="DetStream-205"/>
+  <ref class="DetectorStream" id="DetStream-206"/>
+  <ref class="DetectorStream" id="DetStream-207"/>
+  <ref class="DetectorStream" id="DetStream-208"/>
+  <ref class="DetectorStream" id="DetStream-209"/>
+  <ref class="DetectorStream" id="DetStream-210"/>
+  <ref class="DetectorStream" id="DetStream-211"/>
+  <ref class="DetectorStream" id="DetStream-212"/>
+  <ref class="DetectorStream" id="DetStream-213"/>
+  <ref class="DetectorStream" id="DetStream-214"/>
+  <ref class="DetectorStream" id="DetStream-215"/>
+  <ref class="DetectorStream" id="DetStream-216"/>
+  <ref class="DetectorStream" id="DetStream-217"/>
+  <ref class="DetectorStream" id="DetStream-218"/>
+  <ref class="DetectorStream" id="DetStream-219"/>
+  <ref class="DetectorStream" id="DetStream-220"/>
+  <ref class="DetectorStream" id="DetStream-221"/>
+  <ref class="DetectorStream" id="DetStream-222"/>
+  <ref class="DetectorStream" id="DetStream-223"/>
+  <ref class="DetectorStream" id="DetStream-224"/>
+  <ref class="DetectorStream" id="DetStream-225"/>
+  <ref class="DetectorStream" id="DetStream-226"/>
+  <ref class="DetectorStream" id="DetStream-227"/>
+  <ref class="DetectorStream" id="DetStream-228"/>
+  <ref class="DetectorStream" id="DetStream-229"/>
+  <ref class="DetectorStream" id="DetStream-230"/>
+  <ref class="DetectorStream" id="DetStream-231"/>
+  <ref class="DetectorStream" id="DetStream-232"/>
+  <ref class="DetectorStream" id="DetStream-233"/>
+  <ref class="DetectorStream" id="DetStream-234"/>
+  <ref class="DetectorStream" id="DetStream-235"/>
+  <ref class="DetectorStream" id="DetStream-236"/>
+  <ref class="DetectorStream" id="DetStream-237"/>
+  <ref class="DetectorStream" id="DetStream-238"/>
+  <ref class="DetectorStream" id="DetStream-239"/>
+  <ref class="DetectorStream" id="DetStream-240"/>
+  <ref class="DetectorStream" id="DetStream-241"/>
+  <ref class="DetectorStream" id="DetStream-242"/>
+  <ref class="DetectorStream" id="DetStream-243"/>
+  <ref class="DetectorStream" id="DetStream-244"/>
+  <ref class="DetectorStream" id="DetStream-245"/>
+  <ref class="DetectorStream" id="DetStream-246"/>
+  <ref class="DetectorStream" id="DetStream-247"/>
  </rel>
 </obj>
 
