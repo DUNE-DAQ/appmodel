@@ -83,6 +83,7 @@
  <comment creation-time="20240307T133917" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="disable TPG"/>
  <comment creation-time="20240426T073141" created-by="thea" created-on="np02-srv-001.cern.ch" author="thea" text="enabling callbacks"/>
  <comment creation-time="20240430T135210" created-by="thea" created-on="np02-srv-001.cern.ch" author="thea" text="Removed ta source id"/>
+ <comment creation-time="20240617T092318" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="sorting"/>
  <comment creation-time="20240616T202116" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="added fsm prod to ru-controller"/>
  <comment creation-time="20240616T204242" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="adding control services"/>
  <comment creation-time="20240616T204340" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="setting ru apps control services"/>
@@ -162,8 +163,7 @@
  <rel name="exposes_service">
   <ref class="Service" id="ru-controller_control"/>
  </rel>
- <rel name="fsm" class="FSMconfiguration" id="FSMconfiguration_noAction"/>
- <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
+ <rel name="fsm" class="FSMconfiguration" id="fsmConf-prod"/>
 </obj>
 
 <obj class="ReadoutApplication" id="runp02srv003eth0">
@@ -251,19 +251,33 @@
  <attr name="data_request_timeout_ms" type="u32" val="1000"/>
  <attr name="data_rate_slowdown_factor" type="u32" val="1"/>
  <rel name="environment">
-  <ref class="Variable" id="session-env-connectivity-port"/>
-  <ref class="Variable" id="session-env-connectivity-server"/>
-  <ref class="Variable" id="session-env-ers-error"/>
-  <ref class="Variable" id="session-env-ers-fatal"/>
+  <ref class="Variable" id="session-env-session-name-0"/>
+  <ref class="Variable" id="session-env-session-name-1"/>
+  <ref class="Variable" id="session-env-ers-verb"/>
   <ref class="Variable" id="session-env-ers-info"/>
   <ref class="Variable" id="session-env-ers-warning"/>
-  <ref class="Variable" id="session-env-ers-verb"/>
+  <ref class="Variable" id="session-env-ers-error"/>
+  <ref class="Variable" id="session-env-ers-fatal"/>
+  <ref class="Variable" id="session-env-connectivity-server"/>
+  <ref class="Variable" id="session-env-connectivity-port"/>
+  <ref class="Variable" id="daqapp-cli-monitoring"/>
+  <ref class="Variable" id="daqapp-cli-configuration"/>
  </rel>
- <rel name="segment" class="Segment" id="root-segment"/>
+ <rel name="segment" class="Segment" id="ru-segment"/>
  <rel name="infrastructure_applications">
   <ref class="OpMonService" id="cern-opmon-application-service"/>
  </rel>
  <rel name="detector_configuration" class="DetectorConfig" id="dummy-detector"/>
+</obj>
+
+<obj class="Variable" id="daqapp-cli-configuration">
+ <attr name="name" type="string" val="DAQAPP_CLI_CONFIG_SVC"/>
+ <attr name="value" type="string" val="oksconflibs:test/config/CRP4-session.data.xml"/>
+</obj>
+
+<obj class="Variable" id="daqapp-cli-monitoring">
+ <attr name="name" type="string" val="DAQAPP_CLI_INFO_SVC"/>
+ <attr name="value" type="string" val="kafka://monkafka.cern.ch:30092/opmon"/>
 </obj>
 
 <obj class="Variable" id="session-env-connectivity-port">
@@ -299,6 +313,16 @@
 <obj class="Variable" id="session-env-ers-warning">
  <attr name="name" type="string" val="DUNEDAQ_ERS_WARNING"/>
  <attr name="value" type="string" val="erstrace,throttle,lstdout,protobufstream(monkafka.cern.ch:30092)"/>
+</obj>
+
+<obj class="Variable" id="session-env-session-name-0">
+ <attr name="name" type="string" val="DUNEDAQ_PARTITION"/>
+ <attr name="value" type="string" val="test-session"/>
+</obj>
+
+<obj class="Variable" id="session-env-session-name-1">
+ <attr name="name" type="string" val="DUNEDAQ_SESSION"/>
+ <attr name="value" type="string" val="test-session"/>
 </obj>
 
 <obj class="WIBModuleConf" id="dummy">
