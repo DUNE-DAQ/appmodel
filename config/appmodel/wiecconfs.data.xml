@@ -63,14 +63,16 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="17" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240307T202444"/>
+<info name="" type="" num-of-items="6" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240617T145813"/>
 
 <include>
  <file path="schema/appmodel/wiec.schema.xml"/>
 </include>
 
 <comments>
+ <comment creation-time="20240617T145813" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="glehmann" text=" "/>
 </comments>
+
 
 <obj class="FEMBSettings" id="def-femb-settings">
  <attr name="enabled" type="bool" val="1"/>
@@ -97,6 +99,12 @@
 
 <obj class="IpbusAddressTable" id="Hermes-addrtab">
  <attr name="uri" type="string" val="file://${HERMESMODULES_SHARE}/config/hermes_wib_v0.9.3/wib_eth_readout.xml"/>
+</obj>
+
+<obj class="WIBModuleConf" id="def-wib-conf">
+ <attr name="communication_type" type="string" val="tcp"/>
+ <attr name="communication_port" type="u32" val="1234"/>
+ <rel name="settings" class="WIBSettings" id="def-wib-settings"/>
 </obj>
 
 <obj class="WIBPulserSettings" id="def-wib-pulser-setting">

@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="24" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20240306T144154" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240617T092318"/>
+<info name="" type="" num-of-items="22" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20240306T144154" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240617T145813"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -86,6 +86,7 @@
  <comment creation-time="20240426T073141" created-by="thea" created-on="np02-srv-001.cern.ch" author="thea" text="enabling callbacks"/>
  <comment creation-time="20240430T135210" created-by="thea" created-on="np02-srv-001.cern.ch" author="thea" text="Removed ta source id"/>
  <comment creation-time="20240617T092318" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="sorting"/>
+ <comment creation-time="20240617T145813" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="glehmann" text=" "/>
 </comments>
 
 
@@ -253,7 +254,6 @@
  <attr name="name" type="string" val="DUNEDAQ_SESSION"/>
  <attr name="value" type="string" val="test-session"/>
 </obj>
-
 
 <obj class="WIECApplication" id="hermes-CRP4">
  <attr name="application_name" type="string" val="daq_application"/>
