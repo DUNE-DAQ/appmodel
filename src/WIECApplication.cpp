@@ -14,7 +14,15 @@
 #include "oks/kernel.hpp"
 #include "logging/Logging.hpp"
 
+#include "appmodel/NWDetDataReceiver.hpp"
+#include "confmodel/NetworkInterface.hpp"
+
 #include "appmodel/WIECApplication.hpp"
+#include "appmodel/HermesDataSender.hpp"
+#include "appmodel/HermesModule.hpp"
+#include "appmodel/HermesModuleConf.hpp"
+#include "appmodel/IpbusAddressTable.hpp"
+#include "confmodel/DetectorToDaqConnection.hpp"
 
 
 #include <string>
@@ -27,26 +35,26 @@ using namespace dunedaq::appmodel;
 
 static ModuleFactory::Registrator
 __reg__("WIECApplication", [] (const SmartDaqApplication* smartApp,
-                             conffwk::Configuration* confdb,
+                             conffwk::Configuration* config,
                              const std::string& dbfile,
                              const confmodel::Session* session) -> ModuleFactory::ReturnType
   {
     auto app = smartApp->cast<WIECApplication>();
-    return app->generate_modules(confdb, dbfile, session);
+    return app->generate_modules(config, dbfile, session);
   }
   );
 
 std::vector<const confmodel::DaqModule*> 
-WIECApplication::generate_modules(conffwk::Configuration* confdb,
+WIECApplication::generate_modules(conffwk::Configuration* config,
                                             const std::string& dbfile,
-                                            const confmodel::Session* /*session*/) const
+                                            const confmodel::Session* session) const
 {
   std::vector<const confmodel::DaqModule*> modules;
 
   std::map<std::string, std::vector<const appmodel::HermesDataSender*>> ctrlhost_sender_map;
 
 
-  uint16_t conn_idx = 0;
+  // uint16_t conn_idx = 0;
   for (auto d2d_conn_res : get_contains()) {
 
     // Are we sure?
@@ -54,8 +62,6 @@ WIECApplication::generate_modules(conffwk::Configuration* confdb,
       TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn_res->UID();
       continue;
     }
-
-    d2d_conn_objs.push_back(&d2d_conn_res->config_object());
 
     TLOG() << "Processing DetectorToDaqConnection " << d2d_conn_res->UID();
     // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader module
@@ -69,22 +75,23 @@ WIECApplication::generate_modules(conffwk::Configuration* confdb,
       throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain sebders or receivers"));
     }
 
-    // Loop over detector 2 daq connections to find senders and receivers
     auto det_senders = d2d_conn->get_senders();
     auto det_receiver = d2d_conn->get_receiver();
 
+    // Ensure that receiver is a nw_receiver
+    const auto* nw_receiver = det_receiver->cast<appmodel::NWDetDataReceiver>();
   
     // Loop over senders
     for (const auto* sender : det_senders) {
 
-      const auto* hrms_sender = sender->cast<appdal::HermesDataSender>();
+      const auto* hrms_sender = sender->cast<appmodel::HermesDataSender>();
       if (!hrms_sender ) {
-        throw(BadConf(ERS_HERE, fmt::format("DataSender {} is not a appdal::HermesDataSender",sender->UID())));
+        throw(BadConf(ERS_HERE, fmt::format("DataSender {} is not a appmodel::HermesDataSender",sender->UID())));
       }
 
       // Are we sure?
       if (hrms_sender->disabled(*session)) {
-        TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
+        TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << sender->UID();
         continue;
       }
 
@@ -92,8 +99,23 @@ WIECApplication::generate_modules(conffwk::Configuration* confdb,
     }
 
 
-    for( const [ctrlhost, senders]& : ctrlhost_sender_map ) {
+    for( const auto& [ctrlhost, senders] : ctrlhost_sender_map ) {
       fmt::print(">> {} len {}\n", ctrlhost, senders.size());
+
+      conffwk::ConfigObject hermes_obj;
+      std::string hermes_uid = fmt::format("hermes-ctrl-{}-{}", this->UID(), ctrlhost);
+      config->create(dbfile, "HermesModule", hermes_uid, hermes_obj);
+      hermes_obj.set_obj("address_table", &this->get_hermes_module_conf()->get_address_table()->config_object());
+      hermes_obj.set_by_val<std::string>("uri", fmt::format("{}://{}:{}", this->get_hermes_module_conf()->get_ipbus_type(), ctrlhost, this->get_hermes_module_conf()->get_ipbus_port()));
+      hermes_obj.set_obj("destination", &nw_receiver->get_uses()->config_object());
+
+      std::vector< const conffwk::ConfigObject * > links_obj; 
+      for ( const auto* sndr : senders ){
+        links_obj.push_back(&sndr->config_object());
+      }
+      hermes_obj.set_objs("links", links_obj);
+
+      modules.push_back(config->get<appmodel::HermesModule>(hermes_obj));
 
 
     }
