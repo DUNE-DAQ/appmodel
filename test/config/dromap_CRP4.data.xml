@@ -78,7 +78,7 @@
 
 
 <obj class="DPDKReceiver" id="dpdk-crp4-receiver">
- <rel name="uses" class="NICInterface" id="nic-np02-srv-003"/>
+ <rel name="uses" class="NetworkDevice" id="nic-np02-srv-003"/>
  <rel name="configuration" class="DPDKPortConfiguration" id="nic-config-CRP4"/>
 </obj>
 
@@ -819,7 +819,7 @@
  <attr name="uri" type="string" val="file://${HERMESMODULES_SHARE}/config/hermes_wib_v0.9.3/wib_eth_readout.xml"/>
 </obj>
 
-<obj class="NICInterface" id="nic-np02-srv-003">
+<obj class="NetworkDevice" id="nic-np02-srv-003">
  <attr name="numa_id" type="u8" val="1"/>
  <attr name="mac_address" type="string" val="6c:fe:54:4b:20:f1"/>
  <attr name="ip_address" type="string" val="10.73.139.82"/>
