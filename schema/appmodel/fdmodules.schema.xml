@@ -151,26 +151,6 @@
   <attribute name="links_enabled" description="Number of elinks configured." type="u32" is-multi-value="yes" init-value="0,1,2,3,4" is-not-null="yes"/>
  </class>
 
- <class name="HermesModule">
-  <superclass name="DaqModule"/>
-  <superclass name="IpbusDevice"/>
-  <relationship name="links" class-type="HermesDataSender" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="destination" class-type="NetworkInterface" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="HermesDataSender">
-  <superclass name="NWDetDataSender"/>
-  <attribute name="link_id" type="u32" is-not-null="yes"/>
-  <attribute name="port" type="u32" init-value="17476" is-not-null="yes"/>
-  <attribute name="control_host" type="string" init-value="localhost" is-not-null="yes"/>
- </class>
-
- <class name="HermesModuleConf">
-  <attribute name="ipbus_type" type="string" init-value="ipbusudp-2.0" is-not-null="yes"/>
-  <attribute name="ipbus_port" type="u32" init-value="50001" is-not-null="yes"/>
-  <relationship name="address_table" class-type="IpbusAddressTable" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
  <class name="IpbusAddressTable">
   <attribute name="uri" type="string" init-value="file://${HERMESMODULES_SHARE}/config/hermes_wib_v0.9.3/wib_eth_readout.xml" is-not-null="yes"/>
  </class>
@@ -185,16 +165,6 @@
   <attribute name="expected_packet_size" type="u32" init-value="7243" is-not-null="yes"/>
   <attribute name="expected_seq_id_step" type="u32" init-value="1"/>
   <attribute name="expected_timestamp_step" type="s32" init-value="-999" is-not-null="yes"/>
- </class>
-
- <class name="WIBModuleConf">
- </class>
-
- <class name="WIECApplication" description="Application describing the controller of a detector unit using WIBs inside a WIEC.">
-  <superclass name="SmartDaqApplication"/>
-  <superclass name="ResourceSetAND"/>
-  <relationship name="wib_module_conf" class-type="WIBModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="hermes_module_conf" class-type="HermesModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
 </oks-schema>

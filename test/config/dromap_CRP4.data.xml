@@ -69,6 +69,7 @@
  <file path="schema/confmodel/dunedaq.schema.xml"/>
  <file path="schema/appmodel/application.schema.xml"/>
  <file path="schema/appmodel/fdmodules.schema.xml"/>
+ <file path="config/appmodel/wiecconfs.data.xml"/>
 </include>
 
 <comments>
@@ -813,10 +814,6 @@
   <ref class="DetectorStream" id="DROStream-247"/>
  </rel>
  <rel name="uses" class="NetworkInterface" id="nw-np02-wib-1006-10g-1"/>
-</obj>
-
-<obj class="IpbusAddressTable" id="Hermes-addrtab">
- <attr name="uri" type="string" val="file://${HERMESMODULES_SHARE}/config/hermes_wib_v0.9.3/wib_eth_readout.xml"/>
 </obj>
 
 <obj class="NetworkDevice" id="nic-np02-srv-003">

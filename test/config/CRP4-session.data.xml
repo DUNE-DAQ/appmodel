@@ -69,9 +69,11 @@
  <file path="schema/confmodel/dunedaq.schema.xml"/>
  <file path="schema/appmodel/application.schema.xml"/>
  <file path="schema/appmodel/fdmodules.schema.xml"/>
+ <file path="schema/appmodel/wiec.schema.xml"/>
  <file path="config/appmodel/fsm.data.xml"/>
  <file path="config/appmodel/connections.data.xml"/>
  <file path="config/appmodel/moduleconfs.data.xml"/>
+ <file path="config/appmodel/wiecconfs.data.xml"/>
  <file path="test/config/dromap_CRP4.data.xml"/>
  <file path="test/config/hosts.data.xml"/>
  <file path="test/config/df-segment.data.xml"/>
@@ -91,12 +93,6 @@
  <attr name="tpg_channel_map" type="string" val="PD2HDChannelMap"/>
  <attr name="clock_speed_hz" type="u32" val="62500000"/>
  <attr name="op_env" type="string" val="swtest"/>
-</obj>
-
-<obj class="HermesModuleConf" id="def-hermes-conf">
- <attr name="ipbus_type" type="string" val="ipbusudp-2.0"/>
- <attr name="ipbus_port" type="u32" val="50001"/>
- <rel name="address_table" class="IpbusAddressTable" id="Hermes-addrtab"/>
 </obj>
 
 <obj class="OpMonService" id="cern-opmon-application-service">
@@ -258,8 +254,6 @@
  <attr name="value" type="string" val="test-session"/>
 </obj>
 
-<obj class="WIBModuleConf" id="dummy">
-</obj>
 
 <obj class="WIECApplication" id="hermes-CRP4">
  <attr name="application_name" type="string" val="daq_application"/>
@@ -267,7 +261,7 @@
  <rel name="contains">
   <ref class="DetectorToDaqConnection" id="crp4-connections"/>
  </rel>
- <rel name="wib_module_conf" class="WIBModuleConf" id="dummy"/>
+ <rel name="wib_module_conf" class="WIBModuleConf" id="def-wib-conf"/>
  <rel name="hermes_module_conf" class="HermesModuleConf" id="def-hermes-conf"/>
 </obj>
 
