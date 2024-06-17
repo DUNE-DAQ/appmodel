@@ -19,7 +19,7 @@
 #include "confmodel/Session.hpp"
 
 #include "appmodel/DataSubscriberModule.hpp"
-#include "appmodel/DataReceiverConf.hpp"
+#include "appmodel/DataReaderConf.hpp"
 #include "appmodel/DataRecorderConf.hpp"
 
 #include "appmodel/DataHandlerModule.hpp"
@@ -233,10 +233,10 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
   // Now create the DataSubscriberModule object
   auto rdr_conf = get_data_subscriber();
   if (rdr_conf == nullptr) {
-    throw (BadConf(ERS_HERE, "No DataReceiverModule configuration given"));
+    throw (BadConf(ERS_HERE, "No DataReaderModule configuration given"));
   }
 
-  // Create a DataReceiverModule
+  // Create a DataReaderModule
 
   std::string reader_uid("data-reader-"+UID());
   std::string reader_class = rdr_conf->get_template_for();
