@@ -73,6 +73,8 @@
  <comment creation-time="20240617T145813" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="glehmann" text=" "/>
 </comments>
 
+<obj class="ColdADCSettings" id="def-coldadc-settings">
+</obj>
 
 <obj class="FEMBSettings" id="def-femb-settings">
  <attr name="enabled" type="bool" val="1"/>
