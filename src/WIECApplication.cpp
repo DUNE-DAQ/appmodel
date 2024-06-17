@@ -20,6 +20,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <fmt/core.h>
 
 using namespace dunedaq;
 using namespace dunedaq::appmodel;
@@ -42,6 +43,7 @@ WIECApplication::generate_modules(conffwk::Configuration* confdb,
 {
   std::vector<const confmodel::DaqModule*> modules;
 
+  std::map<std::string, std::vector<const appmodel::HermesDataSender*>> ctrlhost_sender_map;
 
 
   uint16_t conn_idx = 0;
@@ -71,17 +73,29 @@ WIECApplication::generate_modules(conffwk::Configuration* confdb,
     auto det_senders = d2d_conn->get_senders();
     auto det_receiver = d2d_conn->get_receiver();
 
+  
     // Loop over senders
-    for (auto stream : d2d_conn->get_streams()) {
+    for (const auto* sender : det_senders) {
+
+      const auto* hrms_sender = sender->cast<appdal::HermesDataSender>();
+      if (!hrms_sender ) {
+        throw(BadConf(ERS_HERE, fmt::format("DataSender {} is not a appdal::HermesDataSender",sender->UID())));
+      }
 
       // Are we sure?
-      if (stream->disabled(*session)) {
+      if (hrms_sender->disabled(*session)) {
         TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
         continue;
       }
 
-      // loop over streams
-      det_streams.push_back(stream);
+      ctrlhost_sender_map[hrms_sender->get_control_host()].push_back(hrms_sender);
+    }
+
+
+    for( const [ctrlhost, senders]& : ctrlhost_sender_map ) {
+      fmt::print(">> {} len {}\n", ctrlhost, senders.size());
+
+
     }
 
   }
