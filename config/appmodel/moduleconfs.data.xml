@@ -158,7 +158,7 @@
 </obj>
 
 <obj class="DPDKReaderConf" id="def-emu-nic-receiver-conf">
- <attr name="template_for" type="class" val="FDFakeCardReaderModule"/>
+ <attr name="template_for" type="class" val="FDFakeReaderModule"/>
  <attr name="emulation_mode" type="bool" val="1"/>
  <attr name="eal_args" type="string" val=""/>
  <rel name="emulation_conf" class="StreamEmulationParameters" id="stream-emu"/>

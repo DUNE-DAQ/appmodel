@@ -121,7 +121,7 @@
   <superclass name="DataHandlerModule"/>
  </class>
 
- <class name="FDFakeCardReaderModule">
+ <class name="FDFakeReaderModule">
   <superclass name="DataReaderModule"/>
  </class>
 
