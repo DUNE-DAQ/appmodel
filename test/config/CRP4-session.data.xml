@@ -86,7 +86,12 @@
  <comment creation-time="20240426T073141" created-by="thea" created-on="np02-srv-001.cern.ch" author="thea" text="enabling callbacks"/>
  <comment creation-time="20240430T135210" created-by="thea" created-on="np02-srv-001.cern.ch" author="thea" text="Removed ta source id"/>
  <comment creation-time="20240617T092318" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="sorting"/>
- <comment creation-time="20240617T145813" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="glehmann" text=" "/>
+ <comment creation-time="20240616T202116" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="added fsm prod to ru-controller"/>
+ <comment creation-time="20240616T204242" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="adding control services"/>
+ <comment creation-time="20240616T204340" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="setting ru apps control services"/>
+ <comment creation-time="20240616T210618" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="adding opmon"/>
+ <comment creation-time="20240616T211218" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="root rules"/>
+ <comment creation-time="20240617T054038" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="setting env"/>
 </comments>
 
 
@@ -110,13 +115,52 @@
  </rel>
 </obj>
 
+<obj class="OpMonService" id="local-opmon-application-service">
+ <attr name="application_name" type="string" val="sh"/>
+ <attr name="commandline_parameters" type="string">
+  <data val="-c"/>
+  <data val="echo This service doesnt need any executable"/>
+  <data val="&amp;&amp;"/>
+  <data val="sleep 10000"/>
+ </attr>
+ <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="exposes_service">
+  <ref class="Service" id="local-opmon-service"/>
+ </rel>
+</obj>
+
+<obj class="OpMonService" id="pocket-opmon-application-service">
+ <attr name="application_name" type="string" val="sh"/>
+ <attr name="commandline_parameters" type="string">
+  <data val="-c"/>
+  <data val="echo Not starting kafka/grafana/postgres/influx"/>
+  <data val="&amp;&amp;"/>
+  <data val="sleep 10000"/>
+ </attr>
+ <rel name="runs_on" class="VirtualHost" id="kafka-pocket-vhost"/>
+ <rel name="exposes_service">
+  <ref class="Service" id="daq-k8s-opmon-service"/>
+ </rel>
+</obj>
+
+<obj class="RCApplication" id="root-controller">
+ <attr name="application_name" type="string" val="drunc-controller"/>
+ <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="exposes_service">
+  <ref class="Service" id="root-controller_control"/>
+ </rel>
+ <rel name="fsm" class="FSMconfiguration" id="fsmConf-test"/>
+ <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
+</obj>
+
 <obj class="RCApplication" id="ru-controller">
- <attr name="application_name" type="string" val="controller"/>
+ <attr name="application_name" type="string" val="drunc-controller"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="exposes_service">
   <ref class="Service" id="ru-controller_control"/>
  </rel>
- <rel name="fsm" class="FSMconfiguration" id="fsmConf-prod"/>
+ <rel name="fsm" class="FSMconfiguration" id="FSMconfiguration_noAction"/>
+  <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
 </obj>
 
 <obj class="ReadoutApplication" id="runp02srv003eth0">
@@ -126,6 +170,9 @@
   <ref class="DetectorToDaqConnection" id="crp4-connections"/>
  </rel>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="exposes_service">
+  <ref class="Service" id="runp02srv003eth0_control"/>
+ </rel>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="fd-dlh-data-requests-queue-rule"/>
   <ref class="QueueConnectionRule" id="fa-queue-rule"/>
@@ -147,11 +194,16 @@
 <obj class="RoHwConfig" id="rohw-group-247">
 </obj>
 
-<obj class="Segment" id="ru-segment">
+<obj class="Segment" id="root-segment">
  <rel name="segments">
-  <ref class="Segment" id="trg-segment"/>
+  <ref class="Segment" id="ru-segment"/>
   <ref class="Segment" id="df-segment"/>
+  <ref class="Segment" id="trg-segment"/>
  </rel>
+ <rel name="controller" class="RCApplication" id="root-controller"/>
+</obj>
+
+<obj class="Segment" id="ru-segment">
  <rel name="applications">
   <ref class="WIECApplication" id="hermes-CRP4"/>
   <ref class="ReadoutApplication" id="runp02srv003eth0"/>
@@ -165,9 +217,24 @@
  <attr name="path" type="string" val="/opmon"/>
 </obj>
 
+<obj class="Service" id="hermes-CRP4_control">
+ <attr name="protocol" type="string" val="rest"/>
+ <attr name="port" type="u16" val="5401"/>
+</obj>
+
 <obj class="Service" id="root-controller_control">
  <attr name="protocol" type="string" val="grpc"/>
- <attr name="port" type="u16" val="13333"/>
+ <attr name="port" type="u16" val="3333"/>
+</obj>
+
+<obj class="Service" id="ru-controller_control">
+ <attr name="protocol" type="string" val="grpc"/>
+ <attr name="port" type="u16" val="5500"/>
+</obj>
+
+<obj class="Service" id="runp02srv003eth0_control">
+ <attr name="protocol" type="string" val="rest"/>
+ <attr name="port" type="u16" val="5501"/>
 </obj>
 
 <obj class="Service" id="timeSync">
@@ -247,17 +314,20 @@
 
 <obj class="Variable" id="session-env-session-name-0">
  <attr name="name" type="string" val="DUNEDAQ_PARTITION"/>
- <attr name="value" type="string" val="test-session"/>
+ <attr name="value" type="string" val="crp4-oks-session"/>
 </obj>
 
 <obj class="Variable" id="session-env-session-name-1">
  <attr name="name" type="string" val="DUNEDAQ_SESSION"/>
- <attr name="value" type="string" val="test-session"/>
+ <attr name="value" type="string" val="crp4-oks-session"/>
 </obj>
 
 <obj class="WIECApplication" id="hermes-CRP4">
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="exposes_service">
+  <ref class="Service" id="hermes-CRP4_control"/>
+ </rel>
  <rel name="contains">
   <ref class="DetectorToDaqConnection" id="crp4-connections"/>
  </rel>

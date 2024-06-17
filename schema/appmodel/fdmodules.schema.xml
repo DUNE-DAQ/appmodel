@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="18" oks-format="schema" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240611T170050"/>
+<info name="" type="" num-of-items="17" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240617T100440"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -102,13 +102,13 @@
   <relationship name="used_lcores" description="associates CPUs to the data reception workload." class-type="ProcessingResource" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="DPDKReaderModule">
-  <superclass name="DataReceiverModule"/>
- </class>
-
  <class name="DPDKReaderConf">
   <superclass name="DataReceiverConf"/>
   <attribute name="eal_args" type="string" is-not-null="yes"/>
+ </class>
+
+ <class name="DPDKReaderModule">
+  <superclass name="DataReceiverModule"/>
  </class>
 
  <class name="DPDKReceiver">
@@ -122,10 +122,6 @@
  </class>
 
  <class name="FDFakeCardReader">
-  <superclass name="DataReceiverModule"/>
- </class>
-
- <class name="FelixReaderModule" description="DAQModule which reads a Felix card">
   <superclass name="DataReceiverModule"/>
  </class>
 
