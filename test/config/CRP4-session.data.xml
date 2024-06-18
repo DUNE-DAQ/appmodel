@@ -63,15 +63,17 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="27" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20240306T144154" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240617T054038"/>
+<info name="" type="" num-of-items="30" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20240306T144154" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240618T085408"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
  <file path="schema/appmodel/application.schema.xml"/>
  <file path="schema/appmodel/fdmodules.schema.xml"/>
+ <file path="schema/appmodel/wiec.schema.xml"/>
  <file path="config/appmodel/fsm.data.xml"/>
  <file path="config/appmodel/connections.data.xml"/>
  <file path="config/appmodel/moduleconfs.data.xml"/>
+ <file path="config/appmodel/wiecconfs.data.xml"/>
  <file path="test/config/dromap_CRP4.data.xml"/>
  <file path="test/config/hosts.data.xml"/>
  <file path="test/config/df-segment.data.xml"/>
@@ -83,13 +85,16 @@
  <comment creation-time="20240307T133917" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="disable TPG"/>
  <comment creation-time="20240426T073141" created-by="thea" created-on="np02-srv-001.cern.ch" author="thea" text="enabling callbacks"/>
  <comment creation-time="20240430T135210" created-by="thea" created-on="np02-srv-001.cern.ch" author="thea" text="Removed ta source id"/>
- <comment creation-time="20240617T092318" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="sorting"/>
  <comment creation-time="20240616T202116" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="added fsm prod to ru-controller"/>
  <comment creation-time="20240616T204242" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="adding control services"/>
  <comment creation-time="20240616T204340" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="setting ru apps control services"/>
  <comment creation-time="20240616T210618" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="adding opmon"/>
  <comment creation-time="20240616T211218" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="root rules"/>
  <comment creation-time="20240617T054038" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="setting env"/>
+ <comment creation-time="20240617T092318" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="sorting"/>
+ <comment creation-time="20240618T072215" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="WIB removed from WIEC app"/>
+ <comment creation-time="20240618T082100" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="adding erskafka as extra stream lib"/>
+ <comment creation-time="20240618T085408" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="adding wibmods back"/>
 </comments>
 
 
@@ -97,12 +102,6 @@
  <attr name="tpg_channel_map" type="string" val="PD2HDChannelMap"/>
  <attr name="clock_speed_hz" type="u32" val="62500000"/>
  <attr name="op_env" type="string" val="swtest"/>
-</obj>
-
-<obj class="HermesModuleConf" id="def-hermes-conf">
- <attr name="ipbus_type" type="string" val="ipbusudp-2.0"/>
- <attr name="ipbus_port" type="u32" val="50001"/>
- <rel name="address_table" class="IpbusAddressTable" id="Hermes-addrtab"/>
 </obj>
 
 <obj class="OpMonService" id="cern-opmon-application-service">
@@ -164,7 +163,7 @@
   <ref class="Service" id="ru-controller_control"/>
  </rel>
  <rel name="fsm" class="FSMconfiguration" id="FSMconfiguration_noAction"/>
-  <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
+ <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
 </obj>
 
 <obj class="ReadoutApplication" id="runp02srv003eth0">
@@ -202,14 +201,13 @@
  <rel name="segments">
   <ref class="Segment" id="ru-segment"/>
   <ref class="Segment" id="df-segment"/>
-  <ref class="Segment" id="trg-segment"/>
  </rel>
  <rel name="controller" class="RCApplication" id="root-controller"/>
 </obj>
 
 <obj class="Segment" id="ru-segment">
  <rel name="applications">
-  <ref class="WIECApplication" id="hermes-CRP4"/>
+  <ref class="WIECApplication" id="wiec-crp4"/>
   <ref class="ReadoutApplication" id="runp02srv003eth0"/>
  </rel>
  <rel name="controller" class="RCApplication" id="ru-controller"/>
@@ -221,7 +219,7 @@
  <attr name="path" type="string" val="/opmon"/>
 </obj>
 
-<obj class="Service" id="hermes-CRP4_control">
+<obj class="Service" id="wiec-crp4_control">
  <attr name="protocol" type="string" val="rest"/>
  <attr name="port" type="u16" val="5401"/>
 </obj>
@@ -263,8 +261,9 @@
   <ref class="Variable" id="session-env-connectivity-port"/>
   <ref class="Variable" id="daqapp-cli-monitoring"/>
   <ref class="Variable" id="daqapp-cli-configuration"/>
+  <ref class="Variable" id="session-env-ers-stream-libs"/>
  </rel>
- <rel name="segment" class="Segment" id="ru-segment"/>
+ <rel name="segment" class="Segment" id="root-segment"/>
  <rel name="infrastructure_applications">
   <ref class="OpMonService" id="cern-opmon-application-service"/>
  </rel>
@@ -306,6 +305,12 @@
  <attr name="value" type="string" val="erstrace,throttle,lstdout,protobufstream(monkafka.cern.ch:30092)"/>
 </obj>
 
+<obj class="Variable" id="session-env-ers-stream-libs">
+ <attr name="description" type="string" val="List of extra ERS streaming libs"/>
+ <attr name="name" type="string" val="DUNEDAQ_ERS_STREAM_LIBS"/>
+ <attr name="value" type="string" val="erskafka"/>
+</obj>
+
 <obj class="Variable" id="session-env-ers-verb">
  <attr name="name" type="string" val="DUNEDAQ_ERS_VERBOSITY_LEVEL"/>
  <attr name="value" type="string" val="1"/>
@@ -326,9 +331,6 @@
  <attr name="value" type="string" val="crp4-oks-session"/>
 </obj>
 
-<obj class="WIBModuleConf" id="dummy">
-</obj>
-
 <obj class="WIECApplication" id="hermes-CRP4">
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
@@ -338,7 +340,7 @@
  <rel name="contains">
   <ref class="DetectorToDaqConnection" id="crp4-connections"/>
  </rel>
- <rel name="wib_module_conf" class="WIBModuleConf" id="dummy"/>
+ <rel name="wib_module_conf" class="WIBModuleConf" id="def-wib-conf"/>
  <rel name="hermes_module_conf" class="HermesModuleConf" id="def-hermes-conf"/>
 </obj>
 

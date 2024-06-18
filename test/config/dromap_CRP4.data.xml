@@ -69,6 +69,7 @@
  <file path="schema/confmodel/dunedaq.schema.xml"/>
  <file path="schema/appmodel/application.schema.xml"/>
  <file path="schema/appmodel/fdmodules.schema.xml"/>
+ <file path="config/appmodel/wiecconfs.data.xml"/>
 </include>
 
 <comments>
@@ -826,17 +827,6 @@
   <ref class="DetectorStream" id="DetStream-247"/>
  </rel>
  <rel name="uses" class="NetworkInterface" id="nw-np02-wib-1006-10g-1"/>
-</obj>
-
-<obj class="IpbusAddressTable" id="Hermes-addrtab">
- <attr name="uri" type="string" val="file://${HERMESMODULES_SHARE}/config/hermes_wib_v0.9.3/wib_eth_readout.xml"/>
-</obj>
-
-<obj class="NICStatsConf" id="nicStats-np02_WIB_CRP4">
- <attr name="analyze_nth_packet" type="s32" val="1"/>
- <attr name="expected_packet_size" type="u32" val="7243"/>
- <attr name="expected_seq_id_step" type="u32" val="1"/>
- <attr name="expected_timestamp_step" type="s32" val="-999"/>
 </obj>
 
 <obj class="NetworkDevice" id="nic-np02-srv-003">

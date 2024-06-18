@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="ASCII"?>
+
+<!-- oks-schema version 2.2 -->
+
+
+<!DOCTYPE oks-schema [
+  <!ELEMENT oks-schema (info, (include)?, (comments)?, (class)+)>
+  <!ELEMENT info EMPTY>
+  <!ATTLIST info
+      name CDATA #IMPLIED
+      type CDATA #IMPLIED
+      num-of-items CDATA #REQUIRED
+      oks-format CDATA #FIXED "schema"
+      oks-version CDATA #REQUIRED
+      created-by CDATA #IMPLIED
+      created-on CDATA #IMPLIED
+      creation-time CDATA #IMPLIED
+      last-modified-by CDATA #IMPLIED
+      last-modified-on CDATA #IMPLIED
+      last-modification-time CDATA #IMPLIED
+  >
+  <!ELEMENT include (file)+>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+      path CDATA #REQUIRED
+  >
+  <!ELEMENT comments (comment)+>
+  <!ELEMENT comment EMPTY>
+  <!ATTLIST comment
+      creation-time CDATA #REQUIRED
+      created-by CDATA #REQUIRED
+      created-on CDATA #REQUIRED
+      author CDATA #REQUIRED
+      text CDATA #REQUIRED
+  >
+  <!ELEMENT class (superclass | attribute | relationship | method)*>
+  <!ATTLIST class
+      name CDATA #REQUIRED
+      description CDATA ""
+      is-abstract (yes|no) "no"
+  >
+  <!ELEMENT superclass EMPTY>
+  <!ATTLIST superclass name CDATA #REQUIRED>
+  <!ELEMENT attribute EMPTY>
+  <!ATTLIST attribute
+      name CDATA #REQUIRED
+      description CDATA ""
+      type (bool|s8|u8|s16|u16|s32|u32|s64|u64|float|double|date|time|string|uid|enum|class) #REQUIRED
+      range CDATA ""
+      format (dec|hex|oct) "dec"
+      is-multi-value (yes|no) "no"
+      init-value CDATA ""
+      is-not-null (yes|no) "no"
+      ordered (yes|no) "no"
+  >
+  <!ELEMENT relationship EMPTY>
+  <!ATTLIST relationship
+      name CDATA #REQUIRED
+      description CDATA ""
+      class-type CDATA #REQUIRED
+      low-cc (zero|one) #REQUIRED
+      high-cc (one|many) #REQUIRED
+      is-composite (yes|no) #REQUIRED
+      is-exclusive (yes|no) #REQUIRED
+      is-dependent (yes|no) #REQUIRED
+      ordered (yes|no) "no"
+  >
+  <!ELEMENT method (method-implementation*)>
+  <!ATTLIST method
+      name CDATA #REQUIRED
+      description CDATA ""
+  >
+  <!ELEMENT method-implementation EMPTY>
+  <!ATTLIST method-implementation
+      language CDATA #REQUIRED
+      prototype CDATA #REQUIRED
+      body CDATA ""
+  >
+]>
+
+<oks-schema>
+
+<info name="" type="" num-of-items="10" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240618T084639"/>
+
+<include>
+ <file path="schema/confmodel/dunedaq.schema.xml"/>
+ <file path="schema/appmodel/application.schema.xml"/>
+ <file path="schema/appmodel/fdmodules.schema.xml"/>
+</include>
+
+
+ <class name="ColdADCSettings" description="Customized ColdADC register settings">
+  <attribute name="reg_0" description="Register 0: sdc_bypassed" type="u8" init-value="35" is-not-null="yes"/>
+  <attribute name="reg_4" description="Register 4: single-ended_input_mode" type="u8" init-value="59" is-not-null="yes"/>
+  <attribute name="reg_24" description="Register 24: vrefp" type="u8" init-value="223" is-not-null="yes"/>
+  <attribute name="reg_25" description="Register 25: vrefn" type="u8" init-value="51" is-not-null="yes"/>
+  <attribute name="reg_26" description="Register 26: vcmo" type="u8" init-value="137" is-not-null="yes"/>
+  <attribute name="reg_27" description="Register 27: vcmi" type="u8" init-value="103" is-not-null="yes"/>
+  <attribute name="reg_29" description="Register 29: ibuff0_cmos" type="u8" init-value="39" is-not-null="yes"/>
+  <attribute name="reg_30" description="Register 30: ibuff1_cmos" type="u8" init-value="39" is-not-null="yes"/>
+ </class>
+
+ <class name="FEMBSettings">
+  <attribute name="enabled" description="True of FEMB should be configured and read out by WIB" type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="test_cap" description="Enable the test capacitor" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="gain" description="Channel gain selector: 14, 25, 7.8, 4.7 mV/fC (0 - 3)" type="u8" range="0,1,2,3" init-value="0" is-not-null="yes"/>
+  <attribute name="peak_time" description="Channel peak time selector: 1.0, 0.5, 3, 2 us (0 - 3)" type="u8" range="0,1,2,3" init-value="3" is-not-null="yes"/>
+  <attribute name="baseline" description="Baseline selector: 0 (900 mV), 1 (200 mV), 2 (200 mV collection, 900 mV induction)" type="u8" range="0,1,2" init-value="2" is-not-null="yes"/>
+  <attribute name="pulse_dac" description="Pulser DAC setting [0-63]" type="u8" init-value="0" is-not-null="yes"/>
+  <attribute name="gain_match" description="Enable pulser DAC gain matching" type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="leak" description="Leak current selector: 0 (500 pA), 1 (100 pA)" type="u8" range="0,1" init-value="0" is-not-null="yes"/>
+  <attribute name="leak_10x" description="Multiply leak current by 10 if true" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="ac_couple" description="false (DC coupling), true (AC coupling)" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="buffering" description="0 (no buffer), 1 (se buffer), 2 (sedc buffer)" type="u8" range="0,1,2" init-value="0" is-not-null="yes"/>
+  <attribute name="strobe_skip" description="2MHz periods to skip after strobe (pulser period 0-255)" type="u8" init-value="255" is-not-null="yes"/>
+  <attribute name="strobe_delay" description="64MHz periods to skip after 2MHz edge for strobe (pulser offset 0-255)" type="u8" init-value="255" is-not-null="yes"/>
+  <attribute name="strobe_length" description="Length of strobe in 64MHz periods (pulser length 0-255)" type="u8" init-value="255" is-not-null="yes"/>
+  <attribute name="line_driver" description="0 (Default), 1 (Short), 2 (25 m warm), 3 (35 m warm), 4 (25 m cold), 5 (35 m cold). Can submit up to 2 values for the two COLDATA." type="u8" is-multi-value="yes"/>
+  <attribute name="pulse_channels" description="Array of up to 16 true/false values, for whether to send pulser to each corresponding channel per LArASIC." type="bool" is-multi-value="yes"/>
+ </class>
+
+ <class name="HermesDataSender">
+  <superclass name="NWDetDataSender"/>
+  <attribute name="link_id" type="u32" is-not-null="yes"/>
+  <attribute name="port" type="u32" init-value="17476" is-not-null="yes"/>
+  <attribute name="control_host" type="string" init-value="localhost" is-not-null="yes"/>
+ </class>
+
+ <class name="HermesModule">
+  <superclass name="DaqModule"/>
+  <superclass name="IpbusDevice"/>
+  <relationship name="links" class-type="HermesDataSender" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="destination" class-type="NetworkInterface" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="HermesModuleConf">
+  <attribute name="ipbus_type" type="string" init-value="ipbusudp-2.0" is-not-null="yes"/>
+  <attribute name="ipbus_port" type="u32" init-value="50001" is-not-null="yes"/>
+  <attribute name="ipbus_timeout_ms" type="u32" init-value="1000" is-not-null="yes"/>
+  <relationship name="address_table" class-type="IpbusAddressTable" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="WIBConfigurator">
+  <superclass name="DaqModule"/>
+  <attribute name="wib_addr" type="string" init-value="tcp://192.168.121.1:1234" is-not-null="yes"/>
+  <relationship name="conf" class-type="WIBSettings" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="WIBModuleConf">
+  <attribute name="communication_type" type="string" init-value="tcp" is-not-null="yes"/>
+  <attribute name="communication_port" type="u32" init-value="1234" is-not-null="yes"/>
+  <relationship name="settings" class-type="WIBSettings" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="WIBPulserSettings" description="WIB Pulser settings">
+  <attribute name="enabled_0" description="Enable WIB pulser for FEMB 0" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="enabled_1" description="Enable WIB pulser for FEMB 1" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="enabled_2" description="Enable WIB pulser for FEMB 2" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="enabled_3" description="Enable WIB pulser for FEMB 3" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="pulse_dac" description="WIB pulser DAC setting. 16 bits [0-65535]" type="u16" init-value="0" is-not-null="yes"/>
+  <attribute name="pulse_period" description="WIB pulser period in ADC clock units (512 ns). 21 bits [0-2097151]" type="u32" init-value="2000" is-not-null="yes"/>
+  <attribute name="pulse_phase" description="WIB pulser phase relative to digitization clock [0-31]" type="u8" init-value="0" is-not-null="yes"/>
+  <attribute name="pulse_duration" description="WIB pulser pulse duration in system clock units (16 ns). 27 bits [0-134217727]" type="u32" init-value="255" is-not-null="yes"/>
+ </class>
+
+ <class name="WIBSettings" description="WIB system settings (argument to settings)">
+  <attribute name="cold" description="True if the front end electronics are COLD (77k)" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="pulser" description="True if the calibration pulser should be enabled" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="detector_type" description="Detector type selector: WIB default (0), upper APA (1), lower APA (2), CRP (3)" type="u8" range="0,1,2,3" init-value="0" is-not-null="yes"/>
+  <attribute name="adc_test_pattern" description="True if the COLDADC test pattern should be enabled" type="bool" init-value="false" is-not-null="yes"/>
+  <relationship name="femb0" description="Settings for FEMB in slot 0" class-type="FEMBSettings" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="femb1" description="Settings for FEMB in slot 1" class-type="FEMBSettings" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="femb2" description="Settings for FEMB in slot 2" class-type="FEMBSettings" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="femb3" description="Settings for FEMB in slot 3" class-type="FEMBSettings" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="coldadc_settings" description="Custom register settings for ColdADC" class-type="ColdADCSettings" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="wib_pulser" description="Settings for WIB pulser" class-type="WIBPulserSettings" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="WIECApplication" description="Application describing the controller of a detector unit using WIBs inside a WIEC.">
+  <superclass name="SmartDaqApplication"/>
+  <superclass name="ResourceSetAND"/>
+  <relationship name="wib_module_conf" class-type="WIBModuleConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="hermes_module_conf" class-type="HermesModuleConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
+  </method>
+</class>
+
+</oks-schema>

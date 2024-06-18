@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="47" oks-format="schema" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240612T160058"/>
+<info name="" type="" num-of-items="47" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240618T084639"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -122,15 +122,6 @@
   <relationship name="configuration" class-type="DFOConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="DataHandlerModule" is-abstract="yes">
-  <superclass name="DaqModule"/>
-  <attribute name="source_id" type="u32" is-not-null="yes"/>
-  <attribute name="detector_id" type="u32" is-not-null="yes"/>
-  <attribute name="emulation_mode" type="bool" init-value="false" is-not-null="yes"/>
-  <relationship name="geo_id" class-type="GeoId" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="module_configuration" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
  <class name="DataHandlerConf">
   <attribute name="template_for" type="class" init-value="DataHandlerModule" is-not-null="yes"/>
   <attribute name="input_data_type" description="Type of data received by this readout module" type="string" init-value="WIBEthFrame"/>
@@ -139,6 +130,15 @@
   <relationship name="request_handler" class-type="RequestHandler" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="latency_buffer" class-type="LatencyBuffer" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_processor" class-type="DataProcessor" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="DataHandlerModule" is-abstract="yes">
+  <superclass name="DaqModule"/>
+  <attribute name="source_id" type="u32" is-not-null="yes"/>
+  <attribute name="detector_id" type="u32" is-not-null="yes"/>
+  <attribute name="emulation_mode" type="bool" init-value="false" is-not-null="yes"/>
+  <relationship name="geo_id" class-type="GeoId" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="module_configuration" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="DataProcessor">
@@ -159,9 +159,10 @@
   <relationship name="emulation_conf" description="Parameters for emulating the stream." class-type="StreamEmulationParameters" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="DataRecorderModule" is-abstract="yes">
+ <class name="DataReceiverModule" is-abstract="yes">
   <superclass name="DaqModule"/>
-  <relationship name="configuration" class-type="DataRecorderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="configuration" class-type="DataReceiverConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="connections" class-type="DetectorToDaqConnection" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="DataRecorderConf">
@@ -169,6 +170,11 @@
   <attribute name="streaming_buffer_size" type="u32" init-value="1000" is-not-null="yes"/>
   <attribute name="compression_algorithm" type="string" init-value="None" is-not-null="yes"/>
   <attribute name="use_o_direct" description="Whether to use O_DIRECT flag when opening files" type="bool" init-value="true"/>
+ </class>
+
+ <class name="DataRecorderModule" is-abstract="yes">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="DataRecorderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="DataStoreConf">
@@ -182,17 +188,17 @@
   <relationship name="filename_params" class-type="FilenameParams" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="DataWriterModule">
-  <superclass name="DaqModule"/>
-  <relationship name="configuration" class-type="DataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
  <class name="DataWriterConf">
   <attribute name="data_storage_prescale" type="s32" init-value="1" is-not-null="yes"/>
   <attribute name="min_write_retry_time_ms" type="s32" init-value="0" is-not-null="yes"/>
   <attribute name="max_write_retry_time_ms" type="s32" init-value="0" is-not-null="yes"/>
   <attribute name="write_retry_time_increase_factor" type="s32" init-value="0" is-not-null="yes"/>
   <relationship name="data_store_params" class-type="DataStoreConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="DataWriterModule">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="DataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="FakeDataApplication">
@@ -202,11 +208,6 @@
   <method name="generate_modules" description="Generate daq module dal objects for streams of the FakeDataApplication on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
   </method>
- </class>
-
- <class name="FakeDataProdModule">
-  <superclass name="DaqModule"/>
-  <relationship name="configuration" class-type="FakeDataProdConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="FakeDataProdConf">
@@ -219,6 +220,11 @@
   <attribute name="fragment_type" description="Fragment type of the response" type="string" is-not-null="yes"/>
  </class>
 
+ <class name="FakeDataProdModule">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="FakeDataProdConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
  <class name="FakeHSIApplication">
   <superclass name="SmartDaqApplication"/>
   <relationship name="link_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -226,11 +232,6 @@
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
   </method>
- </class>
-
- <class name="FakeHSIEventGeneratorModule">
-  <superclass name="DaqModule"/>
-  <relationship name="configuration" class-type="FakeHSIEventGeneratorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="FakeHSIEventGeneratorConf">
@@ -241,6 +242,11 @@
   <attribute name="mean_signal_multiplicity" description="Mean number of edges expected per signal. Used when signal emulation mode is 1" type="u32" init-value="1" is-not-null="yes"/>
   <attribute name="enabled_signals" description="Which signals or bit of the 32 bit signal bit map are enabled, i.e. could produce an emulated signal" type="u32" init-value="0" is-not-null="yes"/>
   <attribute name="signal_emulation_mode" description="Signal bit map emulation mode. 0: enabled signals always on; 1: enabled signals are emulated (independently) on according to a Poisson with mean mean_signal_multiplicity; signal map generated with uniform distr. enabled signals only" type="u32" init-value="0" is-not-null="yes"/>
+ </class>
+
+ <class name="FakeHSIEventGeneratorModule">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="FakeHSIEventGeneratorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="FilenameParams">
@@ -402,12 +408,6 @@
   <attribute name="TP_rate_per_channel" description="TP rate per channel in units of 100 Hz." type="float" init-value="0.0" is-not-null="yes"/>
  </class>
 
- <class name="TPStreamWriterModule">
-  <superclass name="DaqModule"/>
-  <attribute name="source_id" type="u32" is-not-null="yes"/>
-  <relationship name="configuration" class-type="TPStreamWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
  <class name="TPStreamWriterApplication">
   <superclass name="SmartDaqApplication"/>
   <relationship name="tp_writer" class-type="TPStreamWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -419,6 +419,12 @@
  <class name="TPStreamWriterConf">
   <attribute name="tp_accumulation_interval" type="u64" init-value="0" is-not-null="yes"/>
   <relationship name="data_store_params" class-type="DataStoreConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="TPStreamWriterModule">
+  <superclass name="DaqModule"/>
+  <attribute name="source_id" type="u32" is-not-null="yes"/>
+  <relationship name="configuration" class-type="TPStreamWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="TRBConf">
