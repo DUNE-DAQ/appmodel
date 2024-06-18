@@ -80,13 +80,14 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="18" oks-format="schema" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240611T170050"/>
+<info name="" type="" num-of-items="10" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240618T084639"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
  <file path="schema/appmodel/application.schema.xml"/>
  <file path="schema/appmodel/fdmodules.schema.xml"/>
 </include>
+
 
  <class name="ColdADCSettings" description="Customized ColdADC register settings">
   <attribute name="reg_0" description="Register 0: sdc_bypassed" type="u8" init-value="35" is-not-null="yes"/>
@@ -118,13 +119,6 @@
   <attribute name="pulse_channels" description="Array of up to 16 true/false values, for whether to send pulser to each corresponding channel per LArASIC." type="bool" is-multi-value="yes"/>
  </class>
 
-  <class name="HermesModule">
-  <superclass name="DaqModule"/>
-  <superclass name="IpbusDevice"/>
-  <relationship name="links" class-type="HermesDataSender" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="destination" class-type="NetworkInterface" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
  <class name="HermesDataSender">
   <superclass name="NWDetDataSender"/>
   <attribute name="link_id" type="u32" is-not-null="yes"/>
@@ -132,17 +126,30 @@
   <attribute name="control_host" type="string" init-value="localhost" is-not-null="yes"/>
  </class>
 
+ <class name="HermesModule">
+  <superclass name="DaqModule"/>
+  <superclass name="IpbusDevice"/>
+  <relationship name="links" class-type="HermesDataSender" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="destination" class-type="NetworkInterface" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
  <class name="HermesModuleConf">
   <attribute name="ipbus_type" type="string" init-value="ipbusudp-2.0" is-not-null="yes"/>
   <attribute name="ipbus_port" type="u32" init-value="50001" is-not-null="yes"/>
+  <attribute name="ipbus_timeout_ms" type="u32" init-value="1000" is-not-null="yes"/>
   <relationship name="address_table" class-type="IpbusAddressTable" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
-
 
  <class name="WIBConfigurator">
   <superclass name="DaqModule"/>
   <attribute name="wib_addr" type="string" init-value="tcp://192.168.121.1:1234" is-not-null="yes"/>
   <relationship name="conf" class-type="WIBSettings" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="WIBModuleConf">
+  <attribute name="communication_type" type="string" init-value="tcp" is-not-null="yes"/>
+  <attribute name="communication_port" type="u32" init-value="1234" is-not-null="yes"/>
+  <relationship name="settings" class-type="WIBSettings" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="WIBPulserSettings" description="WIB Pulser settings">
@@ -169,17 +176,11 @@
   <relationship name="wib_pulser" description="Settings for WIB pulser" class-type="WIBPulserSettings" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="WIBModuleConf">
-  <attribute name="communication_type" type="string" init-value="tcp" is-not-null="yes"/>
-  <attribute name="communication_port" type="u32" init-value="1234" is-not-null="yes"/>
-  <relationship name="settings" class-type="WIBSettings" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
  <class name="WIECApplication" description="Application describing the controller of a detector unit using WIBs inside a WIEC.">
   <superclass name="SmartDaqApplication"/>
   <superclass name="ResourceSetAND"/>
-  <relationship name="wib_module_conf" class-type="WIBModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="hermes_module_conf" class-type="HermesModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="wib_module_conf" class-type="WIBModuleConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="hermes_module_conf" class-type="HermesModuleConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
   </method>

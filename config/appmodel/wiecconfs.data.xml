@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="6" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240617T145813"/>
+<info name="" type="" num-of-items="7" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240618T084833"/>
 
 <include>
  <file path="schema/appmodel/wiec.schema.xml"/>
@@ -71,9 +71,19 @@
 
 <comments>
  <comment creation-time="20240617T145813" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="glehmann" text=" "/>
+ <comment creation-time="20240618T084833" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="ipbus timeout increased to 10"/>
 </comments>
 
+
 <obj class="ColdADCSettings" id="def-coldadc-settings">
+ <attr name="reg_0" type="u8" val="35"/>
+ <attr name="reg_4" type="u8" val="59"/>
+ <attr name="reg_24" type="u8" val="223"/>
+ <attr name="reg_25" type="u8" val="51"/>
+ <attr name="reg_26" type="u8" val="137"/>
+ <attr name="reg_27" type="u8" val="103"/>
+ <attr name="reg_29" type="u8" val="39"/>
+ <attr name="reg_30" type="u8" val="39"/>
 </obj>
 
 <obj class="FEMBSettings" id="def-femb-settings">
@@ -96,6 +106,7 @@
 <obj class="HermesModuleConf" id="def-hermes-conf">
  <attr name="ipbus_type" type="string" val="ipbusudp-2.0"/>
  <attr name="ipbus_port" type="u32" val="50001"/>
+ <attr name="ipbus_timeout_ms" type="u32" val="10000"/>
  <rel name="address_table" class="IpbusAddressTable" id="Hermes-addrtab"/>
 </obj>
 

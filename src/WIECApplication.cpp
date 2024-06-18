@@ -126,6 +126,7 @@ WIECApplication::generate_modules(conffwk::Configuration* config,
         config->create(dbfile, "HermesModule", hermes_uid, hermes_obj);
         hermes_obj.set_obj("address_table", &this->get_hermes_module_conf()->get_address_table()->config_object());
         hermes_obj.set_by_val<std::string>("uri", fmt::format("{}://{}:{}", this->get_hermes_module_conf()->get_ipbus_type(), ctrlhost, this->get_hermes_module_conf()->get_ipbus_port()));
+        hermes_obj.set_by_val<uint32_t>("timeout_ms", this->get_hermes_module_conf()->get_ipbus_timeout_ms());
         hermes_obj.set_obj("destination", &nw_receiver->get_uses()->config_object());
 
         std::vector< const conffwk::ConfigObject * > links_obj; 

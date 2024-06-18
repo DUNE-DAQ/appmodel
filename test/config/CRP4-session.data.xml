@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="22" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20240306T144154" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240617T145813"/>
+<info name="" type="" num-of-items="30" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20240306T144154" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240618T085408"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -85,13 +85,16 @@
  <comment creation-time="20240307T133917" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="disable TPG"/>
  <comment creation-time="20240426T073141" created-by="thea" created-on="np02-srv-001.cern.ch" author="thea" text="enabling callbacks"/>
  <comment creation-time="20240430T135210" created-by="thea" created-on="np02-srv-001.cern.ch" author="thea" text="Removed ta source id"/>
- <comment creation-time="20240617T092318" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="sorting"/>
  <comment creation-time="20240616T202116" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="added fsm prod to ru-controller"/>
  <comment creation-time="20240616T204242" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="adding control services"/>
  <comment creation-time="20240616T204340" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="setting ru apps control services"/>
  <comment creation-time="20240616T210618" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="adding opmon"/>
  <comment creation-time="20240616T211218" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="root rules"/>
  <comment creation-time="20240617T054038" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="setting env"/>
+ <comment creation-time="20240617T092318" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="sorting"/>
+ <comment creation-time="20240618T072215" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="WIB removed from WIEC app"/>
+ <comment creation-time="20240618T082100" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="adding erskafka as extra stream lib"/>
+ <comment creation-time="20240618T085408" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="adding wibmods back"/>
 </comments>
 
 
@@ -160,7 +163,7 @@
   <ref class="Service" id="ru-controller_control"/>
  </rel>
  <rel name="fsm" class="FSMconfiguration" id="FSMconfiguration_noAction"/>
-  <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
+ <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
 </obj>
 
 <obj class="ReadoutApplication" id="runp02srv003eth0">
@@ -198,7 +201,6 @@
  <rel name="segments">
   <ref class="Segment" id="ru-segment"/>
   <ref class="Segment" id="df-segment"/>
-  <ref class="Segment" id="trg-segment"/>
  </rel>
  <rel name="controller" class="RCApplication" id="root-controller"/>
 </obj>
@@ -259,6 +261,7 @@
   <ref class="Variable" id="session-env-connectivity-port"/>
   <ref class="Variable" id="daqapp-cli-monitoring"/>
   <ref class="Variable" id="daqapp-cli-configuration"/>
+  <ref class="Variable" id="session-env-ers-stream-libs"/>
  </rel>
  <rel name="segment" class="Segment" id="root-segment"/>
  <rel name="infrastructure_applications">
@@ -300,6 +303,12 @@
 <obj class="Variable" id="session-env-ers-info">
  <attr name="name" type="string" val="DUNEDAQ_ERS_INFO"/>
  <attr name="value" type="string" val="erstrace,throttle,lstdout,protobufstream(monkafka.cern.ch:30092)"/>
+</obj>
+
+<obj class="Variable" id="session-env-ers-stream-libs">
+ <attr name="description" type="string" val="List of extra ERS streaming libs"/>
+ <attr name="name" type="string" val="DUNEDAQ_ERS_STREAM_LIBS"/>
+ <attr name="value" type="string" val="erskafka"/>
 </obj>
 
 <obj class="Variable" id="session-env-ers-verb">

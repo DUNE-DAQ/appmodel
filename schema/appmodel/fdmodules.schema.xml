@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="17" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240617T100440"/>
+<info name="" type="" num-of-items="11" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240618T084639"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -153,6 +153,7 @@
 
  <class name="IpbusDevice">
   <attribute name="uri" type="string" is-not-null="yes"/>
+  <attribute name="timeout_ms" description="IPBus device timeout" type="u32" init-value="1000" is-not-null="yes"/>
   <relationship name="address_table" class-type="IpbusAddressTable" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
