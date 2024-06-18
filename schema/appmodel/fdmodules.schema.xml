@@ -103,12 +103,12 @@
  </class>
 
  <class name="DPDKReaderConf">
-  <superclass name="DataReceiverConf"/>
+  <superclass name="DataReaderConf"/>
   <attribute name="eal_args" type="string" is-not-null="yes"/>
  </class>
 
  <class name="DPDKReaderModule">
-  <superclass name="DataReceiverModule"/>
+  <superclass name="DataReaderModule"/>
  </class>
 
  <class name="DPDKReceiver">
@@ -121,8 +121,8 @@
   <superclass name="DataHandlerModule"/>
  </class>
 
- <class name="FDFakeCardReader">
-  <superclass name="DataReceiverModule"/>
+ <class name="FDFakeReaderModule">
+  <superclass name="DataReaderModule"/>
  </class>
 
  <class name="FelixDataSender">

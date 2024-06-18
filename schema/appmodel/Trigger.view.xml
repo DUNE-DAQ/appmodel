@@ -77,27 +77,27 @@
  </rel>
 </obj>
 
-<obj class="ALink" id="DataReceiverConf-2-StreamEmulationParameters-via-emulation_conf">
+<obj class="ALink" id="DataReaderConf-2-StreamEmulationParameters-via-emulation_conf">
  <attr name="Name" type="string" val="emulation_conf"/>
- <rel name="From" class="Class" id="DataReceiverConf"/>
+ <rel name="From" class="Class" id="DataReaderConf"/>
  <rel name="To" class="Class" id="StreamEmulationParameters"/>
  <rel name="Points">
-  <ref class="Point" id="1 DataReceiverConf-2-StreamEmulationParameters-via-emulation_conf"/>
-  <ref class="Point" id="2 DataReceiverConf-2-StreamEmulationParameters-via-emulation_conf"/>
-  <ref class="Point" id="3 DataReceiverConf-2-StreamEmulationParameters-via-emulation_conf"/>
-  <ref class="Point" id="4 DataReceiverConf-2-StreamEmulationParameters-via-emulation_conf"/>
+  <ref class="Point" id="1 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf"/>
+  <ref class="Point" id="2 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf"/>
+  <ref class="Point" id="3 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf"/>
+  <ref class="Point" id="4 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf"/>
  </rel>
 </obj>
 
-<obj class="ALink" id="DataSubscriberModule-2-DataReceiverConf-via-configuration">
+<obj class="ALink" id="DataSubscriberModule-2-DataReaderConf-via-configuration">
  <attr name="Name" type="string" val="configuration"/>
  <rel name="From" class="Class" id="DataSubscriberModule"/>
- <rel name="To" class="Class" id="DataReceiverConf"/>
+ <rel name="To" class="Class" id="DataReaderConf"/>
  <rel name="Points">
-  <ref class="Point" id="1 DataSubscriberModule-2-DataReceiverConf-via-configuration"/>
-  <ref class="Point" id="2 DataSubscriberModule-2-DataReceiverConf-via-configuration"/>
-  <ref class="Point" id="3 DataSubscriberModule-2-DataReceiverConf-via-configuration"/>
-  <ref class="Point" id="4 DataSubscriberModule-2-DataReceiverConf-via-configuration"/>
+  <ref class="Point" id="1 DataSubscriberModule-2-DataReaderConf-via-configuration"/>
+  <ref class="Point" id="2 DataSubscriberModule-2-DataReaderConf-via-configuration"/>
+  <ref class="Point" id="3 DataSubscriberModule-2-DataReaderConf-via-configuration"/>
+  <ref class="Point" id="4 DataSubscriberModule-2-DataReaderConf-via-configuration"/>
  </rel>
 </obj>
 
@@ -317,15 +317,15 @@
  </rel>
 </obj>
 
-<obj class="ALink" id="TriggerApplication-2-DataReceiverConf-via-data_subscriber">
+<obj class="ALink" id="TriggerApplication-2-DataReaderConf-via-data_subscriber">
  <attr name="Name" type="string" val="data_subscriber"/>
  <rel name="From" class="Class" id="TriggerApplication"/>
- <rel name="To" class="Class" id="DataReceiverConf"/>
+ <rel name="To" class="Class" id="DataReaderConf"/>
  <rel name="Points">
-  <ref class="Point" id="1 TriggerApplication-2-DataReceiverConf-via-data_subscriber"/>
-  <ref class="Point" id="2 TriggerApplication-2-DataReceiverConf-via-data_subscriber"/>
-  <ref class="Point" id="3 TriggerApplication-2-DataReceiverConf-via-data_subscriber"/>
-  <ref class="Point" id="4 TriggerApplication-2-DataReceiverConf-via-data_subscriber"/>
+  <ref class="Point" id="1 TriggerApplication-2-DataReaderConf-via-data_subscriber"/>
+  <ref class="Point" id="2 TriggerApplication-2-DataReaderConf-via-data_subscriber"/>
+  <ref class="Point" id="3 TriggerApplication-2-DataReaderConf-via-data_subscriber"/>
+  <ref class="Point" id="4 TriggerApplication-2-DataReaderConf-via-data_subscriber"/>
  </rel>
 </obj>
 
@@ -356,7 +356,7 @@
  <attr name="y" type="s16" val="334"/>
 </obj>
 
-<obj class="Class" id="DataReceiverConf">
+<obj class="Class" id="DataReaderConf">
  <attr name="x" type="s16" val="1162"/>
  <attr name="y" type="s16" val="137"/>
 </obj>
@@ -570,14 +570,14 @@
  </rel>
 </obj>
 
-<obj class="GLink" id="DataReceiverConf-2-HSI2TCTranslatorConf">
- <rel name="From" class="Class" id="DataReceiverConf"/>
+<obj class="GLink" id="DataReaderConf-2-HSI2TCTranslatorConf">
+ <rel name="From" class="Class" id="DataReaderConf"/>
  <rel name="To" class="Class" id="HSI2TCTranslatorConf"/>
  <rel name="Points">
-  <ref class="Point" id="1 DataReceiverConf-2-HSI2TCTranslatorConf"/>
-  <ref class="Point" id="2 DataReceiverConf-2-HSI2TCTranslatorConf"/>
-  <ref class="Point" id="3 DataReceiverConf-2-HSI2TCTranslatorConf"/>
-  <ref class="Point" id="4 DataReceiverConf-2-HSI2TCTranslatorConf"/>
+  <ref class="Point" id="1 DataReaderConf-2-HSI2TCTranslatorConf"/>
+  <ref class="Point" id="2 DataReaderConf-2-HSI2TCTranslatorConf"/>
+  <ref class="Point" id="3 DataReaderConf-2-HSI2TCTranslatorConf"/>
+  <ref class="Point" id="4 DataReaderConf-2-HSI2TCTranslatorConf"/>
  </rel>
 </obj>
 
@@ -727,17 +727,17 @@
  <attr name="y" type="s16" val="65"/>
 </obj>
 
-<obj class="Point" id="1 DataReceiverConf-2-HSI2TCTranslatorConf">
+<obj class="Point" id="1 DataReaderConf-2-HSI2TCTranslatorConf">
  <attr name="x" type="s16" val="12"/>
  <attr name="y" type="s16" val="51"/>
 </obj>
 
-<obj class="Point" id="1 DataReceiverConf-2-StreamEmulationParameters-via-emulation_conf">
+<obj class="Point" id="1 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf">
  <attr name="x" type="s16" val="200"/>
  <attr name="y" type="s16" val="51"/>
 </obj>
 
-<obj class="Point" id="1 DataSubscriberModule-2-DataReceiverConf-via-configuration">
+<obj class="Point" id="1 DataSubscriberModule-2-DataReaderConf-via-configuration">
  <attr name="x" type="s16" val="72"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
@@ -887,7 +887,7 @@
  <attr name="y" type="s16" val="38"/>
 </obj>
 
-<obj class="Point" id="1 TriggerApplication-2-DataReceiverConf-via-data_subscriber">
+<obj class="Point" id="1 TriggerApplication-2-DataReaderConf-via-data_subscriber">
  <attr name="x" type="s16" val="191"/>
  <attr name="y" type="s16" val="65"/>
 </obj>
@@ -922,17 +922,17 @@
  <attr name="y" type="s16" val="513"/>
 </obj>
 
-<obj class="Point" id="2 DataReceiverConf-2-HSI2TCTranslatorConf">
+<obj class="Point" id="2 DataReaderConf-2-HSI2TCTranslatorConf">
  <attr name="x" type="s16" val="12"/>
  <attr name="y" type="s16" val="310"/>
 </obj>
 
-<obj class="Point" id="2 DataReceiverConf-2-StreamEmulationParameters-via-emulation_conf">
+<obj class="Point" id="2 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf">
  <attr name="x" type="s16" val="200"/>
  <attr name="y" type="s16" val="164"/>
 </obj>
 
-<obj class="Point" id="2 DataSubscriberModule-2-DataReceiverConf-via-configuration">
+<obj class="Point" id="2 DataSubscriberModule-2-DataReaderConf-via-configuration">
  <attr name="x" type="s16" val="72"/>
  <attr name="y" type="s16" val="88"/>
 </obj>
@@ -1082,7 +1082,7 @@
  <attr name="y" type="s16" val="713"/>
 </obj>
 
-<obj class="Point" id="2 TriggerApplication-2-DataReceiverConf-via-data_subscriber">
+<obj class="Point" id="2 TriggerApplication-2-DataReaderConf-via-data_subscriber">
  <attr name="x" type="s16" val="191"/>
  <attr name="y" type="s16" val="183"/>
 </obj>
@@ -1117,17 +1117,17 @@
  <attr name="y" type="s16" val="513"/>
 </obj>
 
-<obj class="Point" id="3 DataReceiverConf-2-HSI2TCTranslatorConf">
+<obj class="Point" id="3 DataReaderConf-2-HSI2TCTranslatorConf">
  <attr name="x" type="s16" val="107"/>
  <attr name="y" type="s16" val="310"/>
 </obj>
 
-<obj class="Point" id="3 DataReceiverConf-2-StreamEmulationParameters-via-emulation_conf">
+<obj class="Point" id="3 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf">
  <attr name="x" type="s16" val="65"/>
  <attr name="y" type="s16" val="164"/>
 </obj>
 
-<obj class="Point" id="3 DataSubscriberModule-2-DataReceiverConf-via-configuration">
+<obj class="Point" id="3 DataSubscriberModule-2-DataReaderConf-via-configuration">
  <attr name="x" type="s16" val="50"/>
  <attr name="y" type="s16" val="88"/>
 </obj>
@@ -1276,7 +1276,7 @@
  <attr name="y" type="s16" val="713"/>
 </obj>
 
-<obj class="Point" id="3 TriggerApplication-2-DataReceiverConf-via-data_subscriber">
+<obj class="Point" id="3 TriggerApplication-2-DataReaderConf-via-data_subscriber">
  <attr name="x" type="s16" val="50"/>
  <attr name="y" type="s16" val="183"/>
 </obj>
@@ -1311,17 +1311,17 @@
  <attr name="y" type="s16" val="12"/>
 </obj>
 
-<obj class="Point" id="4 DataReceiverConf-2-HSI2TCTranslatorConf">
+<obj class="Point" id="4 DataReaderConf-2-HSI2TCTranslatorConf">
  <attr name="x" type="s16" val="107"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
 
-<obj class="Point" id="4 DataReceiverConf-2-StreamEmulationParameters-via-emulation_conf">
+<obj class="Point" id="4 DataReaderConf-2-StreamEmulationParameters-via-emulation_conf">
  <attr name="x" type="s16" val="65"/>
  <attr name="y" type="s16" val="44"/>
 </obj>
 
-<obj class="Point" id="4 DataSubscriberModule-2-DataReceiverConf-via-configuration">
+<obj class="Point" id="4 DataSubscriberModule-2-DataReaderConf-via-configuration">
  <attr name="x" type="s16" val="50"/>
  <attr name="y" type="s16" val="17"/>
 </obj>
@@ -1470,7 +1470,7 @@
  <attr name="y" type="s16" val="21"/>
 </obj>
 
-<obj class="Point" id="4 TriggerApplication-2-DataReceiverConf-via-data_subscriber">
+<obj class="Point" id="4 TriggerApplication-2-DataReaderConf-via-data_subscriber">
  <attr name="x" type="s16" val="50"/>
  <attr name="y" type="s16" val="17"/>
 </obj>

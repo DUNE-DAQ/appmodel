@@ -104,18 +104,18 @@
  <attr name="free_threshold" type="s32" val="1"/>
 </obj>
 
-<obj class="DataReceiverConf" id="ta-subscriber-1">
+<obj class="DataReaderConf" id="ta-subscriber-1">
  <attr name="template_for" type="class" val="DataSubscriberModule"/>
  <attr name="emulation_mode" type="bool" val="0"/>
 </obj>
 
-<obj class="DataReceiverConf" id="tc-subscriber-1">
+<obj class="DataReaderConf" id="tc-subscriber-1">
  <attr name="template_for" type="class" val="DataSubscriberModule"/>
  <attr name="emulation_mode" type="bool" val="0"/>
 </obj>
 
 
-<obj class="DataReceiverConf" id="tpset-subscriber-1">
+<obj class="DataReaderConf" id="tpset-subscriber-1">
  <attr name="template_for" type="class" val="DataSubscriberModule"/>
  <attr name="emulation_mode" type="bool" val="0"/>
 </obj>
@@ -129,7 +129,7 @@
 </obj>
 
 <obj class="HSI2TCTranslatorConf" id="hsi-to-tc-conf">
- <attr name="template_for" type="class" val="DataReceiverModule"/>
+ <attr name="template_for" type="class" val="DataReaderModule"/>
  <attr name="emulation_mode" type="bool" val="0"/>
  <rel name="signals">
   <ref class="HSISignalWindow" id="def-hsi-signal-window"/>
@@ -158,7 +158,7 @@
 </obj>
 
 <obj class="DPDKReaderConf" id="def-emu-nic-receiver-conf">
- <attr name="template_for" type="class" val="FDFakeCardReader"/>
+ <attr name="template_for" type="class" val="FDFakeReaderModule"/>
  <attr name="emulation_mode" type="bool" val="1"/>
  <attr name="eal_args" type="string" val=""/>
  <rel name="emulation_conf" class="StreamEmulationParameters" id="stream-emu"/>

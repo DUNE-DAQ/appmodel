@@ -30,8 +30,8 @@
 #include "confmodel/ResourceSet.hpp"
 #include "confmodel/Service.hpp"
 
-#include "appmodel/DataReceiverModule.hpp"
-#include "appmodel/DataReceiverConf.hpp"
+#include "appmodel/DataReaderModule.hpp"
+#include "appmodel/DataReaderConf.hpp"
 #include "appmodel/DataRecorderModule.hpp"
 #include "appmodel/DataRecorderConf.hpp"
 
@@ -137,7 +137,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   // Data reader
   auto reader_conf = get_data_reader();
   if (reader_conf == 0) {
-    throw(BadConf(ERS_HERE, "No DataReceiverModule configuration given"));
+    throw(BadConf(ERS_HERE, "No DataReaderModule configuration given"));
   }
   std::string reader_class = reader_conf->get_template_for();
 
@@ -284,11 +284,11 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
 
   //-----------------------------------------------------------------
   //
-  // Create DataReceiverModule object
+  // Create DataReaderModule object
   //
 
   //
-  // Instantiate DataReceiverModule of type DPDKReaderModule
+  // Instantiate DataReaderModule of type DPDKReaderModule
   //
 
   // Create the DPDKReaderModule object

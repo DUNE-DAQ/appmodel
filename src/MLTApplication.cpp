@@ -33,7 +33,7 @@
 #include "appmodel/SourceIDConf.hpp"
 
 #include "appmodel/DataSubscriberModule.hpp"
-#include "appmodel/DataReceiverConf.hpp"
+#include "appmodel/DataReaderConf.hpp"
 #include "appmodel/DataRecorderConf.hpp"
 
 #include "appmodel/DataHandlerModule.hpp"
@@ -243,7 +243,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
    **************************************************************/
   auto rdr_conf = get_data_subscriber();
   if (rdr_conf == nullptr) {
-    throw (BadConf(ERS_HERE, "No DataReceiverModule configuration given"));
+    throw (BadConf(ERS_HERE, "No DataReaderModule configuration given"));
   }
 
   std::string reader_uid("data-reader-"+UID());
