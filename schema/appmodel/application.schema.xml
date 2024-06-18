@@ -159,9 +159,9 @@
   <relationship name="emulation_conf" description="Parameters for emulating the stream." class-type="StreamEmulationParameters" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="DataReceiverModule" is-abstract="yes">
+ <class name="DataReaderModule" is-abstract="yes">
   <superclass name="DaqModule"/>
-  <relationship name="configuration" class-type="DataReceiverConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="configuration" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="connections" class-type="DetectorToDaqConnection" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="no" is-dependent="no"/>
  </class>
 

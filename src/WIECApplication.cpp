@@ -19,7 +19,7 @@
 
 #include "appmodel/WIECApplication.hpp"
 
-#include "appmodel/WIBConfigurator.hpp"
+#include "appmodel/WIBModule.hpp"
 #include "appmodel/WIBModuleConf.hpp"
 #include "appmodel/WIBSettings.hpp"
 #include "appmodel/HermesDataSender.hpp"
@@ -109,14 +109,14 @@ WIECApplication::generate_modules(conffwk::Configuration* config,
 
     for( const auto& [ctrlhost, senders] : ctrlhost_sender_map ) {
 
-      // Create WIBConfigurator
+      // Create WIBModule
       if ( this->get_wib_module_conf() ) {
         conffwk::ConfigObject wib_obj;
         std::string wib_uid = fmt::format("wib-ctrl-{}-{}", this->UID(), ctrlhost);
-        config->create(dbfile, "WIBConfigurator", wib_uid, wib_obj);
+        config->create(dbfile, "WIBModule", wib_uid, wib_obj);
         wib_obj.set_by_val<std::string>("wib_addr", fmt::format("{}://{}:{}", this->get_wib_module_conf()->get_communication_type(), ctrlhost, this->get_wib_module_conf()->get_communication_port()));
         wib_obj.set_obj("conf", &this->get_wib_module_conf()->get_settings()->config_object());
-        modules.push_back(config->get<appmodel::WIBConfigurator>(wib_obj));
+        modules.push_back(config->get<appmodel::WIBModule>(wib_obj));
       }
 
       // Create Hermes Modules
