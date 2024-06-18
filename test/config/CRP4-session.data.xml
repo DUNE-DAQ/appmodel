@@ -207,7 +207,7 @@
 
 <obj class="Segment" id="ru-segment">
  <rel name="applications">
-  <ref class="WIECApplication" id="hermes-CRP4"/>
+  <ref class="WIECApplication" id="wiec-crp4"/>
   <ref class="ReadoutApplication" id="runp02srv003eth0"/>
  </rel>
  <rel name="controller" class="RCApplication" id="ru-controller"/>
@@ -219,7 +219,7 @@
  <attr name="path" type="string" val="/opmon"/>
 </obj>
 
-<obj class="Service" id="hermes-CRP4_control">
+<obj class="Service" id="wiec-crp4_control">
  <attr name="protocol" type="string" val="rest"/>
  <attr name="port" type="u16" val="5401"/>
 </obj>
