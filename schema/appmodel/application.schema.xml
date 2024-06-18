@@ -147,12 +147,6 @@
   <attribute name="mask_processing" description="Flag to comment out post processing in a data processor" type="bool" init-value="false"/>
  </class>
 
- <class name="DataReaderModule" is-abstract="yes">
-  <superclass name="DaqModule"/>
-  <relationship name="configuration" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="connections" class-type="DetectorToDaqConnection" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="no" is-dependent="no"/>
- </class>
-
  <class name="DataReaderConf">
   <attribute name="template_for" description="OKS class of the DataReaderModule that this config is a template for" type="class" init-value="DataReaderModule" is-not-null="yes"/>
   <attribute name="emulation_mode" type="bool" init-value="false"/>
