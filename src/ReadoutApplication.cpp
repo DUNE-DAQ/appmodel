@@ -309,8 +309,9 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   // Create data queues
   for (auto ds : det_streams) {
     conffwk::ConfigObject queue_obj = obj_fac.create_queue_sid_obj(dlh_input_qdesc, ds);
-    data_queue_objs.push_back(&queue_obj);
-    data_queues_by_sid[ds->get_source_id()] = config->get<confmodel::Connection>(queue_obj.UID());
+    const auto* connection = config->get<confmodel::Connection>(queue_obj.UID());
+    data_queue_objs.push_back(&connection->config_object());
+    data_queues_by_sid[ds->get_source_id()] = connection;
   }
 
   reader_obj.set_objs("outputs", data_queue_objs);
