@@ -52,8 +52,11 @@
 #include <string>
 #include <vector>
 
-using namespace dunedaq;
-using namespace dunedaq::appmodel;
+// using namespace dunedaq;
+// using namespace dunedaq::appmodel;
+
+namespace dunedaq {
+namespace appmodel {
 
 static ModuleFactory::Registrator __reg__("ReadoutApplication", [](const SmartDaqApplication* smartApp, conffwk::Configuration* config, const std::string& dbfile, const confmodel::Session* session) -> ModuleFactory::ReturnType {
   auto app = smartApp->cast<ReadoutApplication>();
@@ -429,7 +432,11 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   frag_aggr.set_objs("inputs", { &fa_net_obj, &frag_queue_obj });
   frag_aggr.set_objs("outputs", req_queue_objs);
 
-
+  modules.push_back(config->get<confmodel::DaqModule>(frag_aggr.UID()));
 
   return modules;
+}
+
+  
+}
 }
