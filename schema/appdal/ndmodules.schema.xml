@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="ASCII"?>
+
+<!-- oks-schema version 2.2 -->
+
+
+<!DOCTYPE oks-schema [
+  <!ELEMENT oks-schema (info, (include)?, (comments)?, (class)+)>
+  <!ELEMENT info EMPTY>
+  <!ATTLIST info
+      name CDATA #IMPLIED
+      type CDATA #IMPLIED
+      num-of-items CDATA #REQUIRED
+      oks-format CDATA #FIXED "schema"
+      oks-version CDATA #REQUIRED
+      created-by CDATA #IMPLIED
+      created-on CDATA #IMPLIED
+      creation-time CDATA #IMPLIED
+      last-modified-by CDATA #IMPLIED
+      last-modified-on CDATA #IMPLIED
+      last-modification-time CDATA #IMPLIED
+  >
+  <!ELEMENT include (file)+>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+      path CDATA #REQUIRED
+  >
+  <!ELEMENT comments (comment)+>
+  <!ELEMENT comment EMPTY>
+  <!ATTLIST comment
+      creation-time CDATA #REQUIRED
+      created-by CDATA #REQUIRED
+      created-on CDATA #REQUIRED
+      author CDATA #REQUIRED
+      text CDATA #REQUIRED
+  >
+  <!ELEMENT class (superclass | attribute | relationship | method)*>
+  <!ATTLIST class
+      name CDATA #REQUIRED
+      description CDATA ""
+      is-abstract (yes|no) "no"
+  >
+  <!ELEMENT superclass EMPTY>
+  <!ATTLIST superclass name CDATA #REQUIRED>
+  <!ELEMENT attribute EMPTY>
+  <!ATTLIST attribute
+      name CDATA #REQUIRED
+      description CDATA ""
+      type (bool|s8|u8|s16|u16|s32|u32|s64|u64|float|double|date|time|string|uid|enum|class) #REQUIRED
+      range CDATA ""
+      format (dec|hex|oct) "dec"
+      is-multi-value (yes|no) "no"
+      init-value CDATA ""
+      is-not-null (yes|no) "no"
+      ordered (yes|no) "no"
+  >
+  <!ELEMENT relationship EMPTY>
+  <!ATTLIST relationship
+      name CDATA #REQUIRED
+      description CDATA ""
+      class-type CDATA #REQUIRED
+      low-cc (zero|one) #REQUIRED
+      high-cc (one|many) #REQUIRED
+      is-composite (yes|no) #REQUIRED
+      is-exclusive (yes|no) #REQUIRED
+      is-dependent (yes|no) #REQUIRED
+      ordered (yes|no) "no"
+  >
+  <!ELEMENT method (method-implementation*)>
+  <!ATTLIST method
+      name CDATA #REQUIRED
+      description CDATA ""
+  >
+  <!ELEMENT method-implementation EMPTY>
+  <!ATTLIST method-implementation
+      language CDATA #REQUIRED
+      prototype CDATA #REQUIRED
+      body CDATA ""
+  >
+]>
+
+<oks-schema>
+
+<info name="" type="" num-of-items="2" oks-format="schema" oks-version="862f2957270" created-by="hwallace" created-on="linappserv6.pp.rhul.ac.uk" creation-time="20240617T133732" last-modified-by="hwallace" last-modified-on="linappserv6.pp.rhul.ac.uk" last-modification-time="20240618T140615"/>
+
+<include>
+ <file path="schema/coredal/dunedaq.schema.xml"/>
+ <file path="schema/appdal/application.schema.xml"/>
+</include>
+
+
+<class name="PACMANInterface">
+  <superclass name="ReadoutInterface"/>
+  <attribute name="link_confs" description="List of Link configurations" type="u32" is-multi-value="yes" init-value="0,0,0" is-not-null="yes"/>
+  <attribute name="card" description="Card ID" type="u8" init-value="0" is-not-null="yes"/>
+  <attribute name="zmq_receiver_timeout" description="ZMQ Recieve Timeout Value" type="u8" init-value="0" is-not-null="yes"/>
+ </class>
+
+ <class name="PACMANInfo">
+  <attribute name="num_packets_received" description="Number of packets received" type="u8" init-value="0" is-not-null="yes"/>
+  <attribute name="last_packet_size" description="Size of last packet" type="s8" init-value="0" is-not-null="yes"/>
+  <attribute name="bandwidth" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="last_message_timestamp" description="time stamp of last received message from header" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="subscriber_connected" description="ZMQ Subscriber Connection Status" type="bool" is-multi-value="yes" init-value="0" is-not-null="yes"/>
+  <attribute name="run_marker" description="Active run status" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="subscriber_num_zero_packets" description="Times zero data received" type="u32" init-value="9" is-not-null="yes"/>
+  <attribute name="sink_name" description="Sink queue name (e.g. PACMAN)" type="string" is-not-null="yes"/>
+  <attribute name="sink_is_set" description="Sink queue creation status" type="bool" init-value="0" is-not-null="yes"/>
+  <attribute name="card" description="Card ID" type="u8" init-value="0" is-not-null="yes"/>
+  <attribute name="link_tag" description="Link Tag" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="source_link_string" description="Source link ID String" type="string" is-not-null="yes"/>
+ </class>
+
+</oks-schema>
