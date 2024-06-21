@@ -52,8 +52,11 @@
 #include <string>
 #include <vector>
 
-using namespace dunedaq;
-using namespace dunedaq::appmodel;
+// using namespace dunedaq;
+// using namespace dunedaq::appmodel;
+
+namespace dunedaq {
+namespace appmodel {
 
 static ModuleFactory::Registrator __reg__("ReadoutApplication", [](const SmartDaqApplication* smartApp, conffwk::Configuration* config, const std::string& dbfile, const confmodel::Session* session) -> ModuleFactory::ReturnType {
   auto app = smartApp->cast<ReadoutApplication>();
@@ -309,8 +312,9 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   // Create data queues
   for (auto ds : det_streams) {
     conffwk::ConfigObject queue_obj = obj_fac.create_queue_sid_obj(dlh_input_qdesc, ds);
-    data_queue_objs.push_back(&queue_obj);
-    data_queues_by_sid[ds->get_source_id()] = config->get<confmodel::Connection>(queue_obj.UID());
+    const auto* connection = config->get<confmodel::Connection>(queue_obj.UID());
+    data_queue_objs.push_back(&connection->config_object());
+    data_queues_by_sid[ds->get_source_id()] = connection;
   }
 
   reader_obj.set_objs("outputs", data_queue_objs);
@@ -428,7 +432,11 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   frag_aggr.set_objs("inputs", { &fa_net_obj, &frag_queue_obj });
   frag_aggr.set_objs("outputs", req_queue_objs);
 
-
+  modules.push_back(config->get<confmodel::DaqModule>(frag_aggr.UID()));
 
   return modules;
+}
+
+  
+}
 }
