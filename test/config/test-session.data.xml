@@ -63,11 +63,12 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="36" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240611T203112"/>
+<info name="" type="" num-of-items="38" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20240620T150710"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
  <file path="config/appmodel/fsm.data.xml"/>
+ <file path="config/appmodel/wiecconfs.data.xml"/>
  <file path="test/config/hosts.data.xml"/>
  <file path="test/config/ru-segment.data.xml"/>
  <file path="test/config/df-segment.data.xml"/>
@@ -100,6 +101,7 @@
  <comment creation-time="20240611T141150" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="readout conf"/>
  <comment creation-time="20240611T141410" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="readoutapp"/>
  <comment creation-time="20240611T203112" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="stream ids fixed"/>
+ <comment creation-time="20240620T150710" created-by="gjc" created-on="latitude" author="gjc" text="dummy det connections"/>
 </comments>
 
 
@@ -153,6 +155,12 @@
   <ref class="HermesDataSender" id="wib_101_link0"/>
   <ref class="DPDKReceiver" id="ru-1-rcv"/>
  </rel>
+</obj>
+
+<obj class="DetectorToDaqConnection" id="det-3-connections">
+</obj>
+
+<obj class="DetectorToDaqConnection" id="det-4-connections">
 </obj>
 
 <obj class="GeoId" id="g_3_1_1_0">
@@ -320,7 +328,6 @@
  <rel name="infrastructure_applications">
   <ref class="OpMonService" id="cern-opmon-application-service"/>
  </rel>
- <attr name="rte_script" type="string" val="">
  <rel name="detector_configuration" class="DetectorConfig" id="dummy-detector"/>
 </obj>
 
