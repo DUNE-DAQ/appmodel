@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="23" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240617T203421"/>
+<info name="" type="" num-of-items="23" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240628T062322"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -87,6 +87,7 @@
  <comment creation-time="20240312T202726" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="Trivial edit to reorder objects"/>
  <comment creation-time="20240325T124934" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="Unknown" text="adjusted to name changes in connections"/>
  <comment creation-time="20240617T203421" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="adding datawriters"/>
+ <comment creation-time="20240628T062322" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="removing broadcasters from control apps"/>
 </comments>
 
 
@@ -223,7 +224,6 @@
   <ref class="Service" id="df-controller_control"/>
  </rel>
  <rel name="fsm" class="FSMconfiguration" id="FSMconfiguration_noAction"/>
- <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
 </obj>
 
 <obj class="Segment" id="df-segment">

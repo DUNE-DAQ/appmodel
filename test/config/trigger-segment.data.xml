@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="22" oks-format="data" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="glehmann" last-modified-on="np04-srv-019.cern.ch" last-modification-time="20240403T115733"/>
+<info name="" type="" num-of-items="27" oks-format="data" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240628T062322"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -95,33 +95,8 @@
  <comment creation-time="20240403T081943" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="glehmann" text="add all pieces back"/>
  <comment creation-time="20240403T110823" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="glehmann" text="no random generator"/>
  <comment creation-time="20240403T115733" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="glehmann" text=" "/>
+ <comment creation-time="20240628T062322" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="removing broadcasters from control apps"/>
 </comments>
-
-<obj class="Service" id="trg-controller_control">
-  <attr name="protocol" val="grpc"/>
-  <attr name="port" val="5700"/>
-</obj>
-
-<obj class="Service" id="hsi-to-tc-app_control">
-  <attr name="protocol" val="rest"/>
-  <attr name="port" val="5701"/>
-</obj>
-
-<obj class="Service" id="mlt_control">
-  <attr name="protocol" val="rest"/>
-  <attr name="port" val="5702"/>
-</obj>
-
-<obj class="Service" id="tc-maker-1_control">
-  <attr name="protocol" val="rest"/>
-  <attr name="port" val="5703"/>
-</obj>
-
-<obj class="Service" id="tc-buffer-1_control">
-  <attr name="protocol" val="rest"/>
-  <attr name="port" val="5704"/>
-</obj>
-
 
 
 <obj class="CustomTCMakerConf" id="cstm-tc-generator">
@@ -136,6 +111,24 @@
   <data val="62500000"/>
  </attr>
  <attr name="clock_frequency_hz" type="u32" val="62500000"/>
+</obj>
+
+<obj class="DataHandlerConf" id="def-ta-handler">
+ <attr name="template_for" type="class" val="TriggerDataHandlerModule"/>
+ <attr name="input_data_type" type="string" val="TriggerActivity"/>
+ <attr name="generate_timesync" type="bool" val="0"/>
+ <rel name="request_handler" class="RequestHandler" id="def-ta-request-handler"/>
+ <rel name="latency_buffer" class="LatencyBuffer" id="def-latency-buf"/>
+ <rel name="data_processor" class="TADataProcessor" id="def-ta-processor"/>
+</obj>
+
+<obj class="DataHandlerConf" id="def-tc-handler">
+ <attr name="template_for" type="class" val="TriggerDataHandlerModule"/>
+ <attr name="input_data_type" type="string" val="TriggerCandidate"/>
+ <attr name="generate_timesync" type="bool" val="0"/>
+ <rel name="request_handler" class="RequestHandler" id="def-tc-request-handler"/>
+ <rel name="latency_buffer" class="LatencyBuffer" id="def-latency-buf"/>
+ <rel name="data_processor" class="TCDataProcessor" id="def-tc-processor"/>
 </obj>
 
 <obj class="HSIEventToTCApplication" id="hsi-to-tc-app">
@@ -154,7 +147,7 @@
  <rel name="exposes_service">
   <ref class="Service" id="dataRequests"/>
   <ref class="Service" id="HSIEvents"/>
-  <ref class="Service" id="hsi-to-tc-app_control">
+  <ref class="Service" id="hsi-to-tc-app_control"/>
  </rel>
  <rel name="source_id" class="SourceIDConf" id="hsi-tc-srcid-1"/>
  <rel name="network_rules">
@@ -181,8 +174,7 @@
   <ref class="Service" id="triggerCandidates"/>
   <ref class="Service" id="triggerInhibits"/>
   <ref class="Service" id="dataRequests"/>
-  <ref class="Service" id="mlt_control">
-
+  <ref class="Service" id="mlt_control"/>
  </rel>
  <rel name="source_id" class="SourceIDConf" id="tc-srcid-1"/>
  <rel name="queue_rules">
@@ -207,11 +199,10 @@
 <obj class="RCApplication" id="trg-controller">
  <attr name="application_name" type="string" val="drunc-controller"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
- <rel name="fsm" class="FSMconfiguration" id="FSMconfiguration_noAction"/>
  <rel name="exposes_service">
-  <ref class="Service" id="trg-controller_control">
+  <ref class="Service" id="trg-controller_control"/>
  </rel>
- <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
+ <rel name="fsm" class="FSMconfiguration" id="FSMconfiguration_noAction"/>
 </obj>
 
 <obj class="RandomTCMakerConf" id="random-tc-generator">
@@ -220,24 +211,6 @@
  <attr name="trigger_interval_ticks" type="u32" val="125000000"/>
  <attr name="clock_frequency_hz" type="u32" val="62500000"/>
  <attr name="time_distribution" type="enum" val="kUniform"/>
-</obj>
-
-<obj class="DataHandlerConf" id="def-ta-handler">
- <attr name="template_for" type="class" val="TriggerDataHandlerModule"/>
- <attr name="input_data_type" type="string" val="TriggerActivity"/>
- <attr name="generate_timesync" type="bool" val="0"/>
- <rel name="request_handler" class="RequestHandler" id="def-ta-request-handler"/>
- <rel name="latency_buffer" class="LatencyBuffer" id="def-latency-buf"/>
- <rel name="data_processor" class="TADataProcessor" id="def-ta-processor"/>
-</obj>
-
-<obj class="DataHandlerConf" id="def-tc-handler">
- <attr name="template_for" type="class" val="TriggerDataHandlerModule"/>
- <attr name="input_data_type" type="string" val="TriggerCandidate"/>
- <attr name="generate_timesync" type="bool" val="0"/>
- <rel name="request_handler" class="RequestHandler" id="def-tc-request-handler"/>
- <rel name="latency_buffer" class="LatencyBuffer" id="def-latency-buf"/>
- <rel name="data_processor" class="TCDataProcessor" id="def-tc-processor"/>
 </obj>
 
 <obj class="RequestHandler" id="def-ta-request-handler">
@@ -265,6 +238,31 @@
   <ref class="HSIEventToTCApplication" id="hsi-to-tc-app"/>
  </rel>
  <rel name="controller" class="RCApplication" id="trg-controller"/>
+</obj>
+
+<obj class="Service" id="hsi-to-tc-app_control">
+ <attr name="protocol" type="string" val="rest"/>
+ <attr name="port" type="u16" val="5701"/>
+</obj>
+
+<obj class="Service" id="mlt_control">
+ <attr name="protocol" type="string" val="rest"/>
+ <attr name="port" type="u16" val="5702"/>
+</obj>
+
+<obj class="Service" id="tc-buffer-1_control">
+ <attr name="protocol" type="string" val="rest"/>
+ <attr name="port" type="u16" val="5704"/>
+</obj>
+
+<obj class="Service" id="tc-maker-1_control">
+ <attr name="protocol" type="string" val="rest"/>
+ <attr name="port" type="u16" val="5703"/>
+</obj>
+
+<obj class="Service" id="trg-controller_control">
+ <attr name="protocol" type="string" val="grpc"/>
+ <attr name="port" type="u16" val="5700"/>
 </obj>
 
 <obj class="SourceIDConf" id="hsi-tc-srcid-1">
@@ -310,6 +308,10 @@
  </rel>
 </obj>
 
+<obj class="TCMakerPrescaleAlgorithm" id="tc-pass-through-algo">
+ <attr name="prescale" type="u32" val="100"/>
+</obj>
+
 <obj class="TCReadoutMap" id="def-hsi-tc-map">
  <attr name="candidate_type" type="u32" val="1"/>
  <attr name="time_before" type="u32" val="3000"/>
@@ -352,7 +354,7 @@
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="exposes_service">
-  <ref class="Service" id="tc-maker-1_control">
+  <ref class="Service" id="tc-maker-1_control"/>
   <ref class="Service" id="triggerActivities"/>
   <ref class="Service" id="dataRequests"/>
  </rel>
@@ -367,10 +369,6 @@
  </rel>
  <rel name="data_subscriber" class="DataReaderConf" id="ta-subscriber-1"/>
  <rel name="trigger_inputs_handler" class="DataHandlerConf" id="def-ta-handler"/>
-</obj>
-
-<obj class="TCMakerPrescaleAlgorithm" id="tc-pass-through-algo">
- <attr name="prescale" type="u32" val="100"/>
 </obj>
 
 </oks-data>
