@@ -29,10 +29,10 @@ console = Console()
 dal = conffwk.dal.module('x', 'schema/confmodel/dunedaq.schema.xml')
 
 # Process a dal::Variable object, placing key/value pairs in a dictionary
-def process_variables(variables, envDict):
+def collect_variables(variables, envDict):
   for item in variables:
     if item.className() == 'VariableSet':
-      process_variables(item.contains, envDict)
+      collect_variables(item.contains, envDict)
     else:
       if item.className() == 'Variable':
         envDict[item.name] = item.value
@@ -43,7 +43,7 @@ def process_segment(db, session, segment):
 
   # Get default environment from Session
   defenv = {}
-  process_variables(session.environment, defenv)
+  collect_variables(session.environment, defenv)
 
   apps = []
 
@@ -55,7 +55,7 @@ def process_segment(db, session, segment):
     apps += process_segment(db, session, seg)
 
   rc_env = defenv
-  process_variables(segment.controller.applicationEnvironment, rc_env)
+  collect_variables(segment.controller.applicationEnvironment, rc_env)
   rc_host = segment.controller.runs_on.runs_on.id
 
   CLA_constructor = confmodel.rc_application_construct_commandline_parameters
@@ -84,7 +84,7 @@ def process_segment(db, session, segment):
 
     appenv = defenv
     # Override with any app specific environment from Application
-    process_variables(app.applicationEnvironment, appenv)
+    collect_variables(app.applicationEnvironment, appenv)
     if 'DaqApplication' in app.oksTypes():
       CLA_constructor = confmodel.daq_application_construct_commandline_parameters
     elif "SmartDaqApplication"  in app.oksTypes():
@@ -114,7 +114,7 @@ def main():
   session = db.get_dal(class_name="Session", uid=session_name)
 
   environment = {}
-  process_variables(session.environment, environment)
+  collect_variables(session.environment, environment)
 
   apps = process_segment(db, session, session.segment)
 

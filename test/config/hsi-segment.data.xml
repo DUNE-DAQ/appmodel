@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="9" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="glehmann" last-modified-on="np04-srv-019.cern.ch" last-modification-time="20240325T124934"/>
+<info name="" type="" num-of-items="11" oks-format="data" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240628T062322"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -81,22 +81,25 @@
  <comment creation-time="20240312T202936" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="Add hsi-01 source id"/>
  <comment creation-time="20240312T203031" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="Apply source_id..."/>
  <comment creation-time="20240325T124934" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="Unknown" text="adjusted to name changes in connections"/>
+ <comment creation-time="20240628T062322" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="removing broadcasters from control apps"/>
 </comments>
 
-<obj class="Service" id="hsi-controller_control">
-  <attr name="protocol" val="grpc"/>
-  <attr name="port" val="5800"/>
-</obj>
 
-<obj class="Service" id="hsi-01_control">
-  <attr name="protocol" val="rest"/>
-  <attr name="port" val="5801"/>
+<obj class="DataHandlerConf" id="def-hsi-handler">
+ <attr name="template_for" type="class" val="HSIDataHandlerModule"/>
+ <attr name="input_data_type" type="string" val="HSIFrame"/>
+ <attr name="generate_timesync" type="bool" val="1"/>
+ <rel name="request_handler" class="RequestHandler" id="hsi-requesthandler-generic"/>
+ <rel name="latency_buffer" class="LatencyBuffer" id="hsilatencybuffer-generic"/>
+ <rel name="data_processor" class="HSIFrameProcessor" id="def-hsi-processor"/>
 </obj>
-
 
 <obj class="FakeHSIApplication" id="hsi-01">
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="exposes_service">
+  <ref class="Service" id="hsi-01_control"/>
+ </rel>
  <rel name="source_id" class="SourceIDConf" id="hsi-srcid-01"/>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="hsi-dlh-data-requests-queue-rule"/>
@@ -105,9 +108,6 @@
   <ref class="NetworkConnectionRule" id="hsi-rule"/>
   <ref class="NetworkConnectionRule" id="data-req-hsi-net-rule"/>
   <ref class="NetworkConnectionRule" id="ts-hsi-net-rule"/>
- </rel>
- <rel name="exposes_service">
-  <ref class="Service" id="hsi-01_control">
  </rel>
  <rel name="link_handler" class="DataHandlerConf" id="def-hsi-handler"/>
  <rel name="generator" class="FakeHSIEventGeneratorConf" id="fakehsi"/>
@@ -138,19 +138,9 @@
  <attr name="application_name" type="string" val="drunc-controller"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="exposes_service">
-  <ref class="Service" id="hsi-controller_control">
+  <ref class="Service" id="hsi-controller_control"/>
  </rel>
  <rel name="fsm" class="FSMconfiguration" id="FSMconfiguration_noAction"/>
- <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
-</obj>
-
-<obj class="DataHandlerConf" id="def-hsi-handler">
- <attr name="template_for" type="class" val="HSIDataHandlerModule"/>
- <attr name="input_data_type" type="string" val="HSIFrame"/>
- <attr name="generate_timesync" type="bool" val="1"/>
- <rel name="request_handler" class="RequestHandler" id="hsi-requesthandler-generic"/>
- <rel name="latency_buffer" class="LatencyBuffer" id="hsilatencybuffer-generic"/>
- <rel name="data_processor" class="HSIFrameProcessor" id="def-hsi-processor"/>
 </obj>
 
 <obj class="RequestHandler" id="hsi-requesthandler-generic">
@@ -167,6 +157,16 @@
   <ref class="FakeHSIApplication" id="hsi-01"/>
  </rel>
  <rel name="controller" class="RCApplication" id="hsi-controller"/>
+</obj>
+
+<obj class="Service" id="hsi-01_control">
+ <attr name="protocol" type="string" val="rest"/>
+ <attr name="port" type="u16" val="5801"/>
+</obj>
+
+<obj class="Service" id="hsi-controller_control">
+ <attr name="protocol" type="string" val="grpc"/>
+ <attr name="port" type="u16" val="5800"/>
 </obj>
 
 <obj class="SourceIDConf" id="hsi-srcid-01">
