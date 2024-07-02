@@ -80,13 +80,15 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="6" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20240701T142252"/>
+<info name="" type="" num-of-items="9" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20240702T120134"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
 </include>
 
- <class name="CTBModule">
+
+ <class name="CTBModule" description="Top level configuration object for the CTBModule">
+  <superclass name="DaqModule"/>
   <attribute name="receiver_connection_timeout" description="CTB Receiver Connection Timeout value (microseconds)" type="u64" init-value="1000" is-not-null="yes"/>
   <attribute name="control_connection_port" description="CTB Control Connection Port" type="u64" init-value="8991" is-not-null="yes"/>
   <attribute name="ctb_hostname" description="CTB Hostname" type="string" init-value="np04-ctb-1" is-not-null="yes"/>
@@ -105,6 +107,19 @@
   <attribute name="port" type="u64" init-value="8993" is-not-null="yes"/>
  </class>
 
+ <class name="Pulser" description="Central Trigger Board Pulser Configuration">
+  <attribute name="enable" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="frequency" type="u64" init-value="50" is-not-null="yes"/>
+ </class>
+
+ <class name="RandomTrigger">
+  <attribute name="description" type="string" is-not-null="yes"/>
+  <attribute name="enable" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="fixed_freq" type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="beam_mode" type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="period" type="u64" init-value="10000" is-not-null="yes"/>
+ </class>
+
  <class name="Receiver" description="Central Trigger Board Receiver Socket Configuration">
   <attribute name="rollover" type="u64" init-value="125000" is-not-null="yes"/>
   <attribute name="host" type="string" init-value="localhost" is-not-null="yes"/>
@@ -120,6 +135,13 @@
  <class name="Statistics">
   <attribute name="port" type="u64" init-value="8994" is-not-null="yes"/>
   <attribute name="updt_period" type="bool" init-value="1" is-not-null="yes"/>
+ </class>
+
+ <class name="Timing" description="Central Trigger Board Timing Configuration">
+  <attribute name="address" type="string" init-value="0xF" is-not-null="yes"/>
+  <attribute name="group" type="string" init-value="0x0" is-not-null="yes"/>
+  <attribute name="triggers" type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="lockout" type="string" init-value="0x10" is-not-null="yes"/>
  </class>
 
 </oks-schema>
