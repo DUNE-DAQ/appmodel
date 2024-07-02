@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="37" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240628T062322"/>
+<info name="" type="" num-of-items="39" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240702T122345"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -104,8 +104,25 @@
  <comment creation-time="20240620T150710" created-by="gjc" created-on="latitude" author="gjc" text="dummy det connections"/>
  <comment creation-time="20240627T195536" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="removed disabled"/>
  <comment creation-time="20240628T062322" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="removing broadcasters from control apps"/>
+ <comment creation-time="20240701T213825" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="Added local connection service"/>
+ <comment creation-time="20240701T214724" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="Adding connection server config"/>
+ <comment creation-time="20240701T220847" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="connectivity service"/>
+ <comment creation-time="20240701T221225" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="restored opmon infra app"/>
 </comments>
 
+
+<obj class="ConnectionService" id="local-connection-server">
+ <attr name="application_name" type="string" val="sh"/>
+ <attr name="commandline_parameters" type="string">
+  <data val="-c"/>
+  <data val="echo Process PID $$; trap 'pkill -P $$' EXIT; gunicorn -b 0.0.0.0:5000 --workers=1 --worker-class=gthread --threads=2 --timeout 5000000000 --log-level=debug connection-service.connection-flask:app"/>
+ </attr>
+ <attr name="threads" type="u16" val="1"/>
+ <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="exposes_service">
+  <ref class="Service" id="local-connectivity-service"/>
+ </rel>
+</obj>
 
 <obj class="DPDKPortConfiguration" id="dpdk_e810_conf">
  <attr name="flow_control" type="bool" val="1"/>
@@ -293,6 +310,11 @@
  <attr name="path" type="string" val="/opmon"/>
 </obj>
 
+<obj class="Service" id="local-connectivity-service">
+ <attr name="protocol" type="string" val="http"/>
+ <attr name="port" type="u16" val="5000"/>
+</obj>
+
 <obj class="Service" id="local-opmon-service">
  <attr name="protocol" type="string" val="file"/>
  <attr name="port" type="u16" val="0"/>
@@ -324,10 +346,15 @@
  <rel name="disabled">
   <ref class="DetectorToDaqConnection" id="det-4-connections"/>
   <ref class="DetectorToDaqConnection" id="det-3-connections"/>
+  <ref class="Segment" id="hsi-segment"/>
+  <ref class="Segment" id="df-segment"/>
+  <ref class="Segment" id="ru-segment"/>
+  <ref class="Segment" id="trg-segment"/>
  </rel>
  <rel name="segment" class="Segment" id="root-segment"/>
  <rel name="infrastructure_applications">
-  <ref class="OpMonService" id="cern-opmon-application-service"/>
+  <ref class="ConnectionService" id="local-connection-server"/>
+  <ref class="OpMonService" id="local-opmon-application-service"/>
  </rel>
  <rel name="detector_configuration" class="DetectorConfig" id="dummy-detector"/>
 </obj>
