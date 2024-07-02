@@ -82,6 +82,10 @@
 
 <info name="" type="" num-of-items="6" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20240701T142252"/>
 
+<include>
+ <file path="schema/confmodel/dunedaq.schema.xml"/>
+</include>
+
  <class name="CTBModule">
   <attribute name="receiver_connection_timeout" description="CTB Receiver Connection Timeout value (microseconds)" type="u64" init-value="1000" is-not-null="yes"/>
   <attribute name="control_connection_port" description="CTB Control Connection Port" type="u64" init-value="8991" is-not-null="yes"/>
