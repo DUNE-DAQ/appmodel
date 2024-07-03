@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="10" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20240702T120605"/>
+<info name="" type="" num-of-items="10" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20240703T085413"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -99,11 +99,14 @@
  </class>
 
  <class name="CTBoardConf">
+  <superclass name="Jsonable"/>
   <relationship name="sockets" class-type="Sockets" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
   <relationship name="misc" class-type="Misc" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
  </class>
 
  <class name="Misc">
+  <attribute name="ch_status" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="standalone_enable" type="bool" init-value="false" is-not-null="yes"/>
   <relationship name="randomtrigger_1" class-type="RandomTrigger" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
   <relationship name="randomtrigger_2" class-type="RandomTrigger" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
   <relationship name="pulser" class-type="Pulser" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
