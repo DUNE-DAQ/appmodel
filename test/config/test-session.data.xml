@@ -126,20 +126,6 @@
  </rel>
 </obj>
 
-<obj class="ConnectionService" id="local-connection-server-works">
- <attr name="application_name" type="string" val="echo"/>
- <attr name="commandline_parameters" type="string">
-  <data val="Process PID $$;"/>
-  <data val="trap &apos;pkill -P $$&apos; EXIT;"/>
-  <data val="gunicorn -b 0.0.0.0:5000 --workers=1 --worker-class=gthread --threads=2 --timeout 5000000000 --log-level=debug connection-service.connection-flask:app"/>
- </attr>
- <attr name="threads" type="u16" val="1"/>
- <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
- <rel name="exposes_service">
-  <ref class="Service" id="local-connectivity-service"/>
- </rel>
-</obj>
-
 <obj class="DPDKPortConfiguration" id="dpdk_e810_conf">
  <attr name="flow_control" type="bool" val="1"/>
  <attr name="mtu" type="u32" val="9000"/>
@@ -354,8 +340,6 @@
  <rel name="disabled">
   <ref class="DetectorToDaqConnection" id="det-4-connections"/>
   <ref class="DetectorToDaqConnection" id="det-3-connections"/>
-  <ref class="Segment" id="df-segment"/>
-  <ref class="Segment" id="trg-segment"/>
  </rel>
  <rel name="segment" class="Segment" id="root-segment"/>
  <rel name="infrastructure_applications">
