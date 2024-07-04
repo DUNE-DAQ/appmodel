@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="39" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240702T202712"/>
+<info name="" type="" num-of-items="41" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240703T074826"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -109,10 +109,24 @@
  <comment creation-time="20240701T220847" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="connectivity service"/>
  <comment creation-time="20240701T221225" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="restored opmon infra app"/>
  <comment creation-time="20240702T202712" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="removed application field for infra apps not to be executed"/>
+ <comment creation-time="20240703T074710" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="moving apa1 senders into a rset"/>
+ <comment creation-time="20240703T074729" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="cleanup"/>
 </comments>
 
 
 <obj class="ConnectionService" id="local-connection-server">
+ <attr name="application_name" type="string" val="gunicorn"/>
+ <attr name="commandline_parameters" type="string">
+  <data val="-b 0.0.0.0:5000 --workers=1 --worker-class=gthread --threads=2 --timeout 5000000000 --log-level=debug connection-service.connection-flask:app"/>
+ </attr>
+ <attr name="threads" type="u16" val="1"/>
+ <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="exposes_service">
+  <ref class="Service" id="local-connectivity-service"/>
+ </rel>
+</obj>
+
+<obj class="ConnectionService" id="local-connection-server-works">
  <attr name="application_name" type="string" val="echo"/>
  <attr name="commandline_parameters" type="string">
   <data val="Process PID $$;"/>
@@ -173,8 +187,8 @@
 
 <obj class="DetectorToDaqConnection" id="conn_apa1">
  <rel name="contains">
-  <ref class="HermesDataSender" id="wib_101_link0"/>
   <ref class="DPDKReceiver" id="ru-1-rcv"/>
+  <ref class="ResourceSetAND" id="apa1_sender_rset"/>
  </rel>
 </obj>
 
@@ -282,6 +296,12 @@
  <rel name="fsm" class="FSMconfiguration" id="fsmConf-test"/>
 </obj>
 
+<obj class="ResourceSetAND" id="apa1_sender_rset">
+ <rel name="contains">
+  <ref class="HermesDataSender" id="wib_101_link0"/>
+ </rel>
+</obj>
+
 <obj class="Segment" id="root-segment">
  <rel name="segments">
   <ref class="Segment" id="ru-segment"/>
@@ -334,9 +354,7 @@
  <rel name="disabled">
   <ref class="DetectorToDaqConnection" id="det-4-connections"/>
   <ref class="DetectorToDaqConnection" id="det-3-connections"/>
-  <ref class="Segment" id="hsi-segment"/>
   <ref class="Segment" id="df-segment"/>
-  <ref class="Segment" id="ru-segment"/>
   <ref class="Segment" id="trg-segment"/>
  </rel>
  <rel name="segment" class="Segment" id="root-segment"/>
@@ -354,12 +372,12 @@
 
 <obj class="Variable" id="session-env-connectivity-port">
  <attr name="name" type="string" val="CONNECTION_PORT"/>
- <attr name="value" type="string" val="30005"/>
+ <attr name="value" type="string" val="5000"/>
 </obj>
 
 <obj class="Variable" id="session-env-connectivity-server">
  <attr name="name" type="string" val="CONNECTION_SERVER"/>
- <attr name="value" type="string" val="np04-srv-017"/>
+ <attr name="value" type="string" val="localhost"/>
 </obj>
 
 <obj class="Variable" id="session-env-ers-error">
