@@ -55,7 +55,7 @@ def process_segment(db, session, segment):
     apps += process_segment(db, session, seg)
 
   rc_env = defenv
-  collect_variables(segment.controller.applicationEnvironment, rc_env)
+  collect_variables(segment.controller.application_environment, rc_env)
   rc_host = segment.controller.runs_on.runs_on.id
 
   CLA_constructor = confmodel.rc_application_construct_commandline_parameters
@@ -84,7 +84,7 @@ def process_segment(db, session, segment):
 
     appenv = defenv
     # Override with any app specific environment from Application
-    collect_variables(app.applicationEnvironment, appenv)
+    collect_variables(app.application_environment, appenv)
     if 'DaqApplication' in app.oksTypes():
       CLA_constructor = confmodel.daq_application_construct_commandline_parameters
     elif "SmartDaqApplication"  in app.oksTypes():
