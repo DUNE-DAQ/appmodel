@@ -156,7 +156,6 @@
 
  <class name="RandomTCMakerModule">
   <superclass name="StandaloneTCMakerModule"/>
-  <attribute name="trigger_candidate_sink" type="string" is-not-null="yes"/>
   <relationship name="configuration" class-type="RandomTCMakerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
