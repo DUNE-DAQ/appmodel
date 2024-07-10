@@ -6,7 +6,7 @@ The SmartDaqApplication class allows for automatic creation of modules and conne
 
 SmartDaqApplications implement the `std::vector<const confmodel::DaqModule*> generate_modules(conffwk::Configuration*, const std::string&, const comnfmodel::Session*)` method, which is responsible for generating a set of modules and connection objects. Each SmartDaqApplication has a UID from the configuration.
 
-This section will use the "DFOApplication" SmartDaqApplication as an example.
+This section will use the "[DFOApplication](https://github.com/DUNE-DAQ/appmodel/blob/develop/src/DFOApplication.cpp)" SmartDaqApplication as an example.
 
 ### Boilerplate
 
