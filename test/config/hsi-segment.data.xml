@@ -88,7 +88,7 @@
 <obj class="DataHandlerConf" id="def-hsi-handler">
  <attr name="template_for" type="class" val="HSIDataHandlerModule"/>
  <attr name="input_data_type" type="string" val="HSIFrame"/>
- <attr name="generate_timesync" type="bool" val="1"/>
+ <attr name="generate_timesync" type="bool" val="0"/>
  <rel name="request_handler" class="RequestHandler" id="hsi-requesthandler-generic"/>
  <rel name="latency_buffer" class="LatencyBuffer" id="hsilatencybuffer-generic"/>
  <rel name="data_processor" class="HSIFrameProcessor" id="def-hsi-processor"/>

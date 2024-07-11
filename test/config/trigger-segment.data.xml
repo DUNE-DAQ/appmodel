@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="27" oks-format="data" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240628T062322"/>
+<info name="" type="" num-of-items="27" oks-format="data" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20240709T095746"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -133,16 +133,6 @@
 
 <obj class="HSIEventToTCApplication" id="hsi-to-tc-app">
  <attr name="application_name" type="string" val="daq_application"/>
- <attr name="commandline_parameters" type="string">
-  <data val="--name"/>
-  <data val="hsi-to-tc-app"/>
-  <data val="-c"/>
-  <data val="rest://localhost:3348"/>
-  <data val="-i"/>
-  <data val="${DAQAPP_CLI_INFO_SVC}"/>
-  <data val="--configurationService"/>
-  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
- </attr>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="exposes_service">
   <ref class="Service" id="dataRequests"/>
@@ -158,16 +148,6 @@
 </obj>
 
 <obj class="MLTApplication" id="mlt">
- <attr name="commandline_parameters" type="string">
-  <data val="--name"/>
-  <data val="mlt"/>
-  <data val="-c"/>
-  <data val="rest://localhost:3346"/>
-  <data val="-i"/>
-  <data val="${DAQAPP_CLI_INFO_SVC}"/>
-  <data val="--configurationService"/>
-  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
- </attr>
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="exposes_service">
@@ -341,16 +321,6 @@
 </obj>
 
 <obj class="TriggerApplication" id="tc-maker-1">
- <attr name="commandline_parameters" type="string">
-  <data val="--name"/>
-  <data val="tc-maker-1"/>
-  <data val="-c"/>
-  <data val="rest://localhost:3345"/>
-  <data val="-i"/>
-  <data val="${DAQAPP_CLI_INFO_SVC}"/>
-  <data val="--configurationService"/>
-  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
- </attr>
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="exposes_service">
