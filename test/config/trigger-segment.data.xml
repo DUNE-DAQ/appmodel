@@ -110,7 +110,6 @@
   <data val="62500000"/>
   <data val="62500000"/>
  </attr>
- <attr name="clock_frequency_hz" type="u32" val="62500000"/>
 </obj>
 
 <obj class="DataHandlerConf" id="def-ta-handler">
@@ -189,7 +188,6 @@
  <attr name="timestamp_method" type="enum" val="kTimeSync"/>
  <attr name="template_for" type="class" val="RandomTCMakerModule"/>
  <attr name="trigger_interval_ticks" type="u32" val="125000000"/>
- <attr name="clock_frequency_hz" type="u32" val="62500000"/>
  <attr name="time_distribution" type="enum" val="kUniform"/>
 </obj>
 

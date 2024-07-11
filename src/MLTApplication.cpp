@@ -19,6 +19,7 @@
 // #include "confmodel/DetectorStream.hpp"
 #include "confmodel/DetectorToDaqConnection.hpp"
 #include "confmodel/DetectorStream.hpp"
+#include "confmodel/DetectorConfig.hpp"
 
 #include "confmodel/ResourceSet.hpp"
 #include "confmodel/Service.hpp"
@@ -224,7 +225,9 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
    /**************************************************************
    * Instantiate standalone TC generator modules (e.g. random TC generator)
    **************************************************************/
-
+   // First get clock speed from detector config
+   auto det_conf = session->get_detector_configuration();
+   auto clock_speed_hz = det_conf->get_clock_speed_hz();
    auto standalone_TC_maker_confs = get_standalone_candidate_maker_confs();
    for (auto gen_conf : standalone_TC_maker_confs) {
      conffwk::ConfigObject gen_obj;
@@ -233,6 +236,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
      if (gen_conf->get_timestamp_method() == "kTimeSync" && !timesync_net_obj.is_null()) {
 	gen_obj.set_objs("inputs", {&timesync_net_obj});
      }
+     gen_obj.set_by_val<uint32_t>("clock_speed_hz", clock_speed_hz);
      gen_obj.set_objs("outputs", {&input_queue_obj});
      modules.push_back(confdb->get<StandaloneTCMakerModule>(gen_conf->UID()));
    }

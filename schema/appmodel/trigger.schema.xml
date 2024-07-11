@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="29" oks-format="schema" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231211T133151" last-modified-by="glehmann" last-modified-on="np04-srv-019.cern.ch" last-modification-time="20240402T091944"/>
+<info name="" type="" num-of-items="29" oks-format="schema" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231211T133151" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20240711T110155"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -98,7 +98,6 @@
   <attribute name="template_for" type="class" init-value="CustomTCMaker"/>
   <attribute name="trigger_types" type="u32" is-multi-value="yes" init-value="3,7" is-not-null="yes"/>
   <attribute name="trigger_intervals" type="u32" is-multi-value="yes" init-value="62500000,62500000" is-not-null="yes"/>
-  <attribute name="clock_frequency_hz" type="u32" init-value="62500000"/>
  </class>
 
  <class name="DataSubscriberModule">
@@ -135,16 +134,16 @@
   </method>
  </class>
 
- <class name="MLTModule">
-  <superclass name="DaqModule"/>
-  <relationship name="configuration" class-type="MLTConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
  <class name="MLTConf">
   <attribute name="template_for" type="class" init-value="MLTModule"/>
   <attribute name="td_out_of_timeout" type="bool" init-value="true" is-not-null="yes"/>
   <attribute name="buffer_timeout" type="u32" init-value="100" is-not-null="yes"/>
   <attribute name="td_readout_limit" type="u32" init-value="1000" is-not-null="yes"/>
+ </class>
+
+ <class name="MLTModule">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="MLTConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="ROIGroupConf">
@@ -154,26 +153,26 @@
   <attribute name="groups_selection_mode" type="enum" range="kRandom,kSequential" init-value="kRandom" is-not-null="yes"/>
  </class>
 
+ <class name="RandomTCMakerConf">
+  <superclass name="StandaloneTCMakerConf"/>
+  <attribute name="template_for" type="class" init-value="RandomTCMakerModule"/>
+  <attribute name="trigger_interval_ticks" type="u32" init-value="64000000" is-not-null="yes"/>
+  <attribute name="time_distribution" type="enum" range="kUniform,kPoisson" init-value="kUniform" is-not-null="yes"/>
+ </class>
+
  <class name="RandomTCMakerModule">
   <superclass name="StandaloneTCMakerModule"/>
   <relationship name="configuration" class-type="RandomTCMakerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="RandomTCMakerConf">
-  <superclass name="StandaloneTCMakerConf"/>
-  <attribute name="template_for" type="class" init-value="RandomTCMakerModule"/>
-  <attribute name="trigger_interval_ticks" type="u32" init-value="64000000" is-not-null="yes"/>
-  <attribute name="clock_frequency_hz" type="u32" init-value="62500000" is-not-null="yes"/>
-  <attribute name="time_distribution" type="enum" range="kUniform,kPoisson" init-value="kUniform" is-not-null="yes"/>
+ <class name="StandaloneTCMakerConf" is-abstract="yes">
+  <attribute name="template_for" type="class" init-value="StandaloneTCMakerModule" is-not-null="yes"/>
+  <attribute name="timestamp_method" type="enum" range="kTimeSync,kSystemClock" init-value="kTimeSync" is-not-null="yes"/>
  </class>
 
  <class name="StandaloneTCMakerModule">
   <superclass name="DaqModule"/>
- </class>
-
- <class name="StandaloneTCMakerConf" is-abstract="yes">
-  <attribute name="template_for" type="class" init-value="StandaloneTCMakerModule" is-not-null="yes"/>
-  <attribute name="timestamp_method" type="enum" range="kTimeSync,kSystemClock" init-value="kTimeSync" is-not-null="yes"/>
+  <attribute name="clock_speed_hz" description="Clock frequency will be copied here from DetectorConfiguration by MLTApplication ::generate_modules() method" type="u32" init-value="62500000" is-not-null="yes"/>
  </class>
 
  <class name="TAAlgorithm" description="Base class for TA algorithms">
@@ -185,6 +184,21 @@
   <superclass name="DataProcessor"/>
   <attribute name="print_ta_info" description="Whether to print TP information in the TA processor" type="bool" init-value="false"/>
   <relationship name="algorithms" class-type="TCAlgorithm" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="TAMakerHorizontalMuonAlgorithm">
+  <superclass name="TAAlgorithm"/>
+  <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="trigger_on_n_channels" description="Whether to trigger on N Channels" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="trigger_on_adjacency" description="Whether to trigger on adjacency" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="n_channels_threshold" description="Threshold for the N Channels algorithm" type="u32" init-value="8" is-not-null="yes"/>
+  <attribute name="adjacency_threshold" description="Threshold for the adjacency algorithm" type="u32" init-value="6" is-not-null="yes"/>
+  <attribute name="adjacency_tolerance" description="Tolerance for the number of allowed gaps for the adjacency algorithm" type="u32" init-value="4" is-not-null="yes"/>
+ </class>
+
+ <class name="TAMakerPrescaleAlgorithm">
+  <superclass name="TAAlgorithm"/>
  </class>
 
  <class name="TCAlgorithm" description="Base class for TC algorithms">
@@ -216,6 +230,19 @@
   <relationship name="mandatory_links" class-type="SourceIDConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
+ <class name="TCMakerHorizontalMuonAlgorithm">
+  <superclass name="TCAlgorithm"/>
+  <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="trigger_on_n_channels" description="Whether to trigger on N Channels" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="trigger_on_adjacency" description="Whether to trigger on adjacency" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="n_channels_threshold" description="Threshold for the N Channels algorithm" type="u32" init-value="8" is-not-null="yes"/>
+ </class>
+
+ <class name="TCMakerPrescaleAlgorithm">
+  <superclass name="TCAlgorithm"/>
+ </class>
+
  <class name="TCReadoutMap">
   <attribute name="candidate_type" type="u32" init-value="0" is-not-null="yes"/>
   <attribute name="time_before" type="u32" init-value="1000" is-not-null="yes"/>
@@ -241,21 +268,6 @@
   <attribute name="time_after" type="u32" init-value="20000" is-not-null="yes"/>
  </class>
 
- <class name="TAMakerHorizontalMuonAlgorithm">
-  <superclass name="TAAlgorithm"/>
-  <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="trigger_on_n_channels" description="Whether to trigger on N Channels" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="trigger_on_adjacency" description="Whether to trigger on adjacency" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="n_channels_threshold" description="Threshold for the N Channels algorithm" type="u32" init-value="8" is-not-null="yes"/>
-  <attribute name="adjacency_threshold" description="Threshold for the adjacency algorithm" type="u32" init-value="6" is-not-null="yes"/>
-  <attribute name="adjacency_tolerance" description="Tolerance for the number of allowed gaps for the adjacency algorithm" type="u32" init-value="4" is-not-null="yes"/>
- </class>
-
- <class name="TAMakerPrescaleAlgorithm">
-  <superclass name="TAAlgorithm"/>
- </class>
-
  <class name="TriggerApplication">
   <superclass name="ResourceSetAND"/>
   <superclass name="SmartDaqApplication"/>
@@ -265,19 +277,6 @@
   <method name="generate_modules" description="Generate daq module dal objects for streams of thie TriggerApplication on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
   </method>
- </class>
-
- <class name="TCMakerHorizontalMuonAlgorithm">
-  <superclass name="TCAlgorithm"/>
-  <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="trigger_on_n_channels" description="Whether to trigger on N Channels" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="trigger_on_adjacency" description="Whether to trigger on adjacency" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="n_channels_threshold" description="Threshold for the N Channels algorithm" type="u32" init-value="8" is-not-null="yes"/>
- </class>
-
- <class name="TCMakerPrescaleAlgorithm">
-  <superclass name="TCAlgorithm"/>
  </class>
 
  <class name="TriggerDataHandlerModule">

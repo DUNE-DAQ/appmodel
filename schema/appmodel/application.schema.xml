@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="47" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240618T084639"/>
+<info name="" type="" num-of-items="47" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20240711T110155"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -240,6 +240,7 @@
 
  <class name="FakeHSIEventGeneratorModule">
   <superclass name="DaqModule"/>
+  <attribute name="clock_speed_hz" description="Clock frequency will be copied here from DetectorConfiguration by FakeHSIApplication::generate_modules() method" type="u32" init-value="62500000" is-not-null="yes"/>
   <relationship name="configuration" class-type="FakeHSIEventGeneratorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
