@@ -63,13 +63,14 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="13" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240314T134835"/>
+<info name="" type="" num-of-items="23" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240628T062322"/>
 
 <include>
- <file path="schema/coredal/dunedaq.schema.xml"/>
- <file path="schema/appdal/application.schema.xml"/>
- <file path="config/appdal/connections.data.xml"/>
- <file path="config/appdal/moduleconfs.data.xml"/>
+ <file path="schema/confmodel/dunedaq.schema.xml"/>
+ <file path="schema/appmodel/application.schema.xml"/>
+ <file path="config/appmodel/connections.data.xml"/>
+ <file path="config/appmodel/moduleconfs.data.xml"/>
+ <file path="test/config/hosts.data.xml"/>
 </include>
 
 <comments>
@@ -84,91 +85,84 @@
  <comment creation-time="20240306T200127" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="added TP stream writer"/>
  <comment creation-time="20240307T084519" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="added dataflow"/>
  <comment creation-time="20240312T202726" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="Trivial edit to reorder objects"/>
+ <comment creation-time="20240325T124934" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="Unknown" text="adjusted to name changes in connections"/>
+ <comment creation-time="20240617T203421" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="adding datawriters"/>
+ <comment creation-time="20240628T062322" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="removing broadcasters from control apps"/>
 </comments>
 
 
 <obj class="DFApplication" id="df-01">
  <attr name="application_name" type="string" val="daq_application"/>
- <attr name="commandline_parameters" type="string">
-  <data val="--name"/>
-  <data val="df-01"/>
-  <data val="-c"/>
-  <data val="rest://localhost:3339"/><!-- ALTER_ME -->
-  <data val="-i"/>
-  <data val="${DAQAPP_CLI_INFO_SVC}"/>
-  <data val="--configurationService"/>
-  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
- </attr>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="exposes_service">
+  <ref class="Service" id="df-01_control"/>
+ </rel>
  <rel name="source_id" class="SourceIDConf" id="srcid-df-01"/>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="trigger-record-q-rule"/>
  </rel>
  <rel name="network_rules">
   <ref class="NetworkConnectionRule" id="td-trb-net-rule"/>
-  <ref class="NetworkConnectionRule" id="data-req-net-rule"/>
   <ref class="NetworkConnectionRule" id="frag-net-rule"/>
   <ref class="NetworkConnectionRule" id="df-token-net-rule"/>
-  <ref class="NetworkConnectionRule" id="hsi-data-req-net-rule"/>
+  <ref class="NetworkConnectionRule" id="data-req-hsi-net-rule"/>
+  <ref class="NetworkConnectionRule" id="data-req-readout-net-rule"/>
+  <ref class="NetworkConnectionRule" id="data-req-trig-net-rule"/>
  </rel>
  <rel name="trb" class="TRBConf" id="trb-01"/>
- <rel name="data_writer" class="DataWriterConf" id="dw-01"/>
+ <rel name="data_writers">
+  <ref class="DataWriterConf" id="dw-01"/>
+ </rel>
  <rel name="uses" class="DFHWConf" id="dfhw-01"/>
 </obj>
 
 <obj class="DFApplication" id="df-02">
  <attr name="application_name" type="string" val="daq_application"/>
- <attr name="commandline_parameters" type="string">
-  <data val="--name"/>
-  <data val="df-02"/>
-  <data val="-c"/>
-  <data val="rest://localhost:3340"/><!-- ALTER_ME -->
-  <data val="-i"/>
-  <data val="${DAQAPP_CLI_INFO_SVC}"/>
-  <data val="--configurationService"/>
-  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
- </attr>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="exposes_service">
+  <ref class="Service" id="df-02_control"/>
+ </rel>
  <rel name="source_id" class="SourceIDConf" id="srcid-df-02"/>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="trigger-record-q-rule"/>
  </rel>
  <rel name="network_rules">
   <ref class="NetworkConnectionRule" id="td-trb-net-rule"/>
-  <ref class="NetworkConnectionRule" id="data-req-net-rule"/>
   <ref class="NetworkConnectionRule" id="frag-net-rule"/>
   <ref class="NetworkConnectionRule" id="df-token-net-rule"/>
+  <ref class="NetworkConnectionRule" id="data-req-hsi-net-rule"/>
+  <ref class="NetworkConnectionRule" id="data-req-readout-net-rule"/>
+  <ref class="NetworkConnectionRule" id="data-req-trig-net-rule"/>
  </rel>
  <rel name="trb" class="TRBConf" id="trb-01"/>
- <rel name="data_writer" class="DataWriterConf" id="dw-01"/>
+ <rel name="data_writers">
+  <ref class="DataWriterConf" id="dw-01"/>
+ </rel>
  <rel name="uses" class="DFHWConf" id="dfhw-01"/>
 </obj>
 
 <obj class="DFApplication" id="df-03">
  <attr name="application_name" type="string" val="daq_application"/>
- <attr name="commandline_parameters" type="string">
-  <data val="--name"/>
-  <data val="df-03"/>
-  <data val="-c"/>
-  <data val="rest://localhost:3341"/><!-- ALTER_ME -->
-  <data val="-i"/>
-  <data val="${DAQAPP_CLI_INFO_SVC}"/>
-  <data val="--configurationService"/>
-  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
- </attr>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="exposes_service">
+  <ref class="Service" id="df-03_control"/>
+ </rel>
  <rel name="source_id" class="SourceIDConf" id="srcid-df-03"/>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="trigger-record-q-rule"/>
  </rel>
  <rel name="network_rules">
   <ref class="NetworkConnectionRule" id="td-trb-net-rule"/>
-  <ref class="NetworkConnectionRule" id="data-req-net-rule"/>
   <ref class="NetworkConnectionRule" id="frag-net-rule"/>
   <ref class="NetworkConnectionRule" id="df-token-net-rule"/>
+  <ref class="NetworkConnectionRule" id="data-req-hsi-net-rule"/>
+  <ref class="NetworkConnectionRule" id="data-req-readout-net-rule"/>
+  <ref class="NetworkConnectionRule" id="data-req-trig-net-rule"/>
  </rel>
  <rel name="trb" class="TRBConf" id="trb-01"/>
- <rel name="data_writer" class="DataWriterConf" id="dw-01"/>
+ <rel name="data_writers">
+  <ref class="DataWriterConf" id="dw-01"/>
+ </rel>
  <rel name="uses" class="DFHWConf" id="dfhw-01"/>
 </obj>
 
@@ -180,17 +174,10 @@
 
 <obj class="DFOApplication" id="dfo-01">
  <attr name="application_name" type="string" val="daq_application"/>
- <attr name="commandline_parameters" type="string">
-  <data val="--name"/>
-  <data val="dfo-01"/>
-  <data val="-c"/>
-  <data val="rest://localhost:3342"/><!-- ALTER_ME -->
-  <data val="-i"/>
-  <data val="${DAQAPP_CLI_INFO_SVC}"/>
-  <data val="--configurationService"/>
-  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
- </attr>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="exposes_service">
+  <ref class="Service" id="dfo-01_control"/>
+ </rel>
  <rel name="network_rules">
   <ref class="NetworkConnectionRule" id="td-dfo-net-rule"/>
   <ref class="NetworkConnectionRule" id="ti-net-rule"/>
@@ -211,11 +198,10 @@
 </obj>
 
 <obj class="FilenameParams" id="tp-file-params">
- <attr name="overall_prefix" type="string" val="tpstream"/>
+ <attr name="file_type_prefix" type="enum" val="raw"/>
  <attr name="run_number_prefix" type="string" val="run"/>
  <attr name="digits_for_run_number" type="s32" val="6"/>
  <attr name="digits_for_file_index" type="s32" val="4"/>
- <attr name="writer_identifier" type="string" val="tp_writer"/>
  <attr name="digits_for_trigger_number" type="s32" val="6"/>
 </obj>
 
@@ -233,35 +219,11 @@
 
 <obj class="RCApplication" id="df-controller">
  <attr name="application_name" type="string" val="drunc-controller"/>
- <attr name="commandline_parameters" type="string">
-  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
-  <data val="grpc://localhost:3338"/><!-- ALTER_ME -->
-  <data val="df-segment"/>
-  <data val="test-session"/>
- </attr>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
- <rel name="fsm" class="FSMconfiguration" id="fsmConf-1"/>
- <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
-</obj>
-
-<obj class="TPStreamWriterApplication" id="tp-stream-writer">
- <attr name="application_name" type="string" val="daq_application"/>
- <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
- <attr name="commandline_parameters" type="string">
-  <data val="--name"/>
-  <data val="tp-stream-writer"/>
-  <data val="-c"/>
-  <data val="rest://localhost:3343"/><!-- ALTER_ME -->
-  <data val="-i"/>
-  <data val="${DAQAPP_CLI_INFO_SVC}"/>
-  <data val="--configurationService"/>
-  <data val="${DAQAPP_CLI_CONFIG_SVC}"/>
- </attr>
-  <rel name="source_id" class="SourceIDConf" id="srcid-tp-stream-writer"/>
- <rel name="network_rules">
-  <ref class="NetworkConnectionRule" id="tp-net-rule"/>
+ <rel name="exposes_service">
+  <ref class="Service" id="df-controller_control"/>
  </rel>
- <rel name="tp_writer" class="TPStreamWriterConf" id="tp-stream-writer-conf"/>
+ <rel name="fsm" class="FSMconfiguration" id="FSMconfiguration_noAction"/>
 </obj>
 
 <obj class="Segment" id="df-segment">
@@ -274,28 +236,71 @@
  <rel name="controller" class="RCApplication" id="df-controller"/>
 </obj>
 
+<obj class="Service" id="df-01_control">
+ <attr name="protocol" type="string" val="rest"/>
+ <attr name="port" type="u16" val="5601"/>
+</obj>
+
+<obj class="Service" id="df-02_control">
+ <attr name="protocol" type="string" val="rest"/>
+ <attr name="port" type="u16" val="5602"/>
+</obj>
+
+<obj class="Service" id="df-03_control">
+ <attr name="protocol" type="string" val="rest"/>
+ <attr name="port" type="u16" val="5603"/>
+</obj>
+
+<obj class="Service" id="df-controller_control">
+ <attr name="protocol" type="string" val="grpc"/>
+ <attr name="port" type="u16" val="5600"/>
+</obj>
+
+<obj class="Service" id="dfo-01_control">
+ <attr name="protocol" type="string" val="rest"/>
+ <attr name="port" type="u16" val="5604"/>
+</obj>
+
+<obj class="Service" id="tp-stream-writer_control">
+ <attr name="protocol" type="string" val="rest"/>
+ <attr name="port" type="u16" val="5605"/>
+</obj>
+
 <obj class="SourceIDConf" id="srcid-df-01">
- <attr name="id" type="u32" val="1"/>
+ <attr name="sid" type="u32" val="1"/>
  <attr name="subsystem" type="enum" val="TR_Builder"/>
 </obj>
 
 <obj class="SourceIDConf" id="srcid-df-02">
- <attr name="id" type="u32" val="2"/>
+ <attr name="sid" type="u32" val="2"/>
  <attr name="subsystem" type="enum" val="TR_Builder"/>
 </obj>
 
 <obj class="SourceIDConf" id="srcid-df-03">
- <attr name="id" type="u32" val="3"/>
+ <attr name="sid" type="u32" val="3"/>
  <attr name="subsystem" type="enum" val="TR_Builder"/>
 </obj>
 
 <obj class="SourceIDConf" id="srcid-tp-stream-writer">
-  <attr name="id" type="u32" val="4"/>
-  <attr name="subsystem" type="enum" val="TR_Builder"/>
+ <attr name="sid" type="u32" val="4"/>
+ <attr name="subsystem" type="enum" val="TR_Builder"/>
 </obj>
 
 <obj class="StorageDevice" id="storage-01">
  <attr name="storage" type="u32" val="1000"/>
+</obj>
+
+<obj class="TPStreamWriterApplication" id="tp-stream-writer">
+ <attr name="application_name" type="string" val="daq_application"/>
+ <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="exposes_service">
+  <ref class="Service" id="tp-stream-writer_control"/>
+ </rel>
+ <rel name="source_id" class="SourceIDConf" id="srcid-tp-stream-writer"/>
+ <rel name="network_rules">
+  <ref class="NetworkConnectionRule" id="tpset-net-rule"/>
+ </rel>
+ <rel name="tp_writer" class="TPStreamWriterConf" id="tp-stream-writer-conf"/>
 </obj>
 
 <obj class="TPStreamWriterConf" id="tp-stream-writer-conf">

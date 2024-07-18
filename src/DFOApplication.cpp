@@ -10,50 +10,50 @@
 
 #include "ModuleFactory.hpp"
 
-#include "oksdbinterfaces/Configuration.hpp"
+#include "conffwk/Configuration.hpp"
 #include "oks/kernel.hpp"
-#include "coredal/Connection.hpp"
-#include "coredal/NetworkConnection.hpp"
-#include "appdal/DFOApplication.hpp"
-#include "appdal/DFOConf.hpp"
-#include "appdal/DataFlowOrchestrator.hpp"
-#include "appdal/NetworkConnectionRule.hpp"
-#include "appdal/NetworkConnectionDescriptor.hpp"
-#include "appdal/QueueConnectionRule.hpp"
-#include "appdal/QueueDescriptor.hpp"
-#include "coredal/Service.hpp"
-#include "appdal/appdalIssues.hpp"
+#include "confmodel/Connection.hpp"
+#include "confmodel/NetworkConnection.hpp"
+#include "appmodel/DFOApplication.hpp"
+#include "appmodel/DFOConf.hpp"
+#include "appmodel/DFOModule.hpp"
+#include "appmodel/NetworkConnectionRule.hpp"
+#include "appmodel/NetworkConnectionDescriptor.hpp"
+#include "appmodel/QueueConnectionRule.hpp"
+#include "appmodel/QueueDescriptor.hpp"
+#include "confmodel/Service.hpp"
+#include "appmodel/appmodelIssues.hpp"
 #include "logging/Logging.hpp"
 
 #include <string>
 #include <vector>
 
 using namespace dunedaq;
-using namespace dunedaq::appdal;
+using namespace dunedaq::appmodel;
 
 static ModuleFactory::Registrator
 __reg__("DFOApplication", [] (const SmartDaqApplication* smartApp,
-                             oksdbinterfaces::Configuration* confdb,
+                             conffwk::Configuration* confdb,
                              const std::string& dbfile,
-                             const coredal::Session* session) -> ModuleFactory::ReturnType
+                             const confmodel::Session* session) -> ModuleFactory::ReturnType
   {
     auto app = smartApp->cast<DFOApplication>();
     return app->generate_modules(confdb, dbfile, session);
   }
   );
 
-std::vector<const coredal::DaqModule*> 
-DFOApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
+std::vector<const confmodel::DaqModule*> 
+DFOApplication::generate_modules(conffwk::Configuration* confdb,
                                      const std::string& dbfile,
-                                     const coredal::Session* session) const
+                                     const confmodel::Session* /*session*/) const
 {
-  std::vector<const coredal::DaqModule*> modules;
+  std::vector<const confmodel::DaqModule*> modules;
 
 
   std::string dfoUid("DFO-" + UID());
-  oksdbinterfaces::ConfigObject dfoObj;
-  TLOG_DEBUG(7) << "creating OKS configuration object for DataFlowOrchestrator class ";
-  confdb->create(dbfile, "DataFlowOrchestrator", dfoUid, dfoObj);
+  conffwk::ConfigObject dfoObj;
+  TLOG_DEBUG(7) << "creating OKS configuration object for DFOModule class ";
+  confdb->create(dbfile, "DFOModule", dfoUid, dfoObj);
 
   auto dfoConf = get_dfo();
   dfoObj.set_obj("configuration", &dfoConf->config_object());
@@ -62,17 +62,17 @@ DFOApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     throw(BadConf(ERS_HERE, "No DFOConf configuration given"));
   }
 
-  std::vector<const oksdbinterfaces::ConfigObject*> output_conns;
-  std::vector<const oksdbinterfaces::ConfigObject*> input_conns;
-  oksdbinterfaces::ConfigObject tdInObj;
-  oksdbinterfaces::ConfigObject busyOutObj;
-  oksdbinterfaces::ConfigObject tokenInObj;
+  std::vector<const conffwk::ConfigObject*> output_conns;
+  std::vector<const conffwk::ConfigObject*> input_conns;
+  conffwk::ConfigObject tdInObj;
+  conffwk::ConfigObject busyOutObj;
+  conffwk::ConfigObject tokenInObj;
 
   for (auto rule : get_network_rules()) {
     auto endpoint_class = rule->get_endpoint_class();
     auto descriptor = rule->get_descriptor();
 
-    oksdbinterfaces::ConfigObject connObj;
+    conffwk::ConfigObject connObj;
     auto serviceObj = descriptor->get_associated_service()->config_object();
     std::string connUid(descriptor->get_uid_base());
     confdb->create(dbfile, "NetworkConnection", connUid, connObj);
@@ -80,7 +80,7 @@ DFOApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     connObj.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
     connObj.set_obj("associated_service", &serviceObj);
 
-    //if (endpoint_class == "DataFlowOrchestrator") {
+    //if (endpoint_class == "DFOModule") {
     if (descriptor->get_data_type() == "TriggerDecision") {
         tdInObj = connObj;
         input_conns.push_back(&tdInObj);
@@ -110,7 +110,7 @@ DFOApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   dfoObj.set_objs("outputs", output_conns);
 
   // Add to our list of modules to return
-  modules.push_back(confdb->get<DataFlowOrchestrator>(dfoUid));
+  modules.push_back(confdb->get<DFOModule>(dfoUid));
 
   return modules;
 }

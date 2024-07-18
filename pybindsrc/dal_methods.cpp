@@ -10,24 +10,24 @@
 #include "pybind11/pybind11.h"
 #include "pybind11/stl.h"
 
-#include "coredal/DaqModule.hpp"
-#include "coredal/Session.hpp"
+#include "confmodel/DaqModule.hpp"
+#include "confmodel/Session.hpp"
 
-#include "appdal/DFApplication.hpp"
-#include "appdal/DFOApplication.hpp"
-#include "appdal/ReadoutApplication.hpp"
-#include "appdal/TriggerApplication.hpp"
-#include "appdal/TPStreamWriterApplication.hpp"
+#include "appmodel/DFApplication.hpp"
+#include "appmodel/DFOApplication.hpp"
+#include "appmodel/ReadoutApplication.hpp"
+#include "appmodel/TriggerApplication.hpp"
+#include "appmodel/TPStreamWriterApplication.hpp"
 
 #include <sstream>
 
 namespace py = pybind11;
 
-namespace dunedaq::appdal::python {
+namespace dunedaq::appmodel::python {
 
   struct ObjectLocator {
     ObjectLocator(const std::string& id_arg, const std::string& class_name_arg) :
-      id(id_arg), class_name(class_name_arg) 
+      id(id_arg), class_name(class_name_arg)
       {}
     const std::string id;
     const std::string class_name;
@@ -35,22 +35,30 @@ namespace dunedaq::appdal::python {
 
   template <typename ApplicationType>
   std::vector<ObjectLocator>
-  application_generate_template(const oksdbinterfaces::Configuration& confdb,
+  application_generate_template(const conffwk::Configuration& confdb,
                                 const std::string& dbfile,
                                 const std::string& app_id,
-                                const std::string& session_id) 
+                                const std::string& session_id)
   {
     auto app =
-      const_cast<oksdbinterfaces::Configuration&>(confdb).get<ApplicationType>(app_id);
+      const_cast<conffwk::Configuration&>(confdb).get<ApplicationType>(app_id);
     auto session =
-      const_cast<oksdbinterfaces::Configuration&>(confdb).get<coredal::Session>(session_id);
+      const_cast<conffwk::Configuration&>(confdb).get<confmodel::Session>(session_id);
 
     std::vector<ObjectLocator> mods;
     for (auto mod : app->generate_modules(
-           const_cast<oksdbinterfaces::Configuration*>(&confdb), dbfile, session)) {
+           const_cast<conffwk::Configuration*>(&confdb), dbfile, session)) {
       mods.push_back({mod->UID(),mod->class_name()});
     }
     return mods;
+  }
+
+  std::vector<std::string> smart_daq_application_construct_commandline_parameters(const conffwk::Configuration& db,
+                                                                                  const std::string& session_id,
+                                                                                  const std::string& app_id) {
+    const auto* app = const_cast<conffwk::Configuration&>(db).get<dunedaq::appmodel::SmartDaqApplication>(app_id);
+    const auto* session = const_cast<conffwk::Configuration&>(db).get<dunedaq::confmodel::Session>(session_id);
+    return app->construct_commandline_parameters(db, session);
   }
 
 void
@@ -67,6 +75,7 @@ register_dal_methods(py::module& m)
   m.def("dfo_application_generate", &application_generate_template<DFOApplication>, "Generate DaqModules required by DFOApplication");
   m.def("tpwriter_application_generate", &application_generate_template<TPStreamWriterApplication>, "Generate DaqModules required by TPStreamWriterApplication");
   m.def("trigger_application_generate", &application_generate_template<TriggerApplication>, "Generate DaqModules required by TriggerApplication");
+  m.def("smart_daq_application_construct_commandline_parameters", &smart_daq_application_construct_commandline_parameters, "Get a version of the command line agruments parsed");
 }
 
-} // namespace dunedaq::appdal::python
+} // namespace dunedaq::appmodel::python

@@ -80,20 +80,20 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="45" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240326T185149"/>
+<info name="" type="" num-of-items="47" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240618T084639"/>
 
 <include>
- <file path="schema/coredal/dunedaq.schema.xml"/>
+ <file path="schema/confmodel/dunedaq.schema.xml"/>
 </include>
 
 
  <class name="DFApplication">
   <superclass name="SmartDaqApplication"/>
   <relationship name="trb" description="Configuration of the TRB to be generated my get_modules()" class-type="TRBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="data_writer" class-type="DataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="data_writers" class-type="DataWriterConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="uses" class-type="DFHWConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
-   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
   </method>
  </class>
 
@@ -105,7 +105,7 @@
   <superclass name="SmartDaqApplication"/>
   <relationship name="dfo" class-type="DFOConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
-   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
   </method>
  </class>
 
@@ -117,9 +117,28 @@
   <attribute name="free_threshold" type="s32" init-value="5"/>
  </class>
 
- <class name="DataFlowOrchestrator">
+ <class name="DFOModule">
   <superclass name="DaqModule"/>
   <relationship name="configuration" class-type="DFOConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="DataHandlerConf">
+  <attribute name="template_for" type="class" init-value="DataHandlerModule" is-not-null="yes"/>
+  <attribute name="input_data_type" description="Type of data received by this readout module" type="string" init-value="WIBEthFrame"/>
+  <attribute name="generate_timesync" type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="post_processing_delay_ticks" description="Number of clock tick by which post processing of incoming data shall be delayed." type="u64" init-value="0" is-not-null="yes"/>
+  <relationship name="request_handler" class-type="RequestHandler" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="latency_buffer" class-type="LatencyBuffer" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="data_processor" class-type="DataProcessor" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="DataHandlerModule" is-abstract="yes">
+  <superclass name="DaqModule"/>
+  <attribute name="source_id" type="u32" is-not-null="yes"/>
+  <attribute name="detector_id" type="u32" is-not-null="yes"/>
+  <attribute name="emulation_mode" type="bool" init-value="false" is-not-null="yes"/>
+  <relationship name="geo_id" class-type="GeoId" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="module_configuration" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="DataProcessor">
@@ -128,21 +147,16 @@
   <attribute name="mask_processing" description="Flag to comment out post processing in a data processor" type="bool" init-value="false"/>
  </class>
 
- <class name="DataReader" is-abstract="yes">
-  <superclass name="DaqModule"/>
-  <relationship name="configuration" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="interfaces" class-type="ReadoutInterface" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="no" is-dependent="no"/>
- </class>
-
  <class name="DataReaderConf">
-  <attribute name="template_for" description="OKS class of the DataReader that this config is a template for" type="class" init-value="DataReader" is-not-null="yes"/>
+  <attribute name="template_for" description="OKS class of the DataReaderModule that this config is a template for" type="class" init-value="DataReaderModule" is-not-null="yes"/>
   <attribute name="emulation_mode" type="bool" init-value="false"/>
   <relationship name="emulation_conf" description="Parameters for emulating the stream." class-type="StreamEmulationParameters" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="DataRecorder" is-abstract="yes">
+ <class name="DataReaderModule" is-abstract="yes">
   <superclass name="DaqModule"/>
-  <relationship name="configuration" class-type="DataRecorderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="configuration" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="connections" class-type="DetectorToDaqConnection" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="DataRecorderConf">
@@ -150,6 +164,11 @@
   <attribute name="streaming_buffer_size" type="u32" init-value="1000" is-not-null="yes"/>
   <attribute name="compression_algorithm" type="string" init-value="None" is-not-null="yes"/>
   <attribute name="use_o_direct" description="Whether to use O_DIRECT flag when opening files" type="bool" init-value="true"/>
+ </class>
+
+ <class name="DataRecorderModule" is-abstract="yes">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="DataRecorderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="DataStoreConf">
@@ -163,11 +182,6 @@
   <relationship name="filename_params" class-type="FilenameParams" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="DataWriter">
-  <superclass name="DaqModule"/>
-  <relationship name="configuration" class-type="DataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
  <class name="DataWriterConf">
   <attribute name="data_storage_prescale" type="s32" init-value="1" is-not-null="yes"/>
   <attribute name="min_write_retry_time_ms" type="s32" init-value="0" is-not-null="yes"/>
@@ -176,18 +190,18 @@
   <relationship name="data_store_params" class-type="DataStoreConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
+ <class name="DataWriterModule">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="DataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
  <class name="FakeDataApplication">
   <superclass name="ResourceSetAND"/>
   <superclass name="SmartDaqApplication"/>
   <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
   <method name="generate_modules" description="Generate daq module dal objects for streams of the FakeDataApplication on the fly">
-   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
   </method>
- </class>
-
- <class name="FakeDataProd">
-  <superclass name="DaqModule"/>
-  <relationship name="configuration" class-type="FakeDataProdConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="FakeDataProdConf">
@@ -200,18 +214,18 @@
   <attribute name="fragment_type" description="Fragment type of the response" type="string" is-not-null="yes"/>
  </class>
 
- <class name="FakeHSIApplication">
-  <superclass name="SmartDaqApplication"/>
-  <relationship name="link_handler" class-type="ReadoutModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="generator" class-type="FakeHSIEventGeneratorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
-   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
-  </method>
+ <class name="FakeDataProdModule">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="FakeDataProdConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="FakeHSIEventGenerator">
-  <superclass name="DaqModule"/>
-  <relationship name="configuration" class-type="FakeHSIEventGeneratorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ <class name="FakeHSIApplication">
+  <superclass name="SmartDaqApplication"/>
+  <relationship name="link_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="generator" class-type="FakeHSIEventGeneratorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
+  </method>
  </class>
 
  <class name="FakeHSIEventGeneratorConf">
@@ -224,18 +238,22 @@
   <attribute name="signal_emulation_mode" description="Signal bit map emulation mode. 0: enabled signals always on; 1: enabled signals are emulated (independently) on according to a Poisson with mean mean_signal_multiplicity; signal map generated with uniform distr. enabled signals only" type="u32" init-value="0" is-not-null="yes"/>
  </class>
 
+ <class name="FakeHSIEventGeneratorModule">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="FakeHSIEventGeneratorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
  <class name="FilenameParams">
-  <attribute name="overall_prefix" type="string" init-value="minidaq" is-not-null="yes"/>
+  <attribute name="file_type_prefix" type="enum" range="raw,tp" init-value="raw" is-not-null="yes"/>
   <attribute name="run_number_prefix" type="string" init-value="run" is-not-null="yes"/>
   <attribute name="digits_for_run_number" type="s32" init-value="6" is-not-null="yes"/>
   <attribute name="file_index_prefix" type="string"/>
   <attribute name="digits_for_file_index" type="s32" init-value="4" is-not-null="yes"/>
-  <attribute name="writer_identifier" type="string"/>
   <attribute name="trigger_number_prefix" type="string"/>
   <attribute name="digits_for_trigger_number" type="s32" init-value="8" is-not-null="yes"/>
  </class>
 
- <class name="FragmentAggregator">
+ <class name="FragmentAggregatorModule">
   <superclass name="DaqModule"/>
  </class>
 
@@ -256,8 +274,8 @@
   <attribute name="digits_for_element_number" type="s32" init-value="5"/>
  </class>
 
- <class name="HSIDataLinkHandler">
-  <superclass name="ReadoutModule"/>
+ <class name="HSIDataHandlerModule">
+  <superclass name="DataHandlerModule"/>
  </class>
 
  <class name="HSIFrameProcessor">
@@ -271,6 +289,16 @@
   <attribute name="intrinsic_allocator" type="bool" init-value="true"/>
   <attribute name="alignment_size" type="u32" init-value="0"/>
   <attribute name="preallocation" type="bool" init-value="true"/>
+ </class>
+
+ <class name="NWDetDataReceiver" is-abstract="yes">
+  <superclass name="DetDataReceiver"/>
+  <relationship name="uses" class-type="NetworkInterface" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="NWDetDataSender" is-abstract="yes">
+  <superclass name="DetDataSender"/>
+  <relationship name="uses" class-type="NetworkInterface" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="NetworkConnectionDescriptor">
@@ -314,36 +342,17 @@
   <attribute name="ta_source_id" description="Source ID if TAs are being generated" type="u32"/>
   <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
   <relationship name="uses" description="Configuration of the host hardware resources used by this application" class-type="RoHwConfig" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
-  <relationship name="link_handler" class-type="ReadoutModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="tp_handler" class-type="ReadoutModuleConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="link_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="tp_handler" class-type="DataHandlerConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_reader" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_recorder" class-type="DataRecorderConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate daq module dal objects for streams of thie ReadoutApplication on the fly">
-   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
   </method>
  </class>
 
  <class name="ReadoutHost">
   <superclass name="VirtualHost"/>
- </class>
-
- <class name="ReadoutModule" is-abstract="yes">
-  <superclass name="DaqModule"/>
-  <attribute name="source_id" type="u32" is-not-null="yes"/>
-  <attribute name="detector_id" type="u32" is-not-null="yes"/>
-  <attribute name="emulation_mode" type="bool" init-value="false" is-not-null="yes"/>
-  <relationship name="geo_id" class-type="GeoId" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="module_configuration" class-type="ReadoutModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="ReadoutModuleConf">
-  <attribute name="template_for" type="class" init-value="ReadoutModule" is-not-null="yes"/>
-  <attribute name="input_data_type" description="Type of data received by this readout module" type="string" init-value="WIBEthFrame"/>
-  <attribute name="generate_timesync" type="bool" init-value="true" is-not-null="yes"/>
-  <attribute name="post_processing_delay_ticks" description="Number of clock tick by which post processing of incoming data shall be delayed." type="u64" init-value="0" is-not-null="yes"/>
-  <relationship name="request_handler" class-type="RequestHandler" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="latency_buffer" class-type="LatencyBuffer" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="data_processor" class-type="DataProcessor" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="RequestHandler">
@@ -371,12 +380,15 @@
   <relationship name="network_rules" class-type="NetworkConnectionRule" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="action_plans" class-type="ActionPlan" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="">
-   <method-implementation language="c++" prototype="virtual std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const" body=""/>
+   <method-implementation language="c++" prototype="virtual std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const" body=""/>
+  </method>
+  <method name="construct_commandline_parameters" description="get the command line parameters for this application">
+   <method-implementation language="c++" prototype=" const std::vector&lt;std::string&gt; construct_commandline_parameters(const conffwk::Configuration&amp; confdb, const dunedaq::confmodel::Session* session) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;confmodel/util.hpp&quot;&#xA;END_HEADER_PROLOGUE"/>
   </method>
  </class>
 
  <class name="SourceIDConf">
-  <attribute name="id" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="sid" type="u32" init-value="0" is-not-null="yes"/>
   <attribute name="subsystem" type="enum" range="Unknown,Detector_Readout,HW_Signals_Interface,Trigger,TR_Builder" init-value="Unknown" is-not-null="yes"/>
  </class>
 
@@ -391,23 +403,23 @@
   <attribute name="TP_rate_per_channel" description="TP rate per channel in units of 100 Hz." type="float" init-value="0.0" is-not-null="yes"/>
  </class>
 
- <class name="TPStreamWriter">
-  <superclass name="DaqModule"/>
-  <attribute name="source_id" type="u32" is-not-null="yes"/>
-  <relationship name="configuration" class-type="TPStreamWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
  <class name="TPStreamWriterApplication">
   <superclass name="SmartDaqApplication"/>
   <relationship name="tp_writer" class-type="TPStreamWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate dal objects for streams of thie ReadoutApplication on the fly">
-   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::coredal::DaqModule*&gt; generate_modules(oksdbinterfaces::Configuration*, const std::string&amp;, const coredal::Session*) const override" body=""/>
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
   </method>
  </class>
 
  <class name="TPStreamWriterConf">
   <attribute name="tp_accumulation_interval" type="u64" init-value="0" is-not-null="yes"/>
   <relationship name="data_store_params" class-type="DataStoreConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="TPStreamWriterModule">
+  <superclass name="DaqModule"/>
+  <attribute name="source_id" type="u32" is-not-null="yes"/>
+  <relationship name="configuration" class-type="TPStreamWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="TRBConf">
@@ -417,7 +429,7 @@
   <attribute name="source_id" type="u32" is-not-null="yes"/>
  </class>
 
- <class name="TriggerRecordBuilder">
+ <class name="TRBModule">
   <superclass name="DaqModule"/>
   <relationship name="configuration" class-type="TRBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>

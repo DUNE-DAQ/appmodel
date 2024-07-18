@@ -55,7 +55,7 @@
         "-i",
         "{INFO_SVC}",
         "--configurationService",
-        "oksconfig:test/config/CRP4-session.data.xml"
+        "oksconflibs:test/config/CRP4-session.data.xml"
       ],
       "cmd": "daq_application",
       "comment": "Application profile using PATH variables (lower start time)",
@@ -66,6 +66,7 @@
 	"CONNECTION_PORT": "30005",
         "DETCHANNELMAPS_SHARE": "getenv",
         "DUNEDAQ_SHARE_PATH": "getenv",
+        "DUNEDAQ_DB_PATH": "getenv",
         "INFO_SVC": "kafka://monkafka.cern.ch:30092/opmon",
         "LD_LIBRARY_PATH": "getenv",
         "PATH": "getenv",

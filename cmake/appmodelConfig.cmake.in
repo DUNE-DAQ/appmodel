@@ -4,12 +4,13 @@
 include(CMakeFindDependencyMacro)
 
 find_dependency(okssystem)
-find_dependency(genconfig)
+find_dependency(oksdalgen)
 find_dependency(ers)
 find_dependency(logging)
-find_dependency(oksdbinterfaces)
+find_dependency(conffwk)
 find_dependency(oks)
-find_dependency(coredal)
+find_dependency(confmodel)
+find_dependency(fmt)
 
 # Figure out whether or not this dependency is an installed package or
 # in repo form

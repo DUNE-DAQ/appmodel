@@ -10,44 +10,45 @@
 
 #include "ModuleFactory.hpp"
 
-#include "appdal/DFApplication.hpp"
-#include "appdal/DataWriter.hpp"
-#include "appdal/DataWriterConf.hpp"
-#include "appdal/NetworkConnectionDescriptor.hpp"
-#include "appdal/NetworkConnectionRule.hpp"
-#include "appdal/QueueConnectionRule.hpp"
-#include "appdal/DataStoreConf.hpp"
-#include "appdal/FilenameParams.hpp"
-#include "appdal/QueueDescriptor.hpp"
-#include "appdal/ReadoutApplication.hpp"
-#include "appdal/SourceIDConf.hpp"
-#include "appdal/TRBConf.hpp"
-#include "appdal/TriggerRecordBuilder.hpp"
-#include "appdal/appdalIssues.hpp"
-#include "coredal/Connection.hpp"
-#include "coredal/NetworkConnection.hpp"
-#include "coredal/Service.hpp"
+#include "appmodel/DFApplication.hpp"
+#include "appmodel/DataWriterModule.hpp"
+#include "appmodel/DataWriterConf.hpp"
+#include "appmodel/NetworkConnectionDescriptor.hpp"
+#include "appmodel/NetworkConnectionRule.hpp"
+#include "appmodel/QueueConnectionRule.hpp"
+#include "appmodel/DataStoreConf.hpp"
+#include "appmodel/FilenameParams.hpp"
+#include "appmodel/QueueDescriptor.hpp"
+#include "appmodel/ReadoutApplication.hpp"
+#include "appmodel/SourceIDConf.hpp"
+#include "appmodel/TRBConf.hpp"
+#include "appmodel/TRBModule.hpp"
+#include "appmodel/appmodelIssues.hpp"
+#include "confmodel/Connection.hpp"
+#include "confmodel/NetworkConnection.hpp"
+#include "confmodel/Service.hpp"
 #include "logging/Logging.hpp"
 #include "oks/kernel.hpp"
-#include "oksdbinterfaces/Configuration.hpp"
+#include "conffwk/Configuration.hpp"
 
 #include <string>
 #include <vector>
+#include <fmt/core.h>
 
 using namespace dunedaq;
-using namespace dunedaq::appdal;
+using namespace dunedaq::appmodel;
 
 static ModuleFactory::Registrator __reg__("DFApplication",
                                           [](const SmartDaqApplication* smartApp,
-                                             oksdbinterfaces::Configuration* confdb,
+                                             conffwk::Configuration* confdb,
                                              const std::string& dbfile,
-                                             const coredal::Session* session) -> ModuleFactory::ReturnType {
+                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
                                             auto app = smartApp->cast<DFApplication>();
                                             return app->generate_modules(confdb, dbfile, session);
                                           });
 
 inline void
-fill_queue_object_from_desc(const QueueDescriptor* qDesc, oksdbinterfaces::ConfigObject& qObj)
+fill_queue_object_from_desc(const QueueDescriptor* qDesc, conffwk::ConfigObject& qObj)
 {
   qObj.set_by_val<std::string>("data_type", qDesc->get_data_type());
   qObj.set_by_val<std::string>("queue_type", qDesc->get_queue_type());
@@ -55,7 +56,7 @@ fill_queue_object_from_desc(const QueueDescriptor* qDesc, oksdbinterfaces::Confi
 }
 
 inline void
-fill_netconn_object_from_desc(const NetworkConnectionDescriptor* netDesc, oksdbinterfaces::ConfigObject& netObj)
+fill_netconn_object_from_desc(const NetworkConnectionDescriptor* netDesc, conffwk::ConfigObject& netObj)
 {
   netObj.set_by_val<std::string>("data_type", netDesc->get_data_type());
   netObj.set_by_val<std::string>("connection_type", netDesc->get_connection_type());
@@ -64,32 +65,32 @@ fill_netconn_object_from_desc(const NetworkConnectionDescriptor* netDesc, oksdbi
   netObj.set_obj("associated_service", &serviceObj);
 }
 
-std::vector<const coredal::DaqModule*>
-DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
+std::vector<const confmodel::DaqModule*>
+DFApplication::generate_modules(conffwk::Configuration* confdb,
                                 const std::string& dbfile,
-                                const coredal::Session* session) const
+                                const confmodel::Session* session) const
 {
-  std::vector<const coredal::DaqModule*> modules;
+  std::vector<const confmodel::DaqModule*> modules;
 
   // Containers for module specific config objects for output/input
   // Prepare TRB output objects
-  std::vector<const oksdbinterfaces::ConfigObject*> trbOutputObjs;
+  std::vector<const conffwk::ConfigObject*> trbOutputObjs;
 
   // -- First, we process expected Queue and Network connections and create their objects.
 
-  // Process the queue rules looking for the TriggerRecord queue between TRB and DataWriter
+  // Process the queue rules looking for the TriggerRecord queue between TRB and DataWriterModule
   const QueueDescriptor* trQDesc = nullptr;
   for (auto rule : get_queue_rules()) {
     auto destination_class = rule->get_destination_class();
-    if (destination_class == "DataWriter") {
+    if (destination_class == "DataWriterModule") {
       trQDesc = rule->get_descriptor();
     }
   }
-  if (trQDesc == nullptr) { // BadConf if no descriptor between TRB and DataWriter
+  if (trQDesc == nullptr) { // BadConf if no descriptor between TRB and DataWriterModule
     throw(BadConf(ERS_HERE, "Could not find queue descriptor rule for TriggerRecords!"));
   }
   // Create queue connection config object
-  oksdbinterfaces::ConfigObject trQueueObj;
+  conffwk::ConfigObject trQueueObj;
   std::string trQueueUid(trQDesc->get_uid_base() + UID());
   confdb->create(dbfile, "Queue", trQueueUid, trQueueObj);
   fill_queue_object_from_desc(trQDesc, trQueueObj);
@@ -101,7 +102,6 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   const NetworkConnectionDescriptor* trigdecNetDesc = nullptr;
   const NetworkConnectionDescriptor* tokenNetDesc = nullptr;
   for (auto rule : get_network_rules()) {
-    auto endpoint_class = rule->get_endpoint_class();
     auto descriptor = rule->get_descriptor();
     auto data_type = descriptor->get_data_type();
     if (data_type == "Fragment") {
@@ -118,16 +118,16 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   if (trigdecNetDesc == nullptr) { // BadCond if no descriptor for TriggerDecisions into TRB
     throw(BadConf(ERS_HERE, "Could not find network descriptor rule for input TriggerDecisions!"));
   }
-  if (tokenNetDesc == nullptr) { // BadCond if no descriptor for Tokens out of DataWriter
+  if (tokenNetDesc == nullptr) { // BadCond if no descriptor for Tokens out of DataWriterModule
     throw(BadConf(ERS_HERE, "Could not find network descriptor rule for output TriggerDecisionTokens!"));
   }
   if (get_source_id() == nullptr) {
     throw(BadConf(ERS_HERE, "Could not retrieve SourceIDConf"));
   }
   // Create network connection config object
-  oksdbinterfaces::ConfigObject fragNetObj;
-  oksdbinterfaces::ConfigObject trigdecNetObj;
-  oksdbinterfaces::ConfigObject tokenNetObj;
+  conffwk::ConfigObject fragNetObj;
+  conffwk::ConfigObject trigdecNetObj;
+  conffwk::ConfigObject tokenNetObj;
   std::string fragNetUid = fragNetDesc->get_uid_base() + UID();
   std::string trigdecNetUid = trigdecNetDesc->get_uid_base() + UID();
   std::string tokenNetUid = tokenNetDesc->get_uid_base();
@@ -141,11 +141,15 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   // Process special Network rules!
   // Looking for DataRequest rules from ReadoutAppplications in current Session
   auto sessionApps = session->get_all_applications();
-  std::vector<oksdbinterfaces::ConfigObject> dreqNetObjs;
+  std::vector<conffwk::ConfigObject> dreqNetObjs;
   for (auto app : sessionApps) {
-    auto roapp = app->cast<appdal::ReadoutApplication>();
+    auto roapp = app->cast<appmodel::ReadoutApplication>();
     if (roapp != nullptr) {
-      TLOG() << "Readout app in session: " << roapp;
+      TLOG() << "Readout app in session: " << roapp->UID();
+      if (roapp->disabled(*session)) {
+        TLOG() << "Ignoring disabled Readout app: " << roapp->UID();
+        continue;
+      }
       auto roQRules = roapp->get_network_rules();
       for (auto rule : roQRules) {
         auto descriptor = rule->get_descriptor();
@@ -170,38 +174,43 @@ DFApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
   // Get TRB Config Object
   auto trbConf = get_trb();
-  if (trbConf == 0) {
-    throw(BadConf(ERS_HERE, "No DataWriter or TRB configuration given"));
+  if (trbConf == nullptr) {
+    throw(BadConf(ERS_HERE, "No DataWriterModule or TRB configuration given"));
   }
   auto trbConfObj = trbConf->config_object();
-  trbConfObj.set_by_val<uint32_t>("source_id", get_source_id()->get_id());
+  trbConfObj.set_by_val<uint32_t>("source_id", get_source_id()->get_sid());
   // Prepare TRB Module Object and assign its Config Object.
-  oksdbinterfaces::ConfigObject trbObj;
+  conffwk::ConfigObject trbObj;
   std::string trbUid(UID() + "-trb");
-  confdb->create(dbfile, "TriggerRecordBuilder", trbUid, trbObj);
+  confdb->create(dbfile, "TRBModule", trbUid, trbObj);
   trbObj.set_obj("configuration", &trbConfObj);
   trbObj.set_objs("inputs", { &trigdecNetObj, &fragNetObj });
   trbObj.set_objs("outputs", trbOutputObjs);
   // Push TRB Module Object from confdb
-  modules.push_back(confdb->get<TriggerRecordBuilder>(trbUid));
+  modules.push_back(confdb->get<TRBModule>(trbUid));
 
-  // Get DataWriter Config Object (only one for now, maybe more later?)
-  auto dwrConf = get_data_writer();
-  if (dwrConf == 0) {
-    throw(BadConf(ERS_HERE, "No DataWriter or TRB configuration given"));
+  // Get DataWriterModule Config Object (only one for now, maybe more later?)
+  auto dwrConfs = get_data_writers();
+  if (dwrConfs.size() == 0) {
+    throw(BadConf(ERS_HERE, "No DataWriterModule or TRB configuration given"));
   }
-  auto fnParamsObj = dwrConf->get_data_store_params()->get_filename_params()->config_object();
-  fnParamsObj.set_by_val<std::string>("writer_identifier", UID() + "_datawriter-1");
-  auto dwrConfObj = dwrConf->config_object();
-  // Prepare DataWriter Module Object and assign its Config Object.
-  oksdbinterfaces::ConfigObject dwrObj;
-  std::string dwrUid(UID() + "-dw-1");
-  confdb->create(dbfile, "DataWriter", dwrUid, dwrObj);
-  dwrObj.set_obj("configuration", &dwrConfObj);
-  dwrObj.set_objs("inputs", { &trQueueObj });
-  dwrObj.set_objs("outputs", { &tokenNetObj });
-  // Push DataWriter Module Object from confdb
-  modules.push_back(confdb->get<DataWriter>(dwrUid));
+  uint dw_idx = 0;
+  for ( auto dwrConf :dwrConfs ) {
+    // auto fnParamsObj = dwrConf->get_data_store_params()->get_filename_params()->config_object();
+    // fnParamsObj.set_by_val<std::string>("writer_identifier", fmt::format("{}_datawriter-{}", UID(), dw_idx));
+    auto dwrConfObj = dwrConf->config_object();
+
+    // Prepare DataWriterModule Module Object and assign its Config Object.
+    conffwk::ConfigObject dwrObj;
+    std::string dwrUid(fmt::format("{}-dw-{}", UID(), dw_idx));
+    confdb->create(dbfile, "DataWriterModule", dwrUid, dwrObj);
+    dwrObj.set_obj("configuration", &dwrConfObj);
+    dwrObj.set_objs("inputs", { &trQueueObj });
+    dwrObj.set_objs("outputs", { &tokenNetObj });
+    // Push DataWriterModule Module Object from confdb
+    modules.push_back(confdb->get<DataWriterModule>(dwrUid));
+    ++dw_idx;
+  }
 
   return modules;
 }

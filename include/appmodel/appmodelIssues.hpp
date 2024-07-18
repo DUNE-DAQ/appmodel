@@ -4,8 +4,8 @@
 #include "ers/Issue.hpp"
 
 namespace dunedaq {
-  ERS_DECLARE_ISSUE(appdal, BadConf, what, ((std::string)what))
-  ERS_DECLARE_ISSUE(appdal, BadStreamConf,
+  ERS_DECLARE_ISSUE(appmodel, BadConf, what, ((std::string)what))
+  ERS_DECLARE_ISSUE(appmodel, BadStreamConf,
                     "Failed to cast stream parameters " << id << " to " << stype,
                     ((std::string)id) ((std::string)stype))
 }

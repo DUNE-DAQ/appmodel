@@ -1,0 +1,139 @@
+#!/usr/bin/env python3
+
+import sys
+
+import confmodel
+import appmodel
+import conffwk
+import logging
+from rich.console import Console
+from rich.logging import RichHandler
+import os
+try:
+    screen_width = os.get_terminal_size()[1]
+except:
+    screen_width = 150
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="\"%(name)s\": %(message)s",
+    datefmt="[%X]",
+    handlers=[
+        RichHandler(rich_tracebacks=False, tracebacks_width=screen_width) # Make this True, and everything crashes on exceptions (no clue why)
+    ]
+)
+
+log = logging.getLogger("app_environment")
+console = Console()
+
+dal = conffwk.dal.module('x', 'schema/confmodel/dunedaq.schema.xml')
+
+# Process a dal::Variable object, placing key/value pairs in a dictionary
+def collect_variables(variables, envDict):
+  for item in variables:
+    if item.className() == 'VariableSet':
+      collect_variables(item.contains, envDict)
+    else:
+      if item.className() == 'Variable':
+        envDict[item.name] = item.value
+
+# Recursively process all Segments in given Segment extracting Applications
+def process_segment(db, session, segment):
+  controller = segment.controller.id
+
+  # Get default environment from Session
+  defenv = {}
+  collect_variables(session.environment, defenv)
+
+  apps = []
+
+  # Recurse over nested segments
+  for seg in segment.segments:
+    if confmodel.component_disabled(db._obj, session.id, seg.id):
+      print(f"Ignoring disabled segment {seg.id}")
+      continue
+    apps += process_segment(db, session, seg)
+
+  rc_env = defenv
+  collect_variables(segment.controller.application_environment, rc_env)
+  rc_host = segment.controller.runs_on.runs_on.id
+
+  CLA_constructor = confmodel.rc_application_construct_commandline_parameters
+  apps.append(
+    (
+      segment.controller.id,
+      rc_host,
+      rc_env,
+      [segment.controller.application_name] + CLA_constructor(db._obj, session.id, segment.controller.id),
+      session.rte_script,
+    )
+  )
+
+  # Get all the enabled applications of this segment
+  for app in segment.applications:
+    console.print(f"Considering app \'{app.id}\'")
+    if 'Component' in app.oksTypes():
+      enabled = not confmodel.component_disabled(db._obj, session.id, app.id)
+      log.debug(f"{app.id} {enabled=}")
+    else:
+      enabled = True
+      log.debug(f"{app.id} {enabled=}")
+
+    if not enabled:
+      continue
+
+    appenv = defenv
+    # Override with any app specific environment from Application
+    collect_variables(app.application_environment, appenv)
+    if 'DaqApplication' in app.oksTypes():
+      CLA_constructor = confmodel.daq_application_construct_commandline_parameters
+    elif "SmartDaqApplication"  in app.oksTypes():
+      CLA_constructor = appmodel.smart_daq_application_construct_commandline_parameters
+
+
+    host = app.runs_on.runs_on.id
+    apps.append(
+      (
+        app.id,
+        host,
+        appenv,
+        [app.application_name]+CLA_constructor(db._obj, session.id, app.id),
+        session.rte_script,
+      )
+    )
+
+  return apps
+
+
+def main():
+  if len(sys.argv) != 3:
+    print(f"Usage: {sys.argv[0]} <path-to-oks-data-file> <session-name>")
+    return
+  db = conffwk.Configuration("oksconflibs:" + sys.argv[1])
+  session_name = sys.argv[2]
+  session = db.get_dal(class_name="Session", uid=session_name)
+
+  environment = {}
+  collect_variables(session.environment, environment)
+
+  apps = process_segment(db, session, session.segment)
+
+  console.print("Applications")
+  for a in apps:
+    console.rule()
+    pretty_env = []
+    for k,v in a[2].items():
+      pretty_env += [f" - \'{k}\': {v}"]
+    pretty_env = "\n".join(pretty_env)
+    console.print(f'''[bold]app:[/] \'{a[0]}\'
+[bold]host:[/] \'{a[1]}\'
+[bold]env:[/]
+{pretty_env}
+[bold]commandline:[/]
+  {" ".join(a[3])}
+[bold]rte_script:[/] \'{a[4]}\'
+''')
+
+
+if __name__ == '__main__':
+    main()

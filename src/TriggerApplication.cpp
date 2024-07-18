@@ -10,33 +10,31 @@
 
 #include "ModuleFactory.hpp"
 
-#include "oksdbinterfaces/Configuration.hpp"
+#include "conffwk/Configuration.hpp"
 
-#include "coredal/Connection.hpp"
-#include "coredal/NetworkConnection.hpp"
-#include "coredal/ReadoutGroup.hpp"
-#include "coredal/ReadoutInterface.hpp"
-#include "coredal/ResourceSet.hpp"
-#include "coredal/Service.hpp"
-#include "coredal/Session.hpp"
+#include "confmodel/Connection.hpp"
+#include "confmodel/NetworkConnection.hpp"
+#include "confmodel/ResourceSet.hpp"
+#include "confmodel/Service.hpp"
+#include "confmodel/Session.hpp"
 
-#include "appdal/DataSubscriber.hpp"
-#include "appdal/DataReaderConf.hpp"
-#include "appdal/DataRecorderConf.hpp"
+#include "appmodel/DataSubscriberModule.hpp"
+#include "appmodel/DataReaderConf.hpp"
+#include "appmodel/DataRecorderConf.hpp"
 
-#include "appdal/ReadoutModule.hpp"
-#include "appdal/ReadoutModuleConf.hpp"
+#include "appmodel/DataHandlerModule.hpp"
+#include "appmodel/DataHandlerConf.hpp"
 
-#include "appdal/NetworkConnectionRule.hpp"
-#include "appdal/QueueConnectionRule.hpp"
+#include "appmodel/NetworkConnectionRule.hpp"
+#include "appmodel/QueueConnectionRule.hpp"
 
-#include "appdal/QueueDescriptor.hpp"
-#include "appdal/NetworkConnectionDescriptor.hpp"
+#include "appmodel/QueueDescriptor.hpp"
+#include "appmodel/NetworkConnectionDescriptor.hpp"
 
-#include "appdal/SourceIDConf.hpp"
+#include "appmodel/SourceIDConf.hpp"
 
-#include "appdal/TriggerApplication.hpp"
-#include "appdal/appdalIssues.hpp"
+#include "appmodel/TriggerApplication.hpp"
+#include "appmodel/appmodelIssues.hpp"
 
 #include "logging/Logging.hpp"
 
@@ -44,13 +42,13 @@
 #include <vector>
 
 using namespace dunedaq;
-using namespace dunedaq::appdal;
+using namespace dunedaq::appmodel;
 
 static ModuleFactory::Registrator __reg__("TriggerApplication",
                                           [](const SmartDaqApplication* smartApp,
-                                             oksdbinterfaces::Configuration* confdb,
+                                             conffwk::Configuration* confdb,
                                              const std::string& dbfile,
-                                             const coredal::Session* session) -> ModuleFactory::ReturnType {
+                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
                                             auto app = smartApp->cast<TriggerApplication>();
                                             return app->generate_modules(confdb, dbfile, session);
                                           });
@@ -65,14 +63,14 @@ static ModuleFactory::Registrator __reg__("TriggerApplication",
  *
  * \ret OKS configuration object for the network connection
  */
-oksdbinterfaces::ConfigObject
+conffwk::ConfigObject
 create_network_connection(std::string uid,
                           const NetworkConnectionDescriptor* ntDesc,
-                          oksdbinterfaces::Configuration* confdb,
+                          conffwk::Configuration* confdb,
                           const std::string& dbfile)
 {
   auto ntServiceObj = ntDesc->get_associated_service()->config_object();
-  oksdbinterfaces::ConfigObject ntObj;
+  conffwk::ConfigObject ntObj;
   confdb->create(dbfile, "NetworkConnection", uid, ntObj);
   ntObj.set_by_val<std::string>("data_type", ntDesc->get_data_type());
   ntObj.set_by_val<std::string>("connection_type", ntDesc->get_connection_type());
@@ -81,12 +79,12 @@ create_network_connection(std::string uid,
   return ntObj;
 }
 
-std::vector<const coredal::DaqModule*>
-TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
+std::vector<const confmodel::DaqModule*>
+TriggerApplication::generate_modules(conffwk::Configuration* confdb,
                                      const std::string& dbfile,
-                                     const coredal::Session* session) const
+                                     const confmodel::Session* /*session*/) const
 {
-  std::vector<const coredal::DaqModule*> modules;
+  std::vector<const confmodel::DaqModule*> modules;
 
   auto ti_conf = get_trigger_inputs_handler();
   auto ti_class = ti_conf->get_template_for();
@@ -97,7 +95,7 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   for (auto rule : get_queue_rules()) {
     auto destination_class = rule->get_destination_class();
     auto data_type = rule->get_descriptor()->get_data_type();
-    if (destination_class == "ReadoutModule" || destination_class == ti_class) {
+    if (destination_class == "DataHandlerModule" || destination_class == ti_class) {
       ti_inputq_desc = rule->get_descriptor();
     }
   }
@@ -110,18 +108,18 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     auto endpoint_class = rule->get_endpoint_class();
     auto data_type = rule->get_descriptor()->get_data_type();
 
-    if (data_type == "DataRequest") { 
+    if (data_type == "DataRequest") {
       req_net_desc = rule->get_descriptor();
     }
     else if (data_type == "TASet" || data_type == "TCSet"){
       tset_out_net_desc = rule->get_descriptor();
     }
-    else if (endpoint_class == "DataSubscriber") {
+    else if (endpoint_class == "DataSubscriberModule") {
       if (!tin_net_desc) {
         tin_net_desc =  rule->get_descriptor();
       }
       else if (rule->get_descriptor()->get_data_type() == tin_net_desc->get_data_type()) {
-        // For now endpoint_class of DataSubscriber for both input and output
+        // For now endpoint_class of DataSubscriberModule for both input and output
         // with the same data type is not possible.
         throw (BadConf(ERS_HERE, "Have two network connections of the same data_type and the same endpoint_class"));
       }
@@ -144,7 +142,7 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     }
     else if (data_type == "TriggerActivity" || data_type == "TriggerCandidate"){
       tout_net_desc = rule->get_descriptor();
-      if (data_type == "TriggerActivity") 
+      if (data_type == "TriggerActivity")
 	      handler_name = "tphandler";
       else
 	      handler_name = "tahandler";
@@ -153,13 +151,13 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
 
   // Now create the Data Handler and its associated queue and network
   // connections
-  oksdbinterfaces::ConfigObject input_queue_obj;
-  oksdbinterfaces::ConfigObject req_net_obj;
-  oksdbinterfaces::ConfigObject tin_net_obj;
-  oksdbinterfaces::ConfigObject tout_net_obj;
-  oksdbinterfaces::ConfigObject tset_out_net_obj;
-  auto handlerConf = get_trigger_inputs_handler();
-  
+  conffwk::ConfigObject input_queue_obj;
+  conffwk::ConfigObject req_net_obj;
+  conffwk::ConfigObject tin_net_obj;
+  conffwk::ConfigObject tout_net_obj;
+  conffwk::ConfigObject tset_out_net_obj;
+  //auto handlerConf = get_trigger_inputs_handler();
+
   if ( req_net_desc== nullptr) {
       throw (BadConf(ERS_HERE, "No network descriptor given to receive request and send data was set"));
   }
@@ -172,7 +170,7 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   if (ti_inputq_desc == nullptr) {
       throw (BadConf(ERS_HERE, "No data input queue descriptor given"));
   }
-    
+
   std::string queue_uid(ti_inputq_desc->get_uid_base());
   confdb->create(dbfile, "Queue", queue_uid, input_queue_obj);
   input_queue_obj.set_by_val<std::string>("data_type", ti_inputq_desc->get_data_type());
@@ -192,7 +190,7 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   tin_net_obj.set_by_val<std::string>("data_type", tin_net_desc->get_data_type());
   tin_net_obj.set_by_val<std::string>("connection_type", tin_net_desc->get_connection_type());
   tin_net_obj.set_obj("associated_service", &tin_service_obj);
- 
+
   auto tout_service_obj = tout_net_desc->get_associated_service()->config_object();
   std::string t_stream_uid(tout_net_desc->get_uid_base()+UID());
   confdb->create(dbfile, "NetworkConnection", t_stream_uid, tout_net_obj);
@@ -212,12 +210,12 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
   }
 
   auto ti_conf_obj = ti_conf->config_object();
-  oksdbinterfaces::ConfigObject ti_obj;
+  conffwk::ConfigObject ti_obj;
   if (get_source_id() == nullptr) {
     throw(BadConf(ERS_HERE, "No source_id associated with this TriggerApplication!"));
   }
-  uint32_t source_id = get_source_id()->get_id();
-  std::string ti_uid(handler_name + std::to_string(source_id));
+  uint32_t source_id = get_source_id()->get_sid();
+  std::string ti_uid(handler_name + "-" + std::to_string(source_id));
   confdb->create(dbfile, ti_class, ti_uid, ti_obj);
   ti_obj.set_by_val<uint32_t>("source_id", source_id);
   ti_obj.set_obj("module_configuration", &ti_conf_obj);
@@ -229,27 +227,27 @@ TriggerApplication::generate_modules(oksdbinterfaces::Configuration* confdb,
     ti_obj.set_objs("outputs", {&tout_net_obj});
   }
   // Add to our list of modules to return
-   modules.push_back(confdb->get<ReadoutModule>(ti_uid));
-  
+   modules.push_back(confdb->get<DataHandlerModule>(ti_uid));
 
-  // Now create the DataSubscriber object
+
+  // Now create the DataSubscriberModule object
   auto rdr_conf = get_data_subscriber();
   if (rdr_conf == nullptr) {
-    throw (BadConf(ERS_HERE, "No DataReader configuration given"));
+    throw (BadConf(ERS_HERE, "No DataReaderModule configuration given"));
   }
 
-  // Create a DataReader 
+  // Create a DataReaderModule
 
   std::string reader_uid("data-reader-"+UID());
   std::string reader_class = rdr_conf->get_template_for();
-  oksdbinterfaces::ConfigObject reader_obj;
+  conffwk::ConfigObject reader_obj;
   TLOG_DEBUG(7) <<  "creating OKS configuration object for Data subscriber class " << reader_class;
   confdb->create(dbfile, reader_class, reader_uid, reader_obj);
   reader_obj.set_objs("inputs", {&tin_net_obj} );
   reader_obj.set_objs("outputs", {&input_queue_obj} );
   reader_obj.set_obj("configuration", &rdr_conf->config_object());
 
-  modules.push_back(confdb->get<DataSubscriber>(reader_uid));
+  modules.push_back(confdb->get<DataSubscriberModule>(reader_uid));
 
   return modules;
 }

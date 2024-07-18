@@ -40,11 +40,6 @@
       "host": "local",
       "port": 3352
     },
-    "tc-buffer-1": {
-      "exec": "daq_application_ssh",
-      "host": "local",
-      "port": 3355
-    },
     "mlt": {
       "exec": "daq_application_ssh",
       "host": "local",
@@ -87,7 +82,7 @@
         "-i",
         "{INFO_SVC}",
         "--configurationService",
-        "oksconfig:test/config/test-session.data.xml"
+        "oksconflibs:test/config/test-session.data.xml"
       ],
       "cmd": "daq_application",
       "comment": "Application profile using PATH variables (lower start time)",
@@ -97,6 +92,7 @@
         "CONNECTION_SERVER": "localhost",
         "DETCHANNELMAPS_SHARE": "getenv",
         "DUNEDAQ_SHARE_PATH": "getenv",
+        "DUNEDAQ_DB_PATH": "getenv",
         "INFO_SVC": "file://info_{APP_NAME}_{APP_PORT}.json",
         "TIMING_SHARE": "disabled",
 	"LD_LIBRARY_PATH": "getenv",
