@@ -102,7 +102,6 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
   const NetworkConnectionDescriptor* trigdecNetDesc = nullptr;
   const NetworkConnectionDescriptor* tokenNetDesc = nullptr;
   for (auto rule : get_network_rules()) {
-    auto endpoint_class = rule->get_endpoint_class();
     auto descriptor = rule->get_descriptor();
     auto data_type = descriptor->get_data_type();
     if (data_type == "Fragment") {
@@ -146,7 +145,11 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
   for (auto app : sessionApps) {
     auto roapp = app->cast<appmodel::ReadoutApplication>();
     if (roapp != nullptr) {
-      TLOG() << "Readout app in session: " << roapp;
+      TLOG() << "Readout app in session: " << roapp->UID();
+      if (roapp->disabled(*session)) {
+        TLOG() << "Ignoring disabled Readout app: " << roapp->UID();
+        continue;
+      }
       auto roQRules = roapp->get_network_rules();
       for (auto rule : roQRules) {
         auto descriptor = rule->get_descriptor();

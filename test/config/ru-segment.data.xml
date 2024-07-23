@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="10" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105615" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240611T172946"/>
+<info name="" type="" num-of-items="10" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105615" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240628T062322"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -92,6 +92,8 @@
  <comment creation-time="20240611T172304" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="nic data reader"/>
  <comment creation-time="20240612T151554" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="tp source id updated"/>
  <comment creation-time="20240612T203623" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="adding dummy connections to ru-02"/>
+ <comment creation-time="20240620T161416" created-by="gjc" created-on="latitude" author="gjc" text="l"/>
+ <comment creation-time="20240628T062322" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="removing broadcasters from control apps"/>
 </comments>
 
 
@@ -102,7 +104,6 @@
   <ref class="Service" id="ru-controller_control"/>
  </rel>
  <rel name="fsm" class="FSMconfiguration" id="FSMconfiguration_noAction"/>
- <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
 </obj>
 
 <obj class="ReadoutApplication" id="ru-01">
@@ -134,7 +135,7 @@
  <rel name="uses" class="RoHwConfig" id="rohw-1"/>
  <rel name="link_handler" class="DataHandlerConf" id="def-link-handler"/>
  <rel name="tp_handler" class="DataHandlerConf" id="def-tp-handler"/>
- <rel name="data_reader" class="DPDKReaderConf" id="def-nic-receiver-conf"/>
+ <rel name="data_reader" class="DPDKReaderConf" id="def-emu-nic-receiver-conf"/>
 </obj>
 
 <obj class="ReadoutApplication" id="ru-02">

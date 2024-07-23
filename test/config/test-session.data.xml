@@ -63,11 +63,12 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="36" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240611T203112"/>
+<info name="" type="" num-of-items="41" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240703T074826"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
  <file path="config/appmodel/fsm.data.xml"/>
+ <file path="config/appmodel/wiecconfs.data.xml"/>
  <file path="test/config/hosts.data.xml"/>
  <file path="test/config/ru-segment.data.xml"/>
  <file path="test/config/df-segment.data.xml"/>
@@ -100,8 +101,32 @@
  <comment creation-time="20240611T141150" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="readout conf"/>
  <comment creation-time="20240611T141410" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="readoutapp"/>
  <comment creation-time="20240611T203112" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="stream ids fixed"/>
+ <comment creation-time="20240620T150710" created-by="gjc" created-on="latitude" author="gjc" text="dummy det connections"/>
+ <comment creation-time="20240627T195536" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="removed disabled"/>
+ <comment creation-time="20240628T062322" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="removing broadcasters from control apps"/>
+ <comment creation-time="20240701T213825" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="Added local connection service"/>
+ <comment creation-time="20240701T214724" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="Adding connection server config"/>
+ <comment creation-time="20240701T220847" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="connectivity service"/>
+ <comment creation-time="20240701T221225" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="restored opmon infra app"/>
+ <comment creation-time="20240702T202712" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="removed application field for infra apps not to be executed"/>
+ <comment creation-time="20240703T074710" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="moving apa1 senders into a rset"/>
+ <comment creation-time="20240703T074729" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="cleanup"/>
 </comments>
 
+
+<obj class="ConnectionService" id="local-connection-server">
+ <attr name="application_name" type="string" val="echo"/>
+ <attr name="commandline_parameters" type="string">
+  <data val="Process PID $$;"/>
+  <data val="trap &apos;pkill -INT -P $$&apos; EXIT;"/>
+  <data val="gunicorn -b 0.0.0.0:5000 --workers=1 --worker-class=gthread --threads=2 --timeout 5000000000 --log-level=debug connection-service.connection-flask:app"/>
+ </attr>
+ <attr name="threads" type="u16" val="1"/>
+ <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="exposes_service">
+  <ref class="Service" id="local-connectivity-service"/>
+ </rel>
+</obj>
 
 <obj class="DPDKPortConfiguration" id="dpdk_e810_conf">
  <attr name="flow_control" type="bool" val="1"/>
@@ -150,9 +175,15 @@
 
 <obj class="DetectorToDaqConnection" id="conn_apa1">
  <rel name="contains">
-  <ref class="HermesDataSender" id="wib_101_link0"/>
   <ref class="DPDKReceiver" id="ru-1-rcv"/>
+  <ref class="ResourceSetAND" id="apa1_sender_rset"/>
  </rel>
+</obj>
+
+<obj class="DetectorToDaqConnection" id="det-3-connections">
+</obj>
+
+<obj class="DetectorToDaqConnection" id="det-4-connections">
 </obj>
 
 <obj class="GeoId" id="g_3_1_1_0">
@@ -184,6 +215,7 @@
 
 <obj class="HermesDataSender" id="wib_101_link0">
  <attr name="port" type="u32" val="17476"/>
+ <attr name="control_host" type="string" val="localhost"/>
  <rel name="contains">
   <ref class="DetectorStream" id="stream_100"/>
   <ref class="DetectorStream" id="stream_101"/>
@@ -216,13 +248,6 @@
 </obj>
 
 <obj class="OpMonService" id="cern-opmon-application-service">
- <attr name="application_name" type="string" val="sh"/>
- <attr name="commandline_parameters" type="string">
-  <data val="-c"/>
-  <data val="echo Not starting kafka/grafana/postgres/influx"/>
-  <data val="&amp;&amp;"/>
-  <data val="sleep 10000"/>
- </attr>
  <rel name="runs_on" class="VirtualHost" id="kafka-cern-vhost"/>
  <rel name="exposes_service">
   <ref class="Service" id="daq-k8s-opmon-service"/>
@@ -230,13 +255,6 @@
 </obj>
 
 <obj class="OpMonService" id="local-opmon-application-service">
- <attr name="application_name" type="string" val="sh"/>
- <attr name="commandline_parameters" type="string">
-  <data val="-c"/>
-  <data val="echo This service doesnt need any executable"/>
-  <data val="&amp;&amp;"/>
-  <data val="sleep 10000"/>
- </attr>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="exposes_service">
   <ref class="Service" id="local-opmon-service"/>
@@ -264,7 +282,12 @@
   <ref class="Service" id="root-controller_control"/>
  </rel>
  <rel name="fsm" class="FSMconfiguration" id="fsmConf-test"/>
- <rel name="broadcaster" class="RCBroadcaster" id="broadcaster-root"/>
+</obj>
+
+<obj class="ResourceSetAND" id="apa1_sender_rset">
+ <rel name="contains">
+  <ref class="HermesDataSender" id="wib_101_link0"/>
+ </rel>
 </obj>
 
 <obj class="Segment" id="root-segment">
@@ -281,6 +304,11 @@
  <attr name="protocol" type="string" val="kafka"/>
  <attr name="port" type="u16" val="30092"/>
  <attr name="path" type="string" val="/opmon"/>
+</obj>
+
+<obj class="Service" id="local-connectivity-service">
+ <attr name="protocol" type="string" val="http"/>
+ <attr name="port" type="u16" val="5000"/>
 </obj>
 
 <obj class="Service" id="local-opmon-service">
@@ -309,18 +337,17 @@
   <ref class="Variable" id="session-env-ers-fatal"/>
   <ref class="Variable" id="session-env-connectivity-server"/>
   <ref class="Variable" id="session-env-connectivity-port"/>
-  <ref class="Variable" id="daqapp-cli-monitoring"/>
   <ref class="Variable" id="daqapp-cli-configuration"/>
  </rel>
  <rel name="disabled">
-  <ref class="DetectorToDaqConnection" id="det-3-connections"/>
   <ref class="DetectorToDaqConnection" id="det-4-connections"/>
+  <ref class="DetectorToDaqConnection" id="det-3-connections"/>
  </rel>
  <rel name="segment" class="Segment" id="root-segment"/>
  <rel name="infrastructure_applications">
-  <ref class="OpMonService" id="cern-opmon-application-service"/>
+  <ref class="ConnectionService" id="local-connection-server"/>
+  <ref class="OpMonService" id="local-opmon-application-service"/>
  </rel>
- <attr name="rte_script" type="string" val="">
  <rel name="detector_configuration" class="DetectorConfig" id="dummy-detector"/>
 </obj>
 
@@ -329,34 +356,29 @@
  <attr name="value" type="string" val="oksconflibs:test/config/test-session.data.xml"/>
 </obj>
 
-<obj class="Variable" id="daqapp-cli-monitoring">
- <attr name="name" type="string" val="DAQAPP_CLI_INFO_SVC"/>
- <attr name="value" type="string" val="kafka://monkafka.cern.ch:30092/opmon"/>
-</obj>
-
 <obj class="Variable" id="session-env-connectivity-port">
  <attr name="name" type="string" val="CONNECTION_PORT"/>
- <attr name="value" type="string" val="30005"/>
+ <attr name="value" type="string" val="5000"/>
 </obj>
 
 <obj class="Variable" id="session-env-connectivity-server">
  <attr name="name" type="string" val="CONNECTION_SERVER"/>
- <attr name="value" type="string" val="np04-srv-017"/>
+ <attr name="value" type="string" val="localhost"/>
 </obj>
 
 <obj class="Variable" id="session-env-ers-error">
  <attr name="name" type="string" val="DUNEDAQ_ERS_ERROR"/>
- <attr name="value" type="string" val="erstrace,throttle,lstdout,protobufstream(monkafka.cern.ch:30092)"/>
+ <attr name="value" type="string" val="erstrace,throttle,lstdout"/>
 </obj>
 
 <obj class="Variable" id="session-env-ers-fatal">
  <attr name="name" type="string" val="DUNEDAQ_ERS_FATAL"/>
- <attr name="value" type="string" val="erstrace,lstdout,protobufstream(monkafka.cern.ch:30092)"/>
+ <attr name="value" type="string" val="erstrace,lstdout"/>
 </obj>
 
 <obj class="Variable" id="session-env-ers-info">
  <attr name="name" type="string" val="DUNEDAQ_ERS_INFO"/>
- <attr name="value" type="string" val="erstrace,throttle,lstdout,protobufstream(monkafka.cern.ch:30092)"/>
+ <attr name="value" type="string" val="erstrace,throttle,lstdout"/>
 </obj>
 
 <obj class="Variable" id="session-env-ers-verb">
@@ -366,7 +388,7 @@
 
 <obj class="Variable" id="session-env-ers-warning">
  <attr name="name" type="string" val="DUNEDAQ_ERS_WARNING"/>
- <attr name="value" type="string" val="erstrace,throttle,lstdout,protobufstream(monkafka.cern.ch:30092)"/>
+ <attr name="value" type="string" val="erstrace,throttle,lstdout"/>
 </obj>
 
 <obj class="Variable" id="session-env-session-name-0">

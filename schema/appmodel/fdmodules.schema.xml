@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="11" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240618T084639"/>
+<info name="" type="" num-of-items="13" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20240703T164113"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -123,6 +123,14 @@
 
  <class name="FDFakeReaderModule">
   <superclass name="DataReaderModule"/>
+ </class>
+
+ <class name="FakeDataReceiver">
+  <superclass name="DetDataReceiver"/>
+ </class>
+
+ <class name="FakeDataSender">
+  <superclass name="DetDataSender"/>
  </class>
 
  <class name="FelixDataSender">

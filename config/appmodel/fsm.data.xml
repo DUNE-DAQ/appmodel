@@ -144,6 +144,7 @@
  <rel name="actions">
   <ref class="FSMaction" id="usvc-provided-run-number">
   <ref class="FSMaction" id="file-logbook">
+  <ref class="FSMaction" id="elisa-logbook">
   <ref class="FSMaction" id="db-run-registry">
   <ref class="FSMaction" id="thread-pinning">
  </rel>
@@ -152,7 +153,7 @@
   <ref class="FSMxTransition" id="pre_conf"/>
  </rel>
  <rel name="post_transitions">
-  <ref class="FSMxTransition" id="post_start"/>
+  <ref class="FSMxTransition" id="post_start_prod"/>
   <ref class="FSMxTransition" id="post_conf"/>
   <ref class="FSMxTransition" id="post_drain_dataflow_prod"/>
  </rel>
@@ -196,7 +197,7 @@
   <ref class="FSMxTransition" id="pre_conf"/>
  </rel>
  <rel name="post_transitions">
-  <ref class="FSMxTransition" id="post_start"/>
+  <ref class="FSMxTransition" id="post_start_test"/>
   <ref class="FSMxTransition" id="post_conf"/>
   <ref class="FSMxTransition" id="post_drain_dataflow_test"/>
  </rel>
@@ -249,6 +250,9 @@
   <ref class="Variable" id="file-logbook-file-name"/>
  </rel>
 </obj>
+<obj class="FSMaction" id="elisa-logbook">
+ <attr name="name" type="string" val="elisa-logbook"/>
+</obj>
 <obj class="Variable" id="file-logbook-file-name">
  <attr name="name" type="string" val="file_name"/>
  <attr name="value" type="string" val="logbook.txt"/>
@@ -259,7 +263,8 @@
  <rel name="parameters">
   <ref class="Variable" id="thread-pinning-file-pre-conf"/>
   <ref class="Variable" id="thread-pinning-file-post-conf"/>
-  <ref class="Variable" id="thread-pinning-file-post-start"/>
+  <ref class="Variable" id="thread-pinning-file-post-start-prod"/>
+  <ref class="Variable" id="thread-pinning-file-post-start-test"/>
  </rel>
 </obj>
 <obj class="Variable" id="thread-pinning-file-pre-conf">
@@ -270,10 +275,15 @@
  <attr name="name" type="string" val="post_conf"/>
  <attr name="value" type="string" val="/cvmfs/dunedaq.opensciencegrid.org/spack/releases/coredaq-v5.0.0-a9-1/spack-0.20.0/opt/spack/linux-almalinux9-x86_64/gcc-12.1.0/readoutlibs-v2.1.0-kkwlcckeyl7ltarpbd5bn6fn2nczjqmp/share/config/cpupins/cpupin-example.json"/>
 </obj>
-<obj class="Variable" id="thread-pinning-file-post-start">
+<obj class="Variable" id="thread-pinning-file-post-start-prod">
  <attr name="name" type="string" val="post_start"/>
  <attr name="value" type="string" val="/cvmfs/dunedaq.opensciencegrid.org/spack/releases/coredaq-v5.0.0-a9-1/spack-0.20.0/opt/spack/linux-almalinux9-x86_64/gcc-12.1.0/readoutlibs-v2.1.0-kkwlcckeyl7ltarpbd5bn6fn2nczjqmp/share/config/cpupins/cpupin-example.json"/>
 </obj>
+<obj class="Variable" id="thread-pinning-file-post-start-test">
+ <attr name="name" type="string" val="post_start"/>
+ <attr name="value" type="string" val="/cvmfs/dunedaq.opensciencegrid.org/spack/releases/coredaq-v5.0.0-a9-1/spack-0.20.0/opt/spack/linux-almalinux9-x86_64/gcc-12.1.0/readoutlibs-v2.1.0-kkwlcckeyl7ltarpbd5bn6fn2nczjqmp/share/config/cpupins/cpupin-example.json"/>
+</obj>
+
 
 <obj class="FSMsequence" id="shutdown">
  <rel name="sequence">
@@ -366,7 +376,20 @@
  </attr>
 </obj>
 
-<obj class="FSMxTransition" id="post_start">
+<obj class="FSMxTransition" id="post_start_prod">
+ <attr name="transition" type="string" val="start"/>
+ <attr name="order" type="string">
+  <data val="file-logbook"/>
+  <data val="thread-pinning"/>
+  <data val="elisa-logbook"/>
+ </attr>
+ <attr name="mandatory" type="string">
+  <data val="thread-pinning"/>
+  <data val="elisa-logbook"/>
+ </attr>
+</obj>
+
+<obj class="FSMxTransition" id="post_start_test">
  <attr name="transition" type="string" val="start"/>
  <attr name="order" type="string">
   <data val="file-logbook"/>
@@ -403,6 +426,7 @@
  <attr name="order" type="string">
   <data val="db-run-registry"/>
   <data val="file-logbook"/>
+  <data val="elisa-logbook"/>
  </attr>
 </obj>
 
