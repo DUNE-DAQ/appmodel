@@ -251,7 +251,7 @@
 </obj>
 
 <obj class="SourceIDConf" id="ta-srcid-1">
- <attr name="sid" type="u32" val="1000"/>
+ <attr name="sid" type="u32" val="1100"/>
  <attr name="subsystem" type="enum" val="Trigger"/>
 </obj>
 
