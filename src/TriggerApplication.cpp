@@ -218,6 +218,7 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
   std::string ti_uid(handler_name + "-" + std::to_string(source_id));
   confdb->create(dbfile, ti_class, ti_uid, ti_obj);
   ti_obj.set_by_val<uint32_t>("source_id", source_id);
+  ti_obj.set_by_val<uint32_t>("detector_id", 1); // 1 == kDAQ
   ti_obj.set_obj("module_configuration", &ti_conf_obj);
   ti_obj.set_objs("inputs", {&input_queue_obj, &req_net_obj});
   if (tset_out_net_desc!= nullptr) {

@@ -105,7 +105,7 @@ FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
   }
   auto id = idconf->get_sid();
 
-  auto det_id = 1; // TODO Eric Flumerfelt <eflumerf@fnal.gov>, 08-Feb-2024: This is a magic number
+  auto det_id = 1; // TODO Eric Flumerfelt <eflumerf@fnal.gov>, 08-Feb-2024: This is a magic number corresponding to kDAQ
   std::string uid("DLH-" + std::to_string(id));
   conffwk::ConfigObject dlhObj;
   TLOG_DEBUG(7) << "creating OKS configuration object for Data Link Handler class " << dlhClass << ", id " << id;
