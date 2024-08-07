@@ -338,6 +338,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
     std::string tp_uid("tphandler-" + std::to_string(tpsrc));
     config->create(dbfile, tph_class, tp_uid, tph_obj);
     tph_obj.set_by_val<uint32_t>("source_id", tpsrc);
+    tph_obj.set_by_val<uint32_t>("detector_id", 1); // 1 == kDAQ
     tph_obj.set_obj("module_configuration", &tph_conf_obj);
 
     // Create the TPs aggregator queue (from RawData Handlers to TP handlers)
@@ -376,6 +377,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
     TLOG() << fmt::format("creating OKS configuration object for Data Link Handler class {}, if {}", dlh_class, sid);
     config->create(dbfile, dlh_class, uid, dlh_obj);
     dlh_obj.set_by_val<uint32_t>("source_id", sid);
+    dlh_obj.set_by_val<uint32_t>("detector_id", ds->get_geo_id()->get_detector_id());
     dlh_obj.set_by_val<bool>("emulation_mode", emulation_mode);
     dlh_obj.set_obj("geo_id", &ds->get_geo_id()->config_object());
     dlh_obj.set_obj("module_configuration", &dlh_conf->config_object());
