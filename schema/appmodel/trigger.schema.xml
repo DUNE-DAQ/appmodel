@@ -179,6 +179,7 @@
  <class name="TAAlgorithm" description="Base class for TA algorithms">
   <superclass name="Jsonable"/>
   <attribute name="prescale" description="Prescale factor to apply to algorithm output" type="u32" init-value="1" is-not-null="yes"/>
+  <attribute name="max_time_over_threshold" description="Maximum time-over-threshold for TP to accept by TAM for processing" type="u32" init-value="10000" is-not-null="yes"/>
  </class>
 
  <class name="TADataProcessor">
@@ -239,6 +240,12 @@
   <attribute name="signal_type" type="u32" init-value="0" is-not-null="yes"/>
   <attribute name="time_before" type="u32" init-value="10000" is-not-null="yes"/>
   <attribute name="time_after" type="u32" init-value="20000" is-not-null="yes"/>
+ </class>
+
+ <class name="TAMakerADCSimpleWindow">
+  <superclass name="TAAlgorithm"/>
+  <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="window_length" description="Window length (in ticks) for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
  </class>
 
  <class name="TAMakerHorizontalMuonAlgorithm">
