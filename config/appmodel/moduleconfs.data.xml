@@ -273,7 +273,7 @@
  <attr name="prescale" type="u32" val="1000"/>
 </obj>
 
-<obj class="TAMakerADCSimpleWindow" id="ta-maker-adcwindow">
+<obj class="TAMakerADCSimpleWindowAlgorithm" id="ta-maker-adcwindow">
  <attr name="prescale" type="u32" val="10"/>
  <attr name="max_time_over_threshold" type="u32" val="10000"/>
  <attr name="window_length" type="u32" val="10000"/>

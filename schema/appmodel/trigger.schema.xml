@@ -242,7 +242,7 @@
   <attribute name="time_after" type="u32" init-value="20000" is-not-null="yes"/>
  </class>
 
- <class name="TAMakerADCSimpleWindow">
+ <class name="TAMakerADCSimpleWindowAlgorithm">
   <superclass name="TAAlgorithm"/>
   <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
   <attribute name="window_length" description="Window length (in ticks) for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
@@ -272,6 +272,11 @@
   <method name="generate_modules" description="Generate daq module dal objects for streams of thie TriggerApplication on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
   </method>
+ </class>
+
+ 
+ <class name="TCMakerADCSimpleWindowAlgorithm">
+  <superclass name="TCAlgorithm"/>
  </class>
 
  <class name="TCMakerHorizontalMuonAlgorithm">
