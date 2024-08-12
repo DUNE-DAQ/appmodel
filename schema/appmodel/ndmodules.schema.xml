@@ -80,35 +80,47 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="2" oks-format="schema" oks-version="862f2957270" created-by="hwallace" created-on="linappserv6.pp.rhul.ac.uk" creation-time="20240617T133732" last-modified-by="hwallace" last-modified-on="linappserv6.pp.rhul.ac.uk" last-modification-time="20240618T140615"/>
+<info name="" type="" num-of-items="4" oks-format="schema" oks-version="862f2957270" created-by="hwallace" created-on="linappserv6.pp.rhul.ac.uk" creation-time="20240617T133732" last-modified-by="hwallace" last-modified-on="lxplus982.cern.ch" last-modification-time="20240805T144358"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
  <file path="schema/appmodel/application.schema.xml"/>
- <file path="schema/appmodel/fdmodules.schema.xml">
+ <file path="schema/appmodel/fdmodules.schema.xml" />
 </include>
 
+<class name="PACMANDataReaderConf">
+  <superclass name="DataReaderConf"/>
+  <attribute name="eal_args" type="string" is-not-null="yes"/>
+</class>
 
-<class name="PACMANInterface">
-  <superclass name="DetDataReceiver"/>
-  <attribute name="link_confs" description="List of Link configurations" type="u32" is-multi-value="yes" init-value="0" is-not-null="yes"/>
+ <class name="PACMANReaderModule">
+  <superclass name="DataReaderModule"/>
+ </class>
+
+ <class name="NDDataHandlerModule">
+  <superclass name="DataHandlerModule"/>
+ </class>
+
+ <class name="NDFakeReaderModule">
+  <superclass name="DataReaderModule"/>
+ </class>
+
+
+<class name="PACMANDataSender">
+  <superclass name="DetDataSender"/>
+  <attribute name="link" description="Link within SLR" type="u8" range="0..5" init-value="0" is-not-null="yes"/>
+ </class>
+
+ <class name="PACMANConfiguration">
+   <attribute name="link_confs" description="List of Link configurations" type="u32" is-multi-value="yes" init-value="0" is-not-null="yes"/>
   <attribute name="card" description="Card ID" type="u8" init-value="0" is-not-null="yes"/>
   <attribute name="zmq_receiver_timeout" description="ZMQ Recieve Timeout Value" type="u8" init-value="0" is-not-null="yes"/>
  </class>
 
- <class name="PACMANInfo">
-  <attribute name="num_packets_received" description="Number of packets received" type="u8" init-value="0" is-not-null="yes"/>
-  <attribute name="last_packet_size" description="Size of last packet" type="s8" init-value="0" is-not-null="yes"/>
-  <attribute name="bandwidth" type="u32" init-value="0" is-not-null="yes"/>
-  <attribute name="last_message_timestamp" description="time stamp of last received message from header" type="u32" init-value="0" is-not-null="yes"/>
-  <attribute name="subscriber_connected" description="ZMQ Subscriber Connection Status" type="bool" is-multi-value="yes" init-value="0" is-not-null="yes"/>
-  <attribute name="run_marker" description="Active run status" type="u32" init-value="0" is-not-null="yes"/>
-  <attribute name="subscriber_num_zero_packets" description="Times zero data received" type="u32" init-value="9" is-not-null="yes"/>
-  <attribute name="sink_name" description="Sink queue name (e.g. PACMAN)" type="string" is-not-null="yes"/>
-  <attribute name="sink_is_set" description="Sink queue creation status" type="bool" init-value="0" is-not-null="yes"/>
-  <attribute name="card" description="Card ID" type="u8" init-value="0" is-not-null="yes"/>
-  <attribute name="link_tag" description="Link Tag" type="u32" init-value="0" is-not-null="yes"/>
-  <attribute name="source_link_string" description="Source link ID String" type="string" is-not-null="yes"/>
+ <class name="PACMANReceiver">
+  <superclass name="NWDetDataReceiver"/>
+  <relationship name="uses" class-type="NetworkDevice" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="configuration" class-type="PACMANConfiguration" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
 </oks-schema>
