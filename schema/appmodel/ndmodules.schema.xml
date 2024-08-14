@@ -107,7 +107,7 @@
 
 
 <class name="PACMANDataSender">
-  <superclass name="DetDataSender"/>
+  <superclass name="NWDetDataSender"/>
   <attribute name="link" description="Link within SLR" type="u8" range="0..5" init-value="0" is-not-null="yes"/>
  </class>
 
