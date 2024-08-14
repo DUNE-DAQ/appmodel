@@ -122,6 +122,18 @@
   <relationship name="configuration" class-type="DFOConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
+  <class name="DFOBrokerConf">
+    <attribute name="send_heartbeat_interval_ms" type="u32" is-not-null="yes"/>
+    <attribute name="send_heartbeat_timeout_ms" type="u32" is-not-null="yes"/>
+    <attribute name="td_timeout_ms" type="u32" is-not-null="yes"/>
+    <attribute name="stop_timeout_ms" type="u32" is-not-null="yes"/>
+  </class>
+  
+  <class name="DFOBrokerModule">
+    <superclass name="DaqModule"/>
+    <relationship name="configuration" class-type="DFOBrokerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>    
+  </class>
+
  <class name="DataHandlerConf">
   <attribute name="template_for" type="class" init-value="DataHandlerModule" is-not-null="yes"/>
   <attribute name="input_data_type" description="Type of data received by this readout module" type="string" init-value="WIBEthFrame"/>
