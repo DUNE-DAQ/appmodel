@@ -179,6 +179,7 @@
  <class name="TAAlgorithm" description="Base class for TA algorithms">
   <superclass name="Jsonable"/>
   <attribute name="prescale" description="Prescale factor to apply to algorithm output" type="u32" init-value="1" is-not-null="yes"/>
+  <attribute name="max_time_over_threshold" description="Maximum time-over-threshold for TP to accept by TAM for processing" type="u32" init-value="10000" is-not-null="yes"/>
  </class>
 
  <class name="TADataProcessor">
@@ -241,6 +242,12 @@
   <attribute name="time_after" type="u32" init-value="20000" is-not-null="yes"/>
  </class>
 
+ <class name="TAMakerADCSimpleWindowAlgorithm">
+  <superclass name="TAAlgorithm"/>
+  <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="window_length" description="Window length (in ticks) for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
+ </class>
+
  <class name="TAMakerHorizontalMuonAlgorithm">
   <superclass name="TAAlgorithm"/>
   <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
@@ -265,6 +272,11 @@
   <method name="generate_modules" description="Generate daq module dal objects for streams of thie TriggerApplication on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
   </method>
+ </class>
+
+ 
+ <class name="TCMakerADCSimpleWindowAlgorithm">
+  <superclass name="TCAlgorithm"/>
  </class>
 
  <class name="TCMakerHorizontalMuonAlgorithm">
