@@ -13,6 +13,8 @@
 #include "appmodel/DFApplication.hpp"
 #include "appmodel/DataWriterModule.hpp"
 #include "appmodel/DataWriterConf.hpp"
+#include "appmodel/DFOBrokerModule.hpp"
+#include "appmodel/DFOBrokerConf.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
@@ -78,65 +80,87 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
 
   // -- First, we process expected Queue and Network connections and create their objects.
 
-  // Process the queue rules looking for the TriggerRecord queue between TRB and DataWriterModule
+  // Process the queue rules looking for the TriggerRecord queue between TRB and DataWriterModule, TD queue and Token Queue
   const QueueDescriptor* trQDesc = nullptr;
+  const QueueDescriptor* tokenQDesc = nullptr;
+  const QueueDescriptor* tdQDesc = nullptr;
   for (auto rule : get_queue_rules()) {
     auto destination_class = rule->get_destination_class();
     if (destination_class == "DataWriterModule") {
       trQDesc = rule->get_descriptor();
     }
+    if (destination_class == "DFOBrokerModule") {
+      tokenQDesc = rule->get_descriptor();
+    }
+    if (destination_class == "TRBModule") {
+      tdQDesc = rule->get_descriptor();
+    }
   }
   if (trQDesc == nullptr) { // BadConf if no descriptor between TRB and DataWriterModule
     throw(BadConf(ERS_HERE, "Could not find queue descriptor rule for TriggerRecords!"));
   }
+  if (tokenQDesc == nullptr) { // BadConf if no descriptor between DataWriterModule and DFOBroker
+    throw(BadConf(ERS_HERE, "Could not find queue descriptor rule for Dataflow Tokens!"));
+  }
+  if (tdQDesc == nullptr) { // BadConf if no descriptor between DFOBroker and TRB
+    throw(BadConf(ERS_HERE, "Could not find queue descriptor rule for TriggerDecisions!"));
+  }
   // Create queue connection config object
   conffwk::ConfigObject trQueueObj;
-  std::string trQueueUid(trQDesc->get_uid_base() + UID());
+  conffwk::ConfigObject tokenQueueObj;
+  conffwk::ConfigObject tdQueueObj;
+  std::string trQueueUid(tdQDesc->get_uid_base() + UID());
+  std::string tokenQueueUid(tokenQDesc->get_uid_base() + UID());
+  std::string tdQueueUid(trQDesc->get_uid_base() + UID());
   confdb->create(dbfile, "Queue", trQueueUid, trQueueObj);
+  confdb->create(dbfile, "Queue", tokenQueueUid, tokenQueueObj);
+  confdb->create(dbfile, "Queue", tdQueueUid, tdQueueObj);
   fill_queue_object_from_desc(trQDesc, trQueueObj);
+  fill_queue_object_from_desc(tokenQDesc, tokenQueueObj);
+  fill_queue_object_from_desc(tdQDesc, tdQueueObj);
   // Place trigger record queue object into vector of output objs of TRB module
   trbOutputObjs.push_back(&trQueueObj);
 
   // Process the network rules looking for the Fragments and TriggerDecision inputs for TRB
   const NetworkConnectionDescriptor* fragNetDesc = nullptr;
-  const NetworkConnectionDescriptor* trigdecNetDesc = nullptr;
-  const NetworkConnectionDescriptor* tokenNetDesc = nullptr;
+  const NetworkConnectionDescriptor* dfodecNetDesc = nullptr;
+  const NetworkConnectionDescriptor* hbNetDesc = nullptr;
   for (auto rule : get_network_rules()) {
     auto descriptor = rule->get_descriptor();
     auto data_type = descriptor->get_data_type();
     if (data_type == "Fragment") {
       fragNetDesc = rule->get_descriptor();
-    } else if (data_type == "TriggerDecision") {
-      trigdecNetDesc = rule->get_descriptor();
-    } else if (data_type == "TriggerDecisionToken") {
-      tokenNetDesc = rule->get_descriptor();
+    } else if (data_type == "DFODecision") {
+      dfodecNetDesc = rule->get_descriptor();
+    } else if (data_type == "DataflowHeartbeat") {
+      hbNetDesc = rule->get_descriptor();
     }
   }
   if (fragNetDesc == nullptr) { // BadConf if no descriptor for Fragments into TRB
     throw(BadConf(ERS_HERE, "Could not find network descriptor rule for input Fragments!"));
   }
-  if (trigdecNetDesc == nullptr) { // BadCond if no descriptor for TriggerDecisions into TRB
-    throw(BadConf(ERS_HERE, "Could not find network descriptor rule for input TriggerDecisions!"));
+  if (dfodecNetDesc == nullptr) { // BadCond if no descriptor for DFODecisions into DFOBroker
+    throw(BadConf(ERS_HERE, "Could not find network descriptor rule for input DFODecisions!"));
   }
-  if (tokenNetDesc == nullptr) { // BadCond if no descriptor for Tokens out of DataWriterModule
-    throw(BadConf(ERS_HERE, "Could not find network descriptor rule for output TriggerDecisionTokens!"));
+  if (hbNetDesc == nullptr) { // BadCond if no descriptor for DataflowHeartbeats out of DFOBroker
+    throw(BadConf(ERS_HERE, "Could not find network descriptor rule for output DataflowHeartbeats!"));
   }
   if (get_source_id() == nullptr) {
     throw(BadConf(ERS_HERE, "Could not retrieve SourceIDConf"));
   }
   // Create network connection config object
   conffwk::ConfigObject fragNetObj;
-  conffwk::ConfigObject trigdecNetObj;
-  conffwk::ConfigObject tokenNetObj;
+  conffwk::ConfigObject dfodecNetObj;
+  conffwk::ConfigObject hbNetObj;
   std::string fragNetUid = fragNetDesc->get_uid_base() + UID();
-  std::string trigdecNetUid = trigdecNetDesc->get_uid_base() + UID();
-  std::string tokenNetUid = tokenNetDesc->get_uid_base();
+  std::string dfodecNetUid = dfodecNetDesc->get_uid_base() + UID();
+  std::string hbNetUid = hbNetDesc->get_uid_base();
   confdb->create(dbfile, "NetworkConnection", fragNetUid, fragNetObj);
-  confdb->create(dbfile, "NetworkConnection", trigdecNetUid, trigdecNetObj);
-  confdb->create(dbfile, "NetworkConnection", tokenNetUid, tokenNetObj);
+  confdb->create(dbfile, "NetworkConnection", dfodecNetUid, dfodecNetObj);
+  confdb->create(dbfile, "NetworkConnection", hbNetUid, hbNetObj);
   fill_netconn_object_from_desc(fragNetDesc, fragNetObj);
-  fill_netconn_object_from_desc(trigdecNetDesc, trigdecNetObj);
-  fill_netconn_object_from_desc(tokenNetDesc, tokenNetObj);
+  fill_netconn_object_from_desc(dfodecNetDesc, dfodecNetObj);
+  fill_netconn_object_from_desc(hbNetDesc, hbNetObj);
 
   // Process special Network rules!
   // Looking for DataRequest rules from ReadoutAppplications in current Session
@@ -172,6 +196,20 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
   // -- Second, we create the Module objects and assign their configs, with the precreated
   // -- connection config objects above.
 
+  auto brokerConf = get_broker();
+  if (brokerConf == nullptr) {
+    throw(BadConf(ERS_HERE, "No DFOBroker configuration given"));
+  }
+  auto brokerConfObj = brokerConf->config_object();
+
+  conffwk::ConfigObject dfobrokerObj;
+  std::string dfobUid(UID() + "-dfobroker");
+  confdb->create(dbfile, "DFOBrokerModule", dfobUid, dfobrokerObj);
+  dfobrokerObj.set_obj("configuration", &brokerConfObj);
+  dfobrokerObj.set_objs("inputs", { &dfodecNetObj, &tokenQueueObj });
+  dfobrokerObj.set_objs("outputs", { &hbNetObj, &tdQueueObj });
+  modules.push_back(confdb->get<DFOBrokerModule>(dfobUid));
+
   // Get TRB Config Object
   auto trbConf = get_trb();
   if (trbConf == nullptr) {
@@ -184,7 +222,7 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
   std::string trbUid(UID() + "-trb");
   confdb->create(dbfile, "TRBModule", trbUid, trbObj);
   trbObj.set_obj("configuration", &trbConfObj);
-  trbObj.set_objs("inputs", { &trigdecNetObj, &fragNetObj });
+  trbObj.set_objs("inputs", { &tdQueueObj, &fragNetObj });
   trbObj.set_objs("outputs", trbOutputObjs);
   // Push TRB Module Object from confdb
   modules.push_back(confdb->get<TRBModule>(trbUid));
@@ -206,7 +244,7 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
     confdb->create(dbfile, "DataWriterModule", dwrUid, dwrObj);
     dwrObj.set_obj("configuration", &dwrConfObj);
     dwrObj.set_objs("inputs", { &trQueueObj });
-    dwrObj.set_objs("outputs", { &tokenNetObj });
+    dwrObj.set_objs("outputs", { &tokenQueueObj });
     // Push DataWriterModule Module Object from confdb
     modules.push_back(confdb->get<DataWriterModule>(dwrUid));
     ++dw_idx;

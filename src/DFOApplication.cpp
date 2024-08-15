@@ -85,7 +85,7 @@ DFOApplication::generate_modules(conffwk::Configuration* confdb,
         tdInObj = connObj;
         input_conns.push_back(&tdInObj);
       } 
-    else if (descriptor->get_data_type() == "TriggerDecisionToken") {
+    else if (descriptor->get_data_type() == "DataflowHeartbeat") {
         tokenInObj = connObj;
         input_conns.push_back(&tokenInObj);
       }
@@ -103,7 +103,7 @@ DFOApplication::generate_modules(conffwk::Configuration* confdb,
     throw(BadConf(ERS_HERE, "No TriggerInhibit output connection descriptor given"));
   }
   if (tokenInObj == nullptr) {
-    throw(BadConf(ERS_HERE, "No TriggerDecisionToken input connection descriptor given"));
+    throw(BadConf(ERS_HERE, "No DataflowHeartbeat input connection descriptor given"));
   }
 
   dfoObj.set_objs("inputs", input_conns);

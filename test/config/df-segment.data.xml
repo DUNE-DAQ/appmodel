@@ -110,6 +110,7 @@
   <ref class="NetworkConnectionRule" id="data-req-trig-net-rule"/>
  </rel>
  <rel name="trb" class="TRBConf" id="trb-01"/>
+  <rel name="broker" class="DFOBrokerConf" id="broker-01"/>
  <rel name="data_writers">
   <ref class="DataWriterConf" id="dw-01"/>
  </rel>
@@ -135,6 +136,7 @@
   <ref class="NetworkConnectionRule" id="data-req-trig-net-rule"/>
  </rel>
  <rel name="trb" class="TRBConf" id="trb-01"/>
+  <rel name="broker" class="DFOBrokerConf" id="broker-01"/>
  <rel name="data_writers">
   <ref class="DataWriterConf" id="dw-01"/>
  </rel>
@@ -160,6 +162,7 @@
   <ref class="NetworkConnectionRule" id="data-req-trig-net-rule"/>
  </rel>
  <rel name="trb" class="TRBConf" id="trb-01"/>
+  <rel name="broker" class="DFOBrokerConf" id="broker-01"/>
  <rel name="data_writers">
   <ref class="DataWriterConf" id="dw-01"/>
  </rel>
