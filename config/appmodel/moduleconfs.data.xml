@@ -134,6 +134,7 @@
 <obj class="HSI2TCTranslatorConf" id="hsi-to-tc-conf">
  <attr name="template_for" type="class" val="DataReaderModule"/>
  <attr name="emulation_mode" type="bool" val="0"/>
+ <attr name="prescale" type="u32" val="1"/>
  <rel name="signals">
   <ref class="HSISignalWindow" id="def-hsi-signal-window"/>
  </rel>
@@ -141,6 +142,7 @@
 
 <obj class="HSISignalWindow" id="def-hsi-signal-window">
  <attr name="signal_type" type="u32" val="1"/>
+ <attr name="tc_type_name" type="string" val="kTiming"/>
  <attr name="time_before" type="u32" val="10000"/>
  <attr name="time_after" type="u32" val="20000"/>
 </obj>
@@ -253,7 +255,7 @@
  <attr name="mask_processing" type="bool" val="1"/>
  <attr name="print_tp_info" type="bool" val="0"/>
  <rel name="algorithms">
-  <ref class="TAMakerPrescaleAlgorithm" id="dummy-ta-maker"/>
+   <ref class="TAMakerPrescaleAlgorithm" id="dummy-ta-maker"/>
  </rel>
 </obj>
 
@@ -274,6 +276,13 @@
 
 <obj class="TAMakerPrescaleAlgorithm" id="dummy-ta-maker">
  <attr name="prescale" type="u32" val="1000"/>
+</obj>
+
+<obj class="TAMakerADCSimpleWindowAlgorithm" id="ta-maker-adcwindow">
+ <attr name="prescale" type="u32" val="10"/>
+ <attr name="max_time_over_threshold" type="u32" val="10000"/>
+ <attr name="window_length" type="u32" val="10000"/>
+ <attr name="adc_threshold" type="u32" val="1000000"/>
 </obj>
 
 </oks-data>
