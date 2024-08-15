@@ -135,7 +135,7 @@ main(int argc, char* argv[])
   // std::cout << "=====" << std::endl;
 
   std::cout << "++++++++++" << std::endl;
-  std::cout << "Full-system details without generation" << std::endl;
+  std::cout << "Full-system details without module generation" << std::endl;
   std::cout << "++++++++++" << std::endl;
   std::cout << std::endl;
 
@@ -145,7 +145,7 @@ main(int argc, char* argv[])
 
   std::cout << std::endl;
   std::cout << "++++++++++" << std::endl;
-  std::cout << "Individual application details including generation" << std::endl;
+  std::cout << "Individual application details including module generation" << std::endl;
   std::cout << "++++++++++" << std::endl;
 
   for (size_t idx = 0; idx < list_of_application_names.size(); ++idx) {
