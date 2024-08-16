@@ -95,6 +95,13 @@
  <rel name="associated_service" class="Service" id="dataRequests"/>
 </obj>
 
+<obj class="NetworkConnectionDescriptor" id="df-heartbeats">
+ <attr name="uid_base" type="string" val="dataflow_heartbeat"/>
+ <attr name="connection_type" type="enum" val="kSendRecv"/>
+ <attr name="data_type" type="string" val="DataflowHeartbeat"/>
+ <rel name="associated_service" class="Service" id="dfHeartbeats"/>
+</obj>
+
 <obj class="NetworkConnectionDescriptor" id="df-tokens">
  <attr name="uid_base" type="string" val="dataflow_token"/>
  <attr name="connection_type" type="enum" val="kSendRecv"/>
@@ -102,6 +109,13 @@
  <rel name="associated_service" class="Service" id="dfTokens"/>
 </obj>
 
+  <obj class="NetworkConnectionDescriptor" id="dfo-decisions">
+    <attr name="uid_base" type="string" val="dfo_decisions_"/>
+    <attr name="connection_type" type="enum" val="kSendRecv"/>
+    <attr name="data_type" type="string" val="DFODecision"/>
+    <rel name="associated_service" class="Service" id="dfoDecisions"/>
+  </obj>
+  
 <obj class="NetworkConnectionDescriptor" id="fragments">
  <attr name="uid_base" type="string" val="fragments_"/>
  <attr name="connection_type" type="enum" val="kSendRecv"/>
@@ -180,9 +194,19 @@
  <rel name="descriptor" class="NetworkConnectionDescriptor" id="data-req-net-input"/>
 </obj>
 
+<obj class="NetworkConnectionRule" id="df-heartbeat-net-rule">
+ <attr name="endpoint_class" type="class" val="DFOModule"/>
+ <rel name="descriptor" class="NetworkConnectionDescriptor" id="df-heartbeats"/>
+</obj>
+
 <obj class="NetworkConnectionRule" id="df-token-net-rule">
  <attr name="endpoint_class" type="class" val="DFOModule"/>
  <rel name="descriptor" class="NetworkConnectionDescriptor" id="df-tokens"/>
+</obj>
+
+<obj class="NetworkConnectionRule" id="dfo-decision-net-rule">
+ <attr name="endpoint_class" type="class" val="DFOBrokerModule"/>
+ <rel name="descriptor" class="NetworkConnectionDescriptor" id="dfo-decisions"/>
 </obj>
 
 <obj class="NetworkConnectionRule" id="frag-net-rule">
@@ -250,7 +274,12 @@
  <rel name="descriptor" class="QueueDescriptor" id="hsi-raw-input"/>
 </obj>
 
-<obj class="QueueConnectionRule" id="ta-queue-rule">
+  <obj class="QueueConnectionRule" id="token-queue-rule">
+    <attr name="destination_class" type="class" val="DFOBrokerModule"/>
+    <rel name="descriptor" class="QueueDescriptor" id="token-input"/>
+  </obj>
+
+  <obj class="QueueConnectionRule" id="ta-queue-rule">
  <attr name="destination_class" type="class" val="TriggerDataHandlerModule"/>
  <rel name="descriptor" class="QueueDescriptor" id="ta-input"/>
 </obj>
@@ -264,6 +293,11 @@
  <attr name="destination_class" type="class" val="MLTModule"/>
  <rel name="descriptor" class="QueueDescriptor" id="td-input"/>
 </obj>
+  
+  <obj class="QueueConnectionRule" id="trb-td-queue-rule">
+    <attr name="destination_class" type="class" val="TRBModule"/>
+    <rel name="descriptor" class="QueueDescriptor" id="td-input"/>
+  </obj>
 
 <obj class="QueueConnectionRule" id="tp-queue-rule">
  <attr name="destination_class" type="class" val="TriggerDataHandlerModule"/>
@@ -306,7 +340,15 @@
  <attr name="data_type" type="string" val="HSIFrame"/>
 </obj>
 
-<obj class="QueueDescriptor" id="ta-input">
+  <obj class="QueueDescriptor" id="token-input">
+    <attr name="uid_base" type="string" val="token_input_"/>
+    <attr name="queue_type" type="enum" val="kFollyMPMCQueue"/>
+    <attr name="capacity" type="u32" val="1000"/>
+    <attr name="data_type" type="string" val="TriggerDecisionToken"/>
+  </obj>
+
+
+  <obj class="QueueDescriptor" id="ta-input">
  <attr name="uid_base" type="string" val="ta_input_"/>
  <attr name="queue_type" type="enum" val="kFollySPSCQueue"/>
  <attr name="capacity" type="u32" val="1000"/>
@@ -384,7 +426,19 @@
  <attr name="port" type="u16" val="0"/>
  <attr name="eth_device_name" type="string" val="eno1"/>
 </obj>
+  
+  <obj class="Service" id="dfHeartbeats">
+    <attr name="protocol" type="string" val="tcp"/>
+    <attr name="port" type="u16" val="0"/>
+    <attr name="eth_device_name" type="string" val="eno1"/>
+  </obj>
 
+  <obj class="Service" id="dfoDecisions">
+    <attr name="protocol" type="string" val="tcp"/>
+    <attr name="port" type="u16" val="0"/>
+    <attr name="eth_device_name" type="string" val="eno1"/>
+  </obj>
+  
 <obj class="Service" id="timeSyncs">
  <attr name="protocol" type="string" val="tcp"/>
  <attr name="port" type="u16" val="0"/>

@@ -128,6 +128,7 @@
     <attribute name="send_heartbeat_timeout_ms" type="u32" init-value="1000"/>
     <attribute name="td_timeout_ms" type="u32" init-value="1000"/>
     <attribute name="stop_timeout_ms" type="u32" init-value="5000"/>
+    <relationship name="initial_active_dfo" class-type="DFOApplication" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   </class>
   
   <class name="DFOBrokerModule">

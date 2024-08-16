@@ -90,8 +90,13 @@
  <comment creation-time="20240628T062322" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="removing broadcasters from control apps"/>
 </comments>
 
+  <obj class="DFOBrokerConf" id="broker-01">
+    <attr name="send_heartbeat_interval_ms" type="u32" val="1000"/>
+    <rel name="initial_active_dfo" class="DFOApplication" id="dfo-01"/>
+  </obj>
 
-<obj class="DFApplication" id="df-01">
+
+  <obj class="DFApplication" id="df-01">
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="exposes_service">
@@ -100,11 +105,13 @@
  <rel name="source_id" class="SourceIDConf" id="srcid-df-01"/>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="trigger-record-q-rule"/>
+  <ref class="QueueConnectionRule" id="token-queue-rule"/>
+   <ref class="QueueConnectionRule" id="trb-td-queue-rule"/>
  </rel>
  <rel name="network_rules">
-  <ref class="NetworkConnectionRule" id="td-trb-net-rule"/>
+   <ref class="NetworkConnectionRule" id="dfo-decision-net-rule"/>
+   <ref class="NetworkConnectionRule" id="df-heartbeat-net-rule"/>
   <ref class="NetworkConnectionRule" id="frag-net-rule"/>
-  <ref class="NetworkConnectionRule" id="df-token-net-rule"/>
   <ref class="NetworkConnectionRule" id="data-req-hsi-net-rule"/>
   <ref class="NetworkConnectionRule" id="data-req-readout-net-rule"/>
   <ref class="NetworkConnectionRule" id="data-req-trig-net-rule"/>
@@ -126,14 +133,16 @@
  <rel name="source_id" class="SourceIDConf" id="srcid-df-02"/>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="trigger-record-q-rule"/>
+   <ref class="QueueConnectionRule" id="token-queue-rule"/>
+   <ref class="QueueConnectionRule" id="trb-td-queue-rule"/>
  </rel>
  <rel name="network_rules">
-  <ref class="NetworkConnectionRule" id="td-trb-net-rule"/>
-  <ref class="NetworkConnectionRule" id="frag-net-rule"/>
-  <ref class="NetworkConnectionRule" id="df-token-net-rule"/>
-  <ref class="NetworkConnectionRule" id="data-req-hsi-net-rule"/>
-  <ref class="NetworkConnectionRule" id="data-req-readout-net-rule"/>
-  <ref class="NetworkConnectionRule" id="data-req-trig-net-rule"/>
+   <ref class="NetworkConnectionRule" id="dfo-decision-net-rule"/>
+   <ref class="NetworkConnectionRule" id="df-heartbeat-net-rule"/>
+   <ref class="NetworkConnectionRule" id="frag-net-rule"/>
+   <ref class="NetworkConnectionRule" id="data-req-hsi-net-rule"/>
+   <ref class="NetworkConnectionRule" id="data-req-readout-net-rule"/>
+   <ref class="NetworkConnectionRule" id="data-req-trig-net-rule"/>
  </rel>
  <rel name="trb" class="TRBConf" id="trb-01"/>
   <rel name="broker" class="DFOBrokerConf" id="broker-01"/>
@@ -152,11 +161,13 @@
  <rel name="source_id" class="SourceIDConf" id="srcid-df-03"/>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="trigger-record-q-rule"/>
+   <ref class="QueueConnectionRule" id="token-queue-rule"/>
+   <ref class="QueueConnectionRule" id="trb-td-queue-rule"/>
  </rel>
  <rel name="network_rules">
-  <ref class="NetworkConnectionRule" id="td-trb-net-rule"/>
+   <ref class="NetworkConnectionRule" id="dfo-decision-net-rule"/>
+   <ref class="NetworkConnectionRule" id="df-heartbeat-net-rule"/>
   <ref class="NetworkConnectionRule" id="frag-net-rule"/>
-  <ref class="NetworkConnectionRule" id="df-token-net-rule"/>
   <ref class="NetworkConnectionRule" id="data-req-hsi-net-rule"/>
   <ref class="NetworkConnectionRule" id="data-req-readout-net-rule"/>
   <ref class="NetworkConnectionRule" id="data-req-trig-net-rule"/>
@@ -184,7 +195,7 @@
  <rel name="network_rules">
   <ref class="NetworkConnectionRule" id="td-dfo-net-rule"/>
   <ref class="NetworkConnectionRule" id="ti-net-rule"/>
-  <ref class="NetworkConnectionRule" id="df-token-net-rule"/>
+   <ref class="NetworkConnectionRule" id="df-heartbeat-net-rule"/>
  </rel>
  <rel name="dfo" class="DFOConf" id="dfoconf-01"/>
 </obj>
