@@ -292,6 +292,10 @@
  <attr name="prescale" type="u32" val="100"/>
 </obj>
 
+<obj class="TCMakerADCSimpleWindowAlgorithm" id="tc-adcwindow-algo">
+ <attr name="prescale" type="u32" val="100"/>
+</obj>
+
 <obj class="TCReadoutMap" id="def-hsi-tc-map">
  <attr name="candidate_type" type="u32" val="1"/>
  <attr name="time_before" type="u32" val="3000"/>
