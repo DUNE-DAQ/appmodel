@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="47" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240618T084639"/>
+<info name="" type="" num-of-items="46" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="aoranday" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240819T144357"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -323,16 +323,6 @@
   <attribute name="queue_type" description="Type of queue" type="enum" range="kUnknown,kStdDeQueue,kFollySPSCQueue,kFollyMPMCQueue" init-value="kFollySPSCQueue" is-not-null="yes"/>
   <attribute name="capacity" type="u32" init-value="100" is-not-null="yes"/>
   <attribute name="data_type" description="string identifying type of data transferred through this queue" type="string" is-not-null="yes"/>
- </class>
-
- <class name="RawDataProcessor">
-  <superclass name="DataProcessor"/>
-  <attribute name="max_ticks_tot" description="Max ToT after which ongoing TPs are discarded, default is 8000" type="u32" init-value="8000" is-not-null="yes"/>
-  <attribute name="tpg_enabled" type="bool" init-value="true"/>
-  <attribute name="algorithm" description="TP generation algorithm" type="string"/>
-  <attribute name="threshold" description="Hit detection threshold" type="u16"/>
-  <attribute name="channel_mask" description="List of channels to be masked from TP generation" type="u32" is-multi-value="yes"/>
-  <attribute name="channel_map" type="string"/>
  </class>
 
  <class name="ReadoutApplication">
