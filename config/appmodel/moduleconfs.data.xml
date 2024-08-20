@@ -145,7 +145,7 @@
 </obj>
 
 <obj class="LatencyBuffer" id="def-latency-buf">
- <attr name="size" type="u32" val="139008"/>
+ <attr name="size" type="u32" val="122000"/>
  <attr name="numa_aware" type="bool" val="1"/>
  <attr name="numa_node" type="s16" val="1"/>
  <attr name="intrinsic_allocator" type="bool" val="1"/>
