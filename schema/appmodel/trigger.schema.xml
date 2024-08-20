@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="37" oks-format="schema" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231211T133151" last-modified-by="aoranday" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240819T144357"/>
+<info name="" type="" num-of-items="37" oks-format="schema" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231211T133151" last-modified-by="aoranday" last-modified-on="np04-srv-013.cern.ch" last-modification-time="20240820T063841"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -89,7 +89,13 @@
 
 
  <class name="AVXAbsRunSumProcessor" description="TPG absolute running sum signal processor. Outputs a scaled running sum from the absolute value of the input signal.">
-  <superclass name="AVXRunSumProcessor"/>
+  <superclass name="ProcessingStep"/>
+  <attribute name="memory_factor_plane0" description="Absolute running sum memory factor for plane 0." type="u8" range="0..10" init-value="8" is-not-null="yes"/>
+  <attribute name="memory_factor_plane1" description="Absolute running sum memory factor for plane 1." type="u8" range="0..10" init-value="8" is-not-null="yes"/>
+  <attribute name="memory_factor_plane2" description="Absolute running sum memory factor for plane 2." type="u8" range="0..10" init-value="8" is-not-null="yes"/>
+  <attribute name="scale_factor_plane0" description="Absolute running sum scale factor for plane 0." type="u8" range="1..10" init-value="5" is-not-null="yes"/>
+  <attribute name="scale_factor_plane1" description="Absolute running sum scale factor for plane 1." type="u8" range="1..10" init-value="5" is-not-null="yes"/>
+  <attribute name="scale_factor_plane2" description="Absolute running sum scale factor for plane 2." type="u8" range="1..10" init-value="5" is-not-null="yes"/>
  </class>
 
  <class name="AVXFrugalPedestalSubtractProcessor" description="TPG frugal pedestal subtraction signal processor. Frugally updates the pedestal estimation and outputs the difference with the input signal.">
