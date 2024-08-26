@@ -49,9 +49,9 @@ static ModuleFactory::Registrator __reg__("FakeDataApplication",
                                           });
 
 std::vector<const confmodel::DaqModule*>
-FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
-                                      const std::string& dbfile,
-                                      const confmodel::Session* session) const
+FakeDataApplication::generate_modules(conffwk::Configuration* /*confdb*/,
+                                      const std::string& /*dbfile*/,
+                                      const confmodel::Session* /*session*/) const
 {
   // oks::OksFile::set_nolock_mode(true);
 
