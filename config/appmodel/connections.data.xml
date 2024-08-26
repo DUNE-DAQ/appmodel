@@ -97,7 +97,7 @@
 
 <obj class="NetworkConnectionDescriptor" id="df-heartbeats">
  <attr name="uid_base" type="string" val="dataflow_heartbeat"/>
- <attr name="connection_type" type="enum" val="kSendRecv"/>
+ <attr name="connection_type" type="enum" val="kPubSub"/>
  <attr name="data_type" type="string" val="DataflowHeartbeat"/>
  <rel name="associated_service" class="Service" id="dfHeartbeats"/>
 </obj>
@@ -167,7 +167,7 @@
 
 <obj class="NetworkConnectionDescriptor" id="trigger-decisions-mlt-dfo">
  <attr name="uid_base" type="string" val="td_mlt_dfo"/>
- <attr name="connection_type" type="enum" val="kSendRecv"/>
+ <attr name="connection_type" type="enum" val="kPubSub"/>
  <attr name="data_type" type="string" val="TriggerDecision"/>
  <rel name="associated_service" class="Service" id="triggerDecisions"/>
 </obj>

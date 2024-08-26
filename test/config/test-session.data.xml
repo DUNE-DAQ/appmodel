@@ -338,6 +338,7 @@
   <ref class="Variable" id="session-env-connectivity-server"/>
   <ref class="Variable" id="session-env-connectivity-port"/>
   <ref class="Variable" id="daqapp-cli-configuration"/>
+   <ref class="Variable" id="session-env-trace-file"/>
  </rel>
  <rel name="disabled">
   <ref class="DetectorToDaqConnection" id="det-4-connections"/>
@@ -400,5 +401,10 @@
  <attr name="name" type="string" val="DUNEDAQ_SESSION"/>
  <attr name="value" type="string" val="test-session"/>
 </obj>
+
+  <obj class="Variable" id="session-env-trace-file">
+    <attr name="name" type="string" val="TRACE_FILE"/>
+    <attr name="value" type="string" val="/tmp/trace_buffer_dunedaq"/>
+  </obj>
 
 </oks-data>
