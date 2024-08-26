@@ -132,6 +132,10 @@
   <ref class="NetworkConnectionRule" id="data-req-readout-net-rule"/>
   <ref class="NetworkConnectionRule" id="tpset-net-rule"/>
  </rel>
+ <rel name="action_plans">
+  <ref class="ActionPlan" id="readout-start"/>
+  <ref class="ActionPlan" id="readout-stop"/>
+ </rel> 
  <rel name="uses" class="RoHwConfig" id="rohw-1"/>
  <rel name="link_handler" class="DataHandlerConf" id="def-link-handler"/>
  <rel name="tp_handler" class="DataHandlerConf" id="def-tp-handler"/>
@@ -160,6 +164,10 @@
   <ref class="NetworkConnectionRule" id="data-req-readout-net-rule"/>
   <ref class="NetworkConnectionRule" id="tpset-net-rule"/>
  </rel>
+ <rel name="action_plans">
+  <ref class="ActionPlan" id="readout-start"/>
+  <ref class="ActionPlan" id="readout-stop"/>
+ </rel> 
  <rel name="uses" class="RoHwConfig" id="rohw-1"/>
  <rel name="link_handler" class="DataHandlerConf" id="def-link-handler"/>
  <rel name="tp_handler" class="DataHandlerConf" id="def-tp-handler"/>
@@ -187,6 +195,10 @@
   <ref class="NetworkConnectionRule" id="ta-net-rule"/>
   <ref class="NetworkConnectionRule" id="data-req-readout-net-rule"/>
   <ref class="NetworkConnectionRule" id="tpset-net-rule"/>
+ </rel>
+ <rel name="action_plans">
+  <ref class="ActionPlan" id="readout-start"/>
+  <ref class="ActionPlan" id="readout-stop"/>
  </rel>
  <rel name="uses" class="RoHwConfig" id="rohw-1"/>
  <rel name="link_handler" class="DataHandlerConf" id="def-link-handler"/>
