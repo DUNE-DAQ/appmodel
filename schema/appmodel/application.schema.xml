@@ -109,6 +109,15 @@
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
   </method>
  </class>
+  
+  <class name="FakeDFOTestApplication">
+    <superclass name="SmartDaqApplication"/>
+    <relationship name="broker" description="Configuration for the DFO Broker module" class-type="DFOBrokerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+    <relationship name="dfoclient" class-type="FakeDFOClientConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+    <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
+      <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
+    </method>
+  </class>
 
  <class name="DFOConf">
   <attribute name="general_queue_timeout_ms" type="u32" is-not-null="yes"/>
@@ -134,6 +143,16 @@
   <class name="DFOBrokerModule">
     <superclass name="DaqModule"/>
     <relationship name="configuration" class-type="DFOBrokerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>    
+  </class>
+  
+  <class name="FakeDFOClientConf">
+    <attribute name="token_wait_microseconds" type="u32" init-value="1000" />
+    <attribute name="send_token_timeout_milliseconds" type="u32" init-value="1000"/>
+  </class>
+
+  <class name="FakeDFOClientModule">
+    <superclass name="DaqModule"/>
+    <relationship name="configuration" class-type="FakeDFOClientConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   </class>
 
  <class name="DataHandlerConf">
