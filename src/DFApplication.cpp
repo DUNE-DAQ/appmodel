@@ -145,9 +145,9 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
   for (auto app : sessionApps) {
     auto roapp = app->cast<appmodel::ReadoutApplication>();
     if (roapp != nullptr) {
-      TLOG() << "Readout app in session: " << roapp->UID();
+      TLOG_DEBUG(6) << "Readout app in session: " << roapp->UID();
       if (roapp->disabled(*session)) {
-        TLOG() << "Ignoring disabled Readout app: " << roapp->UID();
+        TLOG_DEBUG(6) << "Ignoring disabled Readout app: " << roapp->UID();
         continue;
       }
       auto roQRules = roapp->get_network_rules();
