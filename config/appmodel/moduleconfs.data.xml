@@ -95,6 +95,49 @@
  <comment creation-time="20240307T133917" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="disable TPG"/>
 </comments>
 
+<obj class="ActionPlan" id="readout-start">
+ <rel name="fsm" class="FSMCommand" id="start"/>
+ <rel name="steps">
+  <ref class="ActionStep" id="aggregator-step"/>
+  <ref class="ActionStep" id="tp-handler-step"/>
+  <ref class="ActionStep" id="dlh-step"/>
+  <ref class="ActionStep" id="data-source-step"/>
+ </rel>
+</obj>
+
+<obj class="ActionPlan" id="readout-stop">
+ <rel name="fsm" class="FSMCommand" id="stop_trigger_sources"/>
+ <rel name="steps">
+  <ref class="ActionStep" id="data-source-step"/>
+  <ref class="ActionStep" id="dlh-step"/>
+  <ref class="ActionStep" id="tp-handler-step"/>
+  <ref class="ActionStep" id="aggregator-step"/>
+ </rel>
+</obj>
+
+<obj class="ActionStep" id="aggregator-step">
+ <attr name="modules" type="class">
+  <data val="FragmentAggregatorModule"/>
+ </attr>
+</obj>
+
+<obj class="ActionStep" id="data-source-step">
+ <attr name="modules" type="class">
+  <data val="FDFakeReaderModule"/>
+ </attr>
+</obj>
+
+<obj class="ActionStep" id="dlh-step">
+ <attr name="modules" type="class">
+  <data val="FDDataHandlerModule"/>
+ </attr>
+</obj>
+
+<obj class="ActionStep" id="tp-handler-step">
+ <attr name="modules" type="class">
+  <data val="TriggerDataHandlerModule"/>
+ </attr>
+</obj>
 
 <obj class="DFOConf" id="dfoconf-01">
  <attr name="general_queue_timeout_ms" type="u32" val="100"/>
