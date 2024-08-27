@@ -121,19 +121,19 @@
  <rel name="fsm" class="FSMCommand" id="start"/>
  <rel name="steps">
   <ref class="ActionStep" id="aggregator-step"/>
-  <ref class="ActionStep" id="data-source-step"/>
-  <ref class="ActionStep" id="dlh-step"/>
   <ref class="ActionStep" id="tp-handler-step"/>
+  <ref class="ActionStep" id="dlh-step"/>
+  <ref class="ActionStep" id="data-source-step"/>
  </rel>
 </obj>
 
 <obj class="ActionPlan" id="readout-stop">
  <rel name="fsm" class="FSMCommand" id="stop_trigger_sources"/>
  <rel name="steps">
-  <ref class="ActionStep" id="aggregator-step"/>
   <ref class="ActionStep" id="data-source-step"/>
   <ref class="ActionStep" id="dlh-step"/>
   <ref class="ActionStep" id="tp-handler-step"/>
+  <ref class="ActionStep" id="aggregator-step"/>
  </rel>
 </obj>
 
