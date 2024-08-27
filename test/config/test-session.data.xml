@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="41" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240703T074826"/>
+<info name="" type="" num-of-items="40" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20240826T084126"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -111,6 +111,7 @@
  <comment creation-time="20240702T202712" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="removed application field for infra apps not to be executed"/>
  <comment creation-time="20240703T074710" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="moving apa1 senders into a rset"/>
  <comment creation-time="20240703T074729" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="cleanup"/>
+ <comment creation-time="20240826T084126" created-by="maroda" created-on="np04-srv-015.cern.ch" author="maroda" text="Correct cern stream"/>
 </comments>
 
 
@@ -301,9 +302,9 @@
 </obj>
 
 <obj class="Service" id="daq-k8s-opmon-service">
- <attr name="protocol" type="string" val="kafka"/>
+ <attr name="protocol" type="string" val="stream"/>
  <attr name="port" type="u16" val="30092"/>
- <attr name="path" type="string" val="/opmon"/>
+ <attr name="path" type="string" val="/opmon_stream"/>
 </obj>
 
 <obj class="Service" id="local-connectivity-service">
