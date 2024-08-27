@@ -247,12 +247,12 @@
  <class name="TAMakerADCSimpleWindowAlgorithm">
   <superclass name="TAAlgorithm"/>
   <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="window_length" description="Window length (in ticks) for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="window_length" description="Window length (in ticks) for the algorithm" type="u32" init-value="10000" is-not-null="yes"/>
  </class>
 
  <class name="TAMakerHorizontalMuonAlgorithm">
   <superclass name="TAAlgorithm"/>
-  <attribute name="window_length" description="Window length (in ticks) for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="window_length" description="Window length (in ticks) for the algorithm" type="u32" init-value="10000" is-not-null="yes"/>
   <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
   <attribute name="trigger_on_n_channels" description="Whether to trigger on N Channels" type="bool" init-value="false" is-not-null="yes"/>
   <attribute name="trigger_on_adjacency" description="Whether to trigger on adjacency" type="bool" init-value="false" is-not-null="yes"/>
@@ -293,7 +293,7 @@
 
  <class name="TAMakerMichelElectronAlgorithm">
   <superclass name="TAAlgorithm"/>
-  <attribute name="window_length" description="Window length (in ticks) for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="window_length" description="Window length (in ticks) for the algorithm" type="u32" init-value="10000" is-not-null="yes"/>
   <attribute name="adjacency_threshold" description="Threshold for the adjacency algorithm" type="u32" init-value="6" is-not-null="yes"/>
   <attribute name="adjacency_tolerance" description="Tolerance for the number of allowed gaps for the adjacency algorithm" type="u32" init-value="4" is-not-null="yes"/>
  </class>
@@ -301,7 +301,7 @@
 
  <class name="TAMakerPlaneCoincidenceAlgorithm">
   <superclass name="TAAlgorithm"/>
-  <attribute name="window_length" description="Window length (in ticks) for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="window_length" description="Window length (in ticks) for the algorithm" type="u32" init-value="10000" is-not-null="yes"/>
   <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
   <attribute name="adjacency_threshold" description="Threshold for the adjacency algorithm" type="u32" init-value="6" is-not-null="yes"/>
   <attribute name="adjacency_tolerance" description="Tolerance for the number of allowed gaps for the adjacency algorithm" type="u32" init-value="4" is-not-null="yes"/>
@@ -325,9 +325,9 @@
 
  <class name="TCMakerHorizontalMuonAlgorithm">
   <superclass name="TCAlgorithm"/>
+  <attribute name="window_length" description="Window length (in ticks) for the algorithm" type="u32" init-value="10000" is-not-null="yes"/>
   <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
   <attribute name="trigger_on_n_channels" description="Whether to trigger on N Channels" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="trigger_on_adjacency" description="Whether to trigger on adjacency" type="bool" init-value="false" is-not-null="yes"/>
   <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
   <attribute name="n_channels_threshold" description="Threshold for the N Channels algorithm" type="u32" init-value="8" is-not-null="yes"/>
  </class>
