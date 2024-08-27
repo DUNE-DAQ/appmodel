@@ -109,9 +109,9 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
   conffwk::ConfigObject trQueueObj;
   conffwk::ConfigObject tokenQueueObj;
   conffwk::ConfigObject tdQueueObj;
-  std::string trQueueUid(tdQDesc->get_uid_base() + UID());
+  std::string trQueueUid(trQDesc->get_uid_base() + UID());
   std::string tokenQueueUid(tokenQDesc->get_uid_base() + UID());
-  std::string tdQueueUid(trQDesc->get_uid_base() + UID());
+  std::string tdQueueUid(tdQDesc->get_uid_base() + UID());
   confdb->create(dbfile, "Queue", trQueueUid, trQueueObj);
   confdb->create(dbfile, "Queue", tokenQueueUid, tokenQueueObj);
   confdb->create(dbfile, "Queue", tdQueueUid, tdQueueObj);

@@ -22,7 +22,7 @@ daq_oks_codegen(application.schema.xml fdmodules.schema.xml trigger.schema.xml w
 
 
 daq_add_library(ReadoutApplication.cpp SmartDaqApplication.cpp
-	DFApplication.cpp DFOApplication.cpp TPWriterApplication.cpp FakeDataApplication.cpp FakeHSIApplication.cpp TriggerApplication.cpp MLTApplication.cpp HSIEventToTCApplication.cpp WIECApplication.cpp
+	DFApplication.cpp DFOApplication.cpp TPWriterApplication.cpp FakeDFOTestApplication.cpp FakeDataApplication.cpp FakeHSIApplication.cpp TriggerApplication.cpp MLTApplication.cpp HSIEventToTCApplication.cpp WIECApplication.cpp
  LINK_LIBRARIES conffwk::conffwk fmt::fmt
   logging::logging confmodel::confmodel oks::oks ers::ers)
 
