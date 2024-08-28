@@ -71,6 +71,7 @@
  <file path="schema/appmodel/trigger.schema.xml"/>
  <file path="schema/appmodel/fdmodules.schema.xml"/>
  <file path="config/appmodel/connections.data.xml"/>
+ <file path="config/appmodel/fsm.data.xml"/>
  <file path="config/appmodel/data-store-params.data.xml"/>
 </include>
 
