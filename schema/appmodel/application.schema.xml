@@ -125,6 +125,7 @@
   <attribute name="td_send_retries" type="s32" init-value="5"/>
   <attribute name="busy_threshold" type="s32" init-value="10"/>
   <attribute name="free_threshold" type="s32" init-value="5"/>
+   <attribute name="busy_interval_ms" type="u32" init-value="1000" />
  </class>
 
  <class name="DFOModule">

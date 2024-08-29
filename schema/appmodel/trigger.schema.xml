@@ -147,6 +147,7 @@
   <attribute name="td_out_of_timeout" type="bool" init-value="true" is-not-null="yes"/>
   <attribute name="buffer_timeout" type="u32" init-value="100" is-not-null="yes"/>
   <attribute name="td_readout_limit" type="u32" init-value="1000" is-not-null="yes"/>
+   <relationship name="initial_active_dfo" class-type="DFOApplication" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="ROIGroupConf">
