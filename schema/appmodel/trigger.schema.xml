@@ -248,11 +248,12 @@
  <class name="TAMakerADCSimpleWindowAlgorithm">
   <superclass name="TAAlgorithm"/>
   <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="window_length" description="Window length (in ticks) for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="window_length" description="Window length (in ticks) for the algorithm" type="u32" init-value="10000" is-not-null="yes"/>
  </class>
 
  <class name="TAMakerHorizontalMuonAlgorithm">
   <superclass name="TAAlgorithm"/>
+  <attribute name="window_length" description="Window length (in ticks) for the algorithm" type="u32" init-value="10000" is-not-null="yes"/>
   <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
   <attribute name="trigger_on_n_channels" description="Whether to trigger on N Channels" type="bool" init-value="false" is-not-null="yes"/>
   <attribute name="trigger_on_adjacency" description="Whether to trigger on adjacency" type="bool" init-value="false" is-not-null="yes"/>
@@ -264,6 +265,47 @@
 
  <class name="TAMakerPrescaleAlgorithm">
   <superclass name="TAAlgorithm"/>
+ </class>
+
+ <class name="TAMakerBundleNAlgorithm">
+  <superclass name="TAAlgorithm"/>
+  <attribute name="bundle_size" description="Size of the bundle, in number of TPs" type="u32" init-value="1" is-not-null="yes"/>
+ </class>
+
+ <class name="TAMakerChannelAdjacencyAlgorithm">
+  <superclass name="TAAlgorithm"/>
+  <attribute name="window_length" description="Window length (in ticks) for the algorithm" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="adjacency_threshold" description="Threshold for the adjacency algorithm" type="u32" init-value="6" is-not-null="yes"/>
+  <attribute name="adjacency_tolerance" description="Tolerance for the number of allowed gaps for the adjacency algorithm" type="u32" init-value="4" is-not-null="yes"/>
+ </class>
+
+ <class name="TAMakerChannelDistanceAlgorithm">
+  <superclass name="TAAlgorithm"/>
+  <attribute name="window_length" description="Window length (in ticks) for the algorithm" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="min_tps" description="Minimum number of adjacent TPs to trigger on" type="u32" init-value="100" is-not-null="yes"/>
+  <attribute name="max_channel_distance" description="Maximum distance between TPs to satisfy Adjacency condition" type="u32" init-value="5" is-not-null="yes"/>
+ </class>
+
+ <class name="TAMakerDBSCANAlgorithm">
+  <superclass name="TAAlgorithm"/>
+  <attribute name="min_pts" description="Minimum number of points in a density unit" type="u32" init-value="5" is-not-null="yes"/>
+  <attribute name="eps" description="Kernel size for the DBSCAN algorithm" type="u32" init-value="10" is-not-null="yes"/>
+ </class>
+
+ <class name="TAMakerMichelElectronAlgorithm">
+  <superclass name="TAAlgorithm"/>
+  <attribute name="window_length" description="Window length (in ticks) for the algorithm" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="adjacency_threshold" description="Threshold for the adjacency algorithm" type="u32" init-value="6" is-not-null="yes"/>
+  <attribute name="adjacency_tolerance" description="Tolerance for the number of allowed gaps for the adjacency algorithm" type="u32" init-value="4" is-not-null="yes"/>
+ </class>
+
+
+ <class name="TAMakerPlaneCoincidenceAlgorithm">
+  <superclass name="TAAlgorithm"/>
+  <attribute name="window_length" description="Window length (in ticks) for the algorithm" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="adjacency_threshold" description="Threshold for the adjacency algorithm" type="u32" init-value="6" is-not-null="yes"/>
+  <attribute name="adjacency_tolerance" description="Tolerance for the number of allowed gaps for the adjacency algorithm" type="u32" init-value="4" is-not-null="yes"/>
  </class>
 
  <class name="TriggerApplication">
@@ -284,15 +326,57 @@
 
  <class name="TCMakerHorizontalMuonAlgorithm">
   <superclass name="TCAlgorithm"/>
+  <attribute name="window_length" description="Window length (in ticks) for the algorithm" type="u32" init-value="10000" is-not-null="yes"/>
   <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
   <attribute name="trigger_on_n_channels" description="Whether to trigger on N Channels" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="trigger_on_adjacency" description="Whether to trigger on adjacency" type="bool" init-value="false" is-not-null="yes"/>
   <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
   <attribute name="n_channels_threshold" description="Threshold for the N Channels algorithm" type="u32" init-value="8" is-not-null="yes"/>
  </class>
 
  <class name="TCMakerPrescaleAlgorithm">
   <superclass name="TCAlgorithm"/>
+ </class>
+
+ <class name="TCMakerBundleNAlgorithm">
+  <superclass name="TCAlgorithm"/>
+  <attribute name="bundle_size" description="Size of the bundle, in number of TAs" type="u32" init-value="1" is-not-null="yes"/>
+ </class>
+
+ <class name="TCMakerChannelAdjacencyAlgorithm">
+  <superclass name="TCAlgorithm"/>
+  <attribute name="window_length" description="Window length (in ticks) for the algorithm" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="trigger_on_n_channels" description="Whether to trigger on N Channels" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="n_channels_threshold" description="Threshold for the N Channels algorithm" type="u32" init-value="8" is-not-null="yes"/>
+ </class>
+
+ <class name="TCMakerChannelDistanceAlgorithm">
+  <superclass name="TCAlgorithm"/>
+  <attribute name="max_tp_count" description="Maximum number of TPs in the TC" type="u32" init-value="8" is-not-null="yes"/>
+ </class>
+
+ <class name="TCMakerDBSCANAlgorithm">
+  <superclass name="TCAlgorithm"/>
+  <attribute name="max_tp_count" description="Maximum number of TPs in the TC" type="u32" init-value="8" is-not-null="yes"/>
+ </class>
+
+ <class name="TCMakerMichelElectronAlgorithm">
+  <superclass name="TCAlgorithm"/>
+  <attribute name="window_length" description="Window length (in ticks) for the algorithm" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="trigger_on_n_channels" description="Whether to trigger on N Channels" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="n_channels_threshold" description="Threshold for the N Channels algorithm" type="u32" init-value="8" is-not-null="yes"/>
+ </class>
+
+ <class name="TCMakerPlaneCoincidenceAlgorithm">
+  <superclass name="TCAlgorithm"/>
+  <attribute name="window_length" description="Window length (in ticks) for the algorithm" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="trigger_on_n_channels" description="Whether to trigger on N Channels" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="n_channels_threshold" description="Threshold for the N Channels algorithm" type="u32" init-value="8" is-not-null="yes"/>
  </class>
 
  <class name="TriggerDataHandlerModule">
