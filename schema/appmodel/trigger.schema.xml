@@ -89,13 +89,7 @@
 
 
  <class name="AVXAbsRunSumProcessor" description="TPG absolute running sum signal processor. Outputs a scaled running sum from the absolute value of the input signal.">
-  <superclass name="ProcessingStep"/>
-  <attribute name="memory_factor_plane0" description="Absolute running sum memory factor for plane 0." type="u8" range="0..10" init-value="8" is-not-null="yes"/>
-  <attribute name="memory_factor_plane1" description="Absolute running sum memory factor for plane 1." type="u8" range="0..10" init-value="8" is-not-null="yes"/>
-  <attribute name="memory_factor_plane2" description="Absolute running sum memory factor for plane 2." type="u8" range="0..10" init-value="8" is-not-null="yes"/>
-  <attribute name="scale_factor_plane0" description="Absolute running sum scale factor for plane 0." type="u8" range="1..10" init-value="5" is-not-null="yes"/>
-  <attribute name="scale_factor_plane1" description="Absolute running sum scale factor for plane 1." type="u8" range="1..10" init-value="5" is-not-null="yes"/>
-  <attribute name="scale_factor_plane2" description="Absolute running sum scale factor for plane 2." type="u8" range="1..10" init-value="5" is-not-null="yes"/>
+  <superclass name="AVXRunSumProcessor"/>
  </class>
 
  <class name="AVXFrugalPedestalSubtractProcessor" description="TPG frugal pedestal subtraction signal processor. Frugally updates the pedestal estimation and outputs the difference with the input signal.">
@@ -105,19 +99,19 @@
 
  <class name="AVXRunSumProcessor" description="TPG running sum signal processor. Outputs a scaled running sum from the input signal.">
   <superclass name="ProcessingStep"/>
-  <attribute name="memory_factor_plane0" description="Running sum memory factor for plane 0." type="u8" range="0..10" init-value="8" is-not-null="yes"/>
-  <attribute name="memory_factor_plane1" description="Running sum memory factor for plane 1." type="u8" range="0..10" init-value="8" is-not-null="yes"/>
-  <attribute name="memory_factor_plane2" description="Running sum memory factor for plane 2." type="u8" range="0..10" init-value="8" is-not-null="yes"/>
-  <attribute name="scale_factor_plane0" description="Running sum scale factor for plane 0." type="u8" range="1..10" init-value="10" is-not-null="yes"/>
-  <attribute name="scale_factor_plane1" description="Running sum scale factor for plane 1." type="u8" range="1..10" init-value="10" is-not-null="yes"/>
-  <attribute name="scale_factor_plane2" description="Running sum scale factor for plane 2." type="u8" range="1..10" init-value="10" is-not-null="yes"/>
+  <attribute name="memory_factor_plane0" description="Running sum memory factor for plane 0. Gets divided by 10." type="u8" range="0..10" init-value="8" is-not-null="yes"/>
+  <attribute name="memory_factor_plane1" description="Running sum memory factor for plane 1. Gets divided by 10." type="u8" range="0..10" init-value="8" is-not-null="yes"/>
+  <attribute name="memory_factor_plane2" description="Running sum memory factor for plane 2. Gets divided by 10." type="u8" range="0..10" init-value="8" is-not-null="yes"/>
+  <attribute name="scale_factor_plane0" description="Running sum scale factor for plane 0. Gets divided by 10." type="u8" range="1..10" init-value="10" is-not-null="yes"/>
+  <attribute name="scale_factor_plane1" description="Running sum scale factor for plane 1. Gets divided by 10." type="u8" range="1..10" init-value="10" is-not-null="yes"/>
+  <attribute name="scale_factor_plane2" description="Running sum scale factor for plane 2. Gets divided by 10." type="u8" range="1..10" init-value="10" is-not-null="yes"/>
  </class>
 
  <class name="AVXThresholdProcessor" description="TPG threshold signal processor. Filters the input signal by passing values that are above threshold and suppresing otherwise.">
   <superclass name="ProcessingStep"/>
-  <attribute name="plane0" description="Threshold for plane 0." type="u8" init-value="100" is-not-null="yes"/>
-  <attribute name="plane1" description="Threshold for plane 1." type="u8" init-value="100" is-not-null="yes"/>
-  <attribute name="plane2" description="Threshold for plane 2." type="u8" init-value="100" is-not-null="yes"/>
+  <attribute name="plane0" description="Threshold for plane 0." type="u16" init-value="100" is-not-null="yes"/>
+  <attribute name="plane1" description="Threshold for plane 1." type="u16" init-value="100" is-not-null="yes"/>
+  <attribute name="plane2" description="Threshold for plane 2." type="u16" init-value="100" is-not-null="yes"/>
  </class>
 
  <class name="CustomTCMaker">

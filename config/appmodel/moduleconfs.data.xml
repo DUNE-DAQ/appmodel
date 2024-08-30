@@ -94,6 +94,7 @@
  <comment creation-time="20240305T162137" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="add delay"/>
  <comment creation-time="20240305T172822" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text=" adjust TA prescaling&#xA;"/>
  <comment creation-time="20240307T133917" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="disable TPG"/>
+ <comment creation-time="20240822T070558" created-by="aoranday" created-on="np04-srv-031.cern.ch" author="aoranday" text="Add TPG SimpleThreshold."/>
 </comments>
 
 <obj class="ActionPlan" id="readout-start">
@@ -227,11 +228,11 @@
  <attr name="queue_sizes" type="u32" val="10000"/>
  <attr name="thread_names_prefix" type="string" val="postproc-"/>
  <attr name="mask_processing" type="bool" val="0"/>
- <attr name="max_ticks_tot" type="u32" val="10000"/>
- <attr name="tpg_enabled" type="bool" val="1"/>
- <attr name="algorithm" type="string" val="SimpleThreshold"/>
- <attr name="threshold" type="u16" val="1900"/>
  <attr name="channel_map" type="string" val="PD2HDChannelMap"/>
+ <rel name="processing_steps">
+  <ref class="AVXFrugalPedestalSubtractProcessor" id="tpg-pedsub-proc"/>
+  <ref class="AVXThresholdProcessor" id="tpg-threshold-proc"/>
+ </rel>
 </obj>
 
 <obj class="DataHandlerConf" id="def-link-handler">
