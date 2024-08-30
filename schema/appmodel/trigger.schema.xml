@@ -336,7 +336,7 @@
   <superclass name="TCAlgorithm"/>
  </class>
 
- <clsss name="TCMakerBundleNAlgorithm">
+ <class name="TCMakerBundleNAlgorithm">
   <superclass name="TCAlgorithm"/>
   <attribute name="bundle_size" description="Size of the bundle, in number of TAs" type="u32" init-value="1" is-not-null="yes"/>
  </class>
