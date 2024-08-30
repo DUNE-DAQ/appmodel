@@ -226,9 +226,7 @@
 <obj class="RawDataProcessor" id="def-wib-processor">
  <attr name="queue_sizes" type="u32" val="10000"/>
  <attr name="thread_names_prefix" type="string" val="postproc-"/>
- <attr name="mask_processing" type="bool" val="0"/>
  <attr name="max_ticks_tot" type="u32" val="10000"/>
- <attr name="tpg_enabled" type="bool" val="1"/>
  <attr name="algorithm" type="string" val="SimpleThreshold"/>
  <attr name="threshold" type="u16" val="1900"/>
  <attr name="channel_map" type="string" val="PD2HDChannelMap"/>
@@ -290,20 +288,9 @@
  <attr name="TP_rate_per_channel" type="float" val="1"/>
 </obj>
 
-<obj class="TPDataProcessor" id="dummy-tp-processor">
- <attr name="queue_sizes" type="u32" val="10000"/>
- <attr name="thread_names_prefix" type="string" val="proc-"/>
- <attr name="mask_processing" type="bool" val="1"/>
- <attr name="print_tp_info" type="bool" val="0"/>
- <rel name="algorithms">
-   <ref class="TAMakerPrescaleAlgorithm" id="dummy-ta-maker"/>
- </rel>
-</obj>
-
 <obj class="TPDataProcessor" id="tp-processor">
  <attr name="queue_sizes" type="u32" val="10000"/>
  <attr name="thread_names_prefix" type="string" val="proc-"/>
- <attr name="mask_processing" type="bool" val="0"/>
  <attr name="print_tp_info" type="bool" val="0"/>
  <rel name="algorithms">
   <ref class="TAMakerPrescaleAlgorithm" id="dummy-ta-maker"/>

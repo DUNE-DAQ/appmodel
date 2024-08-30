@@ -112,6 +112,7 @@ FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
   confdb->create(dbfile, dlhClass, uid, dlhObj);
   dlhObj.set_by_val<uint32_t>("source_id", id);
   dlhObj.set_by_val<uint32_t>("detector_id", det_id);
+  dlhObj.set_by_val<bool>("post_processing_enabled", false);
   dlhObj.set_obj("module_configuration", &dlhConf->config_object());
 
   // Time Sync network connection

@@ -124,7 +124,6 @@
 <obj class="HSIFrameProcessor" id="def-hsi-processor">
  <attr name="queue_sizes" type="u32" val="10000"/>
  <attr name="thread_names_prefix" type="string" val="hsip"/>
- <attr name="mask_processing" type="bool" val="0"/>
 </obj>
 
 <obj class="LatencyBuffer" id="hsilatencybuffer-generic">

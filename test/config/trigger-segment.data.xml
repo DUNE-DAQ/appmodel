@@ -263,7 +263,6 @@
 <obj class="TADataProcessor" id="def-ta-processor">
  <attr name="queue_sizes" type="u32" val="10000"/>
  <attr name="thread_names_prefix" type="string" val="proc-"/>
- <attr name="mask_processing" type="bool" val="0"/>
  <attr name="print_ta_info" type="bool" val="0"/>
  <rel name="algorithms">
   <ref class="TCMakerPrescaleAlgorithm" id="tc-pass-through-algo"/>
@@ -273,7 +272,6 @@
 <obj class="TCDataProcessor" id="def-tc-processor">
  <attr name="queue_sizes" type="u32" val="10000"/>
  <attr name="thread_names_prefix" type="string" val="mlt_"/>
- <attr name="mask_processing" type="bool" val="0"/>
  <attr name="hsi_trigger_type_passthrough" type="bool" val="0"/>
  <attr name="merge_overlapping_tcs" type="bool" val="1"/>
  <attr name="td_out_of_timeout" type="bool" val="1"/>
