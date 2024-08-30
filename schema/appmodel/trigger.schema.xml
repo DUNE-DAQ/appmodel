@@ -336,6 +336,48 @@
   <superclass name="TCAlgorithm"/>
  </class>
 
+ <clsss name="TCMakerBundleNAlgorithm">
+  <superclass name="TCAlgorithm"/>
+  <attribute name="bundle_size" description="Size of the bundle, in number of TAs" type="u32" init-value="1" is-not-null="yes"/>
+ </class>
+
+ <class name="TCMakerChannelAdjacencyAlgorithm">
+  <superclass name="TCAlgorithm"/>
+  <attribute name="window_length" description="Window length (in ticks) for the algorithm" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="trigger_on_n_channels" description="Whether to trigger on N Channels" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="n_channels_threshold" description="Threshold for the N Channels algorithm" type="u32" init-value="8" is-not-null="yes"/>
+ </class>
+
+ <class name="TCMakerChannelDistanceAlgorithm">
+  <superclass name="TCAlgorithm"/>
+  <attribute name="max_tp_count" description="Maximum number of TPs in the TC" type="u32" init-value="8" is-not-null="yes"/>
+ </class>
+
+ <class name="TCMakerDBSCANAlgorithm">
+  <superclass name="TCAlgorithm"/>
+  <attribute name="max_tp_count" description="Maximum number of TPs in the TC" type="u32" init-value="8" is-not-null="yes"/>
+ </class>
+
+ <class name="TCMakerMichelElectronAlgorithm">
+  <superclass name="TCAlgorithm"/>
+  <attribute name="window_length" description="Window length (in ticks) for the algorithm" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="trigger_on_n_channels" description="Whether to trigger on N Channels" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="n_channels_threshold" description="Threshold for the N Channels algorithm" type="u32" init-value="8" is-not-null="yes"/>
+ </class>
+
+ <class name="TCMakerPlaneCoincidenceAlgorithm">
+  <superclass name="TCAlgorithm"/>
+  <attribute name="window_length" description="Window length (in ticks) for the algorithm" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="trigger_on_n_channels" description="Whether to trigger on N Channels" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="n_channels_threshold" description="Threshold for the N Channels algorithm" type="u32" init-value="8" is-not-null="yes"/>
+ </class>
+
  <class name="TriggerDataHandlerModule">
   <superclass name="DataHandlerModule"/>
   <relationship name="enabled_source_ids" description="List of source IDs enabled in this session: used by trigger to define the readout window for trigger decisions." class-type="SourceIDConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
