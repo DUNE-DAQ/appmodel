@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="17" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240307T202444"/>
+<info name="" type="" num-of-items="30" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240831T204255"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -94,7 +94,15 @@
  <comment creation-time="20240305T162137" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="add delay"/>
  <comment creation-time="20240305T172822" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text=" adjust TA prescaling&#xA;"/>
  <comment creation-time="20240307T133917" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="disable TPG"/>
+ <comment creation-time="20240822T070558" created-by="aoranday" created-on="np04-srv-031.cern.ch" author="aoranday" text="Add TPG SimpleThreshold."/>
 </comments>
+
+
+<obj class="AVXThresholdProcessor" id="tpg-threshold-proc">
+ <attr name="plane0" type="u16" val="100"/>
+ <attr name="plane1" type="u16" val="100"/>
+ <attr name="plane2" type="u16" val="100"/>
+</obj>
 
 <obj class="ActionPlan" id="readout-start">
  <attr name="execution_policy" type="enum" val="modules-in-parallel"/>
@@ -116,6 +124,25 @@
   <ref class="DaqModulesGroupByType" id="tp-handler-step"/>
   <ref class="DaqModulesGroupByType" id="aggregator-step"/>
  </rel>
+</obj>
+
+<obj class="DFOConf" id="dfoconf-01">
+ <attr name="general_queue_timeout_ms" type="u32" val="100"/>
+ <attr name="stop_timeout_ms" type="u32" val="100"/>
+ <attr name="td_send_retries" type="s32" val="5"/>
+ <attr name="busy_threshold" type="s32" val="2"/>
+ <attr name="free_threshold" type="s32" val="1"/>
+</obj>
+
+<obj class="DPDKReaderConf" id="def-emu-nic-receiver-conf">
+ <attr name="template_for" type="class" val="FDFakeReaderModule"/>
+ <attr name="emulation_mode" type="bool" val="1"/>
+ <rel name="emulation_conf" class="StreamEmulationParameters" id="stream-emu"/>
+</obj>
+
+<obj class="DPDKReaderConf" id="def-nic-receiver-conf">
+ <attr name="template_for" type="class" val="DPDKReaderModule"/>
+ <attr name="emulation_mode" type="bool" val="0"/>
 </obj>
 
 <obj class="DaqModulesGroupByType" id="aggregator-step">
@@ -142,12 +169,31 @@
  </attr>
 </obj>
 
-<obj class="DFOConf" id="dfoconf-01">
- <attr name="general_queue_timeout_ms" type="u32" val="100"/>
- <attr name="stop_timeout_ms" type="u32" val="100"/>
- <attr name="td_send_retries" type="s32" val="5"/>
- <attr name="busy_threshold" type="s32" val="2"/>
- <attr name="free_threshold" type="s32" val="1"/>
+<obj class="DataHandlerConf" id="def-link-handler">
+ <attr name="template_for" type="class" val="FDDataHandlerModule"/>
+ <attr name="input_data_type" type="string" val="WIBEthFrame"/>
+ <attr name="generate_timesync" type="bool" val="1"/>
+ <rel name="request_handler" class="RequestHandler" id="def-data-request-handler"/>
+ <rel name="latency_buffer" class="LatencyBuffer" id="def-latency-buf"/>
+ <rel name="data_processor" class="RawDataProcessor" id="def-wib-processor"/>
+</obj>
+
+<obj class="DataHandlerConf" id="def-tp-handler">
+ <attr name="template_for" type="class" val="TriggerDataHandlerModule"/>
+ <attr name="input_data_type" type="string" val="TriggerPrimitive"/>
+ <attr name="generate_timesync" type="bool" val="0"/>
+ <rel name="request_handler" class="RequestHandler" id="def-tp-request-handler"/>
+ <rel name="latency_buffer" class="LatencyBuffer" id="def-latency-buf"/>
+ <rel name="data_processor" class="TPDataProcessor" id="tp-processor"/>
+</obj>
+
+<obj class="DataHandlerConf" id="trg-tp-handler">
+ <attr name="template_for" type="class" val="TriggerDataHandlerModule"/>
+ <attr name="input_data_type" type="string" val="TriggerPrimitive"/>
+ <attr name="generate_timesync" type="bool" val="0"/>
+ <rel name="request_handler" class="RequestHandler" id="def-data-request-handler"/>
+ <rel name="latency_buffer" class="LatencyBuffer" id="def-latency-buf"/>
+ <rel name="data_processor" class="TPDataProcessor" id="tp-processor"/>
 </obj>
 
 <obj class="DataReaderConf" id="ta-subscriber-1">
@@ -159,7 +205,6 @@
  <attr name="template_for" type="class" val="DataSubscriberModule"/>
  <attr name="emulation_mode" type="bool" val="0"/>
 </obj>
-
 
 <obj class="DataReaderConf" id="tpset-subscriber-1">
  <attr name="template_for" type="class" val="DataSubscriberModule"/>
@@ -200,22 +245,10 @@
 </obj>
 
 <obj class="MLTConf" id="def-mlt-conf">
+ <attr name="template_for" type="class" val="MLTModule"/>
  <attr name="td_out_of_timeout" type="bool" val="1"/>
  <attr name="buffer_timeout" type="u32" val="1"/>
  <attr name="td_readout_limit" type="u32" val="1"/>
-</obj>
-
-<obj class="DPDKReaderConf" id="def-emu-nic-receiver-conf">
- <attr name="template_for" type="class" val="FDFakeReaderModule"/>
- <attr name="emulation_mode" type="bool" val="1"/>
- <attr name="eal_args" type="string" val=""/>
- <rel name="emulation_conf" class="StreamEmulationParameters" id="stream-emu"/>
-</obj>
-
-<obj class="DPDKReaderConf" id="def-nic-receiver-conf">
- <attr name="template_for" type="class" val="DPDKReaderModule"/>
- <attr name="emulation_mode" type="bool" val="0"/>
- <attr name="eal_args" type="string" val=""/>
 </obj>
 
 <obj class="NICStatsConf" id="def-nic-stats">
@@ -228,37 +261,11 @@
 <obj class="RawDataProcessor" id="def-wib-processor">
  <attr name="queue_sizes" type="u32" val="10000"/>
  <attr name="thread_names_prefix" type="string" val="postproc-"/>
- <attr name="max_ticks_tot" type="u32" val="10000"/>
- <attr name="algorithm" type="string" val="SimpleThreshold"/>
- <attr name="threshold" type="u16" val="1900"/>
  <attr name="channel_map" type="string" val="PD2HDChannelMap"/>
-</obj>
-
-<obj class="DataHandlerConf" id="def-link-handler">
- <attr name="template_for" type="class" val="FDDataHandlerModule"/>
- <attr name="input_data_type" type="string" val="WIBEthFrame"/>
- <attr name="generate_timesync" type="bool" val="1"/>
- <rel name="request_handler" class="RequestHandler" id="def-data-request-handler"/>
- <rel name="latency_buffer" class="LatencyBuffer" id="def-latency-buf"/>
- <rel name="data_processor" class="RawDataProcessor" id="def-wib-processor"/>
-</obj>
-
-<obj class="DataHandlerConf" id="def-tp-handler">
- <attr name="template_for" type="class" val="TriggerDataHandlerModule"/>
- <attr name="input_data_type" type="string" val="TriggerPrimitive"/>
- <attr name="generate_timesync" type="bool" val="0"/>
- <rel name="request_handler" class="RequestHandler" id="def-tp-request-handler"/>
- <rel name="latency_buffer" class="LatencyBuffer" id="def-latency-buf"/>
- <rel name="data_processor" class="TPDataProcessor" id="tp-processor"/>
-</obj>
-
-<obj class="DataHandlerConf" id="trg-tp-handler">
- <attr name="template_for" type="class" val="TriggerDataHandlerModule"/>
- <attr name="input_data_type" type="string" val="TriggerPrimitive"/>
- <attr name="generate_timesync" type="bool" val="0"/>
- <rel name="request_handler" class="RequestHandler" id="def-data-request-handler"/>
- <rel name="latency_buffer" class="LatencyBuffer" id="def-latency-buf"/>
- <rel name="data_processor" class="TPDataProcessor" id="tp-processor"/>
+ <rel name="processing_steps">
+  <ref class="AVXFrugalPedestalSubtractProcessor" id="tpg-pedsub-proc"/>
+  <ref class="AVXThresholdProcessor" id="tpg-threshold-proc"/>
+ </rel>
 </obj>
 
 <obj class="RequestHandler" id="def-data-request-handler">
@@ -290,6 +297,18 @@
  <attr name="TP_rate_per_channel" type="float" val="1"/>
 </obj>
 
+<obj class="TAMakerADCSimpleWindowAlgorithm" id="ta-maker-adcwindow">
+ <attr name="prescale" type="u32" val="10"/>
+ <attr name="max_time_over_threshold" type="u32" val="10000"/>
+ <attr name="adc_threshold" type="u32" val="1000000"/>
+ <attr name="window_length" type="u32" val="10000"/>
+</obj>
+
+<obj class="TAMakerPrescaleAlgorithm" id="dummy-ta-maker">
+ <attr name="prescale" type="u32" val="1000"/>
+ <attr name="max_time_over_threshold" type="u32" val="10000"/>
+</obj>
+
 <obj class="TPDataProcessor" id="tp-processor">
  <attr name="queue_sizes" type="u32" val="10000"/>
  <attr name="thread_names_prefix" type="string" val="proc-"/>
@@ -302,17 +321,6 @@
 <obj class="TRBConf" id="trb-01">
  <attr name="queues_timeout" type="u32" val="100"/>
  <attr name="trigger_record_timeout_ms" type="u32" val="2858"/>
-</obj>
-
-<obj class="TAMakerPrescaleAlgorithm" id="dummy-ta-maker">
- <attr name="prescale" type="u32" val="1000"/>
-</obj>
-
-<obj class="TAMakerADCSimpleWindowAlgorithm" id="ta-maker-adcwindow">
- <attr name="prescale" type="u32" val="10"/>
- <attr name="max_time_over_threshold" type="u32" val="10000"/>
- <attr name="window_length" type="u32" val="10000"/>
- <attr name="adc_threshold" type="u32" val="1000000"/>
 </obj>
 
 </oks-data>
