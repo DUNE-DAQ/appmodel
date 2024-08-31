@@ -88,6 +88,7 @@
 
 
  <class name="DFApplication">
+  <superclass name="Resource"/>
   <superclass name="SmartDaqApplication"/>
   <relationship name="trb" description="Configuration of the TRB to be generated my get_modules()" class-type="TRBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_writers" class-type="DataWriterConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -220,6 +221,7 @@
  </class>
 
  <class name="FakeHSIApplication">
+  <superclass name="Resource"/>
   <superclass name="SmartDaqApplication"/>
   <relationship name="link_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="generator" class-type="FakeHSIEventGeneratorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -339,8 +341,8 @@
   <superclass name="SmartDaqApplication"/>
   <attribute name="tp_source_id" description="Source ID for TP handler if TPs are being generated" type="u32"/>
   <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
-  <attribute name="hit_finding_enabled" type="bool" init-value="true"/>
-  <attribute name="tp_processing_enabled" type="bool" init-value="true"/>
+  <attribute name="tp_generation_enabled" type="bool" init-value="true"/>
+  <attribute name="ta_generation_enabled" type="bool" init-value="true"/>
   <relationship name="uses" description="Configuration of the host hardware resources used by this application" class-type="RoHwConfig" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
   <relationship name="link_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="tp_handler" class-type="DataHandlerConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -404,6 +406,7 @@
  </class>
 
  <class name="TPStreamWriterApplication">
+  <superclass name="Resource"/>
   <superclass name="SmartDaqApplication"/>
   <relationship name="tp_writer" class-type="TPStreamWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate dal objects for streams of thie ReadoutApplication on the fly">

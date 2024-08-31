@@ -113,6 +113,7 @@
  </class>
 
  <class name="HSIEventToTCApplication">
+  <superclass name="Resource"/>
   <superclass name="SmartDaqApplication"/>
   <relationship name="hsevent_to_tc_conf" class-type="HSI2TCTranslatorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate daq module dal objects for HSIEventToTCApplication on the fly">

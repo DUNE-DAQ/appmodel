@@ -346,7 +346,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
         //   }
         // }
       }
-      if (ro_app->get_tp_source_id()!= 0 && ro_app->get_hit_finding_enabled()) {
+      if (ro_app->get_tp_generation_enabled()) {
          conffwk::ConfigObject* tpSourceIdConf = new conffwk::ConfigObject();
          confdb->create(dbfile, "SourceIDConf", ro_app->UID()+"-"+ std::to_string(ro_app->get_tp_source_id()), *tpSourceIdConf);
          tpSourceIdConf->set_by_val<uint32_t>("sid", ro_app->get_tp_source_id());
