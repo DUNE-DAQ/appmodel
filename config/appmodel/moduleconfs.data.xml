@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="30" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240831T204255"/>
+<info name="" type="" num-of-items="31" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240903T185101"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -95,6 +95,7 @@
  <comment creation-time="20240305T172822" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text=" adjust TA prescaling&#xA;"/>
  <comment creation-time="20240307T133917" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="disable TPG"/>
  <comment creation-time="20240822T070558" created-by="aoranday" created-on="np04-srv-031.cern.ch" author="aoranday" text="Add TPG SimpleThreshold."/>
+ <comment creation-time="20240903T185101" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="Reformat"/>
 </comments>
 
 
@@ -302,6 +303,14 @@
  <attr name="max_time_over_threshold" type="u32" val="10000"/>
  <attr name="adc_threshold" type="u32" val="1000000"/>
  <attr name="window_length" type="u32" val="10000"/>
+</obj>
+
+<obj class="TAMakerChannelDistanceAlgorithm" id="ta-maker-channeldistance">
+ <attr name="prescale" type="u32" val="100"/>
+ <attr name="max_time_over_threshold" type="u32" val="10000"/>
+ <attr name="window_length" type="u32" val="10000"/>
+ <attr name="min_tps" type="u32" val="10"/>
+ <attr name="max_channel_distance" type="u32" val="5"/>
 </obj>
 
 <obj class="TAMakerPrescaleAlgorithm" id="dummy-ta-maker">
