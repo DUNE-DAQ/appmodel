@@ -121,11 +121,6 @@
  <attr name="enabled_signals" type="u32" val="1"/>
 </obj>
 
-<obj class="SourceIDConf" id="hsi-tc-srcid-1">
- <attr name="sid" type="u32" val="2"/>
- <attr name="subsystem" type="enum" val="Trigger"/>
-</obj>
-
 <obj class="HSIEventToTCApplication" id="hsi-to-tc-app">
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
@@ -185,19 +180,24 @@
  <attr name="port" type="u16" val="5801"/>
 </obj>
 
-<obj class="Service" id="hsi-to-tc-app_control">
- <attr name="protocol" type="string" val="rest"/>
- <attr name="port" type="u16" val="5802"/>
-</obj>
-
 <obj class="Service" id="hsi-controller_control">
  <attr name="protocol" type="string" val="grpc"/>
  <attr name="port" type="u16" val="5800"/>
 </obj>
 
+<obj class="Service" id="hsi-to-tc-app_control">
+ <attr name="protocol" type="string" val="rest"/>
+ <attr name="port" type="u16" val="5802"/>
+</obj>
+
 <obj class="SourceIDConf" id="hsi-srcid-01">
  <attr name="sid" type="u32" val="1"/>
  <attr name="subsystem" type="enum" val="HW_Signals_Interface"/>
+</obj>
+
+<obj class="SourceIDConf" id="hsi-tc-srcid-1">
+ <attr name="sid" type="u32" val="2"/>
+ <attr name="subsystem" type="enum" val="Trigger"/>
 </obj>
 
 </oks-data>
