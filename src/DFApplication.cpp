@@ -196,14 +196,15 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
   }
   uint dw_idx = 0;
   for ( auto dwrConf :dwrConfs ) {
-    // auto fnParamsObj = dwrConf->get_data_store_params()->get_filename_params()->config_object();
-    // fnParamsObj.set_by_val<std::string>("writer_identifier", fmt::format("{}_datawriter-{}", UID(), dw_idx));
+    //auto fnParamsObj = dwrConf->get_data_store_params()->get_filename_params()->config_object();
+    //fnParamsObj.set_by_val<std::string>("writer_identifier", fmt::format("{}_datawriter-{}", UID(), dw_idx));
     auto dwrConfObj = dwrConf->config_object();
 
     // Prepare DataWriterModule Module Object and assign its Config Object.
     conffwk::ConfigObject dwrObj;
     std::string dwrUid(fmt::format("{}-dw-{}", UID(), dw_idx));
     confdb->create(dbfile, "DataWriterModule", dwrUid, dwrObj);
+    dwrObj.set_by_val("writer_identifier", fmt::format("{}_dw_{}", UID(), dw_idx));
     dwrObj.set_obj("configuration", &dwrConfObj);
     dwrObj.set_objs("inputs", { &trQueueObj });
     dwrObj.set_objs("outputs", { &tokenNetObj });

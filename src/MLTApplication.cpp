@@ -305,46 +305,6 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
           sourceIdConf->set_by_val<std::string>("subsystem", "Detector_Readout");
           sourceIds.push_back(sourceIdConf);
         }
-
-
-
-        // // Iterate over each interface in per group
-        // auto interfaces = group_rset->get_contains();
-        // TLOG_DEBUG(7) << "Number of ReadoutInterfaces in that group : " << interfaces.size();
-        // for (auto interface_rset : interfaces) {
-        //   if (interface_rset->disabled(*session)) {
-        //     TLOG_DEBUG(7) << "Ignoring disabled ReadoutInterface " << interface_rset->UID();
-        //     continue;
-        //   }
-        //   auto interface = interface_rset->cast<confmodel::ReadoutInterface>();
-        //   if (interface == nullptr) {
-        //     throw(BadConf(ERS_HERE, "ReadoutGroup contains something othen than ReadoutInterface"));
-        //   }
-        //   auto streams = interface->get_contains();
-        //   TLOG_DEBUG(7) << "Number of streams in that interface: " << streams.size();
-
-        //   // Interate over all the streams
-        //   for (auto link : streams) {
-        //     auto stream = link->cast<confmodel::DetectorStream>();
-        //     if (stream == nullptr) {
-        //       throw(BadConf(ERS_HERE, "ReadoutInterface contains something other than DetectorStream"));
-        //     }
-        //     if (stream->disabled(*session)) {
-        //       TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
-        //       continue;
-        //     }
-
-        //     // Create SourceIDConf object for the MLT
-        //     auto id = stream->get_source_id();
-        //     conffwk::ConfigObject* sourceIdConf = new conffwk::ConfigObject();
-        //     std::string sourceIdConfUID = "dro-mlt-stream-config-" + std::to_string(id);
-        //     confdb->create(dbfile, "SourceIDConf", sourceIdConfUID, *sourceIdConf);
-        //     sourceIdConf->set_by_val<uint32_t>("sid", id);
-        //     // https://github.com/DUNE-DAQ/daqdataformats/blob/5b99506675a586c8a09123900e224f2371d96df9/include/daqdataformats/detail/SourceID.hxx#L108
-        //     sourceIdConf->set_by_val<std::string>("subsystem", "Detector_Readout");
-        //     sourceIds.push_back(sourceIdConf);
-        //   }
-        // }
       }
       if (ro_app->get_tp_generation_enabled()) {
          conffwk::ConfigObject* tpSourceIdConf = new conffwk::ConfigObject();
@@ -357,7 +317,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
 
     // SmartDaqApplication now has source_id member, might want to use that but make sure that it's actually a data source somehow...
     auto trg_app = app->cast<appmodel::TriggerApplication>();
-    if(trg_app != nullptr && trg_app->get_source_id() != nullptr) {
+    if(trg_app != nullptr && trg_app->get_source_id() != nullptr && !trg_app->disabled(*session)) {
       	conffwk::ConfigObject* tcSourceIdConf = new conffwk::ConfigObject();
         confdb->create(dbfile, "SourceIDConf", trg_app->UID()+"-"+ std::to_string(trg_app->get_source_id()->get_sid()), *tcSourceIdConf);
         tcSourceIdConf->set_by_val<uint32_t>("sid", trg_app->get_source_id()->get_sid());
@@ -368,7 +328,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
     // FIXME: add here same logics for HSI application(s)
     //
     auto hsi_app = app->cast<appmodel::FakeHSIApplication>();
-    if(hsi_app != nullptr && hsi_app->get_source_id() != nullptr) {
+    if(hsi_app != nullptr && hsi_app->get_source_id() != nullptr && !hsi_app->disabled(*session)) {
         conffwk::ConfigObject* hsEventSourceIdConf = new conffwk::ConfigObject();
         confdb->create(dbfile, "SourceIDConf", hsi_app->UID()+"-"+ std::to_string(hsi_app->get_source_id()->get_sid()), *hsEventSourceIdConf);
         hsEventSourceIdConf->set_by_val<uint32_t>("sid", hsi_app->get_source_id()->get_sid());
