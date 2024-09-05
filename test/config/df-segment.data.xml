@@ -261,6 +261,7 @@
    <ref class="DFOApplication" id="dfo-02"/>
   <ref class="DFApplication" id="df-01"/>
   <ref class="DFApplication" id="df-02"/>
+  <ref class="DFApplication" id="df-03"/>
  </rel>
  <rel name="controller" class="RCApplication" id="df-controller"/>
 </obj>

@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="40" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20240826T084126"/>
+<info name="" type="" num-of-items="40" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240831T153040"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -129,123 +129,10 @@
  </rel>
 </obj>
 
-<obj class="DPDKPortConfiguration" id="dpdk_e810_conf">
- <attr name="flow_control" type="bool" val="1"/>
- <attr name="mtu" type="u32" val="9000"/>
- <attr name="rx_ring_size" type="u32" val="4096"/>
- <attr name="tx_ring_size" type="u32" val="1024"/>
- <attr name="num_bufs" type="u32" val="16384"/>
- <attr name="burst_size" type="u32" val="2048"/>
- <attr name="lcore_sleep_us" type="u32" val="10"/>
- <attr name="source_to_rx_queue_multiplexing" type="s16" val="1"/>
- <rel name="used_lcores">
-  <ref class="ProcessingResource" id="localhost_cpus"/>
- </rel>
-</obj>
-
-<obj class="DPDKReceiver" id="ru-1-rcv">
- <rel name="uses" class="NetworkDevice" id="ru_1_readout"/>
- <rel name="configuration" class="DPDKPortConfiguration" id="dpdk_e810_conf"/>
-</obj>
-
 <obj class="DetectorConfig" id="dummy-detector">
  <attr name="tpg_channel_map" type="string" val="PD2HDChannelMap"/>
  <attr name="clock_speed_hz" type="u32" val="62500000"/>
  <attr name="op_env" type="string" val="test"/>
-</obj>
-
-<obj class="DetectorStream" id="stream_100">
- <attr name="source_id" type="u32" val="100"/>
- <rel name="geo_id" class="GeoId" id="g_3_1_1_0"/>
-</obj>
-
-<obj class="DetectorStream" id="stream_101">
- <attr name="source_id" type="u32" val="101"/>
- <rel name="geo_id" class="GeoId" id="g_3_1_1_1"/>
-</obj>
-
-<obj class="DetectorStream" id="stream_102">
- <attr name="source_id" type="u32" val="102"/>
- <rel name="geo_id" class="GeoId" id="g_3_1_1_2"/>
-</obj>
-
-<obj class="DetectorStream" id="stream_103">
- <attr name="source_id" type="u32" val="103"/>
- <rel name="geo_id" class="GeoId" id="g_3_1_1_3"/>
-</obj>
-
-<obj class="DetectorToDaqConnection" id="conn_apa1">
- <rel name="contains">
-  <ref class="DPDKReceiver" id="ru-1-rcv"/>
-  <ref class="ResourceSetAND" id="apa1_sender_rset"/>
- </rel>
-</obj>
-
-<obj class="DetectorToDaqConnection" id="det-3-connections">
-</obj>
-
-<obj class="DetectorToDaqConnection" id="det-4-connections">
-</obj>
-
-<obj class="GeoId" id="g_3_1_1_0">
- <attr name="detector_id" type="u32" val="3"/>
- <attr name="crate_id" type="u32" val="1"/>
- <attr name="slot_id" type="u32" val="1"/>
-</obj>
-
-<obj class="GeoId" id="g_3_1_1_1">
- <attr name="detector_id" type="u32" val="3"/>
- <attr name="crate_id" type="u32" val="1"/>
- <attr name="slot_id" type="u32" val="1"/>
- <attr name="stream_id" type="u32" val="1"/>
-</obj>
-
-<obj class="GeoId" id="g_3_1_1_2">
- <attr name="detector_id" type="u32" val="3"/>
- <attr name="crate_id" type="u32" val="1"/>
- <attr name="slot_id" type="u32" val="1"/>
- <attr name="stream_id" type="u32" val="2"/>
-</obj>
-
-<obj class="GeoId" id="g_3_1_1_3">
- <attr name="detector_id" type="u32" val="3"/>
- <attr name="crate_id" type="u32" val="1"/>
- <attr name="slot_id" type="u32" val="1"/>
- <attr name="stream_id" type="u32" val="3"/>
-</obj>
-
-<obj class="HermesDataSender" id="wib_101_link0">
- <attr name="port" type="u32" val="17476"/>
- <attr name="control_host" type="string" val="localhost"/>
- <rel name="contains">
-  <ref class="DetectorStream" id="stream_100"/>
-  <ref class="DetectorStream" id="stream_101"/>
-  <ref class="DetectorStream" id="stream_102"/>
-  <ref class="DetectorStream" id="stream_103"/>
- </rel>
- <rel name="uses" class="NetworkInterface" id="wib_101_hermes0"/>
-</obj>
-
-<obj class="NetworkDevice" id="ru_1_readout">
- <attr name="mac_address" type="string" val="00:00:00:00:00:00"/>
- <attr name="ip_address" type="string" val="123.456.101.501"/>
- <attr name="interface_name" type="string" val="data0"/>
- <attr name="network_name" type="enum" val="Control"/>
- <attr name="pcie_addr" type="string" val="0"/>
-</obj>
-
-<obj class="NetworkInterface" id="wib_101_hermes0">
- <attr name="mac_address" type="string" val="00:00:00:00:00:00"/>
- <attr name="ip_address" type="string" val="123.456.101.000"/>
- <attr name="interface_name" type="string" val="hermes0"/>
- <attr name="network_name" type="enum" val="Control"/>
-</obj>
-
-<obj class="NetworkInterface" id="wib_101_hermes1">
- <attr name="mac_address" type="string" val="00:00:00:00:00:00"/>
- <attr name="ip_address" type="string" val="123.456.101.001"/>
- <attr name="interface_name" type="string" val="hermes1"/>
- <attr name="network_name" type="enum" val="Control"/>
 </obj>
 
 <obj class="OpMonService" id="cern-opmon-application-service">
@@ -283,12 +170,6 @@
   <ref class="Service" id="root-controller_control"/>
  </rel>
  <rel name="fsm" class="FSMconfiguration" id="fsmConf-test"/>
-</obj>
-
-<obj class="ResourceSetAND" id="apa1_sender_rset">
- <rel name="contains">
-  <ref class="HermesDataSender" id="wib_101_link0"/>
- </rel>
 </obj>
 
 <obj class="Segment" id="root-segment">
@@ -342,8 +223,6 @@
    <ref class="Variable" id="session-env-trace-file"/>
  </rel>
  <rel name="disabled">
-  <ref class="DetectorToDaqConnection" id="det-4-connections"/>
-  <ref class="DetectorToDaqConnection" id="det-3-connections"/>
  </rel>
  <rel name="segment" class="Segment" id="root-segment"/>
  <rel name="infrastructure_applications">

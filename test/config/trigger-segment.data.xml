@@ -131,22 +131,6 @@
  <rel name="data_processor" class="TCDataProcessor" id="def-tc-processor"/>
 </obj>
 
-<obj class="HSIEventToTCApplication" id="hsi-to-tc-app">
- <attr name="application_name" type="string" val="daq_application"/>
- <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
- <rel name="exposes_service">
-  <ref class="Service" id="dataRequests"/>
-  <ref class="Service" id="HSIEvents"/>
-  <ref class="Service" id="hsi-to-tc-app_control"/>
- </rel>
- <rel name="source_id" class="SourceIDConf" id="hsi-tc-srcid-1"/>
- <rel name="network_rules">
-  <ref class="NetworkConnectionRule" id="hsi-rule"/>
-  <ref class="NetworkConnectionRule" id="tc-net-rule"/>
- </rel>
- <rel name="hsevent_to_tc_conf" class="HSI2TCTranslatorConf" id="hsi-to-tc-conf"/>
-</obj>
-
 <obj class="MLTApplication" id="mlt">
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
@@ -215,14 +199,8 @@
  <rel name="applications">
   <ref class="TriggerApplication" id="tc-maker-1"/>
   <ref class="MLTApplication" id="mlt"/>
-  <ref class="HSIEventToTCApplication" id="hsi-to-tc-app"/>
  </rel>
  <rel name="controller" class="RCApplication" id="trg-controller"/>
-</obj>
-
-<obj class="Service" id="hsi-to-tc-app_control">
- <attr name="protocol" type="string" val="rest"/>
- <attr name="port" type="u16" val="5701"/>
 </obj>
 
 <obj class="Service" id="mlt_control">
@@ -245,11 +223,6 @@
  <attr name="port" type="u16" val="5700"/>
 </obj>
 
-<obj class="SourceIDConf" id="hsi-tc-srcid-1">
- <attr name="sid" type="u32" val="2"/>
- <attr name="subsystem" type="enum" val="Trigger"/>
-</obj>
-
 <obj class="SourceIDConf" id="ta-srcid-1">
  <attr name="sid" type="u32" val="1100"/>
  <attr name="subsystem" type="enum" val="Trigger"/>
@@ -263,7 +236,6 @@
 <obj class="TADataProcessor" id="def-ta-processor">
  <attr name="queue_sizes" type="u32" val="10000"/>
  <attr name="thread_names_prefix" type="string" val="proc-"/>
- <attr name="mask_processing" type="bool" val="0"/>
  <attr name="print_ta_info" type="bool" val="0"/>
  <rel name="algorithms">
   <ref class="TCMakerPrescaleAlgorithm" id="tc-pass-through-algo"/>
@@ -273,7 +245,6 @@
 <obj class="TCDataProcessor" id="def-tc-processor">
  <attr name="queue_sizes" type="u32" val="10000"/>
  <attr name="thread_names_prefix" type="string" val="mlt_"/>
- <attr name="mask_processing" type="bool" val="0"/>
  <attr name="hsi_trigger_type_passthrough" type="bool" val="0"/>
  <attr name="merge_overlapping_tcs" type="bool" val="1"/>
  <attr name="td_out_of_timeout" type="bool" val="1"/>
@@ -288,11 +259,11 @@
  </rel>
 </obj>
 
-<obj class="TCMakerPrescaleAlgorithm" id="tc-pass-through-algo">
+<obj class="TCMakerADCSimpleWindowAlgorithm" id="tc-adcwindow-algo">
  <attr name="prescale" type="u32" val="100"/>
 </obj>
 
-<obj class="TCMakerADCSimpleWindowAlgorithm" id="tc-adcwindow-algo">
+<obj class="TCMakerPrescaleAlgorithm" id="tc-pass-through-algo">
  <attr name="prescale" type="u32" val="100"/>
 </obj>
 
