@@ -88,7 +88,7 @@
 <obj class="DataHandlerConf" id="def-hsi-handler">
  <attr name="template_for" type="class" val="HSIDataHandlerModule"/>
  <attr name="input_data_type" type="string" val="HSIFrame"/>
- <attr name="generate_timesync" type="bool" val="1"/>
+ <attr name="generate_timesync" type="bool" val="0"/>
  <rel name="request_handler" class="RequestHandler" id="hsi-requesthandler-generic"/>
  <rel name="latency_buffer" class="LatencyBuffer" id="hsilatencybuffer-generic"/>
  <rel name="data_processor" class="HSIFrameProcessor" id="def-hsi-processor"/>
@@ -121,10 +121,25 @@
  <attr name="enabled_signals" type="u32" val="1"/>
 </obj>
 
+<obj class="HSIEventToTCApplication" id="hsi-to-tc-app">
+ <attr name="application_name" type="string" val="daq_application"/>
+ <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+ <rel name="exposes_service">
+  <ref class="Service" id="dataRequests"/>
+  <ref class="Service" id="HSIEvents"/>
+  <ref class="Service" id="hsi-to-tc-app_control"/>
+ </rel>
+ <rel name="source_id" class="SourceIDConf" id="hsi-tc-srcid-1"/>
+ <rel name="network_rules">
+  <ref class="NetworkConnectionRule" id="hsi-rule"/>
+  <ref class="NetworkConnectionRule" id="tc-net-rule"/>
+ </rel>
+ <rel name="hsevent_to_tc_conf" class="HSI2TCTranslatorConf" id="hsi-to-tc-conf"/>
+</obj>
+
 <obj class="HSIFrameProcessor" id="def-hsi-processor">
  <attr name="queue_sizes" type="u32" val="10000"/>
  <attr name="thread_names_prefix" type="string" val="hsip"/>
- <attr name="mask_processing" type="bool" val="0"/>
 </obj>
 
 <obj class="LatencyBuffer" id="hsilatencybuffer-generic">
@@ -155,6 +170,7 @@
 <obj class="Segment" id="hsi-segment">
  <rel name="applications">
   <ref class="FakeHSIApplication" id="hsi-01"/>
+  <ref class="HSIEventToTCApplication" id="hsi-to-tc-app"/>
  </rel>
  <rel name="controller" class="RCApplication" id="hsi-controller"/>
 </obj>
@@ -169,9 +185,19 @@
  <attr name="port" type="u16" val="5800"/>
 </obj>
 
+<obj class="Service" id="hsi-to-tc-app_control">
+ <attr name="protocol" type="string" val="rest"/>
+ <attr name="port" type="u16" val="5802"/>
+</obj>
+
 <obj class="SourceIDConf" id="hsi-srcid-01">
  <attr name="sid" type="u32" val="1"/>
  <attr name="subsystem" type="enum" val="HW_Signals_Interface"/>
+</obj>
+
+<obj class="SourceIDConf" id="hsi-tc-srcid-1">
+ <attr name="sid" type="u32" val="2"/>
+ <attr name="subsystem" type="enum" val="Trigger"/>
 </obj>
 
 </oks-data>

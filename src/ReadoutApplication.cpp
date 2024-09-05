@@ -150,8 +150,12 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   auto dlh_class = dlh_conf->get_template_for();
 
   auto tph_conf = get_tp_handler();
+  if (tph_conf==nullptr && get_tp_generation_enabled()) {
+    throw(BadConf(ERS_HERE, "TP generation is enabled but there is no TP data handler configuration"));
+  }
+
   std::string tph_class = "";
-  if (tph_conf != nullptr) {
+  if (tph_conf != nullptr && get_tp_generation_enabled()) {
     tph_class = tph_conf->get_template_for();
   }
 
@@ -171,7 +175,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
     if (destination_class == "DataHandlerModule" || destination_class == dlh_class || destination_class == tph_class) {
       if (data_type == "DataRequest") {
         dlh_reqinput_qdesc = rule->get_descriptor();
-      } else if (data_type == "TriggerPrimitive") {
+      } else if (data_type == "TriggerPrimitive" && get_tp_generation_enabled()) {
         tp_input_qdesc = rule->get_descriptor();
       } else {
         dlh_input_qdesc = rule->get_descriptor();
@@ -328,7 +332,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   conffwk::ConfigObject tp_queue_obj;
   conffwk::ConfigObject tpreq_queue_obj;
 
-  if (tph_conf) {
+  if (get_tp_generation_enabled()) {
 
     auto tpsrc = get_tp_source_id();
 
@@ -338,6 +342,8 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
     std::string tp_uid("tphandler-" + std::to_string(tpsrc));
     config->create(dbfile, tph_class, tp_uid, tph_obj);
     tph_obj.set_by_val<uint32_t>("source_id", tpsrc);
+    tph_obj.set_by_val<uint32_t>("detector_id", 1); // 1 == kDAQ
+    tph_obj.set_by_val<bool>("post_processing_enabled", get_ta_generation_enabled());
     tph_obj.set_obj("module_configuration", &tph_conf_obj);
 
     // Create the TPs aggregator queue (from RawData Handlers to TP handlers)
@@ -376,6 +382,8 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
     TLOG() << fmt::format("creating OKS configuration object for Data Link Handler class {}, if {}", dlh_class, sid);
     config->create(dbfile, dlh_class, uid, dlh_obj);
     dlh_obj.set_by_val<uint32_t>("source_id", sid);
+    dlh_obj.set_by_val<uint32_t>("detector_id", ds->get_geo_id()->get_detector_id());
+    dlh_obj.set_by_val<bool>("post_processing_enabled", get_tp_generation_enabled());
     dlh_obj.set_by_val<bool>("emulation_mode", emulation_mode);
     dlh_obj.set_obj("geo_id", &ds->get_geo_id()->config_object());
     dlh_obj.set_obj("module_configuration", &dlh_conf->config_object());
@@ -403,7 +411,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
       dlh_outs.push_back(&ts_net_obj);
     }
 
-    if (tph_conf) {
+    if (get_tp_generation_enabled()) {
       dlh_outs.push_back(&tp_queue_obj);
     }
 

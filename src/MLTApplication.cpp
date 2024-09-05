@@ -346,7 +346,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
         //   }
         // }
       }
-      if (ro_app->get_tp_source_id()!= 0) {
+      if (ro_app->get_tp_generation_enabled()) {
          conffwk::ConfigObject* tpSourceIdConf = new conffwk::ConfigObject();
          confdb->create(dbfile, "SourceIDConf", ro_app->UID()+"-"+ std::to_string(ro_app->get_tp_source_id()), *tpSourceIdConf);
          tpSourceIdConf->set_by_val<uint32_t>("sid", ro_app->get_tp_source_id());
@@ -400,6 +400,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
   std::string ti_uid(handler_name + "-"+ std::to_string(source_id));
   confdb->create(dbfile, tch_class, ti_uid, ti_obj);
   ti_obj.set_by_val<uint32_t>("source_id", source_id);
+  ti_obj.set_by_val<uint32_t>("detector_id", 1); //1 == kDAQ
   ti_obj.set_obj("module_configuration", &tch_conf_obj);
   ti_obj.set_objs("enabled_source_ids", sourceIds);
   ti_obj.set_objs("mandatory_source_ids", mandatory_sids);

@@ -63,12 +63,13 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="10" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105615" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240628T062322"/>
+<info name="" type="" num-of-items="12" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105615" last-modified-by="aoranday" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240829T102857"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
  <file path="schema/appmodel/application.schema.xml"/>
  <file path="schema/appmodel/fdmodules.schema.xml"/>
+ <file path="schema/appmodel/wiec.schema.xml"/>
  <file path="config/appmodel/connections.data.xml"/>
  <file path="config/appmodel/moduleconfs.data.xml"/>
  <file path="test/config/hosts.data.xml"/>
@@ -94,8 +95,219 @@
  <comment creation-time="20240612T203623" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="adding dummy connections to ru-02"/>
  <comment creation-time="20240620T161416" created-by="gjc" created-on="latitude" author="gjc" text="l"/>
  <comment creation-time="20240628T062322" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="removing broadcasters from control apps"/>
+ <comment creation-time="20240822T070558" created-by="aoranday" created-on="np04-srv-031.cern.ch" author="aoranday" text="Add TPG SimpleThreshold."/>
+ <comment creation-time="20240828T140226" created-by="aoranday" created-on="np04-srv-031.cern.ch" author="aoranday" text="Change AbsRS config."/>
+ <comment creation-time="20240829T102857" created-by="aoranday" created-on="np04-srv-031.cern.ch" author="aoranday" text="Add AbsRS processor."/>
 </comments>
 
+
+<obj class="AVXAbsRunSumProcessor" id="tpg-absrs-proc">
+ <attr name="memory_factor_plane0" type="u8" val="8"/>
+ <attr name="memory_factor_plane1" type="u8" val="8"/>
+ <attr name="memory_factor_plane2" type="u8" val="8"/>
+ <attr name="scale_factor_plane0" type="u8" val="10"/>
+ <attr name="scale_factor_plane1" type="u8" val="10"/>
+ <attr name="scale_factor_plane2" type="u8" val="10"/>
+</obj>
+
+<obj class="AVXFrugalPedestalSubtractProcessor" id="tpg-pedsub-proc">
+ <attr name="accum_limit" type="u8" val="10"/>
+</obj>
+
+<obj class="AVXRunSumProcessor" id="tpg-rs-proc">
+ <attr name="memory_factor_plane0" type="u8" val="8"/>
+ <attr name="memory_factor_plane1" type="u8" val="8"/>
+ <attr name="memory_factor_plane2" type="u8" val="8"/>
+ <attr name="scale_factor_plane0" type="u8" val="10"/>
+ <attr name="scale_factor_plane1" type="u8" val="10"/>
+ <attr name="scale_factor_plane2" type="u8" val="10"/>
+</obj>
+
+<obj class="DPDKPortConfiguration" id="dpdk_e810_conf">
+ <attr name="flow_control" type="bool" val="1"/>
+ <attr name="mtu" type="u32" val="9000"/>
+ <attr name="rx_ring_size" type="u32" val="4096"/>
+ <attr name="tx_ring_size" type="u32" val="1024"/>
+ <attr name="num_bufs" type="u32" val="16384"/>
+ <attr name="burst_size" type="u32" val="2048"/>
+ <attr name="lcore_sleep_us" type="u32" val="10"/>
+ <attr name="source_to_rx_queue_multiplexing" type="s16" val="1"/>
+ <rel name="used_lcores">
+  <ref class="ProcessingResource" id="localhost_cpus"/>
+ </rel>
+</obj>
+
+<obj class="DPDKReceiver" id="ru-1-rcv">
+ <rel name="uses" class="NetworkDevice" id="ru_1_readout"/>
+ <rel name="configuration" class="DPDKPortConfiguration" id="dpdk_e810_conf"/>
+</obj>
+
+<obj class="DPDKReceiver" id="ru-2-rcv">
+ <rel name="uses" class="NetworkDevice" id="ru_2_readout"/>
+ <rel name="configuration" class="DPDKPortConfiguration" id="dpdk_e810_conf"/>
+</obj>
+
+<obj class="DetectorStream" id="stream_100">
+ <attr name="source_id" type="u32" val="100"/>
+ <rel name="geo_id" class="GeoId" id="g_3_1_1_0"/>
+</obj>
+
+<obj class="DetectorStream" id="stream_101">
+ <attr name="source_id" type="u32" val="101"/>
+ <rel name="geo_id" class="GeoId" id="g_3_1_1_1"/>
+</obj>
+
+<obj class="DetectorStream" id="stream_102">
+ <attr name="source_id" type="u32" val="102"/>
+ <rel name="geo_id" class="GeoId" id="g_3_1_1_2"/>
+</obj>
+
+<obj class="DetectorStream" id="stream_103">
+ <attr name="source_id" type="u32" val="103"/>
+ <rel name="geo_id" class="GeoId" id="g_3_1_1_3"/>
+</obj>
+
+<obj class="DetectorStream" id="stream_104">
+ <attr name="source_id" type="u32" val="104"/>
+ <rel name="geo_id" class="GeoId" id="g_3_2_1_0"/>
+</obj>
+
+<obj class="DetectorStream" id="stream_105">
+ <attr name="source_id" type="u32" val="105"/>
+ <rel name="geo_id" class="GeoId" id="g_3_2_1_1"/>
+</obj>
+
+<obj class="DetectorStream" id="stream_106">
+ <attr name="source_id" type="u32" val="106"/>
+ <rel name="geo_id" class="GeoId" id="g_3_2_1_2"/>
+</obj>
+
+<obj class="DetectorStream" id="stream_107">
+ <attr name="source_id" type="u32" val="107"/>
+ <rel name="geo_id" class="GeoId" id="g_3_2_1_3"/>
+</obj>
+
+<obj class="DetectorToDaqConnection" id="conn_apa1">
+ <rel name="contains">
+  <ref class="DPDKReceiver" id="ru-1-rcv"/>
+  <ref class="ResourceSetAND" id="apa1_sender_rset"/>
+ </rel>
+</obj>
+
+<obj class="DetectorToDaqConnection" id="conn_apa2">
+ <rel name="contains">
+  <ref class="DPDKReceiver" id="ru-2-rcv"/>
+  <ref class="ResourceSetAND" id="apa2_sender_rset"/>
+ </rel>
+</obj>
+
+<obj class="GeoId" id="g_3_1_1_0">
+ <attr name="detector_id" type="u32" val="3"/>
+ <attr name="crate_id" type="u32" val="1"/>
+ <attr name="slot_id" type="u32" val="1"/>
+</obj>
+
+<obj class="GeoId" id="g_3_1_1_1">
+ <attr name="detector_id" type="u32" val="3"/>
+ <attr name="crate_id" type="u32" val="1"/>
+ <attr name="slot_id" type="u32" val="1"/>
+ <attr name="stream_id" type="u32" val="1"/>
+</obj>
+
+<obj class="GeoId" id="g_3_1_1_2">
+ <attr name="detector_id" type="u32" val="3"/>
+ <attr name="crate_id" type="u32" val="1"/>
+ <attr name="slot_id" type="u32" val="1"/>
+ <attr name="stream_id" type="u32" val="2"/>
+</obj>
+
+<obj class="GeoId" id="g_3_1_1_3">
+ <attr name="detector_id" type="u32" val="3"/>
+ <attr name="crate_id" type="u32" val="1"/>
+ <attr name="slot_id" type="u32" val="1"/>
+ <attr name="stream_id" type="u32" val="3"/>
+</obj>
+
+<obj class="GeoId" id="g_3_2_1_0">
+ <attr name="detector_id" type="u32" val="3"/>
+ <attr name="crate_id" type="u32" val="2"/>
+ <attr name="slot_id" type="u32" val="1"/>
+</obj>
+
+<obj class="GeoId" id="g_3_2_1_1">
+ <attr name="detector_id" type="u32" val="3"/>
+ <attr name="crate_id" type="u32" val="2"/>
+ <attr name="slot_id" type="u32" val="1"/>
+ <attr name="stream_id" type="u32" val="1"/>
+</obj>
+
+<obj class="GeoId" id="g_3_2_1_2">
+ <attr name="detector_id" type="u32" val="3"/>
+ <attr name="crate_id" type="u32" val="2"/>
+ <attr name="slot_id" type="u32" val="1"/>
+ <attr name="stream_id" type="u32" val="2"/>
+</obj>
+
+<obj class="GeoId" id="g_3_2_1_3">
+ <attr name="detector_id" type="u32" val="3"/>
+ <attr name="crate_id" type="u32" val="2"/>
+ <attr name="slot_id" type="u32" val="1"/>
+ <attr name="stream_id" type="u32" val="3"/>
+</obj>
+
+<obj class="HermesDataSender" id="wib_101_link0">
+ <attr name="port" type="u32" val="17476"/>
+ <attr name="control_host" type="string" val="localhost"/>
+ <rel name="contains">
+  <ref class="DetectorStream" id="stream_100"/>
+  <ref class="DetectorStream" id="stream_101"/>
+  <ref class="DetectorStream" id="stream_102"/>
+  <ref class="DetectorStream" id="stream_103"/>
+ </rel>
+ <rel name="uses" class="NetworkInterface" id="wib_101_hermes0"/>
+</obj>
+
+<obj class="HermesDataSender" id="wib_201_link0">
+ <attr name="port" type="u32" val="17476"/>
+ <attr name="control_host" type="string" val="localhost"/>
+ <rel name="contains">
+  <ref class="DetectorStream" id="stream_104"/>
+  <ref class="DetectorStream" id="stream_105"/>
+  <ref class="DetectorStream" id="stream_106"/>
+  <ref class="DetectorStream" id="stream_107"/>
+ </rel>
+ <rel name="uses" class="NetworkInterface" id="wib_201_hermes0"/>
+</obj>
+
+<obj class="NetworkDevice" id="ru_1_readout">
+ <attr name="mac_address" type="string" val="00:00:00:00:00:00"/>
+ <attr name="ip_address" type="string" val="123.456.101.501"/>
+ <attr name="interface_name" type="string" val="data0"/>
+ <attr name="network_name" type="enum" val="Control"/>
+ <attr name="pcie_addr" type="string" val="0"/>
+</obj>
+
+<obj class="NetworkDevice" id="ru_2_readout">
+ <attr name="mac_address" type="string" val="00:00:00:00:00:00"/>
+ <attr name="ip_address" type="string" val="123.456.201.501"/>
+ <attr name="interface_name" type="string" val="data0"/>
+ <attr name="network_name" type="enum" val="Control"/>
+ <attr name="pcie_addr" type="string" val="0"/>
+</obj>
+
+<obj class="NetworkInterface" id="wib_101_hermes0">
+ <attr name="mac_address" type="string" val="00:00:00:00:00:00"/>
+ <attr name="ip_address" type="string" val="123.456.101.000"/>
+ <attr name="interface_name" type="string" val="hermes0"/>
+ <attr name="network_name" type="enum" val="Control"/>
+</obj>
+
+<obj class="NetworkInterface" id="wib_201_hermes0">
+ <attr name="mac_address" type="string" val="00:00:00:00:00:00"/>
+ <attr name="ip_address" type="string" val="123.456.101.001"/>
+ <attr name="interface_name" type="string" val="hermes0"/>
+ <attr name="network_name" type="enum" val="Control"/>
+</obj>
 
 <obj class="RCApplication" id="ru-controller">
  <attr name="application_name" type="string" val="drunc-controller"/>
@@ -109,6 +321,8 @@
 <obj class="ReadoutApplication" id="ru-01">
  <attr name="tp_source_id" type="u32" val="1000"/>
  <attr name="application_name" type="string" val="daq_application"/>
+ <attr name="tp_generation_enabled" type="bool" val="1"/>
+ <attr name="ta_generation_enabled" type="bool" val="1"/>
  <rel name="contains">
   <ref class="DetectorToDaqConnection" id="conn_apa1"/>
  </rel>
@@ -132,6 +346,10 @@
   <ref class="NetworkConnectionRule" id="data-req-readout-net-rule"/>
   <ref class="NetworkConnectionRule" id="tpset-net-rule"/>
  </rel>
+ <rel name="action_plans">
+  <ref class="ActionPlan" id="readout-start"/>
+  <ref class="ActionPlan" id="readout-stop"/>
+ </rel>
  <rel name="uses" class="RoHwConfig" id="rohw-1"/>
  <rel name="link_handler" class="DataHandlerConf" id="def-link-handler"/>
  <rel name="tp_handler" class="DataHandlerConf" id="def-tp-handler"/>
@@ -141,8 +359,10 @@
 <obj class="ReadoutApplication" id="ru-02">
  <attr name="tp_source_id" type="u32" val="200"/>
  <attr name="application_name" type="string" val="daq_application"/>
+ <attr name="tp_generation_enabled" type="bool" val="1"/>
+ <attr name="ta_generation_enabled" type="bool" val="1"/>
  <rel name="contains">
-  <ref class="DetectorToDaqConnection" id="det-4-connections"/>
+  <ref class="DetectorToDaqConnection" id="conn_apa2"/>
  </rel>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="exposes_service">
@@ -160,38 +380,26 @@
   <ref class="NetworkConnectionRule" id="data-req-readout-net-rule"/>
   <ref class="NetworkConnectionRule" id="tpset-net-rule"/>
  </rel>
+ <rel name="action_plans">
+  <ref class="ActionPlan" id="readout-start"/>
+  <ref class="ActionPlan" id="readout-stop"/>
+ </rel>
  <rel name="uses" class="RoHwConfig" id="rohw-1"/>
  <rel name="link_handler" class="DataHandlerConf" id="def-link-handler"/>
  <rel name="tp_handler" class="DataHandlerConf" id="def-tp-handler"/>
  <rel name="data_reader" class="DPDKReaderConf" id="def-emu-nic-receiver-conf"/>
 </obj>
 
-<obj class="ReadoutApplication" id="ru-03">
- <attr name="tp_source_id" type="u32" val="300"/>
- <attr name="application_name" type="string" val="daq_application"/>
+<obj class="ResourceSetAND" id="apa1_sender_rset">
  <rel name="contains">
-  <ref class="DetectorToDaqConnection" id="det-3-connections"/>
+  <ref class="HermesDataSender" id="wib_101_link0"/>
  </rel>
- <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
- <rel name="exposes_service">
-  <ref class="Service" id="ru-03_control"/>
+</obj>
+
+<obj class="ResourceSetAND" id="apa2_sender_rset">
+ <rel name="contains">
+  <ref class="HermesDataSender" id="wib_201_link0"/>
  </rel>
- <rel name="queue_rules">
-  <ref class="QueueConnectionRule" id="fa-queue-rule"/>
-  <ref class="QueueConnectionRule" id="tp-queue-rule"/>
-  <ref class="QueueConnectionRule" id="wib-eth-raw-data-rule"/>
-  <ref class="QueueConnectionRule" id="fd-dlh-data-requests-queue-rule"/>
- </rel>
- <rel name="network_rules">
-  <ref class="NetworkConnectionRule" id="ts-net-rule"/>
-  <ref class="NetworkConnectionRule" id="ta-net-rule"/>
-  <ref class="NetworkConnectionRule" id="data-req-readout-net-rule"/>
-  <ref class="NetworkConnectionRule" id="tpset-net-rule"/>
- </rel>
- <rel name="uses" class="RoHwConfig" id="rohw-1"/>
- <rel name="link_handler" class="DataHandlerConf" id="def-link-handler"/>
- <rel name="tp_handler" class="DataHandlerConf" id="def-tp-handler"/>
- <rel name="data_reader" class="DPDKReaderConf" id="def-emu-nic-receiver-conf"/>
 </obj>
 
 <obj class="RoHwConfig" id="rohw-1">
@@ -201,7 +409,6 @@
  <rel name="applications">
   <ref class="ReadoutApplication" id="ru-01"/>
   <ref class="ReadoutApplication" id="ru-02"/>
-  <ref class="ReadoutApplication" id="ru-03"/>
  </rel>
  <rel name="controller" class="RCApplication" id="ru-controller"/>
 </obj>
@@ -214,11 +421,6 @@
 <obj class="Service" id="ru-02_control">
  <attr name="protocol" type="string" val="rest"/>
  <attr name="port" type="u16" val="5502"/>
-</obj>
-
-<obj class="Service" id="ru-03_control">
- <attr name="protocol" type="string" val="rest"/>
- <attr name="port" type="u16" val="5503"/>
 </obj>
 
 <obj class="Service" id="ru-controller_control">
