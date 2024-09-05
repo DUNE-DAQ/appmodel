@@ -259,11 +259,11 @@
  </rel>
 </obj>
 
-<obj class="TCMakerPrescaleAlgorithm" id="tc-pass-through-algo">
+<obj class="TCMakerADCSimpleWindowAlgorithm" id="tc-adcwindow-algo">
  <attr name="prescale" type="u32" val="100"/>
 </obj>
 
-<obj class="TCMakerADCSimpleWindowAlgorithm" id="tc-adcwindow-algo">
+<obj class="TCMakerPrescaleAlgorithm" id="tc-pass-through-algo">
  <attr name="prescale" type="u32" val="100"/>
 </obj>
 
