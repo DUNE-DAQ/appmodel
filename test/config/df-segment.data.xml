@@ -198,7 +198,7 @@
 </obj>
 
 <obj class="FilenameParams" id="tp-file-params">
- <attr name="file_type_prefix" type="enum" val="raw"/>
+ <attr name="file_type_prefix" type="enum" val="tp"/>
  <attr name="run_number_prefix" type="string" val="run"/>
  <attr name="digits_for_run_number" type="s32" val="6"/>
  <attr name="digits_for_file_index" type="s32" val="4"/>
@@ -232,6 +232,7 @@
   <ref class="DFOApplication" id="dfo-01"/>
   <ref class="DFApplication" id="df-01"/>
   <ref class="DFApplication" id="df-02"/>
+  <ref class="DFApplication" id="df-03"/>
  </rel>
  <rel name="controller" class="RCApplication" id="df-controller"/>
 </obj>
