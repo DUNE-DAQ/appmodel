@@ -264,7 +264,7 @@
  <attr name="thread_names_prefix" type="string" val="postproc-"/>
  <attr name="channel_map" type="string" val="PD2HDChannelMap"/>
  <rel name="processing_steps">
-  <ref class="AVXFrugalPedestalSubtractProcessor" id="tpg-pedsub-proc"/>
+  <ref class="AVXFixedPedestalSubtractProcessor" id="tpg-fixed-pedsub-proc"/>
   <ref class="AVXThresholdProcessor" id="tpg-threshold-proc"/>
  </rel>
 </obj>
