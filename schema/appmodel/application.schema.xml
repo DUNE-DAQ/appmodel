@@ -174,11 +174,12 @@
 
  <class name="DataStoreConf">
   <attribute name="type" type="string"/>
-  <attribute name="directory_path" description="The base directory for saving files" type="string" is-not-null="yes"/>
+  <attribute name="directory_path" description="The directory for saving files (if not '.', will be appended to storage.mount_point to form full path)" type="string" is-not-null="yes"/>
   <attribute name="mode" description="The operation mode that the DataStore should use when organizing the data into files" type="enum" range="all-per-file,one-event-per-file" init-value="all-per-file" is-not-null="yes"/>
   <attribute name="max_file_size" type="u64" init-value="0" is-not-null="yes"/>
   <attribute name="disable_unique_filename_suffix" type="bool" init-value="false"/>
-  <attribute name="free_space_safety_factor" type="s32" init-value="0" is-not-null="yes"/>
+  <attribute name="free_space_safety_factor" type="float" init-value="0" is-not-null="yes"/>
+  <relationship name="storage" description="Storage resource targeted by this DataStore" class-type="StorageDevice" low-cc="one" high-cc="one" is-composite="no" is-dependent="no" is-exclusive="no"/>
   <relationship name="file_layout_params" class-type="HDF5FileLayoutParams" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="filename_params" class-type="FilenameParams" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
