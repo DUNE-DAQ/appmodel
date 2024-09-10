@@ -28,6 +28,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <fmt/core.h>
 
 using namespace dunedaq;
 using namespace dunedaq::appmodel;
@@ -103,6 +104,7 @@ TPStreamWriterApplication::generate_modules(conffwk::Configuration* confdb,
   std::string tpwrUid("tpwriter-"+std::to_string(source_id->get_sid()));
   confdb->create(dbfile, "TPStreamWriterModule", tpwrUid, tpwrObj);
   tpwrObj.set_by_val<uint32_t>("source_id", source_id->get_sid());
+  tpwrObj.set_by_val("writer_identifier", fmt::format("{}_tpw_{}", UID(), source_id->get_sid()));
   tpwrObj.set_obj("configuration", &tpwriterConf->config_object());
   tpwrObj.set_objs("inputs", {&tset_in_net_obj} );
 
