@@ -140,16 +140,11 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
 
   // Process special Network rules!
   // Looking for DataRequest rules from ReadoutAppplications in current Session
-  auto sessionApps = session->get_all_applications();
+  auto sessionApps = session->get_enabled_applications();
   std::vector<conffwk::ConfigObject> dreqNetObjs;
   for (auto app : sessionApps) {
     auto roapp = app->cast<appmodel::ReadoutApplication>();
     if (roapp != nullptr) {
-      TLOG() << "Readout app in session: " << roapp->UID();
-      if (roapp->disabled(*session)) {
-        TLOG() << "Ignoring disabled Readout app: " << roapp->UID();
-        continue;
-      }
       auto roQRules = roapp->get_network_rules();
       for (auto rule : roQRules) {
         auto descriptor = rule->get_descriptor();
@@ -160,7 +155,7 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
           confdb->create(dbfile, "NetworkConnection", dreqNetUid, dreqNetObjs.back());
           fill_netconn_object_from_desc(descriptor, dreqNetObjs.back());
         } // If network rule has DataRequest type of data
-      }   // Loop over ReadoutApps network rules
+      }   // Loop over Apps network rules
     }     // if app is ReadoutApplication
   }       // loop over Session specific Apps
 
