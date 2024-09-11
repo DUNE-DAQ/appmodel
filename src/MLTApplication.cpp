@@ -261,13 +261,13 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
    * Create the readout map
    **************************************************************/
 
-  std::vector<const dunedaq::confmodel::Application*> apps = session->get_all_applications();
+  std::vector<const dunedaq::confmodel::Application*> apps = session->get_enabled_applications();
 
   std::vector<const conffwk::ConfigObject*> sourceIds;
 
   for (auto app : apps) {
     auto ro_app = app->cast<appmodel::ReadoutApplication>();
-    if (ro_app != nullptr && !ro_app->disabled(*session)) {
+    if (ro_app != nullptr) {
   	auto resources = ro_app->get_contains();
         // Interate over all the readout groups
         for (auto d2d_conn_res : resources) {
@@ -317,7 +317,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
 
     // SmartDaqApplication now has source_id member, might want to use that but make sure that it's actually a data source somehow...
     auto trg_app = app->cast<appmodel::TriggerApplication>();
-    if(trg_app != nullptr && trg_app->get_source_id() != nullptr && !trg_app->disabled(*session)) {
+    if(trg_app != nullptr && trg_app->get_source_id() != nullptr) {
       	conffwk::ConfigObject* tcSourceIdConf = new conffwk::ConfigObject();
         confdb->create(dbfile, "SourceIDConf", trg_app->UID()+"-"+ std::to_string(trg_app->get_source_id()->get_sid()), *tcSourceIdConf);
         tcSourceIdConf->set_by_val<uint32_t>("sid", trg_app->get_source_id()->get_sid());
@@ -328,7 +328,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
     // FIXME: add here same logics for HSI application(s)
     //
     auto hsi_app = app->cast<appmodel::FakeHSIApplication>();
-    if(hsi_app != nullptr && hsi_app->get_source_id() != nullptr && !hsi_app->disabled(*session)) {
+    if(hsi_app != nullptr && hsi_app->get_source_id() != nullptr) {
         conffwk::ConfigObject* hsEventSourceIdConf = new conffwk::ConfigObject();
         confdb->create(dbfile, "SourceIDConf", hsi_app->UID()+"-"+ std::to_string(hsi_app->get_source_id()->get_sid()), *hsEventSourceIdConf);
         hsEventSourceIdConf->set_by_val<uint32_t>("sid", hsi_app->get_source_id()->get_sid());

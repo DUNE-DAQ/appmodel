@@ -79,12 +79,12 @@ TPStreamWriterApplication::generate_modules(conffwk::Configuration* confdb,
 
   /* Get TPSet sources
 
-  std::vector<const dunedaq::confmodel::Application*> apps = session->get_all_applications();
+  std::vector<const dunedaq::confmodel::Application*> apps = session->get_enabled_applications();
   std::vector<const conffwk::ConfigObject*> sourceIds;
 
   for (auto app : apps) {
     auto ro_app = app->cast<appmodel::ReadoutApplication>();
-    if (ro_app != nullptr && !ro_app->disabled(*session)) {
+    if (ro_app != nullptr) {
       conffwk::ConfigObject* tpSourceIdConf = new conffwk::ConfigObject();
       confdb->create(dbfile, "SourceIDConf", ro_app->UID()+"-"+ std::to_string(ro_app->get_tp_source_id()), *tpSourceIdConf);
       tpSourceIdConf->set_by_val<uint32_t>("sid", ro_app->get_tp_source_id());
