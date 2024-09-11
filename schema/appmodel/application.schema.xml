@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="46" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240903T185336"/>
+<info name="" type="" num-of-items="47" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240911T194242"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -193,7 +193,7 @@
 
  <class name="DataWriterModule">
   <superclass name="DaqModule"/>
-  <attribute name="writer_identifier" type="string" init-value=""/>
+  <attribute name="writer_identifier" type="string"/>
   <relationship name="configuration" class-type="DataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
@@ -386,6 +386,11 @@
   <attribute name="subsystem" type="enum" range="Unknown,Detector_Readout,HW_Signals_Interface,Trigger,TR_Builder" init-value="Unknown" is-not-null="yes"/>
  </class>
 
+ <class name="SourceIDToNetworkConnection">
+  <relationship name="source_ids" class-type="SourceIDConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="netconn" class-type="NetworkConnection" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
  <class name="StreamEmulationParameters">
   <attribute name="data_file_name" type="string"/>
   <attribute name="tp_data_file_name" type="string"/>
@@ -414,7 +419,7 @@
  <class name="TPStreamWriterModule">
   <superclass name="DaqModule"/>
   <attribute name="source_id" type="u32" is-not-null="yes"/>
-  <attribute name="writer_identifier" type="string" init-value=""/>
+  <attribute name="writer_identifier" type="string"/>
   <relationship name="configuration" class-type="TPStreamWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
@@ -428,6 +433,7 @@
  <class name="TRBModule">
   <superclass name="DaqModule"/>
   <relationship name="configuration" class-type="TRBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="request_connections" class-type="SourceIDToNetworkConnection" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
 </oks-schema>
