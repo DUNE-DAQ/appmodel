@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="26" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20240910T144455"/>
+<info name="" type="" num-of-items="26" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20240911T150750"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -113,6 +113,7 @@
  <comment creation-time="20240703T074729" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="cleanup"/>
  <comment creation-time="20240826T084126" created-by="maroda" created-on="np04-srv-015.cern.ch" author="maroda" text="Correct cern stream"/>
  <comment creation-time="20240910T144455" created-by="maroda" created-on="np04-srv-015.cern.ch" author="maroda" text="set opmon values in the schema"/>
+ <comment creation-time="20240911T150750" created-by="maroda" created-on="np04-srv-015.cern.ch" author="maroda" text="correct name for opmon conf objects"/>
 </comments>
 
 
@@ -137,14 +138,14 @@
  <attr name="op_env" type="string" val="test"/>
 </obj>
 
-<obj class="OpMonConf" id="fast-slow-opmon">
+<obj class="OpMonConf" id="fast-all-opmon">
  <attr name="level" type="u32" val="4294967295"/>
- <attr name="insterval_s" type="u32" val="2"/>
+ <attr name="interval_s" type="u32" val="5"/>
 </obj>
 
 <obj class="OpMonConf" id="slow-all-opmon">
  <attr name="level" type="u32" val="4294967295"/>
- <attr name="insterval_s" type="u32" val="10"/>
+ <attr name="interval_s" type="u32" val="5"/>
 </obj>
 
 <obj class="OpMonService" id="cern-opmon-application-service">
