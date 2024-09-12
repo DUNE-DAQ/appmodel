@@ -91,7 +91,6 @@ fill_sourceid_object_from_app(conffwk::Configuration* confdb,
   std::vector<uint32_t> app_source_ids;
   for (auto d2d_conn_res : roapp->get_contains()) {
 
-    TLOG() << "Processing DetectorToDaqConnection " << d2d_conn_res->UID();
     // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader
     // module
     auto d2d_conn = d2d_conn_res->cast<confmodel::DetectorToDaqConnection>();
@@ -214,29 +213,35 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
   for (auto app : sessionApps) {
     auto smartapp = app->cast<appmodel::SmartDaqApplication>();
     auto roapp = app->cast<appmodel::ReadoutApplication>();
-    if (smartapp != nullptr) {
-      auto roQRules = smartapp->get_network_rules();
-      for (auto rule : roQRules) {
-        auto descriptor = rule->get_descriptor();
-        auto data_type = descriptor->get_data_type();
-        if (data_type == "DataRequest") {
-          dreqNetObjs.emplace_back();
-          std::string dreqNetUid(descriptor->get_uid_base() + smartapp->UID());
-          confdb->create(dbfile, "NetworkConnection", dreqNetUid, dreqNetObjs.back());
-          fill_netconn_object_from_desc(descriptor, dreqNetObjs.back());
+    auto dfapp = app->cast<appmodel::DFApplication>();
+    if (smartapp == nullptr || dfapp != nullptr)
+      continue;
+    auto src_id_check = smartapp->get_source_id();
+    if (roapp == nullptr && src_id_check == nullptr) {
+      continue;
+    }
 
-          std::string sidToNetUid(descriptor->get_uid_base() + smartapp->UID() + "-sids");
-          sidNetObjs.emplace_back();
-          confdb->create(dbfile, "SourceIDToNetworkConnection", sidToNetUid, sidNetObjs.back());
-          if (roapp != nullptr) {
-            fill_sourceid_object_from_app(confdb, dbfile, roapp, &dreqNetObjs.back(), sidNetObjs.back(), sidObjs);
-          } else {
-            fill_sourceid_object_from_app(smartapp, &dreqNetObjs.back(), sidNetObjs.back());
-          }
-        } // If network rule has DataRequest type of data
-      }   // Loop over Apps network rules
-    }     // if app is ReadoutApplication
-  }       // loop over Session specific Apps
+    auto roQRules = smartapp->get_network_rules();
+    for (auto rule : roQRules) {
+      auto descriptor = rule->get_descriptor();
+      auto data_type = descriptor->get_data_type();
+      if (data_type == "DataRequest") {
+        std::string dreqNetUid(descriptor->get_uid_base() + smartapp->UID());
+        dreqNetObjs.emplace_back();
+        confdb->create(dbfile, "NetworkConnection", dreqNetUid, dreqNetObjs.back());
+        fill_netconn_object_from_desc(descriptor, dreqNetObjs.back());
+
+        std::string sidToNetUid(descriptor->get_uid_base() + smartapp->UID() + "-sids");
+        sidNetObjs.emplace_back();
+        confdb->create(dbfile, "SourceIDToNetworkConnection", sidToNetUid, sidNetObjs.back());
+        if (roapp != nullptr) {
+          fill_sourceid_object_from_app(confdb, dbfile, roapp, &dreqNetObjs.back(), sidNetObjs.back(), sidObjs);
+        } else {
+          fill_sourceid_object_from_app(smartapp, &dreqNetObjs.back(), sidNetObjs.back());
+        }
+      } // If network rule has DataRequest type of data
+    }   // Loop over Apps network rules
+  }     // loop over Session specific Apps
 
   // Get pointers to objects here, after vector has been filled so they don't move on us
   for (auto& obj : dreqNetObjs) {
