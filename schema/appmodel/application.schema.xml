@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="46" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240903T185336"/>
+<info name="" type="" num-of-items="47" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="mrigan" last-modified-on="np04-srv-016.cern.ch" last-modification-time="20240912T144553"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -146,6 +146,7 @@
  <class name="DataProcessor">
   <attribute name="queue_sizes" type="u32" init-value="10000"/>
   <attribute name="thread_names_prefix" type="string" init-value="postproc-"/>
+  <relationship name="latency_monitoring_conf" class-type="LatencyMonitoringConf" low-cc="zero" high-cc="zero" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
  </class>
 
  <class name="DataReaderConf">
@@ -291,6 +292,10 @@
   <attribute name="intrinsic_allocator" type="bool" init-value="true"/>
   <attribute name="alignment_size" type="u32" init-value="0"/>
   <attribute name="preallocation" type="bool" init-value="true"/>
+ </class>
+
+ <class name="LatencyMonitoringConf">
+  <attribute name="enable_latency_monitoring" type="bool" init-value="true"/>
  </class>
 
  <class name="NWDetDataReceiver" is-abstract="yes">

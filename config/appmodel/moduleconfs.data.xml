@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="31" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240903T185101"/>
+<info name="" type="" num-of-items="31" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="mrigan" last-modified-on="np04-srv-016.cern.ch" last-modification-time="20240912T142734"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -96,6 +96,7 @@
  <comment creation-time="20240307T133917" created-by="glehmann" created-on="np04-srv-024.cern.ch" author="Unknown" text="disable TPG"/>
  <comment creation-time="20240822T070558" created-by="aoranday" created-on="np04-srv-031.cern.ch" author="aoranday" text="Add TPG SimpleThreshold."/>
  <comment creation-time="20240903T185101" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="Reformat"/>
+ <comment creation-time="20240912T142734" created-by="mrigan" created-on="np04-srv-016.cern.ch" author="mrigan" text="adding latency monitoring (trigger)"/>
 </comments>
 
 
@@ -250,6 +251,7 @@
  <attr name="td_out_of_timeout" type="bool" val="1"/>
  <attr name="buffer_timeout" type="u32" val="1"/>
  <attr name="td_readout_limit" type="u32" val="1"/>
+ <rel name="latency_monitoring_conf" class="LatencyMonitoringConf" id="enable-latency-monitoring"/>
 </obj>
 
 <obj class="NICStatsConf" id="def-nic-stats">
@@ -322,6 +324,7 @@
  <attr name="queue_sizes" type="u32" val="10000"/>
  <attr name="thread_names_prefix" type="string" val="proc-"/>
  <attr name="print_tp_info" type="bool" val="0"/>
+ <rel name="latency_monitoring_conf" class="LatencyMonitoringConf" id="enable-latency-monitoring"/>
  <rel name="algorithms">
   <ref class="TAMakerPrescaleAlgorithm" id="dummy-ta-maker"/>
  </rel>

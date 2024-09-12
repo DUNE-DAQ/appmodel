@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="49" oks-format="schema" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231211T133151" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240903T185336"/>
+<info name="" type="" num-of-items="49" oks-format="schema" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231211T133151" last-modified-by="mrigan" last-modified-on="np04-srv-016.cern.ch" last-modification-time="20240912T135726"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -169,6 +169,7 @@
   <attribute name="td_out_of_timeout" type="bool" init-value="true" is-not-null="yes"/>
   <attribute name="buffer_timeout" type="u32" init-value="100" is-not-null="yes"/>
   <attribute name="td_readout_limit" type="u32" init-value="1000" is-not-null="yes"/>
+  <relationship name="latency_monitoring_conf" class-type="LatencyMonitoringConf" low-cc="zero" high-cc="zero" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
  </class>
 
  <class name="MLTModule">
@@ -210,6 +211,7 @@
  <class name="StandaloneTCMakerConf" is-abstract="yes">
   <attribute name="template_for" type="class" init-value="StandaloneTCMakerModule" is-not-null="yes"/>
   <attribute name="timestamp_method" type="enum" range="kTimeSync,kSystemClock" init-value="kTimeSync" is-not-null="yes"/>
+  <relationship name="latency_monitoring_conf" class-type="LatencyMonitoringConf" low-cc="zero" high-cc="zero" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
  </class>
 
  <class name="StandaloneTCMakerModule">
