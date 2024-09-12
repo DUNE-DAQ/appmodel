@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="27" oks-format="data" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20240709T095746"/>
+<info name="" type="" num-of-items="25" oks-format="data" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20240912T143615"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -96,6 +96,7 @@
  <comment creation-time="20240403T110823" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="glehmann" text="no random generator"/>
  <comment creation-time="20240403T115733" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="glehmann" text=" "/>
  <comment creation-time="20240628T062322" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="removing broadcasters from control apps"/>
+ <comment creation-time="20240912T143615" created-by="maroda" created-on="np04-srv-015.cern.ch" author="maroda" text="add opmon objects"/>
 </comments>
 
 
@@ -140,6 +141,7 @@
   <ref class="Service" id="dataRequests"/>
   <ref class="Service" id="mlt_control"/>
  </rel>
+ <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
  <rel name="source_id" class="SourceIDConf" id="tc-srcid-1"/>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="tc-queue-rule"/>
@@ -166,6 +168,7 @@
  <rel name="exposes_service">
   <ref class="Service" id="trg-controller_control"/>
  </rel>
+ <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
  <rel name="fsm" class="FSMconfiguration" id="FSMconfiguration_noAction"/>
 </obj>
 
@@ -303,6 +306,7 @@
   <ref class="Service" id="triggerActivities"/>
   <ref class="Service" id="dataRequests"/>
  </rel>
+ <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
  <rel name="source_id" class="SourceIDConf" id="ta-srcid-1"/>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="ta-queue-rule"/>

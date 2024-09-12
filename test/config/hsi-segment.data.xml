@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="11" oks-format="data" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240628T062322"/>
+<info name="" type="" num-of-items="14" oks-format="data" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20240912T143615"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -82,6 +82,7 @@
  <comment creation-time="20240312T203031" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="Apply source_id..."/>
  <comment creation-time="20240325T124934" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="Unknown" text="adjusted to name changes in connections"/>
  <comment creation-time="20240628T062322" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="removing broadcasters from control apps"/>
+ <comment creation-time="20240912T143615" created-by="maroda" created-on="np04-srv-015.cern.ch" author="maroda" text="add opmon objects"/>
 </comments>
 
 
@@ -100,6 +101,7 @@
  <rel name="exposes_service">
   <ref class="Service" id="hsi-01_control"/>
  </rel>
+ <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
  <rel name="source_id" class="SourceIDConf" id="hsi-srcid-01"/>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="hsi-dlh-data-requests-queue-rule"/>
@@ -129,6 +131,7 @@
   <ref class="Service" id="HSIEvents"/>
   <ref class="Service" id="hsi-to-tc-app_control"/>
  </rel>
+ <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
  <rel name="source_id" class="SourceIDConf" id="hsi-tc-srcid-1"/>
  <rel name="network_rules">
   <ref class="NetworkConnectionRule" id="hsi-rule"/>
@@ -155,6 +158,7 @@
  <rel name="exposes_service">
   <ref class="Service" id="hsi-controller_control"/>
  </rel>
+ <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
  <rel name="fsm" class="FSMconfiguration" id="FSMconfiguration_noAction"/>
 </obj>
 

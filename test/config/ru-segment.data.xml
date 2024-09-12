@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="12" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105615" last-modified-by="aoranday" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240829T102857"/>
+<info name="" type="" num-of-items="40" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105615" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20240912T143615"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -98,6 +98,7 @@
  <comment creation-time="20240822T070558" created-by="aoranday" created-on="np04-srv-031.cern.ch" author="aoranday" text="Add TPG SimpleThreshold."/>
  <comment creation-time="20240828T140226" created-by="aoranday" created-on="np04-srv-031.cern.ch" author="aoranday" text="Change AbsRS config."/>
  <comment creation-time="20240829T102857" created-by="aoranday" created-on="np04-srv-031.cern.ch" author="aoranday" text="Add AbsRS processor."/>
+ <comment creation-time="20240912T143615" created-by="maroda" created-on="np04-srv-015.cern.ch" author="maroda" text="add opmon objects"/>
 </comments>
 
 
@@ -315,6 +316,7 @@
  <rel name="exposes_service">
   <ref class="Service" id="ru-controller_control"/>
  </rel>
+ <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
  <rel name="fsm" class="FSMconfiguration" id="FSMconfiguration_noAction"/>
 </obj>
 
@@ -334,6 +336,7 @@
   <ref class="Service" id="triggerActivities"/>
   <ref class="Service" id="triggerPrimitives"/>
  </rel>
+ <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="fa-queue-rule"/>
   <ref class="QueueConnectionRule" id="tp-queue-rule"/>
@@ -368,6 +371,7 @@
  <rel name="exposes_service">
   <ref class="Service" id="ru-02_control"/>
  </rel>
+ <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="fa-queue-rule"/>
   <ref class="QueueConnectionRule" id="tp-queue-rule"/>

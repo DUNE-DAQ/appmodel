@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="40" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240831T153040"/>
+<info name="" type="" num-of-items="26" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20240912T143615"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -112,6 +112,7 @@
  <comment creation-time="20240703T074710" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="moving apa1 senders into a rset"/>
  <comment creation-time="20240703T074729" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="cleanup"/>
  <comment creation-time="20240826T084126" created-by="maroda" created-on="np04-srv-015.cern.ch" author="maroda" text="Correct cern stream"/>
+ <comment creation-time="20240912T143615" created-by="maroda" created-on="np04-srv-015.cern.ch" author="maroda" text="add opmon objects"/>
 </comments>
 
 
@@ -127,6 +128,7 @@
  <rel name="exposes_service">
   <ref class="Service" id="local-connectivity-service"/>
  </rel>
+ <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
 </obj>
 
 <obj class="DetectorConfig" id="dummy-detector">
@@ -135,11 +137,22 @@
  <attr name="op_env" type="string" val="test"/>
 </obj>
 
+<obj class="OpMonConf" id="fast-all-monitoring">
+ <attr name="level" type="u32" val="4294967295"/>
+ <attr name="interval_s" type="u32" val="2"/>
+</obj>
+
+<obj class="OpMonConf" id="slow-all-monitoring">
+ <attr name="level" type="u32" val="4294967295"/>
+ <attr name="interval_s" type="u32" val="10"/>
+</obj>
+
 <obj class="OpMonService" id="cern-opmon-application-service">
  <rel name="runs_on" class="VirtualHost" id="kafka-cern-vhost"/>
  <rel name="exposes_service">
   <ref class="Service" id="daq-k8s-opmon-service"/>
  </rel>
+ <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
 </obj>
 
 <obj class="OpMonService" id="local-opmon-application-service">
@@ -147,6 +160,7 @@
  <rel name="exposes_service">
   <ref class="Service" id="local-opmon-service"/>
  </rel>
+ <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
 </obj>
 
 <obj class="OpMonService" id="pocket-opmon-application-service">
@@ -161,6 +175,17 @@
  <rel name="exposes_service">
   <ref class="Service" id="daq-k8s-opmon-service"/>
  </rel>
+ <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
+</obj>
+
+<obj class="OpMonURI" id="cern-opmon-uri">
+ <attr name="path" type="string" val="monkafka.cern.ch:30092/opmon_stream"/>
+ <attr name="type" type="enum" val="stream"/>
+</obj>
+
+<obj class="OpMonURI" id="local-opmon-uri">
+ <attr name="path" type="string" val="./info.json"/>
+ <attr name="type" type="enum" val="file"/>
 </obj>
 
 <obj class="RCApplication" id="root-controller">
@@ -169,6 +194,7 @@
  <rel name="exposes_service">
   <ref class="Service" id="root-controller_control"/>
  </rel>
+ <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
  <rel name="fsm" class="FSMconfiguration" id="fsmConf-test"/>
 </obj>
 
@@ -221,14 +247,13 @@
   <ref class="Variable" id="session-env-connectivity-port"/>
   <ref class="Variable" id="daqapp-cli-configuration"/>
  </rel>
- <rel name="disabled">
- </rel>
  <rel name="segment" class="Segment" id="root-segment"/>
  <rel name="infrastructure_applications">
   <ref class="ConnectionService" id="local-connection-server"/>
   <ref class="OpMonService" id="local-opmon-application-service"/>
  </rel>
  <rel name="detector_configuration" class="DetectorConfig" id="dummy-detector"/>
+ <rel name="opmon_uri" class="OpMonURI" id="local-opmon-uri"/>
 </obj>
 
 <obj class="Variable" id="daqapp-cli-configuration">
