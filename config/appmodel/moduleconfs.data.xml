@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="31" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="mrigan" last-modified-on="np04-srv-016.cern.ch" last-modification-time="20240912T142734"/>
+<info name="" type="" num-of-items="31" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="mrigan" last-modified-on="np04-srv-016.cern.ch" last-modification-time="20240912T162204"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -97,6 +97,7 @@
  <comment creation-time="20240822T070558" created-by="aoranday" created-on="np04-srv-031.cern.ch" author="aoranday" text="Add TPG SimpleThreshold."/>
  <comment creation-time="20240903T185101" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="Reformat"/>
  <comment creation-time="20240912T142734" created-by="mrigan" created-on="np04-srv-016.cern.ch" author="mrigan" text="adding latency monitoring (trigger)"/>
+ <comment creation-time="20240912T162204" created-by="mrigan" created-on="np04-srv-016.cern.ch" author="mrigan" text="adding latency monitoring to HSI to TC"/>
 </comments>
 
 
@@ -228,6 +229,7 @@
  <rel name="signals">
   <ref class="HSISignalWindow" id="def-hsi-signal-window"/>
  </rel>
+ <rel name="latency_monitoring_conf" class="LatencyMonitoringConf" id="enable-latency-monitoring"/>
 </obj>
 
 <obj class="HSISignalWindow" id="def-hsi-signal-window">

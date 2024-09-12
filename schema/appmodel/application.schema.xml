@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="47" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="mrigan" last-modified-on="np04-srv-016.cern.ch" last-modification-time="20240912T144553"/>
+<info name="" type="" num-of-items="47" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="mrigan" last-modified-on="np04-srv-016.cern.ch" last-modification-time="20240912T162108"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
