@@ -194,6 +194,7 @@
 
  <class name="DataWriterModule">
   <superclass name="DaqModule"/>
+  <attribute name="writer_identifier" type="string" init-value=""/>
   <relationship name="configuration" class-type="DataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
@@ -418,6 +419,7 @@
  <class name="TPStreamWriterModule">
   <superclass name="DaqModule"/>
   <attribute name="source_id" type="u32" is-not-null="yes"/>
+  <attribute name="writer_identifier" type="string" init-value=""/>
   <relationship name="configuration" class-type="TPStreamWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
