@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="23" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240628T062322"/>
+<info name="" type="" num-of-items="23" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20240912T143615"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -88,6 +88,7 @@
  <comment creation-time="20240325T124934" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="Unknown" text="adjusted to name changes in connections"/>
  <comment creation-time="20240617T203421" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="adding datawriters"/>
  <comment creation-time="20240628T062322" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="removing broadcasters from control apps"/>
+ <comment creation-time="20240912T143615" created-by="maroda" created-on="np04-srv-015.cern.ch" author="maroda" text="add opmon objects"/>
 </comments>
 
 
@@ -97,6 +98,7 @@
  <rel name="exposes_service">
   <ref class="Service" id="df-01_control"/>
  </rel>
+ <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
  <rel name="source_id" class="SourceIDConf" id="srcid-df-01"/>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="trigger-record-q-rule"/>
@@ -122,6 +124,7 @@
  <rel name="exposes_service">
   <ref class="Service" id="df-02_control"/>
  </rel>
+ <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
  <rel name="source_id" class="SourceIDConf" id="srcid-df-02"/>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="trigger-record-q-rule"/>
@@ -147,6 +150,7 @@
  <rel name="exposes_service">
   <ref class="Service" id="df-03_control"/>
  </rel>
+ <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
  <rel name="source_id" class="SourceIDConf" id="srcid-df-03"/>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="trigger-record-q-rule"/>
@@ -178,6 +182,7 @@
  <rel name="exposes_service">
   <ref class="Service" id="dfo-01_control"/>
  </rel>
+ <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
  <rel name="network_rules">
   <ref class="NetworkConnectionRule" id="td-dfo-net-rule"/>
   <ref class="NetworkConnectionRule" id="ti-net-rule"/>
@@ -223,6 +228,7 @@
  <rel name="exposes_service">
   <ref class="Service" id="df-controller_control"/>
  </rel>
+ <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
  <rel name="fsm" class="FSMconfiguration" id="FSMconfiguration_noAction"/>
 </obj>
 
@@ -297,6 +303,7 @@
  <rel name="exposes_service">
   <ref class="Service" id="tp-stream-writer_control"/>
  </rel>
+ <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
  <rel name="source_id" class="SourceIDConf" id="srcid-tp-stream-writer"/>
  <rel name="network_rules">
   <ref class="NetworkConnectionRule" id="tpset-net-rule"/>
