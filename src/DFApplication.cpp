@@ -87,8 +87,8 @@ fill_sourceid_object_from_app(conffwk::Configuration* confdb,
   sidNetObj.set_obj("netconn", netConn);
 
   std::vector<const conffwk::ConfigObject*> source_id_objs;
-
   std::vector<uint32_t> app_source_ids;
+
   for (auto d2d_conn_res : roapp->get_contains()) {
 
     // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader
@@ -119,13 +119,18 @@ fill_sourceid_object_from_app(conffwk::Configuration* confdb,
     source_id_objs.push_back(sidObjs.back().get());
   }
 
+  for (auto tp_sid : roapp->get_tp_source_ids()) {
+    sidObjs.push_back(std::make_shared<conffwk::ConfigObject>(tp_sid->config_object()));
+    source_id_objs.push_back(sidObjs.back().get());
+  }
+  /*
   auto trig_sid_obj = std::make_shared<conffwk::ConfigObject>();
   std::string trgSidUid(roapp->UID() + "TRGSourceIDConf" + std::to_string(roapp->get_tp_source_id()));
   confdb->create(dbfile, "SourceIDConf", trgSidUid, *trig_sid_obj);
   trig_sid_obj->set_by_val<uint32_t>("sid", roapp->get_tp_source_id());
   trig_sid_obj->set_by_val<std::string>("subsystem", "Trigger");
-  sidObjs.push_back(trig_sid_obj);
   source_id_objs.push_back(sidObjs.back().get());
+  */
 
   sidNetObj.set_objs("source_ids", source_id_objs);
 }

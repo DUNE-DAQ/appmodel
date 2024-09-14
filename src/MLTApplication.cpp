@@ -307,11 +307,14 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
         }
       }
       if (ro_app->get_tp_generation_enabled()) {
-         conffwk::ConfigObject* tpSourceIdConf = new conffwk::ConfigObject();
-         confdb->create(dbfile, "SourceIDConf", ro_app->UID()+"-"+ std::to_string(ro_app->get_tp_source_id()), *tpSourceIdConf);
-         tpSourceIdConf->set_by_val<uint32_t>("sid", ro_app->get_tp_source_id());
-         tpSourceIdConf->set_by_val<std::string>("subsystem", "Trigger");
-         sourceIds.push_back(tpSourceIdConf);
+	      for (auto sid: ro_app->get_tp_source_ids()) {
+                sourceIds.push_back(&(sid->config_object()));
+	      }
+         //conffwk::ConfigObject* tpSourceIdConf = new conffwk::ConfigObject();
+         //confdb->create(dbfile, "SourceIDConf", ro_app->UID()+"-"+ std::to_string(ro_app->get_tp_source_id()), *tpSourceIdConf);
+         //tpSourceIdConf->set_by_val<uint32_t>("sid", ro_app->get_tp_source_id());
+         //tpSourceIdConf->set_by_val<std::string>("subsystem", "Trigger");
+         //sourceIds.push_back(tpSourceIdConf);
       }
     }
 
