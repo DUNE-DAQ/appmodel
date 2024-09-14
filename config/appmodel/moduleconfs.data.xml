@@ -98,6 +98,9 @@
  <comment creation-time="20240903T185101" created-by="eflumerf" created-on="ironvirt9.mshome.net" author="eflumerf" text="Reformat"/>
 </comments>
 
+<obj class="AVXFrugalPedestalSubtractProcessor" id="tpg-pedsub-proc">
+ <attr name="accum_limit" type="u8" val="10"/>
+</obj>
 
 <obj class="AVXThresholdProcessor" id="tpg-threshold-proc">
  <attr name="plane0" type="u16" val="100"/>
@@ -264,7 +267,7 @@
  <attr name="thread_names_prefix" type="string" val="postproc-"/>
  <attr name="channel_map" type="string" val="PD2HDChannelMap"/>
  <rel name="processing_steps">
-  <ref class="AVXFixedPedestalSubtractProcessor" id="tpg-fixed-pedsub-proc"/>
+  <ref class="AVXFrugalPedestalSubtractProcessor" id="tpg-pedsub-proc"/>
   <ref class="AVXThresholdProcessor" id="tpg-threshold-proc"/>
  </rel>
 </obj>
