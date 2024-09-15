@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="40" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105615" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20240912T143615"/>
+<info name="" type="" num-of-items="45" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105615" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240915T133936"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -348,7 +348,7 @@
   <ref class="ActionPlan" id="readout-start"/>
   <ref class="ActionPlan" id="readout-stop"/>
  </rel>
-  <rel name="tp_source_ids">
+ <rel name="tp_source_ids">
   <ref class="SourceIDConf" id="tp-srcid-1000"/>
   <ref class="SourceIDConf" id="tp-srcid-1001"/>
   <ref class="SourceIDConf" id="tp-srcid-1002"/>
@@ -387,7 +387,7 @@
   <ref class="ActionPlan" id="readout-start"/>
   <ref class="ActionPlan" id="readout-stop"/>
  </rel>
-  <rel name="tp_source_ids">
+ <rel name="tp_source_ids">
   <ref class="SourceIDConf" id="tp-srcid-2000"/>
   <ref class="SourceIDConf" id="tp-srcid-2001"/>
   <ref class="SourceIDConf" id="tp-srcid-2002"/>
@@ -437,12 +437,12 @@
 </obj>
 
 <obj class="SourceIDConf" id="tp-srcid-1000">
- <attr name="sid" type="u32" val="100"/>
+ <attr name="sid" type="u32" val="1000"/>
  <attr name="subsystem" type="enum" val="Trigger"/>
 </obj>
 
 <obj class="SourceIDConf" id="tp-srcid-1001">
- <attr name="sid" type="u32" val="101"/>
+ <attr name="sid" type="u32" val="1001"/>
  <attr name="subsystem" type="enum" val="Trigger"/>
 </obj>
 
