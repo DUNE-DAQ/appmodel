@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="2" oks-format="data" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240916T090345" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20240916T091157"/>
+<info name="" type="" num-of-items="4" oks-format="data" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240916T090345" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20240916T113721"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -71,6 +71,7 @@
 
 <comments>
  <comment creation-time="20240916T091157" created-by="maroda" created-on="np04-srv-015.cern.ch" author="maroda" text="Add minimum opmon confs"/>
+ <comment creation-time="20240916T113721" created-by="maroda" created-on="np04-srv-015.cern.ch" author="maroda" text="add opmon URIs"/>
 </comments>
 
 
@@ -82,6 +83,16 @@
 <obj class="OpMonConf" id="slow-all-monitoring">
  <attr name="level" type="u32" val="4294967295"/>
  <attr name="interval_s" type="u32" val="10"/>
+</obj>
+
+<obj class="OpMonURI" id="cern-opmon-uri">
+ <attr name="path" type="string" val="monkafka.cern.ch:30092/opmon_stream"/>
+ <attr name="type" type="enum" val="stream"/>
+</obj>
+
+<obj class="OpMonURI" id="local-opmon-uri">
+ <attr name="path" type="string" val="./info.json"/>
+ <attr name="type" type="enum" val="file"/>
 </obj>
 
 </oks-data>

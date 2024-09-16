@@ -141,16 +141,6 @@
  <attr name="op_env" type="string" val="test"/>
 </obj>
 
-<obj class="OpMonURI" id="cern-opmon-uri">
- <attr name="path" type="string" val="monkafka.cern.ch:30092/opmon_stream"/>
- <attr name="type" type="enum" val="stream"/>
-</obj>
-
-<obj class="OpMonURI" id="local-opmon-uri">
- <attr name="path" type="string" val="./info.json"/>
- <attr name="type" type="enum" val="file"/>
-</obj>
-
 <obj class="RCApplication" id="root-controller">
  <attr name="application_name" type="string" val="drunc-controller"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
