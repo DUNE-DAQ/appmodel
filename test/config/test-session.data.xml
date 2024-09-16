@@ -72,7 +72,7 @@
  <file path="test/config/hosts.data.xml"/>
  <file path="test/config/ru-segment.data.xml"/>
  <file path="test/config/df-segment.data.xml"/>
- <file path="test/config/hsi-segment.data.xml"/>
+ <file path="test/config/dts-hsi.data.xml"/>
  <file path="test/config/trigger-segment.data.xml"/>
 </include>
 
