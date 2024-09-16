@@ -66,7 +66,7 @@
 <info name="" type="" num-of-items="2" oks-format="data" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240916T090345" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20240916T091157"/>
 
 <include>
- <file path="/nfs/home/maroda/DAQ/OpMonTest/sourcecode/confmodel/schema/confmodel/dunedaq.schema.xml"/>
+ <file path="schema/confmodel/dunedaq.schema.xml"/>
 </include>
 
 <comments>
