@@ -69,8 +69,8 @@
         <file path="schema/appmodel/trigger.schema.xml"/>
         <file path="config/appmodel/connections.data.xml"/>
         <file path="config/appmodel/moduleconfs.data.xml"/>
-        <file path="test/config/hosts.data.xml"/>
         <file path="test/config/hsi-segment.data.xml"/>
+        <file path="test/config/hosts.data.xml"/>
     </include>
 
     <comments>
