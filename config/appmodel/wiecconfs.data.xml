@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="7" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240618T084833"/>
+<info name="" type="" num-of-items="7" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240915T133915"/>
 
 <include>
  <file path="schema/appmodel/wiec.schema.xml"/>
