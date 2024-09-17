@@ -72,6 +72,7 @@
  <file path="config/appmodel/connections.data.xml"/>
  <file path="config/appmodel/moduleconfs.data.xml"/>
  <file path="config/appmodel/opmon.data.xml"/>
+ <file path="config/restcmd/control-services.data.xml"/>
  <file path="config/appmodel/fsm.data.xml"/>
  <file path="test/config/hosts.data.xml"/>
 </include>
@@ -101,33 +102,6 @@
  <comment creation-time="20240916T091035" created-by="maroda" created-on="np04-srv-015.cern.ch" author="maroda" text="change monitoring object"/>
  <comment creation-time="20240916T092524" created-by="maroda" created-on="np04-srv-015.cern.ch" author="maroda" text="Correct locations for OpMonConf objects"/>
 </comments>
-
-
-<obj class="Service" id="trg-controller_control">
-  <attr name="protocol" val="grpc"/>
-  <attr name="port" val="0"/>
-</obj>
-
-<obj class="Service" id="hsi-to-tc-app_control">
-  <attr name="protocol" val="rest"/>
-  <attr name="port" val="0"/>
-</obj>
-
-<obj class="Service" id="mlt_control">
-  <attr name="protocol" val="rest"/>
-  <attr name="port" val="0"/>
-</obj>
-
-<obj class="Service" id="tc-maker-1_control">
-  <attr name="protocol" val="rest"/>
-  <attr name="port" val="0"/>
-</obj>
-
-<obj class="Service" id="tc-buffer-1_control">
-  <attr name="protocol" val="rest"/>
-  <attr name="port" val="0"/>
-</obj>
-
 
 
 <obj class="CustomTCMakerConf" id="cstm-tc-generator">
@@ -166,10 +140,10 @@
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="exposes_service">
+  <ref class="Service" id="daq_application_control"/>
   <ref class="Service" id="triggerCandidates"/>
   <ref class="Service" id="triggerInhibits"/>
   <ref class="Service" id="dataRequests"/>
-  <ref class="Service" id="mlt_control"/>
  </rel>
  <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
  <rel name="source_id" class="SourceIDConf" id="tc-srcid-1"/>
@@ -196,7 +170,7 @@
  <attr name="application_name" type="string" val="drunc-controller"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="exposes_service">
-  <ref class="Service" id="trg-controller_control"/>
+  <ref class="Service" id="drunc_controller_control"/>
  </rel>
  <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
  <rel name="fsm" class="FSMconfiguration" id="FSMconfiguration_noAction"/>
@@ -234,26 +208,6 @@
   <ref class="MLTApplication" id="mlt"/>
  </rel>
  <rel name="controller" class="RCApplication" id="trg-controller"/>
-</obj>
-
-<obj class="Service" id="mlt_control">
- <attr name="protocol" type="string" val="rest"/>
- <attr name="port" type="u16" val="5702"/>
-</obj>
-
-<obj class="Service" id="tc-buffer-1_control">
- <attr name="protocol" type="string" val="rest"/>
- <attr name="port" type="u16" val="5704"/>
-</obj>
-
-<obj class="Service" id="tc-maker-1_control">
- <attr name="protocol" type="string" val="rest"/>
- <attr name="port" type="u16" val="5703"/>
-</obj>
-
-<obj class="Service" id="trg-controller_control">
- <attr name="protocol" type="string" val="grpc"/>
- <attr name="port" type="u16" val="5700"/>
 </obj>
 
 <obj class="SourceIDConf" id="ta-srcid-1">
@@ -332,7 +286,7 @@
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="exposes_service">
-  <ref class="Service" id="tc-maker-1_control"/>
+  <ref class="Service" id="daq_application_control"/>
   <ref class="Service" id="triggerActivities"/>
   <ref class="Service" id="dataRequests"/>
  </rel>

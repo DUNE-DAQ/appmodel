@@ -72,6 +72,7 @@
  <file path="config/appmodel/connections.data.xml"/>
  <file path="config/appmodel/moduleconfs.data.xml"/>
  <file path="config/appmodel/opmon.data.xml"/>
+ <file path="config/restcmd/control-services.data.xml"/>
  <file path="test/config/hosts.data.xml"/>
 </include>
 
@@ -98,21 +99,12 @@
  <rel name="data_processor" class="HSIFrameProcessor" id="def-hsi-processor"/>
 </obj>
 
-<obj class="Service" id="hsi-controller_control">
-  <attr name="protocol" val="grpc"/>
-  <attr name="port" val="0"/>
-</obj>
-
-<obj class="Service" id="hsi-01_control">
-  <attr name="protocol" val="rest"/>
-  <attr name="port" val="0"/>
-</obj>
 
 <obj class="FakeHSIApplication" id="hsi-01">
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="exposes_service">
-  <ref class="Service" id="hsi-01_control"/>
+  <ref class="Service" id="daq_application_control"/>
  </rel>
  <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
  <rel name="source_id" class="SourceIDConf" id="hsi-srcid-01"/>
@@ -142,7 +134,7 @@
  <rel name="exposes_service">
   <ref class="Service" id="dataRequests"/>
   <ref class="Service" id="HSIEvents"/>
-  <ref class="Service" id="hsi-to-tc-app_control"/>
+  <ref class="Service" id="daq_application_control"/>
  </rel>
  <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
  <rel name="source_id" class="SourceIDConf" id="hsi-tc-srcid-1"/>
@@ -169,7 +161,7 @@
  <attr name="application_name" type="string" val="drunc-controller"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="exposes_service">
-  <ref class="Service" id="hsi-controller_control"/>
+  <ref class="Service" id="drunc_controller_control"/>
  </rel>
  <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
  <rel name="fsm" class="FSMconfiguration" id="FSMconfiguration_noAction"/>
@@ -190,21 +182,6 @@
   <ref class="HSIEventToTCApplication" id="hsi-to-tc-app"/>
  </rel>
  <rel name="controller" class="RCApplication" id="hsi-controller"/>
-</obj>
-
-<obj class="Service" id="hsi-01_control">
- <attr name="protocol" type="string" val="rest"/>
- <attr name="port" type="u16" val="5801"/>
-</obj>
-
-<obj class="Service" id="hsi-controller_control">
- <attr name="protocol" type="string" val="grpc"/>
- <attr name="port" type="u16" val="5800"/>
-</obj>
-
-<obj class="Service" id="hsi-to-tc-app_control">
- <attr name="protocol" type="string" val="rest"/>
- <attr name="port" type="u16" val="5802"/>
 </obj>
 
 <obj class="SourceIDConf" id="hsi-srcid-01">

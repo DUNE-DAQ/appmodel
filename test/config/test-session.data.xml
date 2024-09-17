@@ -68,6 +68,7 @@
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
  <file path="config/appmodel/fsm.data.xml"/>
+ <file path="config/restcmd/control-services.data.xml"/>
  <file path="config/appmodel/wiecconfs.data.xml"/>
  <file path="test/config/hosts.data.xml"/>
  <file path="test/config/ru-segment.data.xml"/>
@@ -141,17 +142,11 @@
  <attr name="op_env" type="string" val="test"/>
 </obj>
 
-<obj class="Service" id="root-controller_control">
- <attr name="protocol" type="string" val="grpc"/>
- <attr name="port" type="u16" val="0"/>
- <attr name="eth_device_name" type="string" val=""/>
-</obj>
-
 <obj class="RCApplication" id="root-controller">
  <attr name="application_name" type="string" val="drunc-controller"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="exposes_service">
-  <ref class="Service" id="root-controller_control"/>
+  <ref class="Service" id="drunc_controller_control"/>
  </rel>
  <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
  <rel name="fsm" class="FSMconfiguration" id="fsmConf-test"/>
@@ -170,11 +165,6 @@
 <obj class="Service" id="local-connectivity-service">
  <attr name="protocol" type="string" val="http"/>
  <attr name="port" type="u16" val="5000"/>
-</obj>
-
-<obj class="Service" id="root-controller_control">
- <attr name="protocol" type="string" val="grpc"/>
- <attr name="port" type="u16" val="3333"/>
 </obj>
 
 <obj class="Session" id="test-session">
