@@ -77,23 +77,6 @@ TPStreamWriterApplication::generate_modules(conffwk::Configuration* confdb,
   tset_in_net_obj.set_by_val<std::string>("connection_type", tset_in_net_desc->get_connection_type());
   tset_in_net_obj.set_obj("associated_service", &tset_in_service_obj);
 
-  /* Get TPSet sources
-
-  std::vector<const dunedaq::confmodel::Application*> apps = session->get_all_applications();
-  std::vector<const conffwk::ConfigObject*> sourceIds;
-
-  for (auto app : apps) {
-    auto ro_app = app->cast<appmodel::ReadoutApplication>();
-    if (ro_app != nullptr && !ro_app->disabled(*session)) {
-      conffwk::ConfigObject* tpSourceIdConf = new conffwk::ConfigObject();
-      confdb->create(dbfile, "SourceIDConf", ro_app->UID()+"-"+ std::to_string(ro_app->get_tp_source_id()), *tpSourceIdConf);
-      tpSourceIdConf->set_by_val<uint32_t>("sid", ro_app->get_tp_source_id());
-      tpSourceIdConf->set_by_val<std::string>("subsystem", "Trigger");
-      sourceIds.push_back(tpSourceIdConf);
-    }
-  }
-  */
-
   conffwk::ConfigObject tpwrObj;
 
   auto source_id = get_source_id();
