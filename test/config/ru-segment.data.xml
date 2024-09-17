@@ -73,6 +73,7 @@
  <file path="config/appmodel/connections.data.xml"/>
  <file path="config/appmodel/moduleconfs.data.xml"/>
  <file path="config/appmodel/opmon.data.xml"/>
+ <file path="config/restcmd/control-services.data.xml"/>
  <file path="test/config/hosts.data.xml"/>
 </include>
 
@@ -291,33 +292,11 @@
  <attr name="pcie_addr" type="string" val="0"/>
 </obj>
 
-<obj class="NetworkDevice" id="ru_2_readout">
- <attr name="mac_address" type="string" val="00:00:00:00:00:00"/>
- <attr name="ip_address" type="string" val="123.456.201.501"/>
- <attr name="interface_name" type="string" val="data0"/>
- <attr name="network_name" type="enum" val="Control"/>
- <attr name="pcie_addr" type="string" val="0"/>
-</obj>
-
-<obj class="NetworkInterface" id="wib_101_hermes0">
- <attr name="mac_address" type="string" val="00:00:00:00:00:00"/>
- <attr name="ip_address" type="string" val="123.456.101.000"/>
- <attr name="interface_name" type="string" val="hermes0"/>
- <attr name="network_name" type="enum" val="Control"/>
-</obj>
-
-<obj class="NetworkInterface" id="wib_201_hermes0">
- <attr name="mac_address" type="string" val="00:00:00:00:00:00"/>
- <attr name="ip_address" type="string" val="123.456.101.001"/>
- <attr name="interface_name" type="string" val="hermes0"/>
- <attr name="network_name" type="enum" val="Control"/>
-</obj>
-
 <obj class="RCApplication" id="ru-controller">
  <attr name="application_name" type="string" val="drunc-controller"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="exposes_service">
-  <ref class="Service" id="ru-controller_control"/>
+  <ref class="Service" id="drunc_controller_control"/>
  </rel>
  <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
  <rel name="fsm" class="FSMconfiguration" id="FSMconfiguration_noAction"/>
@@ -333,7 +312,7 @@
  </rel>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="exposes_service">
-  <ref class="Service" id="ru-01_control"/>
+  <ref class="Service" id="daq_application_control"/>
   <ref class="Service" id="dataRequests"/>
   <ref class="Service" id="timeSyncs"/>
   <ref class="Service" id="triggerActivities"/>
@@ -372,7 +351,7 @@
  </rel>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
  <rel name="exposes_service">
-  <ref class="Service" id="ru-02_control"/>
+  <ref class="Service" id="daq_application_control"/>
  </rel>
  <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
  <rel name="queue_rules">
@@ -418,21 +397,6 @@
   <ref class="ReadoutApplication" id="ru-02"/>
  </rel>
  <rel name="controller" class="RCApplication" id="ru-controller"/>
-</obj>
-
-<obj class="Service" id="ru-01_control">
- <attr name="protocol" type="string" val="rest"/>
- <attr name="port" type="u16" val="5501"/>
-</obj>
-
-<obj class="Service" id="ru-02_control">
- <attr name="protocol" type="string" val="rest"/>
- <attr name="port" type="u16" val="5502"/>
-</obj>
-
-<obj class="Service" id="ru-controller_control">
- <attr name="protocol" type="string" val="grpc"/>
- <attr name="port" type="u16" val="5500"/>
 </obj>
 
 </oks-data>
