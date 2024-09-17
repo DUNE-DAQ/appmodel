@@ -63,13 +63,14 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="23" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240915T133936"/>
+<info name="" type="" num-of-items="23" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105629" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20240916T092524"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
  <file path="schema/appmodel/application.schema.xml"/>
  <file path="config/appmodel/connections.data.xml"/>
  <file path="config/appmodel/moduleconfs.data.xml"/>
+ <file path="config/appmodel/opmon.data.xml"/>
  <file path="test/config/hosts.data.xml"/>
 </include>
 
@@ -89,6 +90,8 @@
  <comment creation-time="20240617T203421" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="adding datawriters"/>
  <comment creation-time="20240628T062322" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="removing broadcasters from control apps"/>
  <comment creation-time="20240912T143615" created-by="maroda" created-on="np04-srv-015.cern.ch" author="maroda" text="add opmon objects"/>
+ <comment creation-time="20240916T091035" created-by="maroda" created-on="np04-srv-015.cern.ch" author="maroda" text="change monitoring object"/>
+ <comment creation-time="20240916T092524" created-by="maroda" created-on="np04-srv-015.cern.ch" author="maroda" text="Correct locations for OpMonConf objects"/>
 </comments>
 
 

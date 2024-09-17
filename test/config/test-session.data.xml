@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="21" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240915T133936"/>
+<info name="" type="" num-of-items="19" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20231207T105549" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20240916T092524"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -114,6 +114,9 @@
  <comment creation-time="20240826T084126" created-by="maroda" created-on="np04-srv-015.cern.ch" author="maroda" text="Correct cern stream"/>
  <comment creation-time="20240912T143615" created-by="maroda" created-on="np04-srv-015.cern.ch" author="maroda" text="add opmon objects"/>
  <comment creation-time="20240913T080846" created-by="maroda" created-on="np04-srv-015.cern.ch" author="maroda" text="remove opmon service objects"/>
+ <comment creation-time="20240916T091035" created-by="maroda" created-on="np04-srv-015.cern.ch" author="maroda" text="change monitoring object"/>
+ <comment creation-time="20240916T091131" created-by="maroda" created-on="np04-srv-015.cern.ch" author="maroda" text="remove old object"/>
+ <comment creation-time="20240916T092524" created-by="maroda" created-on="np04-srv-015.cern.ch" author="maroda" text="Correct locations for OpMonConf objects"/>
 </comments>
 
 
@@ -136,26 +139,6 @@
  <attr name="tpg_channel_map" type="string" val="PD2HDChannelMap"/>
  <attr name="clock_speed_hz" type="u32" val="62500000"/>
  <attr name="op_env" type="string" val="test"/>
-</obj>
-
-<obj class="OpMonConf" id="fast-all-monitoring">
- <attr name="level" type="u32" val="4294967295"/>
- <attr name="interval_s" type="u32" val="2"/>
-</obj>
-
-<obj class="OpMonConf" id="slow-all-monitoring">
- <attr name="level" type="u32" val="4294967295"/>
- <attr name="interval_s" type="u32" val="10"/>
-</obj>
-
-<obj class="OpMonURI" id="cern-opmon-uri">
- <attr name="path" type="string" val="monkafka.cern.ch:30092/opmon_stream"/>
- <attr name="type" type="enum" val="stream"/>
-</obj>
-
-<obj class="OpMonURI" id="local-opmon-uri">
- <attr name="path" type="string" val="./info.json"/>
- <attr name="type" type="enum" val="file"/>
 </obj>
 
 <obj class="RCApplication" id="root-controller">
