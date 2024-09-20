@@ -61,35 +61,69 @@
 
 <oks-data>
 
-    <info name="" type="" num-of-items="11" oks-format="data" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240628T062322"/>
+  <info name="" type="" num-of-items="11" oks-format="data" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240628T062322"/>
 
-    <include>
-        <file path="schema/confmodel/dunedaq.schema.xml"/>
-        <file path="schema/appmodel/application.schema.xml"/>
-        <file path="schema/hsilibs/hsi.schema.xml" />
-    </include>
+  <include>
+    <file path="schema/confmodel/dunedaq.schema.xml"/>
+    <file path="schema/appmodel/application.schema.xml"/>
+    <file path="schema/hsilibs/hsi.schema.xml" />
+  </include>
 
-    <obj class="Session" id="test-session">
-        <attr name="use_connectivity_server" type="bool" val="1"/>
-        <attr name="connectivity_service_interval_ms" type="u32" val="2000"/>
-        <attr name="data_request_timeout_ms" type="u32" val="1000"/>
-        <attr name="data_rate_slowdown_factor" type="u32" val="1"/>
-        <attr name="rte_script" type="string" val="/home/jr19588/fddaq-v5.1.0-rc2-a9/install/daq_app_rte.sh"/>
-        <rel name="environment">
-            <ref class="VariableSet" id="common-env"/>
-        </rel>
-    </obj>
+  <obj class="Session" id="test-session">
+    <attr name="use_connectivity_server" type="bool" val="1"/>
+    <attr name="connectivity_service_interval_ms" type="u32" val="2000"/>
+    <attr name="data_request_timeout_ms" type="u32" val="1000"/>
+    <attr name="data_rate_slowdown_factor" type="u32" val="1"/>
+    <attr name="rte_script" type="string" val="/home/jr19588/fddaq-v5.1.0-rc2-a9/install/daq_app_rte.sh"/>
+  </obj>
 
-    <obj class="HSIController" id="my-hsi-controller">
-        <attr name="clock_frequency" type="u64" val="62500000"/>
-        <attr name="trigger_rate" type="double" val="1"/>
-        <attr name="address" type="string" val="tcp://127.0.0.1:12344"/>
-        <attr name="partition" type="string" val="hsi_readout_test"/>
-        <attr name="control_hardware_io" type="bool" val="0"/>
-        <attr name="rising_edge_mask" type="u32" val="1"/>
-        <attr name="falling_edge_mask" type="u32" val="1"/>
-        <attr name="invert_edge_mask" type="u32" val="1"/>
-        <attr name="data_source" type="string" val="unknown"/>
-    </obj>
+  <obj class="HSIController" id="dts-hsi-controller">
+    <attr name="trigger_rate" type="double" val="1"/>
+    <attr name="address" type="u32" val="12344"/>
+    <attr name="control_hardware_io" type="bool" val="0"/>
+    <attr name="rising_edge_mask" type="u32" val="1"/>
+    <attr name="falling_edge_mask" type="u32" val="1"/>
+    <attr name="invert_edge_mask" type="u32" val="1"/>
+    <attr name="data_source" type="u32" val="1"/>
+  </obj>
+
+  <obj class="Segment" id="generated-segment">
+    <rel name="applications">
+      <ref class="DTSHSIController" id="dts-hsi-controller"/>
+    </rel>
+    <rel name="controller" class="RCApplication" id="my-controller"/>
+  </obj>
+
+  <!-- <obj class="RCApplication" id="dts-hsi-controller">
+    <attr name="application_name" type="string" val="drunc-controller"/>
+    <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+    <rel name="exposes_service">
+      <ref class="Service" id="hsi-controller_control"/>
+    </rel>
+    <rel name="fsm" class="FSMconfiguration" id="FSMconfiguration_noAction"/>
+  </obj>
+
+  <obj class="Segment" id="dts-hsi-segment">
+    <rel name="controller" class="RCApplication" id="dts-hsi-controller"/>
+  </obj> -->
+
+  <obj class="DTSHSIApplication" id="hsi-01">
+    <attr name="application_name" type="string" val="daq_application"/>
+    <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+    <rel name="exposes_service">
+      <ref class="Service" id="hsi-01_control"/>
+    </rel>
+    <rel name="source_id" class="SourceIDConf" id="hsi-srcid-01"/>
+    <rel name="queue_rules">
+      <ref class="QueueConnectionRule" id="hsi-dlh-data-requests-queue-rule"/>
+    </rel>
+    <rel name="network_rules">
+      <ref class="NetworkConnectionRule" id="hsi-rule"/>
+      <ref class="NetworkConnectionRule" id="data-req-hsi-net-rule"/>
+      <ref class="NetworkConnectionRule" id="ts-hsi-net-rule"/>
+    </rel>
+    <!-- <rel name="link_handler" class="DataHandlerConf" id="def-hsi-handler"/>
+    <rel name="generator" class="FakeHSIEventGeneratorConf" id="fakehsi"/> -->
+  </obj>
 
 </oks-data>

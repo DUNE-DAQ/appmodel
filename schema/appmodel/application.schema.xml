@@ -234,11 +234,11 @@
  <class name="DTSHSIApplication">
     <superclass name="Resource"/>
     <superclass name="SmartDaqApplication"/>
-    <relationship name="link_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+    <!-- <relationship name="link_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
     <relationship name="generator" class-type="FakeHSIEventGeneratorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
     <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
      <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
-    </method>
+    </method> -->
 </class>
 
  <class name="FakeHSIEventGeneratorConf">
