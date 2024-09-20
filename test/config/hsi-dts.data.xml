@@ -66,6 +66,7 @@
     <include>
         <file path="schema/confmodel/dunedaq.schema.xml"/>
         <file path="schema/appmodel/application.schema.xml"/>
+        <file path="schema/hsilibs/hsi.schema.xml" />
     </include>
 
     <obj class="Session" id="test-session">
