@@ -132,7 +132,7 @@ std::vector<const confmodel::DaqModule*>
 ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::string& dbfile, const confmodel::Session* session) const
 {
 
-  TLOG() << "Generating modules for application " << this->UID();
+  TLOG_DEBUG(6) << "Generating modules for application " << this->UID();
 
   ReadoutObjFactory obj_fac{config, dbfile, this->UID()};
   //
@@ -239,7 +239,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
 
     d2d_conn_objs.push_back(&d2d_conn_res->config_object());
 
-    TLOG() << "Processing DetectorToDaqConnection " << d2d_conn_res->UID();
+    TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn_res->UID();
     // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader module
     auto d2d_conn = d2d_conn_res->cast<confmodel::DetectorToDaqConnection>();
 
@@ -303,7 +303,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   uint16_t conn_idx = 0;
   std::string reader_uid(fmt::format("datareader-{}-{}", this->UID(), std::to_string(conn_idx++)));
   conffwk::ConfigObject reader_obj;
-  TLOG() << fmt::format("creating OKS configuration object for Data reader class {} with id {}", reader_class, reader_uid);
+  TLOG_DEBUG(6) << fmt::format("creating OKS configuration object for Data reader class {} with id {}", reader_class, reader_uid);
   config->create(dbfile, reader_class, reader_uid, reader_obj);
 
   // Populate configuration and interfaces (leave output queues for later)
@@ -387,10 +387,10 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   for (auto ds : det_streams) {
 
     uint32_t sid = ds->get_source_id();
-    TLOG() << fmt::format("Processing stream {}, id {}, det id {}", ds->UID(), ds->get_source_id(), ds->get_geo_id()->get_detector_id());
+    TLOG_DEBUG(6) << fmt::format("Processing stream {}, id {}, det id {}", ds->UID(), ds->get_source_id(), ds->get_geo_id()->get_detector_id());
     std::string uid(fmt::format("DLH-{}", sid));
     conffwk::ConfigObject dlh_obj;
-    TLOG() << fmt::format("creating OKS configuration object for Data Link Handler class {}, if {}", dlh_class, sid);
+    TLOG_DEBUG(6) << fmt::format("creating OKS configuration object for Data Link Handler class {}, if {}", dlh_class, sid);
     config->create(dbfile, dlh_class, uid, dlh_obj);
     dlh_obj.set_by_val<uint32_t>("source_id", sid);
     dlh_obj.set_by_val<uint32_t>("detector_id", ds->get_geo_id()->get_detector_id());
