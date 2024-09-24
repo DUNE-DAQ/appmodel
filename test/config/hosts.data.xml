@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="3" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="gjc" created-on="thinkpad" creation-time="20230320T153246" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240218T155644"/>
+<info name="" type="" num-of-items="7" oks-format="data" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230320T153246" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20240915T133936"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -84,6 +84,18 @@
  </rel>
 </obj>
 
+<obj class="PhysicalHost" id="monkafka.cern.ch">
+ <rel name="contains">
+  <ref class="ProcessingResource" id="localhost_cpus"/>
+ </rel>
+</obj>
+
+<obj class="PhysicalHost" id="pocket-host">
+ <rel name="contains">
+  <ref class="ProcessingResource" id="localhost_cpus"/>
+ </rel>
+</obj>
+
 <obj class="ProcessingResource" id="localhost_cpus">
  <attr name="cpu_cores" type="u16">
   <data val="0"/>
@@ -93,20 +105,6 @@
  </attr>
 </obj>
 
-<obj class="VirtualHost" id="vlocalhost">
- <rel name="uses">
-  <ref class="ProcessingResource" id="localhost_cpus"/>
- </rel>
- <rel name="runs_on" class="PhysicalHost" id="localhost"/>
-</obj>
-
-
-<obj class="PhysicalHost" id="monkafka.cern.ch">
- <rel name="contains">
-  <ref class="ProcessingResource" id="localhost_cpus"/>
- </rel>
-</obj>
-
 <obj class="VirtualHost" id="kafka-cern-vhost">
  <rel name="uses">
   <ref class="ProcessingResource" id="localhost_cpus"/>
@@ -114,17 +112,18 @@
  <rel name="runs_on" class="PhysicalHost" id="monkafka.cern.ch"/>
 </obj>
 
-<obj class="PhysicalHost" id="pocket-host"> <!-- ALTER_ME -->
- <rel name="contains">
-  <ref class="ProcessingResource" id="localhost_cpus"/>
- </rel>
-</obj>
-
 <obj class="VirtualHost" id="kafka-pocket-vhost">
  <rel name="uses">
   <ref class="ProcessingResource" id="localhost_cpus"/>
  </rel>
- <rel name="runs_on" class="PhysicalHost" id="pocket-host"/> <!-- ALTER_ME -->
+ <rel name="runs_on" class="PhysicalHost" id="pocket-host"/>
+</obj>
+
+<obj class="VirtualHost" id="vlocalhost">
+ <rel name="uses">
+  <ref class="ProcessingResource" id="localhost_cpus"/>
+ </rel>
+ <rel name="runs_on" class="PhysicalHost" id="localhost"/>
 </obj>
 
 </oks-data>

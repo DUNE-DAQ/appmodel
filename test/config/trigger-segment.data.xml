@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="27" oks-format="data" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20240709T095746"/>
+<info name="" type="" num-of-items="25" oks-format="data" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231212T171111" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20240916T092524"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -71,8 +71,9 @@
  <file path="schema/appmodel/trigger.schema.xml"/>
  <file path="config/appmodel/connections.data.xml"/>
  <file path="config/appmodel/moduleconfs.data.xml"/>
- <file path="test/config/hosts.data.xml"/>
+ <file path="config/appmodel/opmon.data.xml"/>
  <file path="config/appmodel/fsm.data.xml"/>
+ <file path="test/config/hosts.data.xml"/>
 </include>
 
 <comments>
@@ -96,6 +97,9 @@
  <comment creation-time="20240403T110823" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="glehmann" text="no random generator"/>
  <comment creation-time="20240403T115733" created-by="glehmann" created-on="np04-srv-019.cern.ch" author="glehmann" text=" "/>
  <comment creation-time="20240628T062322" created-by="thea" created-on="np04-srv-031.cern.ch" author="thea" text="removing broadcasters from control apps"/>
+ <comment creation-time="20240912T143615" created-by="maroda" created-on="np04-srv-015.cern.ch" author="maroda" text="add opmon objects"/>
+ <comment creation-time="20240916T091035" created-by="maroda" created-on="np04-srv-015.cern.ch" author="maroda" text="change monitoring object"/>
+ <comment creation-time="20240916T092524" created-by="maroda" created-on="np04-srv-015.cern.ch" author="maroda" text="Correct locations for OpMonConf objects"/>
 </comments>
 
 
@@ -131,22 +135,6 @@
  <rel name="data_processor" class="TCDataProcessor" id="def-tc-processor"/>
 </obj>
 
-<obj class="HSIEventToTCApplication" id="hsi-to-tc-app">
- <attr name="application_name" type="string" val="daq_application"/>
- <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
- <rel name="exposes_service">
-  <ref class="Service" id="dataRequests"/>
-  <ref class="Service" id="HSIEvents"/>
-  <ref class="Service" id="hsi-to-tc-app_control"/>
- </rel>
- <rel name="source_id" class="SourceIDConf" id="hsi-tc-srcid-1"/>
- <rel name="network_rules">
-  <ref class="NetworkConnectionRule" id="hsi-rule"/>
-  <ref class="NetworkConnectionRule" id="tc-net-rule"/>
- </rel>
- <rel name="hsevent_to_tc_conf" class="HSI2TCTranslatorConf" id="hsi-to-tc-conf"/>
-</obj>
-
 <obj class="MLTApplication" id="mlt">
  <attr name="application_name" type="string" val="daq_application"/>
  <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
@@ -156,6 +144,7 @@
   <ref class="Service" id="dataRequests"/>
   <ref class="Service" id="mlt_control"/>
  </rel>
+ <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
  <rel name="source_id" class="SourceIDConf" id="tc-srcid-1"/>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="tc-queue-rule"/>
@@ -182,6 +171,7 @@
  <rel name="exposes_service">
   <ref class="Service" id="trg-controller_control"/>
  </rel>
+ <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
  <rel name="fsm" class="FSMconfiguration" id="FSMconfiguration_noAction"/>
 </obj>
 
@@ -215,14 +205,8 @@
  <rel name="applications">
   <ref class="TriggerApplication" id="tc-maker-1"/>
   <ref class="MLTApplication" id="mlt"/>
-  <ref class="HSIEventToTCApplication" id="hsi-to-tc-app"/>
  </rel>
  <rel name="controller" class="RCApplication" id="trg-controller"/>
-</obj>
-
-<obj class="Service" id="hsi-to-tc-app_control">
- <attr name="protocol" type="string" val="rest"/>
- <attr name="port" type="u16" val="5701"/>
 </obj>
 
 <obj class="Service" id="mlt_control">
@@ -245,11 +229,6 @@
  <attr name="port" type="u16" val="5700"/>
 </obj>
 
-<obj class="SourceIDConf" id="hsi-tc-srcid-1">
- <attr name="sid" type="u32" val="2"/>
- <attr name="subsystem" type="enum" val="Trigger"/>
-</obj>
-
 <obj class="SourceIDConf" id="ta-srcid-1">
  <attr name="sid" type="u32" val="1100"/>
  <attr name="subsystem" type="enum" val="Trigger"/>
@@ -263,7 +242,6 @@
 <obj class="TADataProcessor" id="def-ta-processor">
  <attr name="queue_sizes" type="u32" val="10000"/>
  <attr name="thread_names_prefix" type="string" val="proc-"/>
- <attr name="mask_processing" type="bool" val="0"/>
  <attr name="print_ta_info" type="bool" val="0"/>
  <rel name="algorithms">
   <ref class="TCMakerPrescaleAlgorithm" id="tc-pass-through-algo"/>
@@ -273,7 +251,6 @@
 <obj class="TCDataProcessor" id="def-tc-processor">
  <attr name="queue_sizes" type="u32" val="10000"/>
  <attr name="thread_names_prefix" type="string" val="mlt_"/>
- <attr name="mask_processing" type="bool" val="0"/>
  <attr name="hsi_trigger_type_passthrough" type="bool" val="0"/>
  <attr name="merge_overlapping_tcs" type="bool" val="1"/>
  <attr name="td_out_of_timeout" type="bool" val="1"/>
@@ -288,11 +265,11 @@
  </rel>
 </obj>
 
-<obj class="TCMakerPrescaleAlgorithm" id="tc-pass-through-algo">
+<obj class="TCMakerADCSimpleWindowAlgorithm" id="tc-adcwindow-algo">
  <attr name="prescale" type="u32" val="100"/>
 </obj>
 
-<obj class="TCMakerADCSimpleWindowAlgorithm" id="tc-adcwindow-algo">
+<obj class="TCMakerPrescaleAlgorithm" id="tc-pass-through-algo">
  <attr name="prescale" type="u32" val="100"/>
 </obj>
 
@@ -332,6 +309,7 @@
   <ref class="Service" id="triggerActivities"/>
   <ref class="Service" id="dataRequests"/>
  </rel>
+ <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
  <rel name="source_id" class="SourceIDConf" id="ta-srcid-1"/>
  <rel name="queue_rules">
   <ref class="QueueConnectionRule" id="ta-queue-rule"/>

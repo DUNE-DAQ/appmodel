@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="47" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240618T084639"/>
+<info name="" type="" num-of-items="47" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240911T194242"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -88,6 +88,7 @@
 
 
  <class name="DFApplication">
+  <superclass name="Resource"/>
   <superclass name="SmartDaqApplication"/>
   <relationship name="trb" description="Configuration of the TRB to be generated my get_modules()" class-type="TRBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_writers" class-type="DataWriterConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -137,6 +138,7 @@
   <attribute name="source_id" type="u32" is-not-null="yes"/>
   <attribute name="detector_id" type="u32" is-not-null="yes"/>
   <attribute name="emulation_mode" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="post_processing_enabled" type="bool" init-value="true"/>
   <relationship name="geo_id" class-type="GeoId" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="module_configuration" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
@@ -144,7 +146,6 @@
  <class name="DataProcessor">
   <attribute name="queue_sizes" type="u32" init-value="10000"/>
   <attribute name="thread_names_prefix" type="string" init-value="postproc-"/>
-  <attribute name="mask_processing" description="Flag to comment out post processing in a data processor" type="bool" init-value="false"/>
  </class>
 
  <class name="DataReaderConf">
@@ -192,6 +193,7 @@
 
  <class name="DataWriterModule">
   <superclass name="DaqModule"/>
+  <attribute name="writer_identifier" type="string"/>
   <relationship name="configuration" class-type="DataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
@@ -220,6 +222,7 @@
  </class>
 
  <class name="FakeHSIApplication">
+  <superclass name="Resource"/>
   <superclass name="SmartDaqApplication"/>
   <relationship name="link_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="generator" class-type="FakeHSIEventGeneratorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -325,22 +328,14 @@
   <attribute name="data_type" description="string identifying type of data transferred through this queue" type="string" is-not-null="yes"/>
  </class>
 
- <class name="RawDataProcessor">
-  <superclass name="DataProcessor"/>
-  <attribute name="max_ticks_tot" description="Max ToT after which ongoing TPs are discarded, default is 8000" type="u32" init-value="8000" is-not-null="yes"/>
-  <attribute name="tpg_enabled" type="bool" init-value="true"/>
-  <attribute name="algorithm" description="TP generation algorithm" type="string"/>
-  <attribute name="threshold" description="Hit detection threshold" type="u16"/>
-  <attribute name="channel_mask" description="List of channels to be masked from TP generation" type="u32" is-multi-value="yes"/>
-  <attribute name="channel_map" type="string"/>
- </class>
-
  <class name="ReadoutApplication">
   <superclass name="ResourceSetAND"/>
   <superclass name="SmartDaqApplication"/>
-  <attribute name="tp_source_id" description="Source ID for TP handler if TPs are being generated" type="u32"/>
-  <attribute name="ta_source_id" description="Source ID if TAs are being generated" type="u32"/>
   <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
+  <attribute name="tp_generation_enabled" type="bool" init-value="true"/>
+  <attribute name="ta_generation_enabled" type="bool" init-value="true"/>
+  <attribute name="tp_source_id" type="u32" init-value="0"/>
+  <relationship name="tp_source_ids" class-type="SourceIDConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="uses" description="Configuration of the host hardware resources used by this application" class-type="RoHwConfig" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
   <relationship name="link_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="tp_handler" class-type="DataHandlerConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -392,6 +387,11 @@
   <attribute name="subsystem" type="enum" range="Unknown,Detector_Readout,HW_Signals_Interface,Trigger,TR_Builder" init-value="Unknown" is-not-null="yes"/>
  </class>
 
+ <class name="SourceIDToNetworkConnection">
+  <relationship name="source_ids" class-type="SourceIDConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="netconn" class-type="NetworkConnection" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
  <class name="StreamEmulationParameters">
   <attribute name="data_file_name" type="string"/>
   <attribute name="tp_data_file_name" type="string"/>
@@ -404,6 +404,7 @@
  </class>
 
  <class name="TPStreamWriterApplication">
+  <superclass name="Resource"/>
   <superclass name="SmartDaqApplication"/>
   <relationship name="tp_writer" class-type="TPStreamWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate dal objects for streams of thie ReadoutApplication on the fly">
@@ -419,6 +420,7 @@
  <class name="TPStreamWriterModule">
   <superclass name="DaqModule"/>
   <attribute name="source_id" type="u32" is-not-null="yes"/>
+  <attribute name="writer_identifier" type="string"/>
   <relationship name="configuration" class-type="TPStreamWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
@@ -432,6 +434,7 @@
  <class name="TRBModule">
   <superclass name="DaqModule"/>
   <relationship name="configuration" class-type="TRBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="request_connections" class-type="SourceIDToNetworkConnection" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
 </oks-schema>

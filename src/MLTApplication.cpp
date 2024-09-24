@@ -261,13 +261,13 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
    * Create the readout map
    **************************************************************/
 
-  std::vector<const dunedaq::confmodel::Application*> apps = session->get_all_applications();
+  std::vector<const dunedaq::confmodel::Application*> apps = session->get_enabled_applications();
 
   std::vector<const conffwk::ConfigObject*> sourceIds;
 
   for (auto app : apps) {
     auto ro_app = app->cast<appmodel::ReadoutApplication>();
-    if (ro_app != nullptr && !ro_app->disabled(*session)) {
+    if (ro_app != nullptr) {
   	auto resources = ro_app->get_contains();
         // Interate over all the readout groups
         for (auto d2d_conn_res : resources) {
@@ -305,53 +305,16 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
           sourceIdConf->set_by_val<std::string>("subsystem", "Detector_Readout");
           sourceIds.push_back(sourceIdConf);
         }
-
-
-
-        // // Iterate over each interface in per group
-        // auto interfaces = group_rset->get_contains();
-        // TLOG_DEBUG(7) << "Number of ReadoutInterfaces in that group : " << interfaces.size();
-        // for (auto interface_rset : interfaces) {
-        //   if (interface_rset->disabled(*session)) {
-        //     TLOG_DEBUG(7) << "Ignoring disabled ReadoutInterface " << interface_rset->UID();
-        //     continue;
-        //   }
-        //   auto interface = interface_rset->cast<confmodel::ReadoutInterface>();
-        //   if (interface == nullptr) {
-        //     throw(BadConf(ERS_HERE, "ReadoutGroup contains something othen than ReadoutInterface"));
-        //   }
-        //   auto streams = interface->get_contains();
-        //   TLOG_DEBUG(7) << "Number of streams in that interface: " << streams.size();
-
-        //   // Interate over all the streams
-        //   for (auto link : streams) {
-        //     auto stream = link->cast<confmodel::DetectorStream>();
-        //     if (stream == nullptr) {
-        //       throw(BadConf(ERS_HERE, "ReadoutInterface contains something other than DetectorStream"));
-        //     }
-        //     if (stream->disabled(*session)) {
-        //       TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
-        //       continue;
-        //     }
-
-        //     // Create SourceIDConf object for the MLT
-        //     auto id = stream->get_source_id();
-        //     conffwk::ConfigObject* sourceIdConf = new conffwk::ConfigObject();
-        //     std::string sourceIdConfUID = "dro-mlt-stream-config-" + std::to_string(id);
-        //     confdb->create(dbfile, "SourceIDConf", sourceIdConfUID, *sourceIdConf);
-        //     sourceIdConf->set_by_val<uint32_t>("sid", id);
-        //     // https://github.com/DUNE-DAQ/daqdataformats/blob/5b99506675a586c8a09123900e224f2371d96df9/include/daqdataformats/detail/SourceID.hxx#L108
-        //     sourceIdConf->set_by_val<std::string>("subsystem", "Detector_Readout");
-        //     sourceIds.push_back(sourceIdConf);
-        //   }
-        // }
       }
-      if (ro_app->get_tp_source_id()!= 0) {
-         conffwk::ConfigObject* tpSourceIdConf = new conffwk::ConfigObject();
-         confdb->create(dbfile, "SourceIDConf", ro_app->UID()+"-"+ std::to_string(ro_app->get_tp_source_id()), *tpSourceIdConf);
-         tpSourceIdConf->set_by_val<uint32_t>("sid", ro_app->get_tp_source_id());
-         tpSourceIdConf->set_by_val<std::string>("subsystem", "Trigger");
-         sourceIds.push_back(tpSourceIdConf);
+      if (ro_app->get_tp_generation_enabled()) {
+	      for (auto sid: ro_app->get_tp_source_ids()) {
+                sourceIds.push_back(&(sid->config_object()));
+	      }
+         //conffwk::ConfigObject* tpSourceIdConf = new conffwk::ConfigObject();
+         //confdb->create(dbfile, "SourceIDConf", ro_app->UID()+"-"+ std::to_string(ro_app->get_tp_source_id()), *tpSourceIdConf);
+         //tpSourceIdConf->set_by_val<uint32_t>("sid", ro_app->get_tp_source_id());
+         //tpSourceIdConf->set_by_val<std::string>("subsystem", "Trigger");
+         //sourceIds.push_back(tpSourceIdConf);
       }
     }
 

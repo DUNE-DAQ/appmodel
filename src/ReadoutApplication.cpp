@@ -30,6 +30,7 @@
 #include "confmodel/ResourceSet.hpp"
 #include "confmodel/Service.hpp"
 
+#include "appmodel/SourceIDConf.hpp"
 #include "appmodel/DataReaderModule.hpp"
 #include "appmodel/DataReaderConf.hpp"
 #include "appmodel/DataRecorderModule.hpp"
@@ -150,8 +151,12 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   auto dlh_class = dlh_conf->get_template_for();
 
   auto tph_conf = get_tp_handler();
+  if (tph_conf==nullptr && get_tp_generation_enabled()) {
+    throw(BadConf(ERS_HERE, "TP generation is enabled but there is no TP data handler configuration"));
+  }
+
   std::string tph_class = "";
-  if (tph_conf != nullptr) {
+  if (tph_conf != nullptr && get_tp_generation_enabled()) {
     tph_class = tph_conf->get_template_for();
   }
 
@@ -171,7 +176,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
     if (destination_class == "DataHandlerModule" || destination_class == dlh_class || destination_class == tph_class) {
       if (data_type == "DataRequest") {
         dlh_reqinput_qdesc = rule->get_descriptor();
-      } else if (data_type == "TriggerPrimitive") {
+      } else if (data_type == "TriggerPrimitive" && get_tp_generation_enabled()) {
         tp_input_qdesc = rule->get_descriptor();
       } else {
         dlh_input_qdesc = rule->get_descriptor();
@@ -224,7 +229,6 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   std::vector<const confmodel::DetectorStream*> det_streams;
   std::vector<const conffwk::ConfigObject*> d2d_conn_objs;
 
-  uint16_t conn_idx = 0;
   for (auto d2d_conn_res : get_contains()) {
 
     // Are we sure?
@@ -295,6 +299,8 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   //
 
   // Create the DPDKReaderModule object
+
+  uint16_t conn_idx = 0;
   std::string reader_uid(fmt::format("datareader-{}-{}", this->UID(), std::to_string(conn_idx++)));
   conffwk::ConfigObject reader_obj;
   TLOG_DEBUG(6) << fmt::format("creating OKS configuration object for Data reader class {} with id {}", reader_class, reader_uid);
@@ -323,43 +329,53 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
 
   //-----------------------------------------------------------------
   //
-  // Prepare the tp handler and related queues
+  // Prepare the tp handlers and related queues
   //
-  conffwk::ConfigObject tp_queue_obj;
-  conffwk::ConfigObject tpreq_queue_obj;
-
-  if (tph_conf) {
-
-    auto tpsrc = get_tp_source_id();
+  std::vector<const confmodel::Connection*> tp_queues;
+  if (get_tp_generation_enabled()) {
 
     // Create TP handler object
     auto tph_conf_obj = tph_conf->config_object();
-    conffwk::ConfigObject tph_obj;
-    std::string tp_uid("tphandler-" + std::to_string(tpsrc));
-    config->create(dbfile, tph_class, tp_uid, tph_obj);
-    tph_obj.set_by_val<uint32_t>("source_id", tpsrc);
-    tph_obj.set_by_val<uint32_t>("detector_id", 1); // 1 == kDAQ
-    tph_obj.set_obj("module_configuration", &tph_conf_obj);
+    auto tpsrc_ids = get_tp_source_ids();
 
-    // Create the TPs aggregator queue (from RawData Handlers to TP handlers)
-    tp_queue_obj = obj_fac.create_queue_obj(tp_input_qdesc);
-    tp_queue_obj.set_by_val<uint32_t>("recv_timeout_ms", 1);
-    tp_queue_obj.set_by_val<uint32_t>("send_timeout_ms", 1);
+    for (auto sid : tpsrc_ids) {
+      conffwk::ConfigObject tp_queue_obj;
+      conffwk::ConfigObject tpreq_queue_obj;
+      conffwk::ConfigObject tph_obj;
+      std::string tp_uid("tphandler-" + std::to_string(sid->get_sid()));
+      config->create(dbfile, tph_class, tp_uid, tph_obj);
+      tph_obj.set_by_val<uint32_t>("source_id", sid->get_sid());
+      tph_obj.set_by_val<uint32_t>("detector_id", 1); // 1 == kDAQ
+      tph_obj.set_by_val<bool>("post_processing_enabled", get_ta_generation_enabled());
+      tph_obj.set_obj("module_configuration", &tph_conf_obj);
 
-    // Create tp data requests queue from Fragment Aggregator
-    tpreq_queue_obj = obj_fac.create_queue_sid_obj(dlh_reqinput_qdesc, tpsrc);
-    req_queues.push_back(config->get<confmodel::Connection>(tpreq_queue_obj.UID()));
+      // Create the TPs aggregator queue (from RawData Handlers to TP handlers)
+      tp_queue_obj = obj_fac.create_queue_sid_obj(tp_input_qdesc, sid->get_sid());
+      tp_queue_obj.set_by_val<uint32_t>("recv_timeout_ms", 1);
+      tp_queue_obj.set_by_val<uint32_t>("send_timeout_ms", 1);
 
-    // Create the tp(set) publishing service
-    conffwk::ConfigObject tp_net_obj = obj_fac.create_net_obj(tp_net_desc);
+      tp_queues.push_back(config->get<confmodel::Connection>(tp_queue_obj.UID()));
+      // Create tp data requests queue from Fragment Aggregator
+      tpreq_queue_obj = obj_fac.create_queue_sid_obj(dlh_reqinput_qdesc, sid->get_sid());
+      req_queues.push_back(config->get<confmodel::Connection>(tpreq_queue_obj.UID()));
 
-    // Create the ta(set) publishing service
-    conffwk::ConfigObject ta_net_obj = obj_fac.create_net_obj(ta_net_desc);
+      // Create the tp(set) publishing service
+      conffwk::ConfigObject tp_net_obj = obj_fac.create_net_obj(tp_net_desc, tp_uid);
 
-    // Register queues with tp hankder
-    tph_obj.set_objs("inputs", { &tp_queue_obj, &tpreq_queue_obj });
-    tph_obj.set_objs("outputs", { &tp_net_obj, &ta_net_obj, &frag_queue_obj });
-    modules.push_back(config->get<confmodel::DaqModule>(tp_uid));
+      // Create the ta(set) publishing service
+      conffwk::ConfigObject ta_net_obj = obj_fac.create_net_obj(ta_net_desc, tp_uid);
+
+      // Register queues with tp hankder
+      tph_obj.set_objs("inputs", { &tp_queue_obj, &tpreq_queue_obj });
+      tph_obj.set_objs("outputs", { &tp_net_obj, &ta_net_obj, &frag_queue_obj });
+      modules.push_back(config->get<confmodel::DaqModule>(tp_uid));
+    }
+  }
+
+    // Add output queueus of tps
+  std::vector<const conffwk::ConfigObject*> tp_queue_objs;
+  for (auto q : tp_queues) {
+    tp_queue_objs.push_back(&q->config_object());
   }
 
   //-----------------------------------------------------------------
@@ -378,6 +394,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
     config->create(dbfile, dlh_class, uid, dlh_obj);
     dlh_obj.set_by_val<uint32_t>("source_id", sid);
     dlh_obj.set_by_val<uint32_t>("detector_id", ds->get_geo_id()->get_detector_id());
+    dlh_obj.set_by_val<bool>("post_processing_enabled", get_tp_generation_enabled());
     dlh_obj.set_by_val<bool>("emulation_mode", emulation_mode);
     dlh_obj.set_obj("geo_id", &ds->get_geo_id()->config_object());
     dlh_obj.set_obj("module_configuration", &dlh_conf->config_object());
@@ -401,14 +418,12 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
     if (dlh_conf->get_generate_timesync()) {
       // Add timestamp endpoint
       conffwk::ConfigObject ts_net_obj = obj_fac.create_net_obj(ts_net_desc, std::to_string(sid));
-
       dlh_outs.push_back(&ts_net_obj);
     }
 
-    if (tph_conf) {
-      dlh_outs.push_back(&tp_queue_obj);
+    for (auto tpq : tp_queue_objs) {
+      dlh_outs.push_back(tpq);
     }
-
     dlh_obj.set_objs("inputs", dlh_ins);
     dlh_obj.set_objs("outputs", dlh_outs);
 
