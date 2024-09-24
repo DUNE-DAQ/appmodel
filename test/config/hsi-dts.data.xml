@@ -69,14 +69,6 @@
     <file path="schema/hsilibs/hsi.schema.xml" />
   </include>
 
-  <obj class="Session" id="test-session">
-    <attr name="use_connectivity_server" type="bool" val="1"/>
-    <attr name="connectivity_service_interval_ms" type="u32" val="2000"/>
-    <attr name="data_request_timeout_ms" type="u32" val="1000"/>
-    <attr name="data_rate_slowdown_factor" type="u32" val="1"/>
-    <attr name="rte_script" type="string" val="/home/jr19588/fddaq-v5.1.0-rc2-a9/install/daq_app_rte.sh"/>
-  </obj>
-
   <obj class="HSIController" id="dts-hsi-controller">
     <attr name="trigger_rate" type="double" val="1"/>
     <attr name="address" type="u32" val="12344"/>
@@ -87,43 +79,167 @@
     <attr name="data_source" type="u32" val="1"/>
   </obj>
 
-  <obj class="Segment" id="generated-segment">
-    <rel name="applications">
-      <ref class="DTSHSIController" id="dts-hsi-controller"/>
+  <obj class="ConnectionService" id="local-connection-server">
+    <attr name="application_name" type="string" val="echo"/>
+    <attr name="commandline_parameters" type="string">
+      <data val="Process PID $$;"/>
+      <data val="trap &apos;pkill -INT -P $$&apos; EXIT;"/>
+      <data val="gunicorn -b 0.0.0.0:5000 --workers=1 --worker-class=gthread --threads=2 --timeout 5000000000 --log-level=debug connection-service.connection-flask:app"/>
+    </attr>
+    <attr name="threads" type="u16" val="1"/>
+    <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+    <rel name="exposes_service">
+      <ref class="Service" id="local-connectivity-service"/>
     </rel>
-    <rel name="controller" class="RCApplication" id="my-controller"/>
   </obj>
 
-  <!-- <obj class="RCApplication" id="dts-hsi-controller">
+  <obj class="DetectorConfig" id="dummy-detector">
+    <attr name="tpg_channel_map" type="string" val="PD2HDChannelMap"/>
+    <attr name="clock_speed_hz" type="u32" val="62500000"/>
+    <attr name="op_env" type="string" val="test"/>
+  </obj>
+
+  <obj class="OpMonService" id="cern-opmon-application-service">
+    <rel name="runs_on" class="VirtualHost" id="kafka-cern-vhost"/>
+    <rel name="exposes_service">
+      <ref class="Service" id="daq-k8s-opmon-service"/>
+    </rel>
+  </obj>
+
+  <obj class="OpMonService" id="local-opmon-application-service">
+    <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
+    <rel name="exposes_service">
+      <ref class="Service" id="local-opmon-service"/>
+    </rel>
+  </obj>
+
+  <obj class="OpMonService" id="pocket-opmon-application-service">
+    <attr name="application_name" type="string" val="sh"/>
+    <attr name="commandline_parameters" type="string">
+      <data val="-c"/>
+      <data val="echo Not starting kafka/grafana/postgres/influx"/>
+      <data val="&amp;&amp;"/>
+      <data val="sleep 10000"/>
+    </attr>
+    <rel name="runs_on" class="VirtualHost" id="kafka-pocket-vhost"/>
+    <rel name="exposes_service">
+      <ref class="Service" id="daq-k8s-opmon-service"/>
+    </rel>
+  </obj>
+
+  <obj class="RCApplication" id="root-controller">
     <attr name="application_name" type="string" val="drunc-controller"/>
     <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
     <rel name="exposes_service">
-      <ref class="Service" id="hsi-controller_control"/>
+      <ref class="Service" id="root-controller_control"/>
     </rel>
-    <rel name="fsm" class="FSMconfiguration" id="FSMconfiguration_noAction"/>
+    <rel name="fsm" class="FSMconfiguration" id="fsmConf-test"/>
   </obj>
 
-  <obj class="Segment" id="dts-hsi-segment">
-    <rel name="controller" class="RCApplication" id="dts-hsi-controller"/>
-  </obj> -->
+  <obj class="Segment" id="root-segment">
+    <rel name="segments">
+      <ref class="Segment" id="hsi-dts"/>
+    </rel>
+    <rel name="controller" class="RCApplication" id="root-controller"/>
+  </obj>
 
-  <obj class="DTSHSIApplication" id="hsi-01">
-    <attr name="application_name" type="string" val="daq_application"/>
-    <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
-    <rel name="exposes_service">
-      <ref class="Service" id="hsi-01_control"/>
+  <obj class="Service" id="daq-k8s-opmon-service">
+    <attr name="protocol" type="string" val="stream"/>
+    <attr name="port" type="u16" val="30092"/>
+    <attr name="path" type="string" val="/opmon_stream"/>
+  </obj>
+
+  <obj class="Service" id="local-connectivity-service">
+    <attr name="protocol" type="string" val="http"/>
+    <attr name="port" type="u16" val="5000"/>
+  </obj>
+
+  <obj class="Service" id="local-opmon-service">
+    <attr name="protocol" type="string" val="file"/>
+    <attr name="port" type="u16" val="0"/>
+    <attr name="path" type="string" val="info.json"/>
+  </obj>
+
+  <obj class="Service" id="root-controller_control">
+    <attr name="protocol" type="string" val="grpc"/>
+    <attr name="port" type="u16" val="3333"/>
+  </obj>
+
+  <obj class="Session" id="test-session">
+    <attr name="use_connectivity_server" type="bool" val="1"/>
+    <attr name="connectivity_service_interval_ms" type="u32" val="2000"/>
+    <attr name="data_request_timeout_ms" type="u32" val="1000"/>
+    <attr name="data_rate_slowdown_factor" type="u32" val="1"/>
+    <rel name="environment">
+      <ref class="Variable" id="session-env-session-name-0"/>
+      <ref class="Variable" id="session-env-session-name-1"/>
+      <ref class="Variable" id="session-env-ers-verb"/>
+      <ref class="Variable" id="session-env-ers-info"/>
+      <ref class="Variable" id="session-env-ers-warning"/>
+      <ref class="Variable" id="session-env-ers-error"/>
+      <ref class="Variable" id="session-env-ers-fatal"/>
+      <ref class="Variable" id="session-env-connectivity-server"/>
+      <ref class="Variable" id="session-env-connectivity-port"/>
+      <ref class="Variable" id="daqapp-cli-configuration"/>
     </rel>
-    <rel name="source_id" class="SourceIDConf" id="hsi-srcid-01"/>
-    <rel name="queue_rules">
-      <ref class="QueueConnectionRule" id="hsi-dlh-data-requests-queue-rule"/>
+    <rel name="disabled">
     </rel>
-    <rel name="network_rules">
-      <ref class="NetworkConnectionRule" id="hsi-rule"/>
-      <ref class="NetworkConnectionRule" id="data-req-hsi-net-rule"/>
-      <ref class="NetworkConnectionRule" id="ts-hsi-net-rule"/>
+    <rel name="segment" class="Segment" id="root-segment"/>
+    <rel name="infrastructure_applications">
+      <ref class="ConnectionService" id="local-connection-server"/>
+      <ref class="OpMonService" id="local-opmon-application-service"/>
     </rel>
-    <!-- <rel name="link_handler" class="DataHandlerConf" id="def-hsi-handler"/>
-    <rel name="generator" class="FakeHSIEventGeneratorConf" id="fakehsi"/> -->
+    <rel name="detector_configuration" class="DetectorConfig" id="dummy-detector"/>
+  </obj>
+
+  <obj class="Variable" id="daqapp-cli-configuration">
+    <attr name="name" type="string" val="DAQAPP_CLI_CONFIG_SVC"/>
+    <attr name="value" type="string" val="oksconflibs:test/config/test-session.data.xml"/>
+  </obj>
+
+  <obj class="Variable" id="session-env-connectivity-port">
+    <attr name="name" type="string" val="CONNECTION_PORT"/>
+    <attr name="value" type="string" val="5000"/>
+  </obj>
+
+  <obj class="Variable" id="session-env-connectivity-server">
+    <attr name="name" type="string" val="CONNECTION_SERVER"/>
+    <attr name="value" type="string" val="localhost"/>
+  </obj>
+
+  <obj class="Variable" id="session-env-ers-error">
+    <attr name="name" type="string" val="DUNEDAQ_ERS_ERROR"/>
+    <attr name="value" type="string" val="erstrace,throttle,lstdout"/>
+  </obj>
+
+  <obj class="Variable" id="session-env-ers-fatal">
+    <attr name="name" type="string" val="DUNEDAQ_ERS_FATAL"/>
+    <attr name="value" type="string" val="erstrace,lstdout"/>
+  </obj>
+
+  <obj class="Variable" id="session-env-ers-info">
+    <attr name="name" type="string" val="DUNEDAQ_ERS_INFO"/>
+    <attr name="value" type="string" val="erstrace,throttle,lstdout"/>
+  </obj>
+
+  <obj class="Variable" id="session-env-ers-verb">
+    <attr name="name" type="string" val="DUNEDAQ_ERS_VERBOSITY_LEVEL"/>
+    <attr name="value" type="string" val="1"/>
+  </obj>
+
+  <obj class="Variable" id="session-env-ers-warning">
+    <attr name="name" type="string" val="DUNEDAQ_ERS_WARNING"/>
+    <attr name="value" type="string" val="erstrace,throttle,lstdout"/>
+  </obj>
+
+  <obj class="Variable" id="session-env-session-name-0">
+    <attr name="name" type="string" val="DUNEDAQ_PARTITION"/>
+    <attr name="value" type="string" val="test-session"/>
+  </obj>
+
+  <obj class="Variable" id="session-env-session-name-1">
+    <attr name="name" type="string" val="DUNEDAQ_SESSION"/>
+    <attr name="value" type="string" val="test-session"/>
   </obj>
 
 </oks-data>
