@@ -67,6 +67,14 @@
     <file path="schema/confmodel/dunedaq.schema.xml"/>
     <file path="schema/appmodel/application.schema.xml"/>
     <file path="schema/hsilibs/hsi.schema.xml" />
+    <file path="config/appmodel/opmon.data.xml"/>
+    <file path="test/config/hosts.data.xml"/>
+    <file path="config/appmodel/fsm.data.xml"/>
+    <file path="test/config/ru-segment.data.xml"/>
+    <file path="test/config/df-segment.data.xml"/>
+    <!-- <file path="test/config/hsi-segment.data.xml"/> -->
+    <file path="test/config/trigger-segment.data.xml"/>
+    <file path="test/config/hsi-dts-segment.data.xml"/>
   </include>
 
   <obj class="HSIController" id="dts-hsi-controller">
@@ -78,6 +86,7 @@
     <attr name="invert_edge_mask" type="u32" val="1"/>
     <attr name="data_source" type="u32" val="1"/>
   </obj>
+
   <obj class="ConnectionService" id="local-connection-server">
     <attr name="application_name" type="string" val="echo"/>
     <attr name="commandline_parameters" type="string">
@@ -111,7 +120,11 @@
 
   <obj class="Segment" id="root-segment">
     <rel name="segments">
-      <ref class="Segment" id="hsi-dts"/>
+      <ref class="Segment" id="ru-segment"/>
+      <ref class="Segment" id="df-segment"/>
+      <ref class="Segment" id="trg-segment"/>
+      <!-- <ref class="Segment" id="hsi-segment"/> -->
+      <ref class="Segment" id="hsi-dts-segment"/>
     </rel>
     <rel name="controller" class="RCApplication" id="root-controller"/>
   </obj>

@@ -84,8 +84,8 @@
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
+ <file path="schema/hsilibs/hsi.schema.xml"/>
 </include>
-
 
  <class name="DFApplication">
   <superclass name="Resource"/>
@@ -231,16 +231,6 @@
   </method>
  </class>
 
- <class name="DTSHSIApplication">
-    <superclass name="Resource"/>
-    <superclass name="SmartDaqApplication"/>
-    <!-- <relationship name="link_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-    <relationship name="generator" class-type="FakeHSIEventGeneratorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-    <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
-     <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
-    </method> -->
-</class>
-
  <class name="FakeHSIEventGeneratorConf">
   <attribute name="clock_frequency" description="Assumed clock frequency in Hz (for current-timestamp estimation)" type="u64" init-value="62500000" is-not-null="yes"/>
   <attribute name="timestamp_offset" description="Offset for HSIEvent timestamps in units of clock ticks. Positive offset increases timestamp estimate." type="s64" init-value="0" is-not-null="yes"/>
@@ -255,6 +245,16 @@
   <superclass name="DaqModule"/>
   <relationship name="configuration" class-type="FakeHSIEventGeneratorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
+
+ <class name="DTSHSIApplication">
+    <superclass name="Resource"/>
+    <superclass name="SmartDaqApplication"/>
+    <relationship name="link_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+    <relationship name="generator" class-type="HSIReadoutConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+    <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
+     <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
+    </method>
+   </class>
 
  <class name="FilenameParams">
   <attribute name="file_type_prefix" type="enum" range="raw,tp" init-value="raw" is-not-null="yes"/>
