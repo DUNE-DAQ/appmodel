@@ -78,7 +78,6 @@
     <attr name="invert_edge_mask" type="u32" val="1"/>
     <attr name="data_source" type="u32" val="1"/>
   </obj>
-
   <obj class="ConnectionService" id="local-connection-server">
     <attr name="application_name" type="string" val="echo"/>
     <attr name="commandline_parameters" type="string">
@@ -91,6 +90,7 @@
     <rel name="exposes_service">
       <ref class="Service" id="local-connectivity-service"/>
     </rel>
+    <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
   </obj>
 
   <obj class="DetectorConfig" id="dummy-detector">
@@ -99,40 +99,13 @@
     <attr name="op_env" type="string" val="test"/>
   </obj>
 
-  <obj class="OpMonService" id="cern-opmon-application-service">
-    <rel name="runs_on" class="VirtualHost" id="kafka-cern-vhost"/>
-    <rel name="exposes_service">
-      <ref class="Service" id="daq-k8s-opmon-service"/>
-    </rel>
-  </obj>
-
-  <obj class="OpMonService" id="local-opmon-application-service">
-    <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
-    <rel name="exposes_service">
-      <ref class="Service" id="local-opmon-service"/>
-    </rel>
-  </obj>
-
-  <obj class="OpMonService" id="pocket-opmon-application-service">
-    <attr name="application_name" type="string" val="sh"/>
-    <attr name="commandline_parameters" type="string">
-      <data val="-c"/>
-      <data val="echo Not starting kafka/grafana/postgres/influx"/>
-      <data val="&amp;&amp;"/>
-      <data val="sleep 10000"/>
-    </attr>
-    <rel name="runs_on" class="VirtualHost" id="kafka-pocket-vhost"/>
-    <rel name="exposes_service">
-      <ref class="Service" id="daq-k8s-opmon-service"/>
-    </rel>
-  </obj>
-
   <obj class="RCApplication" id="root-controller">
     <attr name="application_name" type="string" val="drunc-controller"/>
     <rel name="runs_on" class="VirtualHost" id="vlocalhost"/>
     <rel name="exposes_service">
       <ref class="Service" id="root-controller_control"/>
     </rel>
+    <rel name="opmon_conf" class="OpMonConf" id="slow-all-monitoring"/>
     <rel name="fsm" class="FSMconfiguration" id="fsmConf-test"/>
   </obj>
 
@@ -143,21 +116,9 @@
     <rel name="controller" class="RCApplication" id="root-controller"/>
   </obj>
 
-  <obj class="Service" id="daq-k8s-opmon-service">
-    <attr name="protocol" type="string" val="stream"/>
-    <attr name="port" type="u16" val="30092"/>
-    <attr name="path" type="string" val="/opmon_stream"/>
-  </obj>
-
   <obj class="Service" id="local-connectivity-service">
     <attr name="protocol" type="string" val="http"/>
     <attr name="port" type="u16" val="5000"/>
-  </obj>
-
-  <obj class="Service" id="local-opmon-service">
-    <attr name="protocol" type="string" val="file"/>
-    <attr name="port" type="u16" val="0"/>
-    <attr name="path" type="string" val="info.json"/>
   </obj>
 
   <obj class="Service" id="root-controller_control">
@@ -182,14 +143,12 @@
       <ref class="Variable" id="session-env-connectivity-port"/>
       <ref class="Variable" id="daqapp-cli-configuration"/>
     </rel>
-    <rel name="disabled">
-    </rel>
     <rel name="segment" class="Segment" id="root-segment"/>
     <rel name="infrastructure_applications">
       <ref class="ConnectionService" id="local-connection-server"/>
-      <ref class="OpMonService" id="local-opmon-application-service"/>
     </rel>
     <rel name="detector_configuration" class="DetectorConfig" id="dummy-detector"/>
+    <rel name="opmon_uri" class="OpMonURI" id="local-opmon-uri"/>
   </obj>
 
   <obj class="Variable" id="daqapp-cli-configuration">
@@ -241,5 +200,6 @@
     <attr name="name" type="string" val="DUNEDAQ_SESSION"/>
     <attr name="value" type="string" val="test-session"/>
   </obj>
+
 
 </oks-data>
