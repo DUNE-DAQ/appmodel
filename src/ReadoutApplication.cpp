@@ -10,6 +10,7 @@
 
 #include "ModuleFactory.hpp"
 
+#include "appmodel/DFApplication.hpp"
 #include "appmodel/ReadoutApplication.hpp"
 #include "conffwk/Configuration.hpp"
 #include "confmodel/DetDataReceiver.hpp"
@@ -30,6 +31,7 @@
 #include "confmodel/ResourceSet.hpp"
 #include "confmodel/Service.hpp"
 
+#include "appmodel/SourceIDConf.hpp"
 #include "appmodel/DataReaderModule.hpp"
 #include "appmodel/DataReaderConf.hpp"
 #include "appmodel/DataRecorderModule.hpp"
@@ -131,7 +133,7 @@ std::vector<const confmodel::DaqModule*>
 ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::string& dbfile, const confmodel::Session* session) const
 {
 
-  TLOG() << "Generating modules for application " << this->UID();
+  TLOG_DEBUG(6) << "Generating modules for application " << this->UID();
 
   ReadoutObjFactory obj_fac{config, dbfile, this->UID()};
   //
@@ -228,7 +230,6 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   std::vector<const confmodel::DetectorStream*> det_streams;
   std::vector<const conffwk::ConfigObject*> d2d_conn_objs;
 
-  uint16_t conn_idx = 0;
   for (auto d2d_conn_res : get_contains()) {
 
     // Are we sure?
@@ -239,7 +240,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
 
     d2d_conn_objs.push_back(&d2d_conn_res->config_object());
 
-    TLOG() << "Processing DetectorToDaqConnection " << d2d_conn_res->UID();
+    TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn_res->UID();
     // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader module
     auto d2d_conn = d2d_conn_res->cast<confmodel::DetectorToDaqConnection>();
 
@@ -299,9 +300,11 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   //
 
   // Create the DPDKReaderModule object
+
+  uint16_t conn_idx = 0;
   std::string reader_uid(fmt::format("datareader-{}-{}", this->UID(), std::to_string(conn_idx++)));
   conffwk::ConfigObject reader_obj;
-  TLOG() << fmt::format("creating OKS configuration object for Data reader class {} with id {}", reader_class, reader_uid);
+  TLOG_DEBUG(6) << fmt::format("creating OKS configuration object for Data reader class {} with id {}", reader_class, reader_uid);
   config->create(dbfile, reader_class, reader_uid, reader_obj);
 
   // Populate configuration and interfaces (leave output queues for later)
@@ -327,44 +330,53 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
 
   //-----------------------------------------------------------------
   //
-  // Prepare the tp handler and related queues
+  // Prepare the tp handlers and related queues
   //
-  conffwk::ConfigObject tp_queue_obj;
-  conffwk::ConfigObject tpreq_queue_obj;
-
+  std::vector<const confmodel::Connection*> tp_queues;
   if (get_tp_generation_enabled()) {
-
-    auto tpsrc = get_tp_source_id();
 
     // Create TP handler object
     auto tph_conf_obj = tph_conf->config_object();
-    conffwk::ConfigObject tph_obj;
-    std::string tp_uid("tphandler-" + std::to_string(tpsrc));
-    config->create(dbfile, tph_class, tp_uid, tph_obj);
-    tph_obj.set_by_val<uint32_t>("source_id", tpsrc);
-    tph_obj.set_by_val<uint32_t>("detector_id", 1); // 1 == kDAQ
-    tph_obj.set_by_val<bool>("post_processing_enabled", get_ta_generation_enabled());
-    tph_obj.set_obj("module_configuration", &tph_conf_obj);
+    auto tpsrc_ids = get_tp_source_ids();
 
-    // Create the TPs aggregator queue (from RawData Handlers to TP handlers)
-    tp_queue_obj = obj_fac.create_queue_obj(tp_input_qdesc);
-    tp_queue_obj.set_by_val<uint32_t>("recv_timeout_ms", 1);
-    tp_queue_obj.set_by_val<uint32_t>("send_timeout_ms", 1);
+    for (auto sid : tpsrc_ids) {
+      conffwk::ConfigObject tp_queue_obj;
+      conffwk::ConfigObject tpreq_queue_obj;
+      conffwk::ConfigObject tph_obj;
+      std::string tp_uid("tphandler-" + std::to_string(sid->get_sid()));
+      config->create(dbfile, tph_class, tp_uid, tph_obj);
+      tph_obj.set_by_val<uint32_t>("source_id", sid->get_sid());
+      tph_obj.set_by_val<uint32_t>("detector_id", 1); // 1 == kDAQ
+      tph_obj.set_by_val<bool>("post_processing_enabled", get_ta_generation_enabled());
+      tph_obj.set_obj("module_configuration", &tph_conf_obj);
 
-    // Create tp data requests queue from Fragment Aggregator
-    tpreq_queue_obj = obj_fac.create_queue_sid_obj(dlh_reqinput_qdesc, tpsrc);
-    req_queues.push_back(config->get<confmodel::Connection>(tpreq_queue_obj.UID()));
+      // Create the TPs aggregator queue (from RawData Handlers to TP handlers)
+      tp_queue_obj = obj_fac.create_queue_sid_obj(tp_input_qdesc, sid->get_sid());
+      tp_queue_obj.set_by_val<uint32_t>("recv_timeout_ms", 1);
+      tp_queue_obj.set_by_val<uint32_t>("send_timeout_ms", 1);
 
-    // Create the tp(set) publishing service
-    conffwk::ConfigObject tp_net_obj = obj_fac.create_net_obj(tp_net_desc);
+      tp_queues.push_back(config->get<confmodel::Connection>(tp_queue_obj.UID()));
+      // Create tp data requests queue from Fragment Aggregator
+      tpreq_queue_obj = obj_fac.create_queue_sid_obj(dlh_reqinput_qdesc, sid->get_sid());
+      req_queues.push_back(config->get<confmodel::Connection>(tpreq_queue_obj.UID()));
 
-    // Create the ta(set) publishing service
-    conffwk::ConfigObject ta_net_obj = obj_fac.create_net_obj(ta_net_desc);
+      // Create the tp(set) publishing service
+      conffwk::ConfigObject tp_net_obj = obj_fac.create_net_obj(tp_net_desc, tp_uid);
 
-    // Register queues with tp hankder
-    tph_obj.set_objs("inputs", { &tp_queue_obj, &tpreq_queue_obj });
-    tph_obj.set_objs("outputs", { &tp_net_obj, &ta_net_obj, &frag_queue_obj });
-    modules.push_back(config->get<confmodel::DaqModule>(tp_uid));
+      // Create the ta(set) publishing service
+      conffwk::ConfigObject ta_net_obj = obj_fac.create_net_obj(ta_net_desc, tp_uid);
+
+      // Register queues with tp hankder
+      tph_obj.set_objs("inputs", { &tp_queue_obj, &tpreq_queue_obj });
+      tph_obj.set_objs("outputs", { &tp_net_obj, &ta_net_obj, &frag_queue_obj });
+      modules.push_back(config->get<confmodel::DaqModule>(tp_uid));
+    }
+  }
+
+    // Add output queueus of tps
+  std::vector<const conffwk::ConfigObject*> tp_queue_objs;
+  for (auto q : tp_queues) {
+    tp_queue_objs.push_back(&q->config_object());
   }
 
   //-----------------------------------------------------------------
@@ -376,10 +388,10 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   for (auto ds : det_streams) {
 
     uint32_t sid = ds->get_source_id();
-    TLOG() << fmt::format("Processing stream {}, id {}, det id {}", ds->UID(), ds->get_source_id(), ds->get_geo_id()->get_detector_id());
+    TLOG_DEBUG(6) << fmt::format("Processing stream {}, id {}, det id {}", ds->UID(), ds->get_source_id(), ds->get_geo_id()->get_detector_id());
     std::string uid(fmt::format("DLH-{}", sid));
     conffwk::ConfigObject dlh_obj;
-    TLOG() << fmt::format("creating OKS configuration object for Data Link Handler class {}, if {}", dlh_class, sid);
+    TLOG_DEBUG(6) << fmt::format("creating OKS configuration object for Data Link Handler class {}, if {}", dlh_class, sid);
     config->create(dbfile, dlh_class, uid, dlh_obj);
     dlh_obj.set_by_val<uint32_t>("source_id", sid);
     dlh_obj.set_by_val<uint32_t>("detector_id", ds->get_geo_id()->get_detector_id());
@@ -407,14 +419,12 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
     if (dlh_conf->get_generate_timesync()) {
       // Add timestamp endpoint
       conffwk::ConfigObject ts_net_obj = obj_fac.create_net_obj(ts_net_desc, std::to_string(sid));
-
       dlh_outs.push_back(&ts_net_obj);
     }
 
-    if (get_tp_generation_enabled()) {
-      dlh_outs.push_back(&tp_queue_obj);
+    for (auto tpq : tp_queue_objs) {
+      dlh_outs.push_back(tpq);
     }
-
     dlh_obj.set_objs("inputs", dlh_ins);
     dlh_obj.set_objs("outputs", dlh_outs);
 
@@ -428,17 +438,49 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   TLOG_DEBUG(7) << "creating OKS configuration object for Fragment Aggregator class ";
   config->create(dbfile, "FragmentAggregatorModule", faUid, frag_aggr);
 
-  // Add network connection to TRBs
+  // Add network connection from TRBs
   conffwk::ConfigObject fa_net_obj = obj_fac.create_net_obj(fa_net_desc);
 
-  // Add output queueus of data requests
-  std::vector<const conffwk::ConfigObject*> req_queue_objs;
-  for (auto q : req_queues) {
-    req_queue_objs.push_back(&q->config_object());
+  // Process special Network rules!
+  // Looking for Fragment rules from DFAppplications in current Session
+  auto sessionApps = session->get_enabled_applications();
+  std::vector<conffwk::ConfigObject> fragOutObjs;
+  for (auto app : sessionApps) {
+    auto dfapp = app->cast<appmodel::DFApplication>();
+    if (dfapp == nullptr)
+      continue;
+
+    auto dfNRules = dfapp->get_network_rules();
+    for (auto rule : dfNRules) {
+      auto descriptor = rule->get_descriptor();
+      auto data_type = descriptor->get_data_type();
+      if (data_type == "Fragment") {
+        std::string dreqNetUid(descriptor->get_uid_base() + dfapp->UID());
+        conffwk::ConfigObject frag_conn;
+        config->create(dbfile, "NetworkConnection", dreqNetUid, frag_conn);
+
+        frag_conn.set_by_val<std::string>("data_type", descriptor->get_data_type());
+        frag_conn.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
+
+        auto serviceObj = descriptor->get_associated_service()->config_object();
+        frag_conn.set_obj("associated_service", &serviceObj);
+        fragOutObjs.push_back(frag_conn);
+      } // If network rule has TriggerDecision type of data
+    }   // Loop over Apps network rules
+  }     // loop over Session specific Apps
+
+  // Add output queueus of data requests and Fragments
+  std::vector<const conffwk::ConfigObject*> fa_output_objs;
+  for (auto& fNet : fragOutObjs) {
+    fa_output_objs.push_back(&fNet);
+  }
+
+  for (auto& q : req_queues) {
+    fa_output_objs.push_back(&q->config_object());
   }
 
   frag_aggr.set_objs("inputs", { &fa_net_obj, &frag_queue_obj });
-  frag_aggr.set_objs("outputs", req_queue_objs);
+  frag_aggr.set_objs("outputs", fa_output_objs);
 
   modules.push_back(config->get<confmodel::DaqModule>(frag_aggr.UID()));
 

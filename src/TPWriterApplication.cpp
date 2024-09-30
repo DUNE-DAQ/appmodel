@@ -28,6 +28,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <fmt/core.h>
 
 using namespace dunedaq;
 using namespace dunedaq::appmodel;
@@ -76,23 +77,6 @@ TPStreamWriterApplication::generate_modules(conffwk::Configuration* confdb,
   tset_in_net_obj.set_by_val<std::string>("connection_type", tset_in_net_desc->get_connection_type());
   tset_in_net_obj.set_obj("associated_service", &tset_in_service_obj);
 
-  /* Get TPSet sources
-
-  std::vector<const dunedaq::confmodel::Application*> apps = session->get_all_applications();
-  std::vector<const conffwk::ConfigObject*> sourceIds;
-
-  for (auto app : apps) {
-    auto ro_app = app->cast<appmodel::ReadoutApplication>();
-    if (ro_app != nullptr && !ro_app->disabled(*session)) {
-      conffwk::ConfigObject* tpSourceIdConf = new conffwk::ConfigObject();
-      confdb->create(dbfile, "SourceIDConf", ro_app->UID()+"-"+ std::to_string(ro_app->get_tp_source_id()), *tpSourceIdConf);
-      tpSourceIdConf->set_by_val<uint32_t>("sid", ro_app->get_tp_source_id());
-      tpSourceIdConf->set_by_val<std::string>("subsystem", "Trigger");
-      sourceIds.push_back(tpSourceIdConf);
-    }
-  }
-  */
-
   conffwk::ConfigObject tpwrObj;
 
   auto source_id = get_source_id();
@@ -103,6 +87,7 @@ TPStreamWriterApplication::generate_modules(conffwk::Configuration* confdb,
   std::string tpwrUid("tpwriter-"+std::to_string(source_id->get_sid()));
   confdb->create(dbfile, "TPStreamWriterModule", tpwrUid, tpwrObj);
   tpwrObj.set_by_val<uint32_t>("source_id", source_id->get_sid());
+  tpwrObj.set_by_val("writer_identifier", fmt::format("{}_tpw_{}", UID(), source_id->get_sid()));
   tpwrObj.set_obj("configuration", &tpwriterConf->config_object());
   tpwrObj.set_objs("inputs", {&tset_in_net_obj} );
 
