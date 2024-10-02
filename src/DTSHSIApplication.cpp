@@ -10,9 +10,9 @@
 
 #include "ModuleFactory.hpp"
 
-#include "appmodel/FakeHSIApplication.hpp"
-#include "appmodel/FakeHSIEventGeneratorModule.hpp"
-#include "appmodel/FakeHSIEventGeneratorConf.hpp"
+#include "appmodel/DTSHSIApplication.hpp"
+// #include "appmodel/FakeHSIEventGeneratorModule.hpp"
+// #include "appmodel/FakeHSIEventGeneratorConf.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
@@ -20,6 +20,8 @@
 #include "appmodel/DataHandlerModule.hpp"
 #include "appmodel/DataHandlerConf.hpp"
 #include "appmodel/SourceIDConf.hpp"
+#include "appmodel/HSIReadout.hpp"
+#include "appmodel/HSIReadoutConf.hpp"
 #include "appmodel/appmodelIssues.hpp"
 #include "confmodel/Connection.hpp"
 #include "confmodel/NetworkConnection.hpp"
@@ -159,11 +161,11 @@ DTSHSIApplication::generate_modules(conffwk::Configuration* confdb,
   
   std::string genuid("HSI-" + std::to_string(id));
   conffwk::ConfigObject hsiObj;
-  confdb->create(dbfile, "HSIEventGeneratorModule", genuid, hsiObj);
+  confdb->create(dbfile, "HSIReadout", genuid, hsiObj);
   hsiObj.set_obj("configuration", &rdrConf->config_object());
   hsiObj.set_objs("outputs", { &queueObj, &hsiNetObj });
 
-  modules.push_back(confdb->get<HSIEventGeneratorModule>(genuid));
+  modules.push_back(confdb->get<HSIReadout>(genuid));
 
   return modules;
 }

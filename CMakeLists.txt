@@ -17,12 +17,11 @@ find_package(fmt REQUIRED)
 
 #find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 
-daq_oks_codegen(application.schema.xml fdmodules.schema.xml trigger.schema.xml wiec.schema.xml
+daq_oks_codegen(application.schema.xml fdmodules.schema.xml trigger.schema.xml wiec.schema.xml 
   NAMESPACE dunedaq::appmodel DEP_PKGS confmodel)
 
-
 daq_add_library(ReadoutApplication.cpp SmartDaqApplication.cpp
-	DFApplication.cpp DFOApplication.cpp TPWriterApplication.cpp FakeDataApplication.cpp FakeHSIApplication.cpp TriggerApplication.cpp MLTApplication.cpp HSIEventToTCApplication.cpp WIECApplication.cpp
+	DFApplication.cpp DFOApplication.cpp TPWriterApplication.cpp FakeDataApplication.cpp FakeHSIApplication.cpp DTSHSIApplication.cpp TriggerApplication.cpp MLTApplication.cpp HSIEventToTCApplication.cpp WIECApplication.cpp
  LINK_LIBRARIES conffwk::conffwk fmt::fmt
   logging::logging confmodel::confmodel oks::oks ers::ers)
 
