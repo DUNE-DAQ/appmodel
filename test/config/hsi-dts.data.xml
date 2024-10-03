@@ -66,7 +66,6 @@
   <include>
     <file path="schema/confmodel/dunedaq.schema.xml"/>
     <file path="schema/appmodel/application.schema.xml"/>
-    <file path="schema/hsilibs/hsi.schema.xml" />
     <file path="config/appmodel/opmon.data.xml"/>
     <file path="test/config/hosts.data.xml"/>
     <file path="config/appmodel/fsm.data.xml"/>
@@ -76,16 +75,6 @@
     <file path="test/config/trigger-segment.data.xml"/>
     <file path="test/config/hsi-dts-segment.data.xml"/>
   </include>
-
-  <obj class="HSIController" id="dts-hsi-controller">
-    <attr name="trigger_rate" type="double" val="1"/>
-    <attr name="address" type="u32" val="12344"/>
-    <attr name="control_hardware_io" type="bool" val="0"/>
-    <attr name="rising_edge_mask" type="u32" val="1"/>
-    <attr name="falling_edge_mask" type="u32" val="1"/>
-    <attr name="invert_edge_mask" type="u32" val="1"/>
-    <attr name="data_source" type="u32" val="1"/>
-  </obj>
 
   <obj class="ConnectionService" id="local-connection-server">
     <attr name="application_name" type="string" val="echo"/>

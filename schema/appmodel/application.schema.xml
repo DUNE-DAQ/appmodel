@@ -336,6 +336,8 @@
     </class>
     <class name="HSIReadout">
         <superclass name="HSIEventSender"/>
+        <relationship name="configuration" class-type="HSIReadoutConf" low-cc="one"
+            high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no" />
     </class>
 
     <class name="DTSHSIApplication">
