@@ -96,7 +96,7 @@ namespace appmodel {
     // changed again.
 
     m_session = const_cast<dunedaq::confmodel::Session*>(  // NOLINT
-							 m_confdb->get<dunedaq::confmodel::Session>(m_session_name));
+                                                         m_confdb->get<dunedaq::confmodel::Session>(m_session_name));
   
     if (!m_session) {
       std::stringstream errmsg;
@@ -111,7 +111,7 @@ namespace appmodel {
     
     auto classnames = m_confdb->superclasses() | std::views::keys |
       std::views::transform([](const auto& ptr_to_class_name) {
-	return *ptr_to_class_name;
+        return *ptr_to_class_name;
       });
 
     for (const auto& classname : classnames) {
@@ -122,32 +122,32 @@ namespace appmodel {
       m_confdb->get(classname, every_object_deriving_from_class);
 
       std::ranges::copy_if(every_object_deriving_from_class,
-			   std::back_inserter(objects_of_class),
-			   [&classname](const ConfigObject& obj) {
-			     return obj.class_name() == classname;
-			   });
+                           std::back_inserter(objects_of_class),
+                           [&classname](const ConfigObject& obj) {
+                             return obj.class_name() == classname;
+                           });
 
       std::ranges::copy(objects_of_class, std::back_inserter(m_all_objects));
 
       if (classname.find("Application") != std::string::npos ) { // DFApplication, ReadoutApplication, etc.
-	for (const auto& appobj : objects_of_class) {
+        for (const auto& appobj : objects_of_class) {
 
-	  auto daqapp = m_confdb->get<dunedaq::appmodel::SmartDaqApplication>(appobj.UID());
+          auto daqapp = m_confdb->get<dunedaq::appmodel::SmartDaqApplication>(appobj.UID());
 
-	  if (daqapp) {
+          if (daqapp) {
 
-	    auto res = daqapp->cast<dunedaq::confmodel::ResourceBase>();
-	    
-	    if (res && res->disabled(*m_session)) {
-	      m_ignored_application_uids.push_back( appobj.UID() );
-	      TLOG() << "Skipping disabled application " << appobj.UID() << "@" << daqapp->class_name();
-	      continue;
-	    }
-	  } else {
-	    TLOG(TLVL_DEBUG) << "Skipping non-SmartDaqApplication " << appobj.UID() << "@" << appobj.class_name();
-	    m_ignored_application_uids.push_back( appobj.UID() );
-	  }
-	}
+            auto res = daqapp->cast<dunedaq::confmodel::ResourceBase>();
+            
+            if (res && res->disabled(*m_session)) {
+              m_ignored_application_uids.push_back( appobj.UID() );
+              TLOG() << "Skipping disabled application " << appobj.UID() << "@" << daqapp->class_name();
+              continue;
+            }
+          } else {
+            TLOG(TLVL_DEBUG) << "Skipping non-SmartDaqApplication " << appobj.UID() << "@" << appobj.class_name();
+            m_ignored_application_uids.push_back( appobj.UID() );
+          }
+        }
       }
     }
   }
@@ -159,10 +159,10 @@ namespace appmodel {
     for (const auto& obj: m_all_objects) {
       for (const auto& classname : this->m_included_classes.at(m_root_object_kind)) {
 
-	if (obj.class_name().find(classname) != std::string::npos &&
-	    std::ranges::find(m_ignored_application_uids, obj.UID()) == m_ignored_application_uids.end()) {
-	  m_candidate_objects.emplace_back(obj);
-	}
+        if (obj.class_name().find(classname) != std::string::npos &&
+            std::ranges::find(m_ignored_application_uids, obj.UID()) == m_ignored_application_uids.end()) {
+          m_candidate_objects.emplace_back(obj);
+        }
       }
     }
   }
@@ -174,9 +174,9 @@ namespace appmodel {
     bool found = false;
     for (auto& obj: m_candidate_objects) {
       if (obj.UID() == root_obj_uid) {
-	found = true;
-	find_objects_and_connections(obj);   // Put differently, "find what will make up the vertices and edges"
-	break;
+        found = true;
+        find_objects_and_connections(obj);   // Put differently, "find what will make up the vertices and edges"
+        break;
       }
     }
 
@@ -204,57 +204,57 @@ namespace appmodel {
 
       for (auto& outgoing : m_outgoing_connections) {
 
-	std::regex outgoing_pattern(outgoing.first);
+        std::regex outgoing_pattern(outgoing.first);
 
-	bool match = false;
+        bool match = false;
 
-	if (incoming.first == outgoing.first) {
-	  match = true;
-	} else if (incoming.first.find(".*") != std::string::npos) {
-	  if (std::regex_match(outgoing.first, incoming_pattern)) {
-	    match = true;
-	  }
-	} else if (outgoing.first.find(".*") != std::string::npos) {
-	  if (std::regex_match(incoming.first, outgoing_pattern)) {
-	    match = true;
-	  }
-	}
+        if (incoming.first == outgoing.first) {
+          match = true;
+        } else if (incoming.first.find(".*") != std::string::npos) {
+          if (std::regex_match(outgoing.first, incoming_pattern)) {
+            match = true;
+          }
+        } else if (outgoing.first.find(".*") != std::string::npos) {
+          if (std::regex_match(incoming.first, outgoing_pattern)) {
+            match = true;
+          }
+        }
 
-	if (match) {
+        if (match) {
 
           incoming_matched.push_back(incoming.first);
           outgoing_matched.push_back(outgoing.first);
 
-	  for (auto& receiver : incoming.second) {
-	    for (auto& sender : outgoing.second) {
+          for (auto& receiver : incoming.second) {
+            for (auto& sender : outgoing.second) {
 
-	      // We just want to plot applications sending to other
-	      // applications and queues sending to other
-	      // queues. Showing, e.g., a queue directly sending to
-	      // some other application via a network connection makes
-	      // the plot too busy.
+              // We just want to plot applications sending to other
+              // applications and queues sending to other
+              // queues. Showing, e.g., a queue directly sending to
+              // some other application via a network connection makes
+              // the plot too busy.
 
-	      if (!m_objects_for_graph.contains(sender) || !m_objects_for_graph.contains(receiver)) {
-		continue;
-	      } else if (m_objects_for_graph.at(sender).kind != m_objects_for_graph.at(receiver).kind) {
-		continue;
-	      }
+              if (!m_objects_for_graph.contains(sender) || !m_objects_for_graph.contains(receiver)) {
+                continue;
+              } else if (m_objects_for_graph.at(sender).kind != m_objects_for_graph.at(receiver).kind) {
+                continue;
+              }
 
-	      const EnhancedObject::ReceivingInfo receiving_info {incoming.first, receiver};
+              const EnhancedObject::ReceivingInfo receiving_info {incoming.first, receiver};
 
-	      auto res = std::ranges::find(m_objects_for_graph.at(sender).receiving_object_infos, receiving_info );
-	      if (res == m_objects_for_graph.at(sender).receiving_object_infos.end() ) {
-		m_objects_for_graph.at(sender).receiving_object_infos.push_back(receiving_info);
-	      }
-	    }
-	  }
-	}
+              auto res = std::ranges::find(m_objects_for_graph.at(sender).receiving_object_infos, receiving_info );
+              if (res == m_objects_for_graph.at(sender).receiving_object_infos.end() ) {
+                m_objects_for_graph.at(sender).receiving_object_infos.push_back(receiving_info);
+              }
+            }
+          }
+        }
       }
     }
 
     auto incoming_unmatched = m_incoming_connections | std::views::keys | std::views::filter(
       [&incoming_matched](auto& connection) {
-	return std::ranges::find(incoming_matched, connection) == incoming_matched.end();
+        return std::ranges::find(incoming_matched, connection) == incoming_matched.end();
       });
 
     auto included_classes = m_included_classes.at(m_root_object_kind);
@@ -267,19 +267,19 @@ namespace appmodel {
       // Find the connections appropriate to the granularity level of this graph
       for (auto& receiving_object_name : m_incoming_connections[incoming_conn]) {
 
-	if (!m_objects_for_graph.contains(receiving_object_name)) {
-	  continue;
-	}
+        if (!m_objects_for_graph.contains(receiving_object_name)) {
+          continue;
+        }
 
-	if (std::ranges::find(included_classes, "Module") != included_classes.end()) {
-	  if (m_objects_for_graph.at(receiving_object_name).kind == ObjectKind::kModule) {
-	    external_obj.receiving_object_infos.push_back( {incoming_conn, receiving_object_name} );
-	  }
-	} else if (std::ranges::find(included_classes, "Application") != included_classes.end()) {
-	  if (m_objects_for_graph.at(receiving_object_name).kind == ObjectKind::kApplication) {
-	    external_obj.receiving_object_infos.push_back( {incoming_conn, receiving_object_name} );
-	  }
-	}
+        if (std::ranges::find(included_classes, "Module") != included_classes.end()) {
+          if (m_objects_for_graph.at(receiving_object_name).kind == ObjectKind::kModule) {
+            external_obj.receiving_object_infos.push_back( {incoming_conn, receiving_object_name} );
+          }
+        } else if (std::ranges::find(included_classes, "Application") != included_classes.end()) {
+          if (m_objects_for_graph.at(receiving_object_name).kind == ObjectKind::kApplication) {
+            external_obj.receiving_object_infos.push_back( {incoming_conn, receiving_object_name} );
+          }
+        }
       }
 
       m_objects_for_graph.insert( {incoming_vertex_name, external_obj} );
@@ -287,7 +287,7 @@ namespace appmodel {
 
     auto outgoing_unmatched = m_outgoing_connections | std::views::keys | std::views::filter(
       [&outgoing_matched](auto& connection) {
-	return std::ranges::find(outgoing_matched, connection) == outgoing_matched.end();
+        return std::ranges::find(outgoing_matched, connection) == outgoing_matched.end();
       });
 
     for (auto& outgoing_conn : outgoing_unmatched) {
@@ -298,19 +298,19 @@ namespace appmodel {
       // Find the connections appropriate to the granularity level of this graph
       for (auto& sending_object_name : m_outgoing_connections[outgoing_conn]) {
 
-	if (!m_objects_for_graph.contains(sending_object_name)) {
-	  continue;
-	}
+        if (!m_objects_for_graph.contains(sending_object_name)) {
+          continue;
+        }
 
-	if (std::ranges::find(included_classes, "Module") != included_classes.end()) {
-	  if (m_objects_for_graph.at(sending_object_name).kind == ObjectKind::kModule) {
-	    m_objects_for_graph.at(sending_object_name).receiving_object_infos.push_back( {outgoing_conn, outgoing_vertex_name} );
-	  }
-	} else if (std::ranges::find(included_classes, "Application") != included_classes.end()) {
-	  if (m_objects_for_graph.at(sending_object_name).kind == ObjectKind::kApplication) {
-	    m_objects_for_graph.at(sending_object_name).receiving_object_infos.push_back( {outgoing_conn, outgoing_vertex_name} );
-	  }
-	}
+        if (std::ranges::find(included_classes, "Module") != included_classes.end()) {
+          if (m_objects_for_graph.at(sending_object_name).kind == ObjectKind::kModule) {
+            m_objects_for_graph.at(sending_object_name).receiving_object_infos.push_back( {outgoing_conn, outgoing_vertex_name} );
+          }
+        } else if (std::ranges::find(included_classes, "Application") != included_classes.end()) {
+          if (m_objects_for_graph.at(sending_object_name).kind == ObjectKind::kApplication) {
+            m_objects_for_graph.at(sending_object_name).receiving_object_infos.push_back( {outgoing_conn, outgoing_vertex_name} );
+          }
+        }
       }
 
       m_objects_for_graph.insert( {outgoing_vertex_name, external_obj} );
@@ -330,10 +330,10 @@ namespace appmodel {
 
       for (auto& child_object: find_child_objects(starting_object.config_object)) {
 
-	if (std::ranges::find(m_candidate_objects, child_object) != m_candidate_objects.end()) {
-	  find_objects_and_connections(child_object);
-	  starting_object.child_object_names.push_back(child_object.UID());
-	}
+        if (std::ranges::find(m_candidate_objects, child_object) != m_candidate_objects.end()) {
+          find_objects_and_connections(child_object);
+          starting_object.child_object_names.push_back(child_object.UID());
+        }
       }
     } else if (starting_object.kind == ObjectKind::kApplication) {
 
@@ -346,57 +346,57 @@ namespace appmodel {
       dunedaq::conffwk::Configuration* local_database {nullptr};
 
       try {                                                                                                
-	local_database = new dunedaq::conffwk::Configuration("oksconflibs:" + m_oksfilename);               
+        local_database = new dunedaq::conffwk::Configuration("oksconflibs:" + m_oksfilename);               
       } catch (dunedaq::conffwk::Generic& exc) {                                                           
-	TLOG() << "Failed to load OKS database: " << exc << "\n";                                          
-	throw exc;                                                                                         
+        TLOG() << "Failed to load OKS database: " << exc << "\n";                                          
+        throw exc;                                                                                         
       }
 
       auto daqapp = local_database->get<dunedaq::appmodel::SmartDaqApplication>(object.UID());                 
       if (daqapp) {
-	auto local_session = const_cast<dunedaq::confmodel::Session*>(  // NOLINT
-								      local_database->get<dunedaq::confmodel::Session>(m_session_name));
-	auto modules = daqapp->generate_modules(local_database, m_oksfilename, local_session);
+        auto local_session = const_cast<dunedaq::confmodel::Session*>(  // NOLINT
+                                                                      local_database->get<dunedaq::confmodel::Session>(m_session_name));
+        auto modules = daqapp->generate_modules(local_database, m_oksfilename, local_session);
 
-	std::vector<std::string> allowed_conns {};
+        std::vector<std::string> allowed_conns {};
 
-	if (m_root_object_kind == ObjectKind::kSession || m_root_object_kind == ObjectKind::kSegment) {
-	  allowed_conns = {"NetworkConnection"};
-	} else if (m_root_object_kind == ObjectKind::kApplication || m_root_object_kind == ObjectKind::kModule){
-	  allowed_conns = {"NetworkConnection", "Queue", "QueueWithSourceId"};
-	}
+        if (m_root_object_kind == ObjectKind::kSession || m_root_object_kind == ObjectKind::kSegment) {
+          allowed_conns = {"NetworkConnection"};
+        } else if (m_root_object_kind == ObjectKind::kApplication || m_root_object_kind == ObjectKind::kModule){
+          allowed_conns = {"NetworkConnection", "Queue", "QueueWithSourceId"};
+        }
 
-	for (const auto& module : modules) {
+        for (const auto& module : modules) {
 
-	  for (auto in : module->get_inputs()) {
+          for (auto in : module->get_inputs()) {
 
-	    // Elsewhere in the code it'll be useful to know if the
-	    // connection is a network or a queue, so include the
-	    // class name in the std::string key
+            // Elsewhere in the code it'll be useful to know if the
+            // connection is a network or a queue, so include the
+            // class name in the std::string key
 
-	    const std::string key = in->config_object().UID() + "@" + in->config_object().class_name();
+            const std::string key = in->config_object().UID() + "@" + in->config_object().class_name();
 
-	    if (std::ranges::find(allowed_conns, in->config_object().class_name()) != allowed_conns.end()) {
-	      m_incoming_connections[key].push_back( object.UID() );
-	      m_incoming_connections[key].push_back( module->UID() );
-	    }
-	  }
+            if (std::ranges::find(allowed_conns, in->config_object().class_name()) != allowed_conns.end()) {
+              m_incoming_connections[key].push_back( object.UID() );
+              m_incoming_connections[key].push_back( module->UID() );
+            }
+          }
 
-	  for (auto out : module->get_outputs()) {
+          for (auto out : module->get_outputs()) {
 
-	    const std::string key = out->config_object().UID() + "@" + out->config_object().class_name();
+            const std::string key = out->config_object().UID() + "@" + out->config_object().class_name();
 
-	    if (std::ranges::find(allowed_conns, out->config_object().class_name()) != allowed_conns.end()) {
-	      m_outgoing_connections[key].push_back( object.UID() );
-	      m_outgoing_connections[key].push_back( module->UID() );
-	    }
-	  }
+            if (std::ranges::find(allowed_conns, out->config_object().class_name()) != allowed_conns.end()) {
+              m_outgoing_connections[key].push_back( object.UID() );
+              m_outgoing_connections[key].push_back( module->UID() );
+            }
+          }
 
-	  if (std::ranges::find(m_included_classes.at(m_root_object_kind), "Module") != m_included_classes.at(m_root_object_kind).end()) {
-	    find_objects_and_connections(module->config_object());
-	    starting_object.child_object_names.push_back(module->UID());
-	  }
-	}
+          if (std::ranges::find(m_included_classes.at(m_root_object_kind), "Module") != m_included_classes.at(m_root_object_kind).end()) {
+            find_objects_and_connections(module->config_object());
+            starting_object.child_object_names.push_back(module->UID());
+          }
+        }
       }
     }
 
@@ -411,10 +411,10 @@ namespace appmodel {
 
     auto class_names_view = m_all_objects |
       std::views::filter([root_obj_uid](const ConfigObject& obj) {
-	return obj.UID() == root_obj_uid;
+        return obj.UID() == root_obj_uid;
       }) |
       std::views::transform([](const ConfigObject& obj){
-	return obj.class_name();
+        return obj.class_name();
       });
 
     if (std::ranges::distance(class_names_view) != 1) {
@@ -432,52 +432,52 @@ namespace appmodel {
     for (auto& enhanced_object : m_objects_for_graph | std::views::values) {
 
       if (enhanced_object.kind == ObjectKind::kIncomingExternal) {
-	enhanced_object.vertex_in_graph = boost::add_vertex(VertexLabel("O", ""), m_graph);
+        enhanced_object.vertex_in_graph = boost::add_vertex(VertexLabel("O", ""), m_graph);
       } else if (enhanced_object.kind == ObjectKind::kOutgoingExternal) {
-	enhanced_object.vertex_in_graph = boost::add_vertex(VertexLabel("X", ""), m_graph);
+        enhanced_object.vertex_in_graph = boost::add_vertex(VertexLabel("X", ""), m_graph);
       } else {
-	auto& obj = enhanced_object.config_object;
-	enhanced_object.vertex_in_graph = boost::add_vertex( VertexLabel(obj.UID(), obj.class_name()), m_graph);
+        auto& obj = enhanced_object.config_object;
+        enhanced_object.vertex_in_graph = boost::add_vertex( VertexLabel(obj.UID(), obj.class_name()), m_graph);
       } 
     }
 
     for (auto& parent_obj : m_objects_for_graph | std::views::values) {
       for (auto& child_obj_name : parent_obj.child_object_names) {
-	boost::add_edge(parent_obj.vertex_in_graph,
-			m_objects_for_graph.at(child_obj_name).vertex_in_graph,
-			{""}, // No label for an edge which just describes "ownership" rather than dataflow
-			m_graph);
+        boost::add_edge(parent_obj.vertex_in_graph,
+                        m_objects_for_graph.at(child_obj_name).vertex_in_graph,
+                        {""}, // No label for an edge which just describes "ownership" rather than dataflow
+                        m_graph);
       }
     }
 
     for (auto& possible_sender_object : m_objects_for_graph | std::views::values) {
       for (auto& receiver_info : possible_sender_object.receiving_object_infos) {
 
-	auto at_pos = receiver_info.connection_name.find("@");
-	const std::string connection_label = receiver_info.connection_name.substr(0, at_pos);
+        auto at_pos = receiver_info.connection_name.find("@");
+        const std::string connection_label = receiver_info.connection_name.substr(0, at_pos);
 
-	// If we're plotting at the level of a session or segment,
-	// show the connections as between applications; if we're
-	// doing this for a single application, show them entering and
-	// exiting the individual modules
+        // If we're plotting at the level of a session or segment,
+        // show the connections as between applications; if we're
+        // doing this for a single application, show them entering and
+        // exiting the individual modules
 
-	if (m_root_object_kind == ObjectKind::kSession || m_root_object_kind == ObjectKind::kSegment) {
-	  if (m_objects_for_graph.at(receiver_info.receiver_label).kind == ObjectKind::kModule) {
-	    continue;
-	  }
-	}
+        if (m_root_object_kind == ObjectKind::kSession || m_root_object_kind == ObjectKind::kSegment) {
+          if (m_objects_for_graph.at(receiver_info.receiver_label).kind == ObjectKind::kModule) {
+            continue;
+          }
+        }
 
-	if (m_root_object_kind == ObjectKind::kApplication || m_root_object_kind == ObjectKind::kModule) {
-	  if (m_objects_for_graph.at(receiver_info.receiver_label).kind == ObjectKind::kApplication) {
-	    continue;
-	  }
-	}
+        if (m_root_object_kind == ObjectKind::kApplication || m_root_object_kind == ObjectKind::kModule) {
+          if (m_objects_for_graph.at(receiver_info.receiver_label).kind == ObjectKind::kApplication) {
+            continue;
+          }
+        }
 
-	boost::add_edge(
-			possible_sender_object.vertex_in_graph,
-			m_objects_for_graph.at(receiver_info.receiver_label).vertex_in_graph,
-			{ connection_label },
-			m_graph).first;
+        boost::add_edge(
+                        possible_sender_object.vertex_in_graph,
+                        m_objects_for_graph.at(receiver_info.receiver_label).vertex_in_graph,
+                        { connection_label },
+                        m_graph).first;
       }
     }
   }
@@ -498,14 +498,14 @@ namespace appmodel {
       auto parent_obj_casted = const_cast<ConfigObject&>(parent_obj); // NOLINT
       
       if (relationship.p_cardinality == dunedaq::conffwk::only_one ||
-	  relationship.p_cardinality == dunedaq::conffwk::zero_or_one) {
-	ConfigObject connected_obj {};
-	parent_obj_casted.get(relationship.p_name, connected_obj);
-	connected_objects.push_back(connected_obj);
+          relationship.p_cardinality == dunedaq::conffwk::zero_or_one) {
+        ConfigObject connected_obj {};
+        parent_obj_casted.get(relationship.p_name, connected_obj);
+        connected_objects.push_back(connected_obj);
       } else {
-	std::vector<ConfigObject> connected_objects_in_relationship {};
-	parent_obj_casted.get(relationship.p_name, connected_objects_in_relationship);
-	connected_objects.insert(connected_objects.end(), connected_objects_in_relationship.begin(), connected_objects_in_relationship.end());
+        std::vector<ConfigObject> connected_objects_in_relationship {};
+        parent_obj_casted.get(relationship.p_name, connected_objects_in_relationship);
+        connected_objects.insert(connected_objects.end(), connected_objects_in_relationship.begin(), connected_objects_in_relationship.end());
       }
     }
 
@@ -517,10 +517,10 @@ namespace appmodel {
     std::stringstream outputstream;
 
     boost::write_graphviz(outputstream,
-			  m_graph,
-			  boost::make_label_writer(boost::get(&GraphBuilder::VertexLabel::displaylabel, m_graph)),
-			  boost::make_label_writer(boost::get(&GraphBuilder::EdgeLabel::displaylabel, m_graph))
-			  );
+                          m_graph,
+                          boost::make_label_writer(boost::get(&GraphBuilder::VertexLabel::displaylabel, m_graph)),
+                          boost::make_label_writer(boost::get(&GraphBuilder::EdgeLabel::displaylabel, m_graph))
+                          );
 
     // It's arguably hacky to edit the DOT code generated by
     // boost::write_graphviz after the fact to give vertices colors,
@@ -553,10 +553,10 @@ namespace appmodel {
 
       auto calculate_insertion_location = [&](){
 
-	labelstringstr << "label=\"" << eo.config_object.UID() << "\n";	  
-	insertion_location = dotfile_slurped.find(labelstringstr.str());
-	assert(insertion_location != std::string::npos);
-	return insertion_location;
+        labelstringstr << "label=\"" << eo.config_object.UID() << "\n";	  
+        insertion_location = dotfile_slurped.find(labelstringstr.str());
+        assert(insertion_location != std::string::npos);
+        return insertion_location;
       };
 
       // TODO: John Freeman (jcfree@fnal.gov), Sep-17-2024
@@ -566,13 +566,13 @@ namespace appmodel {
       // supports it
 
       auto add_vertex_info = [&]() {
-	vertexstr << "shape=" << vertex_styles.at(eo.kind).shape << ", color=" <<
-	  vertex_styles.at(eo.kind).color << ", fontcolor=" << vertex_styles.at(eo.kind).color << ", ";
-	dotfile_slurped.insert(calculate_insertion_location(), vertexstr.str());
+        vertexstr << "shape=" << vertex_styles.at(eo.kind).shape << ", color=" <<
+          vertex_styles.at(eo.kind).color << ", fontcolor=" << vertex_styles.at(eo.kind).color << ", ";
+        dotfile_slurped.insert(calculate_insertion_location(), vertexstr.str());
       };
 
       auto add_legend_entry = [&](char letter, const std::string objkind) {
-	legendstr << "legend" << letter << " [label=<<font color=\"" << vertex_styles.at(eo.kind).color << "\"><b><i>" << vertex_styles.at(eo.kind).color << ": " << objkind << "</i></b></font>>, shape=plaintext, color=" << vertex_styles.at(eo.kind).color << ", fontcolor=" << vertex_styles.at(eo.kind).color << "];";
+        legendstr << "legend" << letter << " [label=<<font color=\"" << vertex_styles.at(eo.kind).color << "\"><b><i>" << vertex_styles.at(eo.kind).color << ": " << objkind << "</i></b></font>>, shape=plaintext, color=" << vertex_styles.at(eo.kind).color << ", fontcolor=" << vertex_styles.at(eo.kind).color << "];";
       };
       
       // Note that the seemingly arbitrary single characters added
@@ -582,33 +582,33 @@ namespace appmodel {
       
       switch (eo.kind) {
       case ObjectKind::kSession:
-	add_vertex_info();
-	add_legend_entry('A', "session");
-	break;
+        add_vertex_info();
+        add_legend_entry('A', "session");
+        break;
       case ObjectKind::kSegment:
-	add_vertex_info();
-	add_legend_entry('B', "segment");
-	break;
+        add_vertex_info();
+        add_legend_entry('B', "segment");
+        break;
       case ObjectKind::kApplication:
-	add_vertex_info();
-	add_legend_entry('C', "application");
-	break;
+        add_vertex_info();
+        add_legend_entry('C', "application");
+        break;
       case ObjectKind::kModule:
-	add_vertex_info();
-	add_legend_entry('D', "DAQModule");
-	break;
+        add_vertex_info();
+        add_legend_entry('D', "DAQModule");
+        break;
       case ObjectKind::kIncomingExternal:
-	legendstr << "legendE [label=<<font color=\"black\">O:<b><i> External Data Source</i></b></font>>, shape=plaintext];";
-	break;
+        legendstr << "legendE [label=<<font color=\"black\">O:<b><i> External Data Source</i></b></font>>, shape=plaintext];";
+        break;
       case ObjectKind::kOutgoingExternal:
-	legendstr << "legendF [label=<<font color=\"black\">X:<b><i> External Data Sink</i></b></font>>, shape=plaintext];";
-	break;
+        legendstr << "legendF [label=<<font color=\"black\">X:<b><i> External Data Sink</i></b></font>>, shape=plaintext];";
+        break;
       default:
-	assert(false);
+        assert(false);
       }
 
       if (std::ranges::find(legend_entries, legendstr.str()) == legend_entries.end()) {
-	legend_entries.emplace_back(legendstr.str());
+        legend_entries.emplace_back(legendstr.str());
       }
     }
 
