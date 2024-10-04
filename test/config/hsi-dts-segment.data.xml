@@ -120,7 +120,7 @@
 
 <obj class="HSIReadoutConf" id="dtshsi">
     <attr name="readout_period" type="u64" val="1000"></attr>
-    <attr name="hsi_device_name" type="string" val="Unknown"></attr>
+    <attr name="hsi_device_name" type="string" val="BOREAS_FMC"></attr>
     <attr name="connections_file" type="string" val="/home/jr19588/NFD_DEV_240923_A9/firmware/dune-timing-firmware/boreas_connections.xml"></attr>
 </obj>
 
