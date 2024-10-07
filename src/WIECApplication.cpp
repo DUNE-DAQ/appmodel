@@ -67,7 +67,7 @@ WIECApplication::generate_modules(conffwk::Configuration* config,
       continue;
     }
 
-    TLOG() << "Processing DetectorToDaqConnection " << d2d_conn_res->UID();
+    TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn_res->UID();
     // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader module
     auto d2d_conn = d2d_conn_res->cast<confmodel::DetectorToDaqConnection>();
 

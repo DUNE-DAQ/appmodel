@@ -97,6 +97,11 @@
   <attribute name="accum_limit" description="Accumulation limit to increment/decrement the estimated pedestal value." type="u8" init-value="10" is-not-null="yes"/>
  </class>
 
+ <class name="AVXFixedPedestalSubtractProcessor" description="TPG fixed pedestal subtraction signal processor. Gets an initial estimate on the pedestal then keeps fixed.">
+  <superclass name="AVXFrugalPedestalSubtractProcessor"/>
+  <attribute name="start_period" description="Number of time ticks to use for the initial pedestal estimate." type="u16" init-value="1000" is-not-null="yes"/>
+ </class>
+
  <class name="AVXRunSumProcessor" description="TPG running sum signal processor. Outputs a scaled running sum from the input signal.">
   <superclass name="ProcessingStep"/>
   <attribute name="memory_factor_plane0" description="Running sum memory factor for plane 0. Gets divided by 10." type="u8" range="0..10" init-value="8" is-not-null="yes"/>
