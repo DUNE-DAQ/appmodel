@@ -75,15 +75,15 @@ and Connections.
 
 ## Creating A Diagram of Your Configuration
 
-In `appmodel` it's possible to create a diagram of a DAQ configuration in the [DOT graph description language](https://en.wikipedia.org/wiki/DOT_(graph_description_language)), which can then be fed to the `dot` program to generate a viewable graphic. This is accomplished using the `create_config_plot` application. You can run `create_config_plot -h` to see how it's used, but to explain it simply, you provide it with a database file and the name of a session, segment or application in the database, and it will create a plot using that object as the root of the plot. E.g., with the `appmodel` repo you can generate a plot of its entire test DAQ session via:
+In `appmodel` it's possible to create a diagram of a DAQ configuration in the [DOT graph description language](https://en.wikipedia.org/wiki/DOT_(graph_description_language)), which can then be fed to the `dot` program to generate a viewable graphic. This is accomplished using the `create_config_plot` application. You can run `create_config_plot -h` to see how it's used, but to explain it simply, you provide it with a database file, the name of a session in that database, and then the name of an object associated with the session. It will create a plot using that object as the root of the plot. Note the object either needs to be the session itself, or a segment or an application in it. E.g., with the `daqsystemtest` repo you can generate a plot of its entire `ehn1-local-2x3-config` test DAQ session via:
 ```
-create_config_plot -f $APPMODEL_SHARE/test/config/test-session.data.xml -r test-session
+create_config_plot -f $DAQSYSTEMTEST_SHARE/config/daqsystemtest/example-configs.data.xml -s ehn1-local-2x3-config -r ehn1-local-2x3-config
 ```
-and if you want to plot the `mlt` application in there, you can just do
+and if you want to plot the `mlt` application in there, you can do
 ```
-create_config_plot -f $APPMODEL_SHARE/test/config/test-session.data.xml -r mlt
+create_config_plot -f $DAQSYSTEMTEST_SHARE/config/daqsystemtest/example-configs.data.xml -s ehn1-local-2x3-config -r mlt
 ```
-Either of these commands will create (or clobber) a file called `config.dot`. If you wish to give the file a different name you can use the `-o` option, e.g., `-o mypreferredname.dot`. Once you have the DOT file, you can generate a graphic by doing the following:
+Note that in the event that there's a single session in the database, the `-s <session-name>` argument isn't required. Either of the above commands will create (or clobber) a file called `config.dot`. If you wish to give the file a different name you can use the `-o` option, e.g., `-o mypreferredname.dot`. Once you have the DOT file, you can generate a graphic by doing the following:
 ```
 dot -Tsvg -o mypreferredname.svg config.dot
 ``` 

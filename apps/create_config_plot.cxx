@@ -34,6 +34,7 @@ int main(int argc, char* argv[])
   std::string oksfilename {""};
   std::string outputfilename {""};
   std::string object_uid {""};
+  std::string sessionname {""};
 
   bpo::options_description options_description (
     "Allowed options", 128 );
@@ -45,7 +46,8 @@ int main(int argc, char* argv[])
   ( "file,f", bpo::value<std::string> ( &oksfilename ), "OKS database file name" )
 
   ( "root-object,r", bpo::value<std::string>(&object_uid), "OKS object UID of root vertex; must be session, segment or application")
-
+    ( "session,s", bpo::value<std::string> ( &sessionname )->default_value(""),
+    "Name of the session associated with the root object (only needed if >1 session in the database)" )
     ( "output,o", bpo::value<std::string> ( &outputfilename )->default_value("config.dot"),
     "Output DOT file which can be used as input to GraphViz" );
 
@@ -57,7 +59,7 @@ int main(int argc, char* argv[])
         << "create_config_plot : Generate dot graphs from database files"
         << std::endl
         << std::endl
-        << "Usage: create_config_plot -f/--file <input OKS file> -r/--root-object <object UID for session, segment or application> (-o/--output <output DOT file, default is config.dot>)"
+        << "Usage: create_config_plot -f/--file <input OKS file> -r/--root-object <object UID for session, segment or application> (-s/--session <session containing root-object>) (-o/--output <output DOT file, default is config.dot>)"
         << std::endl
         << std::endl
         << options_description
@@ -76,7 +78,7 @@ int main(int argc, char* argv[])
       return EXIT_FAILURE;
     }
     
-    appmodel::GraphBuilder graphbuilder(oksfilename);
+    appmodel::GraphBuilder graphbuilder(oksfilename, sessionname);
     graphbuilder.construct_graph(object_uid);
     graphbuilder.write_graph(outputfilename);
     

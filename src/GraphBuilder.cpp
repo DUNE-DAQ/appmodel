@@ -46,7 +46,7 @@
 
 namespace appmodel {
 
-  GraphBuilder::GraphBuilder(const std::string& oksfilename) :
+  GraphBuilder::GraphBuilder(const std::string& oksfilename, const std::string& sessionname) :
     m_oksfilename { oksfilename },
     m_confdb { nullptr },
     m_included_classes {
@@ -56,7 +56,8 @@ namespace appmodel {
       { ObjectKind::kModule, {"Module"} }
     },
     m_root_object_kind { ObjectKind::kUndefined },
-    m_session { nullptr }
+    m_session { nullptr },
+    m_session_name { sessionname }
   {
 
     // Open the database represented by the OKS XML file
@@ -68,17 +69,28 @@ namespace appmodel {
       throw exc;
     }
 
-    // Get the session in the database. Can handle one and only one session.
+    // Get the session in the database
     std::vector<ConfigObject> session_objects {};
 
     m_confdb->get("Session", session_objects);
 
-    if (session_objects.size() == 1) {
-      m_session_name = session_objects[0].UID();
-    } else {
-      std::stringstream errmsg;
-      errmsg << "Did not find one and only one Session instance in \"" << m_oksfilename << "\" and its includes";
-      throw appmodel::GeneralGraphToolError(ERS_HERE, errmsg.str());
+    if (m_session_name == "") { // If no session name given, use the one-and-only session expected in the database
+      if (session_objects.size() == 1) {
+	m_session_name = session_objects[0].UID();
+      } else {
+	std::stringstream errmsg;
+	errmsg << "No Session instance name was provided, and since " << session_objects.size() << " session instances were found in \"" << m_oksfilename << "\" this is an error";
+
+	throw appmodel::GeneralGraphToolError(ERS_HERE, errmsg.str());
+      }
+    } else { // session name provided by the user, let's make sure it's there
+      auto it = std::ranges::find_if(session_objects, [&](const ConfigObject& obj) { return obj.UID() == m_session_name; });
+
+      if (it == session_objects.end()) {
+	std::stringstream errmsg;
+	errmsg << "Did not find Session instance \"" << m_session_name << "\" in \"" << m_oksfilename << "\" and its includes";
+	throw appmodel::GeneralGraphToolError(ERS_HERE, errmsg.str());
+      }
     }
 
     // The following not-brief section of code is dedicated to

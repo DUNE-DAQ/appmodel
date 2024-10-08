@@ -6,8 +6,8 @@
  *
  * GraphBuilder is the tool we can use to plot configurations. A quick overview:
  *
- * - Constructed from an OKS database file (XML)
- * - GraphBuilder::construct_graph will take a "root object" and
+ * - Constructed from an OKS database file (XML) and the name of a session contained within it
+ * - GraphBuilder::construct_graph will take a "root object" from the session and
  *   construct a graph accordingly
  * - GraphBuilder::write_graph will take the name of an output DOT
  *   file and write the graph to it
@@ -79,7 +79,7 @@ namespace appmodel {
       const std::string displaylabel {"undefined"};
     };
 
-    explicit GraphBuilder(const std::string& oksfilename);
+    explicit GraphBuilder(const std::string& oksfilename, const std::string& sessionname);
 
     void construct_graph(const std::string& root_obj_uid);
     void write_graph(const std::string& outputfilename) const;
