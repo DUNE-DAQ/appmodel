@@ -34,11 +34,13 @@ int main(int argc, char* argv[]) {
     std::cout << "Usage: " << argv[0] << " <session> <smart-app> <database-file>\n";
     return 0;
   }
-  logging::Logging::setup();
 
   std::string sessionName(argv[1]);
   std::string appName(argv[2]);
   std::string dbfile(argv[3]);
+
+  logging::Logging::setup("test", "generate_module");
+
   conffwk::Configuration* confdb;
   try {
     confdb = new conffwk::Configuration("oksconflibs:" + dbfile);
