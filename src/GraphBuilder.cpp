@@ -181,6 +181,35 @@ namespace appmodel {
 
   void GraphBuilder::calculate_graph(const std::string& root_obj_uid) {
 
+    // To start, get the session / segments / applications in the
+    // session by setting up a temporary graph with the session as its
+    // root. This way we can check to see if the actual requested root
+    // object lies within the session in question.
+
+    auto true_root_object_kind = m_root_object_kind;
+    m_root_object_kind = ObjectKind::kSession;
+    find_candidate_objects();
+
+    auto it_session = std::ranges::find_if(m_all_objects, [&](const ConfigObject& obj) { return obj.UID() == m_session_name; });
+
+    find_objects_and_connections(*it_session);
+
+    if (!m_objects_for_graph.contains(root_obj_uid)) {
+      std::stringstream errmsg;
+      errmsg << "Unable to find requested object \"" << root_obj_uid << "\" in session \"" << m_session_name << "\"";
+      throw appmodel::GeneralGraphToolError(ERS_HERE, errmsg.str());
+    }
+
+    // Since we used our first call to find_objects_and_connections
+    // only as a fact-finding mission, reset the containers it filled
+
+    m_objects_for_graph.clear();
+    m_incoming_connections.clear();
+    m_outgoing_connections.clear();
+
+    m_candidate_objects.clear();
+
+    auto m_root_object_kind = true_root_object_kind;
     find_candidate_objects();
 
     bool found = false;
@@ -192,11 +221,7 @@ namespace appmodel {
       }
     }
 
-    if (!found) {
-      std::stringstream errmsg;
-      errmsg << "Unable to find requested object \"" << root_obj_uid << "\"";
-      throw appmodel::GeneralGraphToolError(ERS_HERE, errmsg.str());
-    }
+    assert(found);
 
     calculate_network_connections();  // Put differently, "find the edges between the vertices"
   }

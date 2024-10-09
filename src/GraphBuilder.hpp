@@ -120,6 +120,9 @@ namespace appmodel {
     void find_candidate_objects();
     [[nodiscard]] std::vector<dunedaq::conffwk::ConfigObject> find_child_objects(const ConfigObject& parent_obj);
     void calculate_graph(const std::string& root_obj_uid);
+
+    // find_objects_and_connections fills m_objects_for_graph as well
+    // as m_incoming_connections and m_outgoing_connections
     
     void find_objects_and_connections(const ConfigObject& object);
     void calculate_network_connections();
