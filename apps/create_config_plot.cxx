@@ -44,7 +44,7 @@ int main(int argc, char* argv[])
 
   ( "file,f", bpo::value<std::string> ( &oksfilename ), "OKS database file name" )
 
-  ( "root-object,r", bpo::value<std::string>(&object_uid), "OKS object UID of root vertex; must be session, segment or application")
+  ( "root-object,r", bpo::value<std::string>(&object_uid), "OKS object UID of root vertex; must be system, segment or application")
 
     ( "output,o", bpo::value<std::string> ( &outputfilename )->default_value("config.dot"),
     "Output DOT file which can be used as input to GraphViz" );
@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
         << "create_config_plot : Generate dot graphs from database files"
         << std::endl
         << std::endl
-        << "Usage: create_config_plot -f/--file <input OKS file> -r/--root-object <object UID for session, segment or application> (-o/--output <output DOT file, default is config.dot>)"
+        << "Usage: create_config_plot -f/--file <input OKS file> -r/--root-object <object UID for system, segment or application> (-o/--output <output DOT file, default is config.dot>)"
         << std::endl
         << std::endl
         << options_description

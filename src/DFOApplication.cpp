@@ -36,15 +36,15 @@ static ModuleFactory::Registrator __reg__("DFOApplication",
                                           [](const SmartDaqApplication* smartApp,
                                              conffwk::Configuration* confdb,
                                              const std::string& dbfile,
-                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
+                                             const confmodel::System* system) -> ModuleFactory::ReturnType {
                                             auto app = smartApp->cast<DFOApplication>();
-                                            return app->generate_modules(confdb, dbfile, session);
+                                            return app->generate_modules(confdb, dbfile, system);
                                           });
 
 std::vector<const confmodel::DaqModule*>
 DFOApplication::generate_modules(conffwk::Configuration* confdb,
                                  const std::string& dbfile,
-                                 const confmodel::Session* session) const
+                                 const confmodel::System* system) const
 {
   std::vector<const confmodel::DaqModule*> modules;
 
@@ -105,10 +105,10 @@ DFOApplication::generate_modules(conffwk::Configuration* confdb,
   }
 
   // Process special Network rules!
-  // Looking for DataRequest rules from ReadoutAppplications in current Session
-  auto sessionApps = session->get_enabled_applications();
+  // Looking for DataRequest rules from ReadoutAppplications in current System
+  auto systemApps = system->get_enabled_applications();
   std::vector<conffwk::ConfigObject> tdOutObjs;
-  for (auto app : sessionApps) {
+  for (auto app : systemApps) {
     auto dfapp = app->cast<appmodel::DFApplication>();
     if (dfapp == nullptr)
       continue;
@@ -129,7 +129,7 @@ DFOApplication::generate_modules(conffwk::Configuration* confdb,
         tdOutObjs.back().set_obj("associated_service", &serviceObj);
       } // If network rule has TriggerDecision type of data
     }   // Loop over Apps network rules
-  }     // loop over Session specific Apps
+  }     // loop over System specific Apps
 
   for (auto& tdOut : tdOutObjs) {
     output_conns.push_back(&tdOut);

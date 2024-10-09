@@ -148,7 +148,7 @@
   <superclass name="SmartDaqApplication"/>
   <relationship name="hsevent_to_tc_conf" class-type="HSI2TCTranslatorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate daq module dal objects for HSIEventToTCApplication on the fly">
-   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::System*) const override" body=""/>
   </method>
  </class>
 
@@ -165,7 +165,7 @@
   <relationship name="mlt_conf" class-type="MLTConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="standalone_candidate_maker_confs" class-type="StandaloneTCMakerConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate daq module dal objects for MLTApplication on the fly">
-   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::System*) const override" body=""/>
   </method>
  </class>
 
@@ -415,13 +415,13 @@
   <relationship name="data_subscriber" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="trigger_inputs_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate daq module dal objects for streams of thie TriggerApplication on the fly">
-   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::System*) const override" body=""/>
   </method>
  </class>
 
  <class name="TriggerDataHandlerModule">
   <superclass name="DataHandlerModule"/>
-  <relationship name="enabled_source_ids" description="List of source IDs enabled in this session: used by trigger to define the readout window for trigger decisions." class-type="SourceIDConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="enabled_source_ids" description="List of source IDs enabled in this system: used by trigger to define the readout window for trigger decisions." class-type="SourceIDConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="mandatory_source_ids" description="Source Ids that will always be included in a trigger decision." class-type="SourceIDConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 

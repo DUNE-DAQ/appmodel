@@ -11,7 +11,7 @@
 #include "pybind11/stl.h"
 
 #include "confmodel/DaqModule.hpp"
-#include "confmodel/Session.hpp"
+#include "confmodel/System.hpp"
 
 #include "appmodel/DFApplication.hpp"
 #include "appmodel/DFOApplication.hpp"
@@ -42,27 +42,27 @@ namespace dunedaq::appmodel::python {
   application_generate_template(const conffwk::Configuration& confdb,
                                 const std::string& dbfile,
                                 const std::string& app_id,
-                                const std::string& session_id)
+                                const std::string& system_id)
   {
     auto app =
       const_cast<conffwk::Configuration&>(confdb).get<ApplicationType>(app_id);
-    auto session =
-      const_cast<conffwk::Configuration&>(confdb).get<confmodel::Session>(session_id);
+    auto system =
+      const_cast<conffwk::Configuration&>(confdb).get<confmodel::System>(system_id);
 
     std::vector<ObjectLocator> mods;
     for (auto mod : app->generate_modules(
-           const_cast<conffwk::Configuration*>(&confdb), dbfile, session)) {
+           const_cast<conffwk::Configuration*>(&confdb), dbfile, system)) {
       mods.push_back({mod->UID(),mod->class_name()});
     }
     return mods;
   }
 
   std::vector<std::string> smart_daq_application_construct_commandline_parameters(const conffwk::Configuration& db,
-                                                                                  const std::string& session_id,
+                                                                                  const std::string& system_id,
                                                                                   const std::string& app_id) {
     const auto* app = const_cast<conffwk::Configuration&>(db).get<dunedaq::appmodel::SmartDaqApplication>(app_id);
-    const auto* session = const_cast<conffwk::Configuration&>(db).get<dunedaq::confmodel::Session>(session_id);
-    return app->construct_commandline_parameters(db, session);
+    const auto* system = const_cast<conffwk::Configuration&>(db).get<dunedaq::confmodel::System>(system_id);
+    return app->construct_commandline_parameters(db, system);
   }
 
 void

@@ -16,7 +16,7 @@
 
 #include "confmodel/Connection.hpp"
 #include "confmodel/DaqModule.hpp"
-#include "confmodel/Session.hpp"
+#include "confmodel/System.hpp"
 
 #include "appmodel/DFApplication.hpp"
 #include "appmodel/DFOApplication.hpp"
@@ -108,12 +108,12 @@ int
 main(int argc, char* argv[])
 {
   if (argc < 3) {
-    std::cout << "Usage: " << argv[0] << " <session> <database-file>\n";
+    std::cout << "Usage: " << argv[0] << " <system> <database-file>\n";
     return 0;
   }
   logging::Logging::setup();
 
-  std::string sessionName(argv[1]);
+  std::string systemName(argv[1]);
   std::string dbfile(argv[2]);
   conffwk::Configuration* confdb;
   std::string blah = "oksconflibs:" + dbfile;
@@ -124,14 +124,14 @@ main(int argc, char* argv[])
     return 0;
   }
 
-  auto session = confdb->get<confmodel::Session>(sessionName);
-  if (session == nullptr) {
-    std::cout << "Failed to get Session " << sessionName << " from database\n";
+  auto system = confdb->get<confmodel::System>(systemName);
+  if (system == nullptr) {
+    std::cout << "Failed to get System " << systemName << " from database\n";
     return 0;
   }
 
   // 14-Aug-2024, KAB: maybe this has useful information too...?
-  // session->print(0, true, std::cout);
+  // system->print(0, true, std::cout);
   // std::cout << "=====" << std::endl;
 
   std::cout << "++++++++++" << std::endl;
@@ -140,8 +140,8 @@ main(int argc, char* argv[])
   std::cout << std::endl;
 
   std::vector<std::string> list_of_application_names;
-  conffwk::ConfigObject session_config_object = session->config_object();
-  print_object_details(session_config_object, "", confdb, "  ", list_of_application_names);
+  conffwk::ConfigObject system_config_object = system->config_object();
+  print_object_details(system_config_object, "", confdb, "  ", list_of_application_names);
 
   std::cout << std::endl;
   std::cout << "++++++++++" << std::endl;
@@ -158,7 +158,7 @@ main(int argc, char* argv[])
       std::cout << "Failed to load OKS database: " << exc << std::endl;
       return 0;
     }
-    session = confdb->get<confmodel::Session>(sessionName);
+    system = confdb->get<confmodel::System>(systemName);
 
     auto daqapp = confdb->get<appmodel::SmartDaqApplication>(list_of_application_names[idx]);
     std::string appName = list_of_application_names[idx];
@@ -166,13 +166,13 @@ main(int argc, char* argv[])
       std::cout << appName << " is of class " << daqapp->class_name() << std::endl;
 
       auto res = daqapp->cast<confmodel::ResourceBase>();
-      if (res && res->disabled(*session)) {
+      if (res && res->disabled(*system)) {
         std::cout << "Application " << appName << " is disabled" << std::endl;
         continue;
       }
       std::vector<const confmodel::DaqModule*> modules;
       try {
-        modules = daqapp->generate_modules(confdb, dbfile, session);
+        modules = daqapp->generate_modules(confdb, dbfile, system);
       } catch (appmodel::BadConf& exc) {
         std::cout << "Caught BadConf exception: " << exc << std::endl;
         exit(-1);

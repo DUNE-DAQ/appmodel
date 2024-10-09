@@ -26,7 +26,7 @@
 
 #include "conffwk/ConfigObject.hpp"
 
-#include "confmodel/Session.hpp"
+#include "confmodel/System.hpp"
 #include "ers/ers.hpp"
 
 #include "boost/graph/graph_traits.hpp"
@@ -56,7 +56,7 @@ namespace appmodel {
 
     enum class ObjectKind {
       kUndefined,
-      kSession,
+      kSystem,
       kSegment,
       kApplication,
       kModule,
@@ -110,7 +110,7 @@ namespace appmodel {
 
       Vertex_t vertex_in_graph;
 
-      // What objects is this one the parent of? E.g., a parent session with child segments
+      // What objects is this one the parent of? E.g., a parent system with child segments
       std::vector<std::string> child_object_names;
 
       // What objects does this one send data to, and what are their connections called?
@@ -137,8 +137,8 @@ namespace appmodel {
     Graph_t m_graph;
     ObjectKind m_root_object_kind;
 
-    dunedaq::confmodel::Session* m_session;
-    std::string m_session_name;
+    dunedaq::confmodel::System* m_system;
+    std::string m_system_name;
     
     std::vector<std::string> m_ignored_application_uids;
     
