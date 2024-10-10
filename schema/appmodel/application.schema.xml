@@ -146,6 +146,7 @@
  <class name="DataProcessor">
   <attribute name="queue_sizes" type="u32" init-value="10000"/>
   <attribute name="thread_names_prefix" type="string" init-value="postproc-"/>
+  <attribute name="latency_monitoring" type="bool" init-value="true" is-not-null="yes"/>
  </class>
 
  <class name="DataReaderConf">

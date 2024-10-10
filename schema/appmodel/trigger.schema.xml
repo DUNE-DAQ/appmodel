@@ -141,6 +141,7 @@
   <superclass name="DataReaderConf"/>
   <attribute name="prescale" description="Prescale factor to apply to HSIEvent input" type="u32" init-value="1" is-not-null="yes"/>
   <relationship name="signals" class-type="HSISignalWindow" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <attribute name="latency_monitoring" type="bool" init-value="true" is-not-null="yes"/>
  </class>
 
  <class name="HSIEventToTCApplication">
@@ -174,6 +175,7 @@
   <attribute name="td_out_of_timeout" type="bool" init-value="true" is-not-null="yes"/>
   <attribute name="buffer_timeout" type="u32" init-value="100" is-not-null="yes"/>
   <attribute name="td_readout_limit" type="u32" init-value="1000" is-not-null="yes"/>
+  <attribute name="latency_monitoring" type="bool" init-value="true" is-not-null="yes"/>
  </class>
 
  <class name="MLTModule">
@@ -215,6 +217,7 @@
  <class name="StandaloneTCMakerConf" is-abstract="yes">
   <attribute name="template_for" type="class" init-value="StandaloneTCMakerModule" is-not-null="yes"/>
   <attribute name="timestamp_method" type="enum" range="kTimeSync,kSystemClock" init-value="kTimeSync" is-not-null="yes"/>
+  <attribute name="latency_monitoring" type="bool" init-value="true" is-not-null="yes"/>
  </class>
 
  <class name="StandaloneTCMakerModule">
