@@ -81,7 +81,7 @@ namespace appmodel {
 
     explicit GraphBuilder(const std::string& oksfilename, const std::string& sessionname);
 
-    void construct_graph(const std::string& root_obj_uid);
+    void construct_graph(std::string root_obj_uid);
     void write_graph(const std::string& outputfilename) const;
     
     GraphBuilder(const GraphBuilder&) = delete;

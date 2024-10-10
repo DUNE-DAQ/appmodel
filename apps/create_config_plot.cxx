@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
 
   ( "file,f", bpo::value<std::string> ( &oksfilename ), "OKS database file name" )
 
-  ( "root-object,r", bpo::value<std::string>(&object_uid), "OKS object UID of root vertex; must be session, segment or application")
+    ( "root-object,r", bpo::value<std::string>(&object_uid)->default_value(""), "OKS object UID of root vertex; must be session, segment or application")
     ( "session,s", bpo::value<std::string> ( &sessionname )->default_value(""),
     "Name of the session associated with the root object (only needed if >1 session in the database)" )
     ( "output,o", bpo::value<std::string> ( &outputfilename )->default_value("config.dot"),
@@ -72,12 +72,12 @@ int main(int argc, char* argv[])
                  args );
     bpo::notify ( args );
     
-    if ( args.count ( "help" ) || ! args.count ( "file" ) || ! args.count("root-object") )
+    if ( args.count ( "help" ) || ! args.count ( "file" ) )
     {
       display_help_message();
       return EXIT_FAILURE;
     }
-    
+
     appmodel::GraphBuilder graphbuilder(oksfilename, sessionname);
     graphbuilder.construct_graph(object_uid);
     graphbuilder.write_graph(outputfilename);

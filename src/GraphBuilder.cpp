@@ -209,7 +209,7 @@ namespace appmodel {
 
     m_candidate_objects.clear();
 
-    auto m_root_object_kind = true_root_object_kind;
+    m_root_object_kind = true_root_object_kind;
     find_candidate_objects();
 
     bool found = false;
@@ -442,7 +442,11 @@ namespace appmodel {
     m_objects_for_graph.insert( {object.UID(), starting_object} );
   }
 
-  void GraphBuilder::construct_graph(const std::string& root_obj_uid) {
+  void GraphBuilder::construct_graph(std::string root_obj_uid) {
+
+    if (root_obj_uid == "") {
+      root_obj_uid = m_session_name;
+    }
 
     // Next several lines just mean "tell me the class type of the root object in the config plot's graph"
 
