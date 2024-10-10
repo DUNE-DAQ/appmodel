@@ -46,7 +46,7 @@
 
 namespace appmodel {
 
-  GraphBuilder::GraphBuilder(const std::string& oksfilename) :
+  GraphBuilder::GraphBuilder(const std::string& oksfilename, const std::string& sessionname) :
     m_oksfilename { oksfilename },
     m_confdb { nullptr },
     m_included_classes {
@@ -56,7 +56,8 @@ namespace appmodel {
       { ObjectKind::kModule, {"Module"} }
     },
     m_root_object_kind { ObjectKind::kUndefined },
-    m_session { nullptr }
+    m_session { nullptr },
+    m_session_name { sessionname }
   {
 
     // Open the database represented by the OKS XML file
@@ -68,17 +69,28 @@ namespace appmodel {
       throw exc;
     }
 
-    // Get the session in the database. Can handle one and only one session.
+    // Get the session in the database
     std::vector<ConfigObject> session_objects {};
 
     m_confdb->get("Session", session_objects);
 
-    if (session_objects.size() == 1) {
-      m_session_name = session_objects[0].UID();
-    } else {
-      std::stringstream errmsg;
-      errmsg << "Did not find one and only one Session instance in \"" << m_oksfilename << "\" and its includes";
-      throw appmodel::GeneralGraphToolError(ERS_HERE, errmsg.str());
+    if (m_session_name == "") { // If no session name given, use the one-and-only session expected in the database
+      if (session_objects.size() == 1) {
+	m_session_name = session_objects[0].UID();
+      } else {
+	std::stringstream errmsg;
+	errmsg << "No Session instance name was provided, and since " << session_objects.size() << " session instances were found in \"" << m_oksfilename << "\" this is an error";
+
+	throw appmodel::GeneralGraphToolError(ERS_HERE, errmsg.str());
+      }
+    } else { // session name provided by the user, let's make sure it's there
+      auto it = std::ranges::find_if(session_objects, [&](const ConfigObject& obj) { return obj.UID() == m_session_name; });
+
+      if (it == session_objects.end()) {
+	std::stringstream errmsg;
+	errmsg << "Did not find Session instance \"" << m_session_name << "\" in \"" << m_oksfilename << "\" and its includes";
+	throw appmodel::GeneralGraphToolError(ERS_HERE, errmsg.str());
+      }
     }
 
     // The following not-brief section of code is dedicated to
@@ -169,6 +181,35 @@ namespace appmodel {
 
   void GraphBuilder::calculate_graph(const std::string& root_obj_uid) {
 
+    // To start, get the session / segments / applications in the
+    // session by setting up a temporary graph with the session as its
+    // root. This way we can check to see if the actual requested root
+    // object lies within the session in question.
+
+    auto true_root_object_kind = m_root_object_kind;
+    m_root_object_kind = ObjectKind::kSession;
+    find_candidate_objects();
+
+    auto it_session = std::ranges::find_if(m_all_objects, [&](const ConfigObject& obj) { return obj.UID() == m_session_name; });
+
+    find_objects_and_connections(*it_session);
+
+    if (!m_objects_for_graph.contains(root_obj_uid)) {
+      std::stringstream errmsg;
+      errmsg << "Unable to find requested object \"" << root_obj_uid << "\" in session \"" << m_session_name << "\"";
+      throw appmodel::GeneralGraphToolError(ERS_HERE, errmsg.str());
+    }
+
+    // Since we used our first call to find_objects_and_connections
+    // only as a fact-finding mission, reset the containers it filled
+
+    m_objects_for_graph.clear();
+    m_incoming_connections.clear();
+    m_outgoing_connections.clear();
+
+    m_candidate_objects.clear();
+
+    m_root_object_kind = true_root_object_kind;
     find_candidate_objects();
 
     bool found = false;
@@ -180,11 +221,7 @@ namespace appmodel {
       }
     }
 
-    if (!found) {
-      std::stringstream errmsg;
-      errmsg << "Unable to find requested object \"" << root_obj_uid << "\"";
-      throw appmodel::GeneralGraphToolError(ERS_HERE, errmsg.str());
-    }
+    assert(found);
 
     calculate_network_connections();  // Put differently, "find the edges between the vertices"
   }
@@ -405,7 +442,11 @@ namespace appmodel {
     m_objects_for_graph.insert( {object.UID(), starting_object} );
   }
 
-  void GraphBuilder::construct_graph(const std::string& root_obj_uid) {
+  void GraphBuilder::construct_graph(std::string root_obj_uid) {
+
+    if (root_obj_uid == "") {
+      root_obj_uid = m_session_name;
+    }
 
     // Next several lines just mean "tell me the class type of the root object in the config plot's graph"
 
