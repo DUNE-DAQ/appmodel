@@ -321,8 +321,8 @@
 
 <obj class="ReadoutApplication" id="ru-01">
  <attr name="application_name" type="string" val="daq_application"/>
- <attr name="tp_generation_enabled" type="bool" val="1"/>
- <attr name="ta_generation_enabled" type="bool" val="1"/>
+ <attr name="tp_generation_enabled" type="bool" val="0"/>
+ <attr name="ta_generation_enabled" type="bool" val="0"/>
  <rel name="contains">
   <ref class="DetectorToDaqConnection" id="conn_apa1"/>
  </rel>
@@ -364,8 +364,8 @@
 
 <obj class="ReadoutApplication" id="ru-02">
  <attr name="application_name" type="string" val="daq_application"/>
- <attr name="tp_generation_enabled" type="bool" val="1"/>
- <attr name="ta_generation_enabled" type="bool" val="1"/>
+ <attr name="tp_generation_enabled" type="bool" val="0"/>
+ <attr name="ta_generation_enabled" type="bool" val="0"/>
  <rel name="contains">
   <ref class="DetectorToDaqConnection" id="conn_apa2"/>
  </rel>

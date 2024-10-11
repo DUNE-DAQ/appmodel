@@ -237,7 +237,7 @@
 
 <obj class="Segment" id="df-segment">
  <rel name="applications">
-  <ref class="TPStreamWriterApplication" id="tp-stream-writer"/>
+  <!-- <ref class="TPStreamWriterApplication" id="tp-stream-writer"/> -->
   <ref class="DFOApplication" id="dfo-01"/>
   <ref class="DFApplication" id="df-01"/>
   <ref class="DFApplication" id="df-02"/>

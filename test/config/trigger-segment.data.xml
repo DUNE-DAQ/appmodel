@@ -161,7 +161,7 @@
  <rel name="trigger_inputs_handler" class="DataHandlerConf" id="def-tc-handler"/>
  <rel name="mlt_conf" class="MLTConf" id="def-mlt-conf"/>
  <rel name="standalone_candidate_maker_confs">
-  <ref class="RandomTCMakerConf" id="random-tc-generator"/>
+  <!-- <ref class="RandomTCMakerConf" id="random-tc-generator"/> -->
  </rel>
 </obj>
 
