@@ -14,19 +14,20 @@ find_package(conffwk REQUIRED)
 find_package(confmodel REQUIRED)
 find_package(fmt REQUIRED)
 
-
-#find_package(Boost COMPONENTS unit_test_framework REQUIRED)
+find_package(Boost COMPONENTS unit_test_framework program_options REQUIRED)
 
 daq_oks_codegen(application.schema.xml fdmodules.schema.xml trigger.schema.xml wiec.schema.xml 
   NAMESPACE dunedaq::appmodel DEP_PKGS confmodel)
 
 daq_add_library(ReadoutApplication.cpp SmartDaqApplication.cpp
-	DFApplication.cpp DFOApplication.cpp TPWriterApplication.cpp FakeDataApplication.cpp FakeHSIApplication.cpp DTSHSIApplication.cpp TriggerApplication.cpp MLTApplication.cpp HSIEventToTCApplication.cpp WIECApplication.cpp
+	DFApplication.cpp DFOApplication.cpp TPWriterApplication.cpp FakeDataApplication.cpp FakeHSIApplication.cpp DTSHSIApplication.cpp TriggerApplication.cpp MLTApplication.cpp HSIEventToTCApplication.cpp WIECApplication.cpp GraphBuilder.cpp
  LINK_LIBRARIES conffwk::conffwk fmt::fmt
   logging::logging confmodel::confmodel oks::oks ers::ers)
 
 daq_add_application(getAppsArguments get_apps_arguments.cxx
   LINK_LIBRARIES confmodel::confmodel appmodel conffwk::conffwk)
+
+daq_add_application(create_config_plot create_config_plot.cxx LINK_LIBRARIES appmodel Boost::program_options)
 
 daq_add_python_bindings(*.cpp LINK_LIBRARIES appmodel confmodel::confmodel)
 
@@ -38,13 +39,6 @@ daq_add_application(print_detailed_config_info print_detailed_config_info.cxx
  TEST LINK_LIBRARIES appmodel confmodel::confmodel conffwk::conffwk
  logging::logging)
 
-##############################################################################
-
-# See https://dune-daq-sw.readthedocs.io/en/latest/packages/daq-cmake/#daq_add_unit_test
-
-#daq_add_unit_test(Placeholder_test LINK_LIBRARIES)  # Placeholder_test should be replaced with real unit tests
-
-##############################################################################
+daq_add_unit_test(Graph_test)
 
 daq_install()
-

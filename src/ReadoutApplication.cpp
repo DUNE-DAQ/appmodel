@@ -10,6 +10,7 @@
 
 #include "ModuleFactory.hpp"
 
+#include "appmodel/DFApplication.hpp"
 #include "appmodel/ReadoutApplication.hpp"
 #include "conffwk/Configuration.hpp"
 #include "confmodel/DetDataReceiver.hpp"
@@ -132,7 +133,7 @@ std::vector<const confmodel::DaqModule*>
 ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::string& dbfile, const confmodel::Session* session) const
 {
 
-  TLOG() << "Generating modules for application " << this->UID();
+  TLOG_DEBUG(6) << "Generating modules for application " << this->UID();
 
   ReadoutObjFactory obj_fac{config, dbfile, this->UID()};
   //
@@ -239,7 +240,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
 
     d2d_conn_objs.push_back(&d2d_conn_res->config_object());
 
-    TLOG() << "Processing DetectorToDaqConnection " << d2d_conn_res->UID();
+    TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn_res->UID();
     // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader module
     auto d2d_conn = d2d_conn_res->cast<confmodel::DetectorToDaqConnection>();
 
@@ -303,7 +304,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   uint16_t conn_idx = 0;
   std::string reader_uid(fmt::format("datareader-{}-{}", this->UID(), std::to_string(conn_idx++)));
   conffwk::ConfigObject reader_obj;
-  TLOG() << fmt::format("creating OKS configuration object for Data reader class {} with id {}", reader_class, reader_uid);
+  TLOG_DEBUG(6) << fmt::format("creating OKS configuration object for Data reader class {} with id {}", reader_class, reader_uid);
   config->create(dbfile, reader_class, reader_uid, reader_obj);
 
   // Populate configuration and interfaces (leave output queues for later)
@@ -387,10 +388,10 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   for (auto ds : det_streams) {
 
     uint32_t sid = ds->get_source_id();
-    TLOG() << fmt::format("Processing stream {}, id {}, det id {}", ds->UID(), ds->get_source_id(), ds->get_geo_id()->get_detector_id());
+    TLOG_DEBUG(6) << fmt::format("Processing stream {}, id {}, det id {}", ds->UID(), ds->get_source_id(), ds->get_geo_id()->get_detector_id());
     std::string uid(fmt::format("DLH-{}", sid));
     conffwk::ConfigObject dlh_obj;
-    TLOG() << fmt::format("creating OKS configuration object for Data Link Handler class {}, if {}", dlh_class, sid);
+    TLOG_DEBUG(6) << fmt::format("creating OKS configuration object for Data Link Handler class {}, if {}", dlh_class, sid);
     config->create(dbfile, dlh_class, uid, dlh_obj);
     dlh_obj.set_by_val<uint32_t>("source_id", sid);
     dlh_obj.set_by_val<uint32_t>("detector_id", ds->get_geo_id()->get_detector_id());
@@ -437,17 +438,49 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   TLOG_DEBUG(7) << "creating OKS configuration object for Fragment Aggregator class ";
   config->create(dbfile, "FragmentAggregatorModule", faUid, frag_aggr);
 
-  // Add network connection to TRBs
+  // Add network connection from TRBs
   conffwk::ConfigObject fa_net_obj = obj_fac.create_net_obj(fa_net_desc);
 
-  // Add output queueus of data requests
-  std::vector<const conffwk::ConfigObject*> req_queue_objs;
-  for (auto q : req_queues) {
-    req_queue_objs.push_back(&q->config_object());
+  // Process special Network rules!
+  // Looking for Fragment rules from DFAppplications in current Session
+  auto sessionApps = session->get_enabled_applications();
+  std::vector<conffwk::ConfigObject> fragOutObjs;
+  for (auto app : sessionApps) {
+    auto dfapp = app->cast<appmodel::DFApplication>();
+    if (dfapp == nullptr)
+      continue;
+
+    auto dfNRules = dfapp->get_network_rules();
+    for (auto rule : dfNRules) {
+      auto descriptor = rule->get_descriptor();
+      auto data_type = descriptor->get_data_type();
+      if (data_type == "Fragment") {
+        std::string dreqNetUid(descriptor->get_uid_base() + dfapp->UID());
+        conffwk::ConfigObject frag_conn;
+        config->create(dbfile, "NetworkConnection", dreqNetUid, frag_conn);
+
+        frag_conn.set_by_val<std::string>("data_type", descriptor->get_data_type());
+        frag_conn.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
+
+        auto serviceObj = descriptor->get_associated_service()->config_object();
+        frag_conn.set_obj("associated_service", &serviceObj);
+        fragOutObjs.push_back(frag_conn);
+      } // If network rule has TriggerDecision type of data
+    }   // Loop over Apps network rules
+  }     // loop over Session specific Apps
+
+  // Add output queueus of data requests and Fragments
+  std::vector<const conffwk::ConfigObject*> fa_output_objs;
+  for (auto& fNet : fragOutObjs) {
+    fa_output_objs.push_back(&fNet);
+  }
+
+  for (auto& q : req_queues) {
+    fa_output_objs.push_back(&q->config_object());
   }
 
   frag_aggr.set_objs("inputs", { &fa_net_obj, &frag_queue_obj });
-  frag_aggr.set_objs("outputs", req_queue_objs);
+  frag_aggr.set_objs("outputs", fa_output_objs);
 
   modules.push_back(config->get<confmodel::DaqModule>(frag_aggr.UID()));
 
