@@ -22,7 +22,7 @@
 
 #include "confmodel/ResourceSet.hpp"
 #include "confmodel/Service.hpp"
-#include "confmodel/Session.hpp"
+#include "confmodel/System.hpp"
 
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
@@ -64,9 +64,9 @@ static ModuleFactory::Registrator __reg__("MLTApplication",
                                           [](const SmartDaqApplication* smartApp,
                                              conffwk::Configuration* confdb,
                                              const std::string& dbfile,
-                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
+                                             const confmodel::System* system) -> ModuleFactory::ReturnType {
                                             auto app = smartApp->cast<MLTApplication>();
-                                            return app->generate_modules(confdb, dbfile, session);
+                                            return app->generate_modules(confdb, dbfile, system);
                                           });
 
 /**
@@ -98,7 +98,7 @@ create_mlt_network_connection(std::string uid,
 std::vector<const confmodel::DaqModule*>
 MLTApplication::generate_modules(conffwk::Configuration* confdb,
                                  const std::string& dbfile,
-                                 const confmodel::Session* session) const
+                                 const confmodel::System* system) const
 {
   std::vector<const confmodel::DaqModule*> modules;
 
@@ -265,7 +265,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
    * Create the readout map
    **************************************************************/
 
-  std::vector<const dunedaq::confmodel::Application*> apps = session->get_enabled_applications();
+  std::vector<const dunedaq::confmodel::Application*> apps = system->get_enabled_applications();
 
   std::vector<const conffwk::ConfigObject*> sourceIds;
 
@@ -275,7 +275,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
       auto resources = ro_app->get_contains();
       // Interate over all the readout groups
       for (auto d2d_conn_res : resources) {
-        if (d2d_conn_res->disabled(*session)) {
+        if (d2d_conn_res->disabled(*system)) {
           TLOG_DEBUG(7) << "Ignoring disabled Detector2DaqConnection " << d2d_conn_res->UID();
           continue;
         }
@@ -295,7 +295,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
           if (stream == nullptr) {
             throw(BadConf(ERS_HERE, "ReadoutInterface contains something other than DetectorStream"));
           }
-          if (stream->disabled(*session)) {
+          if (stream->disabled(*system)) {
             TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
             continue;
           }

@@ -18,7 +18,7 @@
 // #include "confmodel/ReadoutGroup.hpp"
 #include "confmodel/ResourceSet.hpp"
 #include "confmodel/Service.hpp"
-#include "confmodel/Session.hpp"
+#include "confmodel/System.hpp"
 
 #include "appmodel/FakeDataApplication.hpp"
 #include "appmodel/FakeDataProdModule.hpp"
@@ -43,15 +43,15 @@ static ModuleFactory::Registrator __reg__("FakeDataApplication",
                                           [](const SmartDaqApplication* smartApp,
                                              conffwk::Configuration* confdb,
                                              const std::string& dbfile,
-                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
+                                             const confmodel::System* system) -> ModuleFactory::ReturnType {
                                             auto app = smartApp->cast<FakeDataApplication>();
-                                            return app->generate_modules(confdb, dbfile, session);
+                                            return app->generate_modules(confdb, dbfile, system);
                                           });
 
 std::vector<const confmodel::DaqModule*>
 FakeDataApplication::generate_modules(conffwk::Configuration* /*confdb*/,
                                       const std::string& /*dbfile*/,
-                                      const confmodel::Session* /*session*/) const
+                                      const confmodel::System* /*system*/) const
 {
   // oks::OksFile::set_nolock_mode(true);
 
@@ -105,7 +105,7 @@ FakeDataApplication::generate_modules(conffwk::Configuration* /*confdb*/,
   // // Create a FakeDataProdModule for each stream of this Readout Group
   // // for (auto roGroup : get_readout_groups()) {
   // for (auto roGroup : get_contains()) {
-  //   if (roGroup->disabled(*session)) {
+  //   if (roGroup->disabled(*system)) {
   //     TLOG_DEBUG(7) << "Ignoring disabled ReadoutGroup " << roGroup->UID();
   //     continue;
   //   }
@@ -119,7 +119,7 @@ FakeDataApplication::generate_modules(conffwk::Configuration* /*confdb*/,
   //     if (stream == nullptr) {
   //       throw(BadConf(ERS_HERE, "ReadoutGroup contains something other than FakeDataProdConf"));
   //     }
-  //     if (stream->disabled(*session)) {
+  //     if (stream->disabled(*system)) {
   //       TLOG_DEBUG(7) << "Ignoring disabled FakeDataProdConf " << stream->UID();
   //       continue;
   //     }

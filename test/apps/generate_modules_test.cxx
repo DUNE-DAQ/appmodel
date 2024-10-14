@@ -12,7 +12,7 @@
 
 #include "conffwk/Configuration.hpp"
 
-#include "confmodel/Session.hpp"
+#include "confmodel/System.hpp"
 #include "confmodel/Connection.hpp"
 #include "confmodel/DaqModule.hpp"
 
@@ -31,12 +31,12 @@ using namespace dunedaq;
 
 int main(int argc, char* argv[]) {
   if (argc < 4) {
-    std::cout << "Usage: " << argv[0] << " <session> <smart-app> <database-file>\n";
+    std::cout << "Usage: " << argv[0] << " <system> <smart-app> <database-file>\n";
     return 0;
   }
   logging::Logging::setup();
 
-  std::string sessionName(argv[1]);
+  std::string systemName(argv[1]);
   std::string appName(argv[2]);
   std::string dbfile(argv[3]);
   conffwk::Configuration* confdb;
@@ -48,9 +48,9 @@ int main(int argc, char* argv[]) {
     return 0;
   }
 
-  auto session = confdb->get<confmodel::Session>(sessionName);
-  if (session == nullptr) {
-    std::cout << "Failed to get Session " << sessionName
+  auto system = confdb->get<confmodel::System>(systemName);
+  if (system == nullptr) {
+    std::cout << "Failed to get System " << systemName
               << " from database\n";
     return 0;
   }
@@ -59,13 +59,13 @@ int main(int argc, char* argv[]) {
     std::cout << appName << " is of class " << daqapp->class_name() << std::endl;
 
     auto res = daqapp->cast<confmodel::ResourceBase>();
-    if (res && res->disabled(*session)) {
+    if (res && res->disabled(*system)) {
       std::cout << "Application " << appName << " is disabled" << std::endl;
       return 0;
     }
     std::vector<const confmodel::DaqModule*> modules;
     try {
-      modules = daqapp->generate_modules(confdb, dbfile, session);
+      modules = daqapp->generate_modules(confdb, dbfile, system);
     }
     catch (appmodel::BadConf& exc) {
       std::cout << "Caught BadConf exception: " << exc << std::endl;

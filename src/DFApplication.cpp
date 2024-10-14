@@ -44,9 +44,9 @@ static ModuleFactory::Registrator __reg__("DFApplication",
                                           [](const SmartDaqApplication* smartApp,
                                              conffwk::Configuration* confdb,
                                              const std::string& dbfile,
-                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
+                                             const confmodel::System* system) -> ModuleFactory::ReturnType {
                                             auto app = smartApp->cast<DFApplication>();
-                                            return app->generate_modules(confdb, dbfile, session);
+                                            return app->generate_modules(confdb, dbfile, system);
                                           });
 
 inline void
@@ -138,7 +138,7 @@ fill_sourceid_object_from_app(conffwk::Configuration* confdb,
 std::vector<const confmodel::DaqModule*>
 DFApplication::generate_modules(conffwk::Configuration* confdb,
                                 const std::string& dbfile,
-                                const confmodel::Session* session) const
+                                const confmodel::System* system) const
 {
   std::vector<const confmodel::DaqModule*> modules;
 
@@ -210,12 +210,12 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
   fill_netconn_object_from_desc(tokenNetDesc, tokenNetObj);
 
   // Process special Network rules!
-  // Looking for DataRequest rules from ReadoutAppplications in current Session
-  auto sessionApps = session->get_enabled_applications();
+  // Looking for DataRequest rules from ReadoutAppplications in current System
+  auto systemApps = system->get_enabled_applications();
   std::vector<conffwk::ConfigObject> dreqNetObjs;
   std::vector<conffwk::ConfigObject> sidNetObjs;
   std::vector<std::shared_ptr<conffwk::ConfigObject>> sidObjs;
-  for (auto app : sessionApps) {
+  for (auto app : systemApps) {
     auto smartapp = app->cast<appmodel::SmartDaqApplication>();
     auto roapp = app->cast<appmodel::ReadoutApplication>();
     auto dfapp = app->cast<appmodel::DFApplication>();
@@ -246,7 +246,7 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
         }
       } // If network rule has DataRequest type of data
     }   // Loop over Apps network rules
-  }     // loop over Session specific Apps
+  }     // loop over System specific Apps
 
   // Get pointers to objects here, after vector has been filled so they don't move on us
   for (auto& obj : dreqNetObjs) {

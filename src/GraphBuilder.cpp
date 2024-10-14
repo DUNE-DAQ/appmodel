@@ -25,7 +25,7 @@
 
 #include "conffwk/Configuration.hpp"
 #include "conffwk/Schema.hpp"
-#include "confmodel/Session.hpp"
+#include "confmodel/System.hpp"
 #include "confmodel/Connection.hpp"
 #include "confmodel/DaqModule.hpp"
 #include "ers/ers.hpp"
@@ -46,18 +46,18 @@
 
 namespace appmodel {
 
-  GraphBuilder::GraphBuilder(const std::string& oksfilename, const std::string& sessionname) :
+  GraphBuilder::GraphBuilder(const std::string& oksfilename, const std::string& systemname) :
     m_oksfilename { oksfilename },
     m_confdb { nullptr },
     m_included_classes {
-      { ObjectKind::kSession, {"Session", "Segment", "Application" } },
+      { ObjectKind::kSystem, {"System", "Segment", "Application" } },
       { ObjectKind::kSegment, {"Segment", "Application"} },
       { ObjectKind::kApplication, {"Application", "Module"} },
       { ObjectKind::kModule, {"Module"} }
     },
     m_root_object_kind { ObjectKind::kUndefined },
-    m_session { nullptr },
-    m_session_name { sessionname }
+    m_system { nullptr },
+    m_system_name { systemname }
   {
 
     // Open the database represented by the OKS XML file
@@ -69,26 +69,26 @@ namespace appmodel {
       throw exc;
     }
 
-    // Get the session in the database
-    std::vector<ConfigObject> session_objects {};
+    // Get the system in the database
+    std::vector<ConfigObject> system_objects {};
 
-    m_confdb->get("Session", session_objects);
+    m_confdb->get("System", system_objects);
 
-    if (m_session_name == "") { // If no session name given, use the one-and-only session expected in the database
-      if (session_objects.size() == 1) {
-	m_session_name = session_objects[0].UID();
+    if (m_system_name == "") { // If no system name given, use the one-and-only system expected in the database
+      if (system_objects.size() == 1) {
+	m_system_name = system_objects[0].UID();
       } else {
 	std::stringstream errmsg;
-	errmsg << "No Session instance name was provided, and since " << session_objects.size() << " session instances were found in \"" << m_oksfilename << "\" this is an error";
+	errmsg << "No System instance name was provided, and since " << system_objects.size() << " system instances were found in \"" << m_oksfilename << "\" this is an error";
 
 	throw appmodel::GeneralGraphToolError(ERS_HERE, errmsg.str());
       }
-    } else { // session name provided by the user, let's make sure it's there
-      auto it = std::ranges::find_if(session_objects, [&](const ConfigObject& obj) { return obj.UID() == m_session_name; });
+    } else { // system name provided by the user, let's make sure it's there
+      auto it = std::ranges::find_if(system_objects, [&](const ConfigObject& obj) { return obj.UID() == m_system_name; });
 
-      if (it == session_objects.end()) {
+      if (it == system_objects.end()) {
 	std::stringstream errmsg;
-	errmsg << "Did not find Session instance \"" << m_session_name << "\" in \"" << m_oksfilename << "\" and its includes";
+	errmsg << "Did not find System instance \"" << m_system_name << "\" in \"" << m_oksfilename << "\" and its includes";
 	throw appmodel::GeneralGraphToolError(ERS_HERE, errmsg.str());
       }
     }
@@ -97,22 +97,22 @@ namespace appmodel {
     // determining which applications in the configuration are
     // disabled
     
-    // First, we need the session object to check if an application
+    // First, we need the system object to check if an application
     // has been disabled
 
     // Note the "const_cast" is needed since "m_confdb->get"
-    // returns a const pointer, but since m_session is a member needed
+    // returns a const pointer, but since m_system is a member needed
     // by multiple functions and can't be determined until after we've
-    // opened the database and found the session, we need to change
+    // opened the database and found the system, we need to change
     // its initial value here. Once this is done, it shouldn't be
     // changed again.
 
-    m_session = const_cast<dunedaq::confmodel::Session*>(  // NOLINT
-                                                         m_confdb->get<dunedaq::confmodel::Session>(m_session_name));
+    m_system = const_cast<dunedaq::confmodel::System*>(  // NOLINT
+                                                         m_confdb->get<dunedaq::confmodel::System>(m_system_name));
   
-    if (!m_session) {
+    if (!m_system) {
       std::stringstream errmsg;
-      errmsg << "Unable to get session with UID \"" << m_session_name << "\"";
+      errmsg << "Unable to get system with UID \"" << m_system_name << "\"";
       throw appmodel::GeneralGraphToolError(ERS_HERE, errmsg.str());
     }
 
@@ -150,7 +150,7 @@ namespace appmodel {
 
             auto res = daqapp->cast<dunedaq::confmodel::ResourceBase>();
             
-            if (res && res->disabled(*m_session)) {
+            if (res && res->disabled(*m_system)) {
               m_ignored_application_uids.push_back( appobj.UID() );
               TLOG() << "Skipping disabled application " << appobj.UID() << "@" << daqapp->class_name();
               continue;
@@ -181,22 +181,22 @@ namespace appmodel {
 
   void GraphBuilder::calculate_graph(const std::string& root_obj_uid) {
 
-    // To start, get the session / segments / applications in the
-    // session by setting up a temporary graph with the session as its
+    // To start, get the system / segments / applications in the
+    // system by setting up a temporary graph with the system as its
     // root. This way we can check to see if the actual requested root
-    // object lies within the session in question.
+    // object lies within the system in question.
 
     auto true_root_object_kind = m_root_object_kind;
-    m_root_object_kind = ObjectKind::kSession;
+    m_root_object_kind = ObjectKind::kSystem;
     find_candidate_objects();
 
-    auto it_session = std::ranges::find_if(m_all_objects, [&](const ConfigObject& obj) { return obj.UID() == m_session_name; });
+    auto it_system = std::ranges::find_if(m_all_objects, [&](const ConfigObject& obj) { return obj.UID() == m_system_name; });
 
-    find_objects_and_connections(*it_session);
+    find_objects_and_connections(*it_system);
 
     if (!m_objects_for_graph.contains(root_obj_uid)) {
       std::stringstream errmsg;
-      errmsg << "Unable to find requested object \"" << root_obj_uid << "\" in session \"" << m_session_name << "\"";
+      errmsg << "Unable to find requested object \"" << root_obj_uid << "\" in system \"" << m_system_name << "\"";
       throw appmodel::GeneralGraphToolError(ERS_HERE, errmsg.str());
     }
 
@@ -359,11 +359,11 @@ namespace appmodel {
 
     EnhancedObject starting_object { object, get_object_kind(object.class_name()) };
 
-    // If we've got a session or a segment, look at its OKS-relations,
+    // If we've got a system or a segment, look at its OKS-relations,
     // and recursively process those relation objects which are on the
     // candidates list and haven't already been processed
 
-    if (starting_object.kind == ObjectKind::kSession || starting_object.kind ==	ObjectKind::kSegment) {
+    if (starting_object.kind == ObjectKind::kSystem || starting_object.kind ==	ObjectKind::kSegment) {
 
       for (auto& child_object: find_child_objects(starting_object.config_object)) {
 
@@ -391,13 +391,13 @@ namespace appmodel {
 
       auto daqapp = local_database->get<dunedaq::appmodel::SmartDaqApplication>(object.UID());                 
       if (daqapp) {
-        auto local_session = const_cast<dunedaq::confmodel::Session*>(  // NOLINT
-                                                                      local_database->get<dunedaq::confmodel::Session>(m_session_name));
-        auto modules = daqapp->generate_modules(local_database, m_oksfilename, local_session);
+        auto local_system = const_cast<dunedaq::confmodel::System*>(  // NOLINT
+                                                                      local_database->get<dunedaq::confmodel::System>(m_system_name));
+        auto modules = daqapp->generate_modules(local_database, m_oksfilename, local_system);
 
         std::vector<std::string> allowed_conns {};
 
-        if (m_root_object_kind == ObjectKind::kSession || m_root_object_kind == ObjectKind::kSegment) {
+        if (m_root_object_kind == ObjectKind::kSystem || m_root_object_kind == ObjectKind::kSegment) {
           allowed_conns = {"NetworkConnection"};
         } else if (m_root_object_kind == ObjectKind::kApplication || m_root_object_kind == ObjectKind::kModule){
           allowed_conns = {"NetworkConnection", "Queue", "QueueWithSourceId"};
@@ -445,7 +445,7 @@ namespace appmodel {
   void GraphBuilder::construct_graph(std::string root_obj_uid) {
 
     if (root_obj_uid == "") {
-      root_obj_uid = m_session_name;
+      root_obj_uid = m_system_name;
     }
 
     // Next several lines just mean "tell me the class type of the root object in the config plot's graph"
@@ -497,12 +497,12 @@ namespace appmodel {
         auto at_pos = receiver_info.connection_name.find("@");
         const std::string connection_label = receiver_info.connection_name.substr(0, at_pos);
 
-        // If we're plotting at the level of a session or segment,
+        // If we're plotting at the level of a system or segment,
         // show the connections as between applications; if we're
         // doing this for a single application, show them entering and
         // exiting the individual modules
 
-        if (m_root_object_kind == ObjectKind::kSession || m_root_object_kind == ObjectKind::kSegment) {
+        if (m_root_object_kind == ObjectKind::kSystem || m_root_object_kind == ObjectKind::kSegment) {
           if (m_objects_for_graph.at(receiver_info.receiver_label).kind == ObjectKind::kModule) {
             continue;
           }
@@ -575,7 +575,7 @@ namespace appmodel {
     };
 
     const std::unordered_map<ObjectKind, VertexStyle> vertex_styles {
-      {ObjectKind::kSession, {"octagon", "black"}},
+      {ObjectKind::kSystem, {"octagon", "black"}},
       {ObjectKind::kSegment, {"hexagon", "brown"}},
       {ObjectKind::kApplication, {"pentagon", "blue"}},
       {ObjectKind::kModule, {"rectangle", "red"}}
@@ -622,9 +622,9 @@ namespace appmodel {
       // alphabetically they'll appear in the correct order
       
       switch (eo.kind) {
-      case ObjectKind::kSession:
+      case ObjectKind::kSystem:
         add_vertex_info();
-        add_legend_entry('A', "session");
+        add_legend_entry('A', "system");
         break;
       case ObjectKind::kSegment:
         add_vertex_info();
@@ -729,10 +729,10 @@ namespace appmodel {
 
     using ObjectKind = GraphBuilder::ObjectKind;
 
-    ObjectKind kind = ObjectKind::kSession;
+    ObjectKind kind = ObjectKind::kSystem;
 
-    if (class_name.find("Session") != std::string::npos ) {
-      kind = ObjectKind::kSession;
+    if (class_name.find("System") != std::string::npos ) {
+      kind = ObjectKind::kSystem;
     } else if (class_name.find("Segment") != std::string::npos ) {
       kind = ObjectKind::kSegment;
     } else if (class_name.find("Application") != std::string::npos ) {
