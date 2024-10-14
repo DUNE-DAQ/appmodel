@@ -169,11 +169,19 @@
   </method>
  </class>
 
+
+ <class name="SubdetectorReadoutWindowMap">
+  <attribute name="subdetector" type="string" init-value="kUnknown" is-not-null="yes"/>
+  <attribute name="time_before" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="time_after" type="u32" init-value="20000" is-not-null="yes"/>
+ </class>
+
  <class name="MLTConf">
   <attribute name="template_for" type="class" init-value="MLTModule"/>
   <attribute name="td_out_of_timeout" type="bool" init-value="true" is-not-null="yes"/>
   <attribute name="buffer_timeout" type="u32" init-value="100" is-not-null="yes"/>
   <attribute name="td_readout_limit" type="u32" init-value="1000" is-not-null="yes"/>
+  <relationship name="subdetector_readout_map" class-type="SubdetectorReadoutWindowMap" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="MLTModule">
@@ -311,6 +319,7 @@
   <superclass name="DataProcessor"/>
   <attribute name="hsi_trigger_type_passthrough" type="bool" init-value="false" is-not-null="yes"/>
   <attribute name="merge_overlapping_tcs" type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="ignore_overlapping_tcs" type="bool" init-value="false" is-not-null="yes"/>
   <attribute name="td_out_of_timeout" type="bool" init-value="true" is-not-null="yes"/>
   <attribute name="buffer_timeout" type="u32" init-value="100" is-not-null="yes"/>
   <attribute name="td_readout_limit" type="u32" init-value="1000" is-not-null="yes"/>
