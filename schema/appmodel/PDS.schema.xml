@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="ASCII"?>
+
+<!-- oks-schema version 2.2 -->
+
+
+<!DOCTYPE oks-schema [
+  <!ELEMENT oks-schema (info, (include)?, (comments)?, (class)+)>
+  <!ELEMENT info EMPTY>
+  <!ATTLIST info
+      name CDATA #IMPLIED
+      type CDATA #IMPLIED
+      num-of-items CDATA #REQUIRED
+      oks-format CDATA #FIXED "schema"
+      oks-version CDATA #REQUIRED
+      created-by CDATA #IMPLIED
+      created-on CDATA #IMPLIED
+      creation-time CDATA #IMPLIED
+      last-modified-by CDATA #IMPLIED
+      last-modified-on CDATA #IMPLIED
+      last-modification-time CDATA #IMPLIED
+  >
+  <!ELEMENT include (file)+>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+      path CDATA #REQUIRED
+  >
+  <!ELEMENT comments (comment)+>
+  <!ELEMENT comment EMPTY>
+  <!ATTLIST comment
+      creation-time CDATA #REQUIRED
+      created-by CDATA #REQUIRED
+      created-on CDATA #REQUIRED
+      author CDATA #REQUIRED
+      text CDATA #REQUIRED
+  >
+  <!ELEMENT class (superclass | attribute | relationship | method)*>
+  <!ATTLIST class
+      name CDATA #REQUIRED
+      description CDATA ""
+      is-abstract (yes|no) "no"
+  >
+  <!ELEMENT superclass EMPTY>
+  <!ATTLIST superclass name CDATA #REQUIRED>
+  <!ELEMENT attribute EMPTY>
+  <!ATTLIST attribute
+      name CDATA #REQUIRED
+      description CDATA ""
+      type (bool|s8|u8|s16|u16|s32|u32|s64|u64|float|double|date|time|string|uid|enum|class) #REQUIRED
+      range CDATA ""
+      format (dec|hex|oct) "dec"
+      is-multi-value (yes|no) "no"
+      init-value CDATA ""
+      is-not-null (yes|no) "no"
+      ordered (yes|no) "no"
+  >
+  <!ELEMENT relationship EMPTY>
+  <!ATTLIST relationship
+      name CDATA #REQUIRED
+      description CDATA ""
+      class-type CDATA #REQUIRED
+      low-cc (zero|one) #REQUIRED
+      high-cc (one|many) #REQUIRED
+      is-composite (yes|no) #REQUIRED
+      is-exclusive (yes|no) #REQUIRED
+      is-dependent (yes|no) #REQUIRED
+      ordered (yes|no) "no"
+  >
+  <!ELEMENT method (method-implementation*)>
+  <!ATTLIST method
+      name CDATA #REQUIRED
+      description CDATA ""
+  >
+  <!ELEMENT method-implementation EMPTY>
+  <!ATTLIST method-implementation
+      language CDATA #REQUIRED
+      prototype CDATA #REQUIRED
+      body CDATA ""
+  >
+]>
+
+<oks-schema>
+
+<info name="" type="" num-of-items="8" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="mroda" last-modified-on="theta.ph.liv.ac.uk" last-modification-time="20241015T160045"/>
+
+<include>
+ <file path="schema/confmodel/dunedaq.schema.xml"/>
+ <file path="schema/appmodel/application.schema.xml"/>
+</include>
+
+
+ <class name="AFEConf">
+  <attribute name="id" description="id in the [0,5) range" type="u8" range="0..4" is-not-null="yes"/>
+  <attribute name="v_gain" type="u16" range="0..4096" is-not-null="yes"/>
+  <attribute name="v_bias" description="Value for V gain of the AFE, 12 bit register" type="u16" range="0..1500" is-not-null="yes"/>
+  <relationship name="adc" class-type="DaphneADC" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <relationship name="pga" class-type="DaphenPGA" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <relationship name="lna" class-type="DaphneLNA" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+ </class>
+
+ <class name="DaphenPGA">
+  <attribute name="lpf_cut_frequency" description="cut frequency, only 4 values acceptable. 0=15MHz, 2=20MHz, 3=30MHz, 4=10MHz" type="u8" range="0..4" init-value="0" is-not-null="yes"/>
+  <attribute name="integrator_disable" type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="gain" description="rue=30 dB, false=24 dB" type="bool" init-value="false" is-not-null="yes"/>
+ </class>
+
+ <class name="DaphneADC">
+  <attribute name="low_resolution" description="true=12bit, false=14bit" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="output_offset_binary" description="true=Offset Binary, false=2s complement" type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="MSB_first" description="Which Significant bit comes first, true=MSB, false=LSB" type="bool" init-value="true" is-not-null="yes"/>
+ </class>
+
+ <class name="DaphneApplication">
+  <superclass name="SmartDaqApplication"/>
+  <superclass name="ResourceSetAND"/>
+ </class>
+
+ <class name="DaphneChannel">
+  <attribute name="gain" description="gain" type="u8" range="0..2" init-value="0" is-not-null="yes"/>
+  <attribute name="offset" description="Pedestal for the channel" type="u16" range="0..2700" init-value="0" is-not-null="yes"/>
+  <attribute name="trim" description="trim value for the channel" type="u16" range="0..4095" init-value="0" is-not-null="yes"/>
+ </class>
+
+ <class name="DaphneConf" description="Top entry for the configuraiton of a single daphne board">
+  <attribute name="address" description="ip address of the board" type="string" is-not-null="yes"/>
+  <attribute name="slot" description="slot of the board" type="u16" is-not-null="yes"/>
+  <attribute name="timeout_ms" description="timeout used for the board operations" type="u16" range="1..60000" init-value="1000" is-not-null="yes"/>
+  <attribute name="bias_ctrl" description="V bias control" type="u16" range="0..4095" is-not-null="yes"/>
+  <attribute name="self_trigger_threshold" description="Configuration for full stream case. If it is 0, the channels will go in full stream. In that case, which channels will be set via the &quot;full_stream_channels&quot; list." type="u64" range="0..16383" is-not-null="yes"/>
+  <attribute name="full_stream_channels" description="list of channels to be used in full stream" type="u8" range="0..39" is-multi-value="yes" is-not-null="yes"/>
+  <relationship name="channels" class-type="DaphneChannel" low-cc="many" high-cc="many" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <relationship name="afes" class-type="AFEConf" low-cc="many" high-cc="many" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <method name="get_timeout" description="get the interval casted in ms">
+   <method-implementation language="C++" prototype="std::chrono::milliseconds get_timeout() const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &lt;chrono&gt;&#xA;END_HEADER_PROLOGUE&#xA;&#xA;return std::chrono::milliseconds(get_timeout_ms());"/>
+  </method>
+ </class>
+
+ <class name="DaphneControllerModule">
+  <superclass name="DaqModule"/>
+  <relationship name="board_conf" class-type="DaphneConf" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+ </class>
+
+ <class name="DaphneLNA" description="info to generate Reg52 value">
+  <attribute name="clamp" description="0=auto setting, 1=1.5 Vpp, 2=1.15 Vpp, 3=0.6 Vpp" type="u8" range="0..3" init-value="0" is-not-null="yes"/>
+  <attribute name="integrator_disable" type="bool" is-multi-value="yes" init-value="true" is-not-null="yes"/>
+  <attribute name="gain" description="0=18 dB, 1=24 dB, 2=12 dB" type="u8" range="0..2" init-value="2" is-not-null="yes"/>
+ </class>
+
+</oks-schema>
