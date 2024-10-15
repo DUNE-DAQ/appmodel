@@ -80,12 +80,18 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="2" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="mroda" last-modified-on="theta.ph.liv.ac.uk" last-modification-time="20241015T112527"/>
+<info name="" type="" num-of-items="3" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="mroda" last-modified-on="theta.ph.liv.ac.uk" last-modification-time="20241015T113734"/>
+
+ <class name="AFEConf">
+  <attribute name="id" description="id in the [0,5) range" type="u8" range="0..4" is-not-null="yes"/>
+  <attribute name="v_gain" type="u16" range="0..4096" is-not-null="yes"/>
+  <attribute name="v_bias" description="Value for V gain of the AFE, 12 bit register" type="u16" range="0..1500" is-not-null="yes"/>
+ </class>
 
  <class name="DaphneChannel">
   <attribute name="gain" description="gain" type="u8" range="0..2" init-value="0" is-not-null="yes"/>
   <attribute name="offset" description="Pedestal for the channel" type="u16" range="0..2700" init-value="0" is-not-null="yes"/>
-  <attribute name="trim" description="trim value for the channel" type="u16" range="0..4095" is-multi-value="yes" init-value="0" is-not-null="yes"/>
+  <attribute name="trim" description="trim value for the channel" type="u16" range="0..4095" init-value="0" is-not-null="yes"/>
  </class>
 
  <class name="DaphneConf" description="Top entry for the configuraiton of a single daphne board">
@@ -94,6 +100,8 @@
   <attribute name="timeout_ms" description="timeout used for the board operations" type="u16" range="1..60000" init-value="1000" is-not-null="yes"/>
   <attribute name="bias_ctrl" description="V bias control" type="u16" range="0..4095" is-not-null="yes"/>
   <attribute name="self_trigger_threshold" description="Configuration for full stream case. If it is 0, the channels will go in full stream. In that case, which channels will be set via the &quot;full_stream_channels&quot; list." type="u16" range="0..16383" is-not-null="yes"/>
+  <relationship name="channels" class-type="DaphneChannel" low-cc="many" high-cc="many" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <relationship name="afes" class-type="AFEConf" low-cc="many" high-cc="many" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
  </class>
 
 </oks-schema>
