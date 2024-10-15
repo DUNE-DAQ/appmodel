@@ -414,6 +414,8 @@
 
  <class name="TPStreamWriterConf">
   <attribute name="tp_accumulation_interval" type="u64" init-value="0" is-not-null="yes"/>
+  <attribute name="tp_accumulation_inactivity_time_before_write_sec" type="float" init-value="1.0" is-not-null="yes"/>
+  <attribute name="warn_user_when_tardy_tps_are_discarded" type="bool" init-value="true" is-not-null="yes"/>
   <relationship name="data_store_params" class-type="DataStoreConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
