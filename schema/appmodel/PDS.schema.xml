@@ -80,9 +80,14 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="1" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="mroda" last-modified-on="theta.ph.liv.ac.uk" last-modification-time="20241011T123439"/>
+<info name="" type="" num-of-items="1" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="mroda" last-modified-on="theta.ph.liv.ac.uk" last-modification-time="20241015T111631"/>
 
  <class name="DaphneConf" description="Top entry for the configuraiton of a single daphne board">
+  <attribute name="address" description="ip address of the board" type="string" is-not-null="yes"/>
+  <attribute name="slot" description="slot of the board" type="u16" is-not-null="yes"/>
+  <attribute name="timeout_ms" description="timeout used for the board operations" type="u16" range="1..60000" init-value="1000" is-not-null="yes"/>
+  <attribute name="bias_ctrl" description="V bias control" type="u16" range="0..4095" is-not-null="yes"/>
+  <attribute name="self_trigger_threshold" description="Configuration for full stream case. If it is 0, the channels will go in full stream. In that case, which channels will be set via the &quot;full_stream_channels&quot; list." type="u16" range="0..16383" is-not-null="yes"/>
  </class>
 
 </oks-schema>
