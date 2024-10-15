@@ -197,9 +197,9 @@
  <class name="RandomTCMakerConf">
   <superclass name="StandaloneTCMakerConf"/>
   <attribute name="template_for" type="class" init-value="RandomTCMakerModule"/>
-  <attribute name="trigger_interval_ticks" type="u32" init-value="64000000" is-not-null="yes"/>
-  <attribute name="clock_frequency_hz" type="u32" init-value="62500000" is-not-null="yes"/>
+  <attribute name="trigger_rate_hz" type="float" init-value="1" is-not-null="yes"/>
   <attribute name="time_distribution" type="enum" range="kUniform,kPoisson" init-value="kUniform" is-not-null="yes"/>
+  <relationship name="tc_readout" class-type="TCReadoutMap" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="RandomTCMakerModule">
