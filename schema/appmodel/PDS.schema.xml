@@ -80,7 +80,13 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="6" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="mroda" last-modified-on="theta.ph.liv.ac.uk" last-modification-time="20241015T123142"/>
+<info name="" type="" num-of-items="8" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="mroda" last-modified-on="theta.ph.liv.ac.uk" last-modification-time="20241015T154441"/>
+
+<include>
+ <file path="schema/confmodel/dunedaq.schema.xml"/>
+ <file path="schema/appmodel/application.schema.xml"/>
+</include>
+
 
  <class name="AFEConf">
   <attribute name="id" description="id in the [0,5) range" type="u8" range="0..4" is-not-null="yes"/>
@@ -103,6 +109,11 @@
   <attribute name="MSB_first" description="Which Significant bit comes first, true=MSB, false=LSB" type="bool" init-value="true" is-not-null="yes"/>
  </class>
 
+ <class name="DaphneApplication">
+  <superclass name="SmartDaqApplication"/>
+  <superclass name="ResourceSetAND"/>
+ </class>
+
  <class name="DaphneChannel">
   <attribute name="gain" description="gain" type="u8" range="0..2" init-value="0" is-not-null="yes"/>
   <attribute name="offset" description="Pedestal for the channel" type="u16" range="0..2700" init-value="0" is-not-null="yes"/>
@@ -121,6 +132,11 @@
   <method name="get_timeout" description="get the interval casted in ms">
    <method-implementation language="C++" prototype="std::chrono::milliseconds get_timeout() const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &lt;chrono&gt;&#xA;END_HEADER_PROLOGUE&#xA;&#xA;return std::chrono::milliseconds(get_timeout_ms());"/>
   </method>
+ </class>
+
+ <class name="DaphneControllerModule">
+  <superclass name="DaqModule"/>
+  <relationship name="board_conf" class-type="DaphneConf" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
  </class>
 
  <class name="DaphneLNA" description="info to generate Reg52 value">
