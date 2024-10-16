@@ -20,8 +20,11 @@
 
 #include "appmodel/NWDetDataReceiver.hpp"
 #include "appmodel/NWDetDataSender.hpp"
-
 #include "appmodel/DPDKReceiver.hpp"
+
+#include "appmodel/FelixDataReceiver.hpp"
+#include "appmodel/FelixDataSender.hpp"
+
 #include "confmodel/QueueWithSourceId.hpp"
 
 #include "confmodel/Connection.hpp"
@@ -45,6 +48,8 @@
 #include "appmodel/QueueConnectionRule.hpp"
 #include "appmodel/QueueDescriptor.hpp"
 #include "appmodel/RequestHandler.hpp"
+
+
 
 #include "appmodel/appmodelIssues.hpp"
 
@@ -287,6 +292,9 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
       if (!all_nw_senders) {
         throw(BadConf(ERS_HERE, "Non-network DetDataSener found with NWreceiver"));
       }
+    }
+    else if (reader_class == "FelixReaderModule") {
+	//FIXME: To be implemented
     }
   }
 
