@@ -137,7 +137,8 @@
   <superclass name="DetDataSender"/>
   <attribute name="protocol" type="enum" range="full,half"/>
   <attribute name="link" description="Link within SLR" type="u8" range="0..5" init-value="0" is-not-null="yes"/>
- </class>
+  <attribute name="control_host" type="string" init-value="localhost" is-not-null="yes"/>
+</class>
 
   <class name="FelixDataReceiver">
   <superclass name="DetDataReceiver"/>
