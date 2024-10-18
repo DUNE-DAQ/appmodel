@@ -294,7 +294,19 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
       }
     }
     else if (reader_class == "FelixReaderModule") {
-	//FIXME: To be implemented
+      if (!det_receiver->cast<appmodel::FelixDataReceiver>()) {
+        throw(BadConf(ERS_HERE, fmt::format("FelixReaderModule requires FelixDataReceiver, found {} of class {}", det_receiver->UID(), det_receiver->class_name())));
+      }
+
+      bool all_flx_senders = true;
+      for (auto s : det_senders) {
+        all_flx_senders &= (s->cast<appmodel::FelixDataSender>() != nullptr);
+      }
+
+      // Ensure that all senders are compatible with receiver
+      if (!all_flx_senders) {
+        throw(BadConf(ERS_HERE, "Non-felix DetDataSener found with FelixDataReceiver"));
+      }
     }
   }
 
