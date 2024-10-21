@@ -92,15 +92,10 @@ WIECApplication::generate_modules(conffwk::Configuration* config,
     // Loop over senders
     for (const auto* sender : det_senders) {
 
+      // Check the sender type, must me a HermesSender
       const auto* hrms_sender = sender->cast<appmodel::HermesDataSender>();
       if (!hrms_sender ) {
-        throw(BadConf(ERS_HERE, fmt::format("DataSender {} is not a appmodel::HermesDataSender",sender->UID())));
-      }
-
-      // Are we sure?
-      if (hrms_sender->disabled(*session)) {
-        TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << sender->UID();
-        continue;
+        throw(BadConf(ERS_HERE, fmt::format("DataSender {} is not a appmodel::HermesDataSender", sender->UID())));
       }
 
       ctrlhost_sender_map[hrms_sender->get_control_host()].push_back(hrms_sender);
