@@ -16,7 +16,7 @@ find_package(fmt REQUIRED)
 
 find_package(Boost COMPONENTS unit_test_framework program_options REQUIRED)
 
-daq_oks_codegen(application.schema.xml fdmodules.schema.xml trigger.schema.xml wiec.schema.xml 
+daq_oks_codegen(application.schema.xml fdmodules.schema.xml trigger.schema.xml wiec.schema.xml
   NAMESPACE dunedaq::appmodel DEP_PKGS confmodel)
 
 daq_add_library(ReadoutApplication.cpp SmartDaqApplication.cpp

@@ -11,8 +11,6 @@
 #include "ModuleFactory.hpp"
 
 #include "appmodel/DTSHSIApplication.hpp"
-// #include "appmodel/FakeHSIEventGeneratorModule.hpp"
-// #include "appmodel/FakeHSIEventGeneratorConf.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
