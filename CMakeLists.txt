@@ -20,14 +20,12 @@ daq_oks_codegen(application.schema.xml fdmodules.schema.xml trigger.schema.xml w
   NAMESPACE dunedaq::appmodel DEP_PKGS confmodel)
 
 daq_add_library(ReadoutApplication.cpp SmartDaqApplication.cpp
-	DFApplication.cpp DFOApplication.cpp TPWriterApplication.cpp FakeDataApplication.cpp FakeHSIApplication.cpp DTSHSIApplication.cpp TriggerApplication.cpp MLTApplication.cpp HSIEventToTCApplication.cpp WIECApplication.cpp GraphBuilder.cpp
+	DFApplication.cpp DFOApplication.cpp TPWriterApplication.cpp FakeDataApplication.cpp FakeHSIApplication.cpp DTSHSIApplication.cpp TriggerApplication.cpp MLTApplication.cpp HSIEventToTCApplication.cpp WIECApplication.cpp 
  LINK_LIBRARIES conffwk::conffwk fmt::fmt
   logging::logging confmodel::confmodel oks::oks ers::ers)
 
 daq_add_application(getAppsArguments get_apps_arguments.cxx
   LINK_LIBRARIES confmodel::confmodel appmodel conffwk::conffwk)
-
-daq_add_application(create_config_plot create_config_plot.cxx LINK_LIBRARIES appmodel Boost::program_options)
 
 daq_add_python_bindings(*.cpp LINK_LIBRARIES appmodel confmodel::confmodel)
 
@@ -38,7 +36,5 @@ daq_add_application(generate_modules_test generate_modules_test.cxx
 daq_add_application(print_detailed_config_info print_detailed_config_info.cxx
  TEST LINK_LIBRARIES appmodel confmodel::confmodel conffwk::conffwk
  logging::logging)
-
-daq_add_unit_test(Graph_test)
 
 daq_install()
