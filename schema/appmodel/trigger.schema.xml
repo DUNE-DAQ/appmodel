@@ -394,7 +394,7 @@
  </class>
 
  <class name="TCReadoutMap">
-  <attribute name="candidate_type" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="tc_type_name" type="string" init-value="kTiming" is-not-null="yes"/>
   <attribute name="time_before" type="u32" init-value="1000" is-not-null="yes"/>
   <attribute name="time_after" type="u32" init-value="1001" is-not-null="yes"/>
  </class>
@@ -410,12 +410,6 @@
   <attribute name="print_tp_info" description="Whether to print TP information in the TA processor" type="bool" init-value="false"/>
   <relationship name="algorithms" class-type="TAAlgorithm" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="channel_filter_conf" class-type="TPChannelFilterConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="TimingTriggerOffsetMap">
-  <attribute name="signal_type" type="u32" init-value="0" is-not-null="yes"/>
-  <attribute name="time_before" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="time_after" type="u32" init-value="20000" is-not-null="yes"/>
  </class>
 
  <class name="TriggerApplication">
