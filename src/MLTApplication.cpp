@@ -43,6 +43,8 @@
 #include "appmodel/MLTConf.hpp"
 #include "appmodel/MLTModule.hpp"
 
+#include "appmodel/FakeDataApplication.hpp"
+#include "appmodel/FakeDataProdConf.hpp"
 #include "appmodel/FakeHSIApplication.hpp"
 #include "appmodel/MLTApplication.hpp"
 #include "appmodel/ReadoutApplication.hpp"
@@ -320,6 +322,32 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
         // *tpSourceIdConf); tpSourceIdConf->set_by_val<uint32_t>("sid", ro_app->get_tp_source_id());
         // tpSourceIdConf->set_by_val<std::string>("subsystem", "Trigger");
         // sourceIds.push_back(tpSourceIdConf);
+      }
+    }
+
+    auto fd_app = app->cast<appmodel::FakeDataApplication>();
+    if (fd_app != nullptr) {
+
+      auto resources = fd_app->get_contains();
+      // Interate over all the FakeDataProd modules
+      for (auto stream_res : resources) {
+
+        if (stream_res->disabled(*session)) {
+          TLOG_DEBUG(7) << "Ignoring disabled FakeDataProdConf " << stream_res->UID();
+          continue;
+        }
+
+        auto stream = stream_res->cast<appmodel::FakeDataProdConf>();
+
+        // Create SourceIDConf object for the MLT
+        auto id = stream->get_source_id();
+        conffwk::ConfigObject* sourceIdConf = new conffwk::ConfigObject();
+        std::string sourceIdConfUID = "dro-mlt-stream-config-" + std::to_string(id);
+        confdb->create(dbfile, "SourceIDConf", sourceIdConfUID, *sourceIdConf);
+        sourceIdConf->set_by_val<uint32_t>("sid", id);
+        // https://github.com/DUNE-DAQ/daqdataformats/blob/5b99506675a586c8a09123900e224f2371d96df9/include/daqdataformats/detail/SourceID.hxx#L108
+        sourceIdConf->set_by_val<std::string>("subsystem", "Detector_Readout");
+        sourceIds.push_back(sourceIdConf);
       }
     }
 
