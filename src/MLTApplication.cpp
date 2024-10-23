@@ -46,6 +46,7 @@
 #include "appmodel/FakeDataApplication.hpp"
 #include "appmodel/FakeDataProdConf.hpp"
 #include "appmodel/FakeHSIApplication.hpp"
+#include "appmodel/DTSHSIApplication.hpp"
 #include "appmodel/MLTApplication.hpp"
 #include "appmodel/ReadoutApplication.hpp"
 #include "appmodel/TriggerApplication.hpp"
@@ -376,6 +377,18 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
                      *hsEventSourceIdConf);
       hsEventSourceIdConf->set_by_val<uint32_t>("sid", hsi_app->get_source_id()->get_sid());
       hsEventSourceIdConf->set_by_val<std::string>("subsystem", hsi_app->get_source_id()->get_subsystem());
+      sourceIds.push_back(hsEventSourceIdConf);
+    }
+
+    auto dts_hsi_app = app->cast<appmodel::DTSHSIApplication>();
+    if (dts_hsi_app != nullptr && dts_hsi_app->get_source_id() != nullptr) {
+      conffwk::ConfigObject* hsEventSourceIdConf = new conffwk::ConfigObject();
+      confdb->create(dbfile,
+                     "SourceIDConf",
+                     dts_hsi_app->UID() + "-" + std::to_string(dts_hsi_app->get_source_id()->get_sid()),
+                     *hsEventSourceIdConf);
+      hsEventSourceIdConf->set_by_val<uint32_t>("sid", dts_hsi_app->get_source_id()->get_sid());
+      hsEventSourceIdConf->set_by_val<std::string>("subsystem", dts_hsi_app->get_source_id()->get_subsystem());
       sourceIds.push_back(hsEventSourceIdConf);
     }
   }

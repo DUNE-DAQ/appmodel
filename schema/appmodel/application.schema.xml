@@ -222,6 +222,10 @@
   <relationship name="configuration" class-type="FakeDataProdConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
+ <class name="HSIEventSender">
+  <superclass name="DaqModule"/>
+ </class>
+
  <class name="FakeHSIApplication">
   <superclass name="Resource"/>
   <superclass name="SmartDaqApplication"/>
@@ -233,7 +237,6 @@
  </class>
 
  <class name="FakeHSIEventGeneratorConf">
-  <attribute name="clock_frequency" description="Assumed clock frequency in Hz (for current-timestamp estimation)" type="u64" init-value="62500000" is-not-null="yes"/>
   <attribute name="timestamp_offset" description="Offset for HSIEvent timestamps in units of clock ticks. Positive offset increases timestamp estimate." type="s64" init-value="0" is-not-null="yes"/>
   <attribute name="trigger_rate" description="Trigger rate (in Hz) for the HSIEvent generation" type="double" init-value="1.0" is-not-null="yes"/>
   <attribute name="hsi_device_id" description="HSI device ID for emulated HSIEvent messages" type="u32" init-value="1" is-not-null="yes"/>
@@ -245,6 +248,28 @@
  <class name="FakeHSIEventGeneratorModule">
   <superclass name="DaqModule"/>
   <relationship name="configuration" class-type="FakeHSIEventGeneratorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="HSIReadoutConf">
+  <attribute name="connections_file" description="device connections file" type="string" init-value="${TIMING_SHARE}/config/etc/connections.xml"/>
+  <attribute name="uhal_log_level" description="Log level for uhal" type="enum" range="fatal,error,warning,notice,info,debug" init-value="notice"/>
+  <attribute name="readout_period" description="Hardware device poll period [us]" type="u64" init-value="1000" />
+  <attribute name="hsi_device_name" type="string" init-value="Unknown" />
+ </class>
+
+ <class name="HSIReadout">
+  <superclass name="HSIEventSender"/>
+  <relationship name="configuration" class-type="HSIReadoutConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no" />
+ </class>
+
+ <class name="DTSHSIApplication">
+  <superclass name="Resource" />
+  <superclass name="SmartDaqApplication" />
+  <relationship name="link_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no" />
+  <relationship name="generator" class-type="HSIReadoutConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no" />
+  <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
+  </method>
  </class>
 
  <class name="FilenameParams">
