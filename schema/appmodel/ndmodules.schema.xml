@@ -97,18 +97,10 @@
   <superclass name="DataReaderModule"/>
  </class>
 
- <class name="NDDataHandlerModule">
-  <superclass name="DataHandlerModule"/>
- </class>
-
- <class name="NDFakeReaderModule">
-  <superclass name="DataReaderModule"/>
- </class>
-
  <class name="PACMANDataReaderConf">
     <superclass name="DataReaderConf"/>
     <attribute name="eal_args" type="string" is-not-null="yes"/>
-</class>
+ </class>
 
  <class name="PACMANReaderModule">
   <superclass name="DataReaderModule"/>
