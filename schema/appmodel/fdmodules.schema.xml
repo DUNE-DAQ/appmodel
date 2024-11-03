@@ -135,7 +135,8 @@
 
  <class name="FelixCardControllerModule">
   <superclass name="DaqModule"/>
-  <attribute name="super_chunk_size" description="number of chunks in superchunk" type="u16" init-value="12" is-not-null="yes"/>
+  <attribute name="super_chunk_size" description="Number of chunks in superchunk" type="u16" init-value="12" is-not-null="yes"/>
+  <attribute name="emu_fanout" description="Enable emulator" type="bool" init-value="0" is-not-null="yes"/>
   <relationship name="controls" class-type="DetectorToDaqConnection" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
