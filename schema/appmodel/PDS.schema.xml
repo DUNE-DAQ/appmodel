@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="9" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="mroda" last-modified-on="theta.ph.liv.ac.uk" last-modification-time="20241105T124333"/>
+<info name="" type="" num-of-items="9" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="mroda" last-modified-on="theta.ph.liv.ac.uk" last-modification-time="20241105T124712"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -146,7 +146,7 @@
   <attribute name="address" description="ip address of the board" type="string" is-not-null="yes"/>
   <attribute name="slot" description="slot of the board" type="u16" is-not-null="yes"/>
   <relationship name="board_conf" class-type="DaphneBoardConf" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
-  <relationship name="daphne_cong" class-type="DaphneConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="daphne_conf" class-type="DaphneConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="DaphneLNA" description="info to generate Reg52 value">
