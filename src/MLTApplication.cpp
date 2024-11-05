@@ -43,7 +43,10 @@
 #include "appmodel/MLTConf.hpp"
 #include "appmodel/MLTModule.hpp"
 
+#include "appmodel/FakeDataApplication.hpp"
+#include "appmodel/FakeDataProdConf.hpp"
 #include "appmodel/FakeHSIApplication.hpp"
+#include "appmodel/DTSHSIApplication.hpp"
 #include "appmodel/MLTApplication.hpp"
 #include "appmodel/ReadoutApplication.hpp"
 #include "appmodel/TriggerApplication.hpp"
@@ -323,6 +326,32 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
       }
     }
 
+    auto fd_app = app->cast<appmodel::FakeDataApplication>();
+    if (fd_app != nullptr) {
+
+      auto resources = fd_app->get_contains();
+      // Interate over all the FakeDataProd modules
+      for (auto stream_res : resources) {
+
+        if (stream_res->disabled(*session)) {
+          TLOG_DEBUG(7) << "Ignoring disabled FakeDataProdConf " << stream_res->UID();
+          continue;
+        }
+
+        auto stream = stream_res->cast<appmodel::FakeDataProdConf>();
+
+        // Create SourceIDConf object for the MLT
+        auto id = stream->get_source_id();
+        conffwk::ConfigObject* sourceIdConf = new conffwk::ConfigObject();
+        std::string sourceIdConfUID = "dro-mlt-stream-config-" + std::to_string(id);
+        confdb->create(dbfile, "SourceIDConf", sourceIdConfUID, *sourceIdConf);
+        sourceIdConf->set_by_val<uint32_t>("sid", id);
+        // https://github.com/DUNE-DAQ/daqdataformats/blob/5b99506675a586c8a09123900e224f2371d96df9/include/daqdataformats/detail/SourceID.hxx#L108
+        sourceIdConf->set_by_val<std::string>("subsystem", "Detector_Readout");
+        sourceIds.push_back(sourceIdConf);
+      }
+    }
+
     // SmartDaqApplication now has source_id member, might want to use that but make sure that it's actually a data
     // source somehow...
     auto trg_app = app->cast<appmodel::TriggerApplication>();
@@ -348,6 +377,18 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
                      *hsEventSourceIdConf);
       hsEventSourceIdConf->set_by_val<uint32_t>("sid", hsi_app->get_source_id()->get_sid());
       hsEventSourceIdConf->set_by_val<std::string>("subsystem", hsi_app->get_source_id()->get_subsystem());
+      sourceIds.push_back(hsEventSourceIdConf);
+    }
+
+    auto dts_hsi_app = app->cast<appmodel::DTSHSIApplication>();
+    if (dts_hsi_app != nullptr && dts_hsi_app->get_source_id() != nullptr) {
+      conffwk::ConfigObject* hsEventSourceIdConf = new conffwk::ConfigObject();
+      confdb->create(dbfile,
+                     "SourceIDConf",
+                     dts_hsi_app->UID() + "-" + std::to_string(dts_hsi_app->get_source_id()->get_sid()),
+                     *hsEventSourceIdConf);
+      hsEventSourceIdConf->set_by_val<uint32_t>("sid", dts_hsi_app->get_source_id()->get_sid());
+      hsEventSourceIdConf->set_by_val<std::string>("subsystem", dts_hsi_app->get_source_id()->get_subsystem());
       sourceIds.push_back(hsEventSourceIdConf);
     }
   }

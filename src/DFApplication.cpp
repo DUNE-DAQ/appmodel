@@ -14,6 +14,8 @@
 #include "appmodel/DataStoreConf.hpp"
 #include "appmodel/DataWriterConf.hpp"
 #include "appmodel/DataWriterModule.hpp"
+#include "appmodel/FakeDataApplication.hpp"
+#include "appmodel/FakeDataProdConf.hpp"
 #include "appmodel/FilenameParams.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
@@ -135,6 +137,45 @@ fill_sourceid_object_from_app(conffwk::Configuration* confdb,
   sidNetObj.set_objs("source_ids", source_id_objs);
 }
 
+inline void
+fill_sourceid_object_from_app(conffwk::Configuration* confdb,
+                              const std::string& dbfile,
+                              const FakeDataApplication* fdapp,
+                              const conffwk::ConfigObject* netConn,
+                              conffwk::ConfigObject& sidNetObj,
+                              std::vector<std::shared_ptr<conffwk::ConfigObject>> sidObjs)
+{
+  sidNetObj.set_obj("netconn", netConn);
+
+  std::vector<const conffwk::ConfigObject*> source_id_objs;
+  std::vector<uint32_t> app_source_ids;
+
+  for (auto fdp_res : fdapp->get_contains()) {
+
+    // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader
+    // module
+    auto fdpc = fdp_res->cast<appmodel::FakeDataProdConf>();
+
+    if (!fdpc) {
+      continue;
+    }
+
+    app_source_ids.push_back(fdpc->get_source_id());
+  }
+
+  for (auto& source_id : app_source_ids) {
+    auto stream_sid_obj = std::make_shared<conffwk::ConfigObject>();
+    std::string streamSidUid(fdapp->UID() + "SourceIDConf" + std::to_string(source_id));
+    confdb->create(dbfile, "SourceIDConf", streamSidUid, *stream_sid_obj);
+    stream_sid_obj->set_by_val<uint32_t>("sid", source_id);
+    stream_sid_obj->set_by_val<std::string>("subsystem", "Detector_Readout");
+    sidObjs.push_back(stream_sid_obj);
+    source_id_objs.push_back(sidObjs.back().get());
+  }
+
+  sidNetObj.set_objs("source_ids", source_id_objs);
+}
+
 std::vector<const confmodel::DaqModule*>
 DFApplication::generate_modules(conffwk::Configuration* confdb,
                                 const std::string& dbfile,
@@ -218,11 +259,12 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
   for (auto app : sessionApps) {
     auto smartapp = app->cast<appmodel::SmartDaqApplication>();
     auto roapp = app->cast<appmodel::ReadoutApplication>();
+    auto fdapp = app->cast<appmodel::FakeDataApplication>();
     auto dfapp = app->cast<appmodel::DFApplication>();
     if (smartapp == nullptr || dfapp != nullptr)
       continue;
     auto src_id_check = smartapp->get_source_id();
-    if (roapp == nullptr && src_id_check == nullptr) {
+    if (roapp == nullptr && fdapp == nullptr && src_id_check == nullptr) {
       continue;
     }
 
@@ -241,6 +283,8 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
         confdb->create(dbfile, "SourceIDToNetworkConnection", sidToNetUid, sidNetObjs.back());
         if (roapp != nullptr) {
           fill_sourceid_object_from_app(confdb, dbfile, roapp, &dreqNetObjs.back(), sidNetObjs.back(), sidObjs);
+        } else if (fdapp != nullptr) {
+          fill_sourceid_object_from_app(confdb, dbfile, fdapp, &dreqNetObjs.back(), sidNetObjs.back(), sidObjs);
         } else {
           fill_sourceid_object_from_app(smartapp, &dreqNetObjs.back(), sidNetObjs.back());
         }
