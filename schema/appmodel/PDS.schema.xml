@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="9" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="mroda" last-modified-on="theta.ph.liv.ac.uk" last-modification-time="20241105T124712"/>
+<info name="" type="" num-of-items="9" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="mroda" last-modified-on="theta.ph.liv.ac.uk" last-modification-time="20241105T142047"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -151,7 +151,7 @@
 
  <class name="DaphneLNA" description="info to generate Reg52 value">
   <attribute name="clamp" description="0=auto setting, 1=1.5 Vpp, 2=1.15 Vpp, 3=0.6 Vpp" type="u8" range="0..3" init-value="0" is-not-null="yes"/>
-  <attribute name="integrator_disable" type="bool" is-multi-value="yes" init-value="true" is-not-null="yes"/>
+  <attribute name="integrator_disable" type="bool" init-value="true" is-not-null="yes"/>
   <attribute name="gain" description="0=18 dB, 1=24 dB, 2=12 dB" type="u8" range="0..2" init-value="2" is-not-null="yes"/>
  </class>
 
