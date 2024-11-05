@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="9" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="mroda" last-modified-on="theta.ph.liv.ac.uk" last-modification-time="20241105T114452"/>
+<info name="" type="" num-of-items="9" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="mroda" last-modified-on="theta.ph.liv.ac.uk" last-modification-time="20241105T124333"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -112,11 +112,10 @@
  <class name="DaphneApplication">
   <superclass name="SmartDaqApplication"/>
   <superclass name="ResourceSetAND"/>
+  <relationship name="configuration" class-type="DaphneConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="DaphneBoardConf" description="Top entry for the configuraiton of a single daphne board">
-  <attribute name="address" description="ip address of the board" type="string" is-not-null="yes"/>
-  <attribute name="slot" description="slot of the board" type="u16" is-not-null="yes"/>
   <attribute name="bias_ctrl" description="V bias control" type="u16" range="0..4095" is-not-null="yes"/>
   <attribute name="self_trigger_threshold" description="Configuration for full stream case. If it is 0, the channels will go in full stream. In that case, which channels will be set via the &quot;full_stream_channels&quot; list." type="u64" range="0..16383" is-not-null="yes"/>
   <attribute name="full_stream_channels" description="list of channels to be used in full stream" type="u8" range="0..39" is-multi-value="yes" is-not-null="yes"/>
@@ -133,6 +132,7 @@
  <class name="DaphneConf" description="Top entry for the configuraiton of a single daphne board">
   <attribute name="timeout_ms" description="timeout used for the board operations" type="u16" range="1..60000" init-value="1000" is-not-null="yes"/>
   <attribute name="configuration_file" type="string" is-not-null="yes"/>
+  <relationship name="default_settings" description="Value to be used during scrap" class-type="DaphneBoardConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="get_timeout" description="get the interval casted in ms">
    <method-implementation language="C++" prototype="std::chrono::milliseconds get_timeout() const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &lt;chrono&gt;&#xA;END_HEADER_PROLOGUE&#xA;&#xA;return std::chrono::milliseconds(get_timeout_ms());"/>
   </method>
@@ -143,7 +143,10 @@
 
  <class name="DaphneControllerModule">
   <superclass name="DaqModule"/>
-  <relationship name="board_conf" class-type="DaphneConf" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <attribute name="address" description="ip address of the board" type="string" is-not-null="yes"/>
+  <attribute name="slot" description="slot of the board" type="u16" is-not-null="yes"/>
+  <relationship name="board_conf" class-type="DaphneBoardConf" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <relationship name="daphne_cong" class-type="DaphneConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="DaphneLNA" description="info to generate Reg52 value">
