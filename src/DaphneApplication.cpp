@@ -51,10 +51,9 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
 
   auto daphne_conf = get_configuration();
   
-  // // uint16_t conn_idx = 0;
   for (auto d2d_conn_res : get_contains()) {
 
-    // Are we sure?
+    // A Resource can be disabled and still its application can be enabled because the application can have multile resources, so we need to check which resources are enabled
     if (d2d_conn_res->disabled(*session)) {
       TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn_res->UID();
       continue;
@@ -65,11 +64,11 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
     auto d2d_conn = d2d_conn_res->cast<confmodel::DetectorToDaqConnection>();
 
     if (!d2d_conn) {
-      throw(BadConf(ERS_HERE, "ReadoutApplication contains something other than DetectorToDaqConnection"));
+      throw(BadConf(ERS_HERE, "DaphneApplication contains something other than DetectorToDaqConnection"));
     }
 
     if (d2d_conn->get_contains().empty()) {
-      throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain sebders or receivers"));
+      throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain senders or receivers"));
     }
 
     auto det_senders = d2d_conn->get_senders();
@@ -104,4 +103,10 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
   }  // loop over detector 2 daq connections
 
   return modules;
+}
+
+
+uint16_t DaphneConf::get_board_slot(const std::string & ip) const {
+
+  return 0;
 }
