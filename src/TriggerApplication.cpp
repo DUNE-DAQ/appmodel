@@ -16,7 +16,7 @@
 #include "confmodel/NetworkConnection.hpp"
 #include "confmodel/ResourceSet.hpp"
 #include "confmodel/Service.hpp"
-#include "confmodel/Session.hpp"
+#include "confmodel/System.hpp"
 
 #include "appmodel/DataSubscriberModule.hpp"
 #include "appmodel/DataReaderConf.hpp"
@@ -48,9 +48,9 @@ static ModuleFactory::Registrator __reg__("TriggerApplication",
                                           [](const SmartDaqApplication* smartApp,
                                              conffwk::Configuration* confdb,
                                              const std::string& dbfile,
-                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
+                                             const confmodel::System* system) -> ModuleFactory::ReturnType {
                                             auto app = smartApp->cast<TriggerApplication>();
-                                            return app->generate_modules(confdb, dbfile, session);
+                                            return app->generate_modules(confdb, dbfile, system);
                                           });
 
 /**
@@ -82,7 +82,7 @@ create_network_connection(std::string uid,
 std::vector<const confmodel::DaqModule*>
 TriggerApplication::generate_modules(conffwk::Configuration* confdb,
                                      const std::string& dbfile,
-                                     const confmodel::Session* /*session*/) const
+                                     const confmodel::System* /*system*/) const
 {
   std::vector<const confmodel::DaqModule*> modules;
 

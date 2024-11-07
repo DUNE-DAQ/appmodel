@@ -16,7 +16,7 @@
 #include "confmodel/DetDataReceiver.hpp"
 #include "confmodel/DetDataSender.hpp"
 #include "confmodel/DetectorStream.hpp"
-#include "confmodel/Session.hpp"
+#include "confmodel/System.hpp"
 
 #include "appmodel/NWDetDataReceiver.hpp"
 #include "appmodel/NWDetDataSender.hpp"
@@ -60,9 +60,9 @@
 namespace dunedaq {
 namespace appmodel {
 
-static ModuleFactory::Registrator __reg__("ReadoutApplication", [](const SmartDaqApplication* smartApp, conffwk::Configuration* config, const std::string& dbfile, const confmodel::Session* session) -> ModuleFactory::ReturnType {
+static ModuleFactory::Registrator __reg__("ReadoutApplication", [](const SmartDaqApplication* smartApp, conffwk::Configuration* config, const std::string& dbfile, const confmodel::System* system) -> ModuleFactory::ReturnType {
   auto app = smartApp->cast<ReadoutApplication>();
-  return app->generate_modules(config, dbfile, session);
+  return app->generate_modules(config, dbfile, system);
 });
 
 class ReadoutObjFactory {
@@ -130,7 +130,7 @@ class ReadoutObjFactory {
 
 //-----------------------------------------------------------------------------
 std::vector<const confmodel::DaqModule*>
-ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::string& dbfile, const confmodel::Session* session) const
+ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::string& dbfile, const confmodel::System* system) const
 {
 
   TLOG_DEBUG(6) << "Generating modules for application " << this->UID();
@@ -233,7 +233,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   for (auto d2d_conn_res : get_contains()) {
 
     // Are we sure?
-    if (d2d_conn_res->disabled(*session)) {
+    if (d2d_conn_res->disabled(*system)) {
       TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn_res->UID();
       continue;
     }
@@ -260,7 +260,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
     for (auto stream : d2d_conn->get_streams()) {
 
       // Are we sure?
-      if (stream->disabled(*session)) {
+      if (stream->disabled(*system)) {
         TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
         continue;
       }
@@ -442,10 +442,10 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   conffwk::ConfigObject fa_net_obj = obj_fac.create_net_obj(fa_net_desc);
 
   // Process special Network rules!
-  // Looking for Fragment rules from DFAppplications in current Session
-  auto sessionApps = session->get_enabled_applications();
+  // Looking for Fragment rules from DFAppplications in current System
+  auto systemApps = system->get_enabled_applications();
   std::vector<conffwk::ConfigObject> fragOutObjs;
-  for (auto app : sessionApps) {
+  for (auto app : systemApps) {
     auto dfapp = app->cast<appmodel::DFApplication>();
     if (dfapp == nullptr)
       continue;
@@ -467,7 +467,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
         fragOutObjs.push_back(frag_conn);
       } // If network rule has TriggerDecision type of data
     }   // Loop over Apps network rules
-  }     // loop over Session specific Apps
+  }     // loop over System specific Apps
 
   // Add output queueus of data requests and Fragments
   std::vector<const conffwk::ConfigObject*> fa_output_objs;

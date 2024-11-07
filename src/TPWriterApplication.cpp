@@ -37,17 +37,17 @@ static ModuleFactory::Registrator
 __reg__("TPStreamWriterApplication", [] (const SmartDaqApplication* smartApp,
                              conffwk::Configuration* confdb,
                              const std::string& dbfile,
-                             const confmodel::Session* session) -> ModuleFactory::ReturnType
+                             const confmodel::System* system) -> ModuleFactory::ReturnType
   {
     auto app = smartApp->cast<TPStreamWriterApplication>();
-    return app->generate_modules(confdb, dbfile, session);
+    return app->generate_modules(confdb, dbfile, system);
   }
   );
 
 std::vector<const confmodel::DaqModule*> 
 TPStreamWriterApplication::generate_modules(conffwk::Configuration* confdb,
                                             const std::string& dbfile,
-                                            const confmodel::Session* /*session*/) const
+                                            const confmodel::System* /*system*/) const
 {
   std::vector<const confmodel::DaqModule*> modules;
 

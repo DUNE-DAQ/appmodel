@@ -18,7 +18,7 @@
 // #include "confmodel/ReadoutGroup.hpp"
 #include "confmodel/ResourceSet.hpp"
 #include "confmodel/Service.hpp"
-#include "confmodel/Session.hpp"
+#include "confmodel/System.hpp"
 
 #include "appmodel/FakeDataApplication.hpp"
 #include "appmodel/FakeDataProdConf.hpp"
@@ -43,15 +43,15 @@ static ModuleFactory::Registrator __reg__("FakeDataApplication",
                                           [](const SmartDaqApplication* smartApp,
                                              conffwk::Configuration* confdb,
                                              const std::string& dbfile,
-                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
+                                             const confmodel::System* system) -> ModuleFactory::ReturnType {
                                             auto app = smartApp->cast<FakeDataApplication>();
-                                            return app->generate_modules(confdb, dbfile, session);
+                                            return app->generate_modules(confdb, dbfile, system);
                                           });
 
 std::vector<const confmodel::DaqModule*>
 FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
                                       const std::string& dbfile,
-                                      const confmodel::Session* session) const
+                                      const confmodel::System* system) const
 {
   // oks::OksFile::set_nolock_mode(true);
 
@@ -111,7 +111,7 @@ FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
 
   // Create a FakeDataProdModule for each stream of this Readout Group
   for (auto fdpConf : get_contains()) {
-    if (fdpConf->disabled(*session)) {
+    if (fdpConf->disabled(*system)) {
       TLOG_DEBUG(7) << "Ignoring disabled FakeDataProdConf " << fdpConf->UID();
       continue;
     }

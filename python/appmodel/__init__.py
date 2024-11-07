@@ -22,13 +22,13 @@ __generate_class_map = {
 class UnknownGeneratorException(Exception):
     pass
 
-def generate_modules(confdb, app, session):
+def generate_modules(confdb, app, system):
 
     generator = __generate_class_map.get(app.className())
     if generator is None:
         raise UnknownGeneratorException(f"Generator for {app.className()} not found")
     
-    mods = generator(confdb._obj, confdb.active_database, app.id, session.id)
+    mods = generator(confdb._obj, confdb.active_database, app.id, system.id)
 
     return [confdb.get_dal(m.class_name, m.id) for m in mods]
 

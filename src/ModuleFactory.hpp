@@ -11,13 +11,13 @@
 #include <vector>
 
 #include "confmodel/DaqModule.hpp"
-#include "confmodel/Session.hpp"
+#include "confmodel/System.hpp"
 #include "appmodel/SmartDaqApplication.hpp"
 #include "conffwk/Configuration.hpp"
 
 namespace dunedaq::confmodel {
   class DaqModule;
-  class Session;
+  class System;
 }
 namespace dunedaq::conffwk {
   class Configuration;
@@ -32,7 +32,7 @@ namespace dunedaq::appmodel {
     typedef std::function<
       ReturnType(const SmartDaqApplication*,
       dunedaq::conffwk::Configuration*, const std::string&,
-      const dunedaq::confmodel::Session*)> Generator;
+      const dunedaq::confmodel::System*)> Generator;
 
     struct Registrator {
       /**
@@ -64,11 +64,11 @@ namespace dunedaq::appmodel {
                         const SmartDaqApplication* app,
                         conffwk::Configuration* confdb,
                         const std::string& dbfile,
-                        const confmodel::Session* session) {
+                        const confmodel::System* system) {
       std::unique_lock lock(m_mutex);
       auto it = m_generators.find(type);
       if (it != m_generators.end()) {
-        return it->second(app, confdb, dbfile, session);
+        return it->second(app, confdb, dbfile, system);
       }
       throw BadConf(ERS_HERE, "No '" + type + "' ModuleFactory found");
     }

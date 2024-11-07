@@ -38,21 +38,21 @@ def collect_variables(variables, envDict):
         envDict[item.name] = item.value
 
 # Recursively process all Segments in given Segment extracting Applications
-def process_segment(db, session, segment):
+def process_segment(db, system, segment):
   controller = segment.controller.id
 
-  # Get default environment from Session
+  # Get default environment from System
   defenv = {}
-  collect_variables(session.environment, defenv)
+  collect_variables(system.environment, defenv)
 
   apps = []
 
   # Recurse over nested segments
   for seg in segment.segments:
-    if confmodel.component_disabled(db._obj, session.id, seg.id):
+    if confmodel.component_disabled(db._obj, system.id, seg.id):
       print(f"Ignoring disabled segment {seg.id}")
       continue
-    apps += process_segment(db, session, seg)
+    apps += process_segment(db, system, seg)
 
   rc_env = defenv
   collect_variables(segment.controller.application_environment, rc_env)
@@ -64,8 +64,8 @@ def process_segment(db, session, segment):
       segment.controller.id,
       rc_host,
       rc_env,
-      [segment.controller.application_name] + CLA_constructor(db._obj, session.id, segment.controller.id),
-      session.rte_script,
+      [segment.controller.application_name] + CLA_constructor(db._obj, system.id, segment.controller.id),
+      system.rte_script,
     )
   )
 
@@ -73,7 +73,7 @@ def process_segment(db, session, segment):
   for app in segment.applications:
     console.print(f"Considering app \'{app.id}\'")
     if 'Component' in app.oksTypes():
-      enabled = not confmodel.component_disabled(db._obj, session.id, app.id)
+      enabled = not confmodel.component_disabled(db._obj, system.id, app.id)
       log.debug(f"{app.id} {enabled=}")
     else:
       enabled = True
@@ -97,8 +97,8 @@ def process_segment(db, session, segment):
         app.id,
         host,
         appenv,
-        [app.application_name]+CLA_constructor(db._obj, session.id, app.id),
-        session.rte_script,
+        [app.application_name]+CLA_constructor(db._obj, system.id, app.id),
+        system.rte_script,
       )
     )
 
@@ -107,16 +107,16 @@ def process_segment(db, session, segment):
 
 def main():
   if len(sys.argv) != 3:
-    print(f"Usage: {sys.argv[0]} <path-to-oks-data-file> <session-name>")
+    print(f"Usage: {sys.argv[0]} <path-to-oks-data-file> <system-name>")
     return
   db = conffwk.Configuration("oksconflibs:" + sys.argv[1])
-  session_name = sys.argv[2]
-  session = db.get_dal(class_name="Session", uid=session_name)
+  system_name = sys.argv[2]
+  system = db.get_dal(class_name="System", uid=system_name)
 
   environment = {}
-  collect_variables(session.environment, environment)
+  collect_variables(system.environment, environment)
 
-  apps = process_segment(db, session, session.segment)
+  apps = process_segment(db, system, system.segment)
 
   console.print("Applications")
   for a in apps:
