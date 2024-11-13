@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="46" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240903T185336"/>
+<info name="" type="" num-of-items="47" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240911T194242"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -180,6 +180,7 @@
  <class name="DataProcessor">
   <attribute name="queue_sizes" type="u32" init-value="10000"/>
   <attribute name="thread_names_prefix" type="string" init-value="postproc-"/>
+  <attribute name="latency_monitoring" type="bool" init-value="true" is-not-null="yes"/>
  </class>
 
  <class name="DataReaderConf">
@@ -227,6 +228,7 @@
 
  <class name="DataWriterModule">
   <superclass name="DaqModule"/>
+  <attribute name="writer_identifier" type="string"/>
   <relationship name="configuration" class-type="DataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
@@ -254,6 +256,10 @@
   <relationship name="configuration" class-type="FakeDataProdConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
+ <class name="HSIEventSender">
+  <superclass name="DaqModule"/>
+ </class>
+
  <class name="FakeHSIApplication">
   <superclass name="Resource"/>
   <superclass name="SmartDaqApplication"/>
@@ -265,7 +271,6 @@
  </class>
 
  <class name="FakeHSIEventGeneratorConf">
-  <attribute name="clock_frequency" description="Assumed clock frequency in Hz (for current-timestamp estimation)" type="u64" init-value="62500000" is-not-null="yes"/>
   <attribute name="timestamp_offset" description="Offset for HSIEvent timestamps in units of clock ticks. Positive offset increases timestamp estimate." type="s64" init-value="0" is-not-null="yes"/>
   <attribute name="trigger_rate" description="Trigger rate (in Hz) for the HSIEvent generation" type="double" init-value="1.0" is-not-null="yes"/>
   <attribute name="hsi_device_id" description="HSI device ID for emulated HSIEvent messages" type="u32" init-value="1" is-not-null="yes"/>
@@ -277,6 +282,28 @@
  <class name="FakeHSIEventGeneratorModule">
   <superclass name="DaqModule"/>
   <relationship name="configuration" class-type="FakeHSIEventGeneratorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="HSIReadoutConf">
+  <attribute name="connections_file" description="device connections file" type="string" init-value="${TIMING_SHARE}/config/etc/connections.xml"/>
+  <attribute name="uhal_log_level" description="Log level for uhal" type="enum" range="fatal,error,warning,notice,info,debug" init-value="notice"/>
+  <attribute name="readout_period" description="Hardware device poll period [us]" type="u64" init-value="1000" />
+  <attribute name="hsi_device_name" type="string" init-value="Unknown" />
+ </class>
+
+ <class name="HSIReadout">
+  <superclass name="HSIEventSender"/>
+  <relationship name="configuration" class-type="HSIReadoutConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no" />
+ </class>
+
+ <class name="DTSHSIApplication">
+  <superclass name="Resource" />
+  <superclass name="SmartDaqApplication" />
+  <relationship name="link_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no" />
+  <relationship name="generator" class-type="HSIReadoutConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no" />
+  <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
+  </method>
  </class>
 
  <class name="FilenameParams">
@@ -364,10 +391,10 @@
  <class name="ReadoutApplication">
   <superclass name="ResourceSetAND"/>
   <superclass name="SmartDaqApplication"/>
-  <attribute name="tp_source_id" description="Source ID for TP handler if TPs are being generated" type="u32"/>
   <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
   <attribute name="tp_generation_enabled" type="bool" init-value="true"/>
   <attribute name="ta_generation_enabled" type="bool" init-value="true"/>
+  <relationship name="tp_source_ids" class-type="SourceIDConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="uses" description="Configuration of the host hardware resources used by this application" class-type="RoHwConfig" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
   <relationship name="link_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="tp_handler" class-type="DataHandlerConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -419,6 +446,11 @@
   <attribute name="subsystem" type="enum" range="Unknown,Detector_Readout,HW_Signals_Interface,Trigger,TR_Builder" init-value="Unknown" is-not-null="yes"/>
  </class>
 
+ <class name="SourceIDToNetworkConnection">
+  <relationship name="source_ids" class-type="SourceIDConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="netconn" class-type="NetworkConnection" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
  <class name="StreamEmulationParameters">
   <attribute name="data_file_name" type="string"/>
   <attribute name="tp_data_file_name" type="string"/>
@@ -441,12 +473,15 @@
 
  <class name="TPStreamWriterConf">
   <attribute name="tp_accumulation_interval" type="u64" init-value="0" is-not-null="yes"/>
+  <attribute name="tp_accumulation_inactivity_time_before_write_sec" type="float" init-value="1.0" is-not-null="yes"/>
+  <attribute name="warn_user_when_tardy_tps_are_discarded" type="bool" init-value="true" is-not-null="yes"/>
   <relationship name="data_store_params" class-type="DataStoreConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="TPStreamWriterModule">
   <superclass name="DaqModule"/>
   <attribute name="source_id" type="u32" is-not-null="yes"/>
+  <attribute name="writer_identifier" type="string"/>
   <relationship name="configuration" class-type="TPStreamWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
@@ -460,6 +495,7 @@
  <class name="TRBModule">
   <superclass name="DaqModule"/>
   <relationship name="configuration" class-type="TRBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="request_connections" class-type="SourceIDToNetworkConnection" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
 </oks-schema>

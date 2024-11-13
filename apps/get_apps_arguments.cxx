@@ -53,16 +53,18 @@ void print_segment_application_commandline(
 
 
 int main(int argc, char* argv[]) {
-  dunedaq::logging::Logging::setup();
 
   if (argc < 3) {
     std::cout << "Usage: " << argv[0] << " session database-file\n";
     return 0;
   }
+
+  std::string sessionName(argv[1]);
+  dunedaq::logging::Logging::setup(sessionName, "get_apps_arguments");
+
   std::string confimpl = "oksconflibs:" + std::string(argv[2]);
   auto confdb = new conffwk::Configuration(confimpl);
 
-  std::string sessionName(argv[1]);
   auto session = confdb->get<confmodel::Session>(sessionName);
   if (session==nullptr) {
     std::cerr << "Session " << sessionName << " not found in database\n";

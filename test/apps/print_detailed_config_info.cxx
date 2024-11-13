@@ -111,9 +111,11 @@ main(int argc, char* argv[])
     std::cout << "Usage: " << argv[0] << " <session> <database-file>\n";
     return 0;
   }
-  logging::Logging::setup();
 
   std::string sessionName(argv[1]);
+
+  logging::Logging::setup(sessionName, "print_detailed_config_info");
+
   std::string dbfile(argv[2]);
   conffwk::Configuration* confdb;
   std::string blah = "oksconflibs:" + dbfile;

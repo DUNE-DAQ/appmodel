@@ -5,7 +5,7 @@ to describe readout, dataflow and trigger  applications.
 
 ## SmartDaqApplication
 
-![SmartDaqApplication schema class wiht inherited apps](apps.png)
+![SmartDaqApplication schema class with inherited apps](apps.png)
 
  **SmartDaqApplication** is an abstract class that has no direct
 relationships with **DaqModules**. The **DaqModules** themselves must

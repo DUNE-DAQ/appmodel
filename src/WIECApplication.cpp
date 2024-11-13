@@ -67,7 +67,7 @@ WIECApplication::generate_modules(conffwk::Configuration* config,
       continue;
     }
 
-    TLOG() << "Processing DetectorToDaqConnection " << d2d_conn_res->UID();
+    TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn_res->UID();
     // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader module
     auto d2d_conn = d2d_conn_res->cast<confmodel::DetectorToDaqConnection>();
 
@@ -92,15 +92,10 @@ WIECApplication::generate_modules(conffwk::Configuration* config,
     // Loop over senders
     for (const auto* sender : det_senders) {
 
+      // Check the sender type, must me a HermesSender
       const auto* hrms_sender = sender->cast<appmodel::HermesDataSender>();
       if (!hrms_sender ) {
-        throw(BadConf(ERS_HERE, fmt::format("DataSender {} is not a appmodel::HermesDataSender",sender->UID())));
-      }
-
-      // Are we sure?
-      if (hrms_sender->disabled(*session)) {
-        TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << sender->UID();
-        continue;
+        throw(BadConf(ERS_HERE, fmt::format("DataSender {} is not a appmodel::HermesDataSender", sender->UID())));
       }
 
       ctrlhost_sender_map[hrms_sender->get_control_host()].push_back(hrms_sender);
