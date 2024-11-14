@@ -65,18 +65,6 @@
 
 <info name="" type="" num-of-items="233" oks-format="data" oks-version="oks-08-04-00-2-g4949f80 built &quot;Dec  6 2023&quot;" created-by="root" created-on="f1c9af75d018" creation-time="20240319T114528" last-modified-by="root" last-modified-on="f1c9af75d018" last-modification-time="20240319T114528"/>
 
-<obj class="ALink" id="CustomTCMaker-2-CustomTCMakerConf-via-configuration">
- <attr name="Name" type="string" val="configuration"/>
- <rel name="From" class="Class" id="CustomTCMaker"/>
- <rel name="To" class="Class" id="CustomTCMakerConf"/>
- <rel name="Points">
-  <ref class="Point" id="1 CustomTCMaker-2-CustomTCMakerConf-via-configuration"/>
-  <ref class="Point" id="2 CustomTCMaker-2-CustomTCMakerConf-via-configuration"/>
-  <ref class="Point" id="3 CustomTCMaker-2-CustomTCMakerConf-via-configuration"/>
-  <ref class="Point" id="4 CustomTCMaker-2-CustomTCMakerConf-via-configuration"/>
- </rel>
-</obj>
-
 <obj class="ALink" id="DataReaderConf-2-StreamEmulationParameters-via-emulation_conf">
  <attr name="Name" type="string" val="emulation_conf"/>
  <rel name="From" class="Class" id="DataReaderConf"/>
@@ -339,16 +327,6 @@
   <ref class="Point" id="3 TriggerApplication-2-DataHandlerConf-via-trigger_inputs_handler"/>
   <ref class="Point" id="4 TriggerApplication-2-DataHandlerConf-via-trigger_inputs_handler"/>
  </rel>
-</obj>
-
-<obj class="Class" id="CustomTCMaker">
- <attr name="x" type="s16" val="1011"/>
- <attr name="y" type="s16" val="922"/>
-</obj>
-
-<obj class="Class" id="CustomTCMakerConf">
- <attr name="x" type="s16" val="69"/>
- <attr name="y" type="s16" val="847"/>
 </obj>
 
 <obj class="Class" id="DataProcessor">
@@ -625,17 +603,6 @@
  </rel>
 </obj>
 
-<obj class="GLink" id="StandaloneTCMakerModule-2-CustomTCMaker">
- <rel name="From" class="Class" id="StandaloneTCMakerModule"/>
- <rel name="To" class="Class" id="CustomTCMaker"/>
- <rel name="Points">
-  <ref class="Point" id="1 StandaloneTCMakerModule-2-CustomTCMaker"/>
-  <ref class="Point" id="2 StandaloneTCMakerModule-2-CustomTCMaker"/>
-  <ref class="Point" id="3 StandaloneTCMakerModule-2-CustomTCMaker"/>
-  <ref class="Point" id="4 StandaloneTCMakerModule-2-CustomTCMaker"/>
- </rel>
-</obj>
-
 <obj class="GLink" id="StandaloneTCMakerModule-2-RandomTCMakerModule">
  <rel name="From" class="Class" id="StandaloneTCMakerModule"/>
  <rel name="To" class="Class" id="RandomTCMakerModule"/>
@@ -644,17 +611,6 @@
   <ref class="Point" id="2 StandaloneTCMakerModule-2-RandomTCMakerModule"/>
   <ref class="Point" id="3 StandaloneTCMakerModule-2-RandomTCMakerModule"/>
   <ref class="Point" id="4 StandaloneTCMakerModule-2-RandomTCMakerModule"/>
- </rel>
-</obj>
-
-<obj class="GLink" id="StandaloneTCMakerConf-2-CustomTCMakerConf">
- <rel name="From" class="Class" id="StandaloneTCMakerConf"/>
- <rel name="To" class="Class" id="CustomTCMakerConf"/>
- <rel name="Points">
-  <ref class="Point" id="1 StandaloneTCMakerConf-2-CustomTCMakerConf"/>
-  <ref class="Point" id="2 StandaloneTCMakerConf-2-CustomTCMakerConf"/>
-  <ref class="Point" id="3 StandaloneTCMakerConf-2-CustomTCMakerConf"/>
-  <ref class="Point" id="4 StandaloneTCMakerConf-2-CustomTCMakerConf"/>
  </rel>
 </obj>
 
@@ -700,11 +656,6 @@
   <ref class="Point" id="3 TCAlgorithm-2-TCCustomAlgorithm"/>
   <ref class="Point" id="4 TCAlgorithm-2-TCCustomAlgorithm"/>
  </rel>
-</obj>
-
-<obj class="Point" id="1 CustomTCMaker-2-CustomTCMakerConf-via-configuration">
- <attr name="x" type="s16" val="136"/>
- <attr name="y" type="s16" val="24"/>
 </obj>
 
 <obj class="Point" id="1 DataProcessor-2-HSIFrameProcessor">
@@ -837,19 +788,9 @@
  <attr name="y" type="s16" val="38"/>
 </obj>
 
-<obj class="Point" id="1 StandaloneTCMakerModule-2-CustomTCMaker">
- <attr name="x" type="s16" val="113"/>
- <attr name="y" type="s16" val="24"/>
-</obj>
-
 <obj class="Point" id="1 StandaloneTCMakerModule-2-RandomTCMakerModule">
  <attr name="x" type="s16" val="113"/>
  <attr name="y" type="s16" val="24"/>
-</obj>
-
-<obj class="Point" id="1 StandaloneTCMakerConf-2-CustomTCMakerConf">
- <attr name="x" type="s16" val="141"/>
- <attr name="y" type="s16" val="51"/>
 </obj>
 
 <obj class="Point" id="1 StandaloneTCMakerConf-2-RandomTCMakerConf">
@@ -895,11 +836,6 @@
 <obj class="Point" id="1 TriggerApplication-2-DataHandlerConf-via-trigger_inputs_handler">
  <attr name="x" type="s16" val="191"/>
  <attr name="y" type="s16" val="65"/>
-</obj>
-
-<obj class="Point" id="2 CustomTCMaker-2-CustomTCMakerConf-via-configuration">
- <attr name="x" type="s16" val="136"/>
- <attr name="y" type="s16" val="939"/>
 </obj>
 
 <obj class="Point" id="2 DataProcessor-2-HSIFrameProcessor">
@@ -1032,19 +968,9 @@
  <attr name="y" type="s16" val="117"/>
 </obj>
 
-<obj class="Point" id="2 StandaloneTCMakerModule-2-CustomTCMaker">
- <attr name="x" type="s16" val="113"/>
- <attr name="y" type="s16" val="820"/>
-</obj>
-
 <obj class="Point" id="2 StandaloneTCMakerModule-2-RandomTCMakerModule">
  <attr name="x" type="s16" val="113"/>
  <attr name="y" type="s16" val="820"/>
-</obj>
-
-<obj class="Point" id="2 StandaloneTCMakerConf-2-CustomTCMakerConf">
- <attr name="x" type="s16" val="141"/>
- <attr name="y" type="s16" val="783"/>
 </obj>
 
 <obj class="Point" id="2 StandaloneTCMakerConf-2-RandomTCMakerConf">
@@ -1090,11 +1016,6 @@
 <obj class="Point" id="2 TriggerApplication-2-DataHandlerConf-via-trigger_inputs_handler">
  <attr name="x" type="s16" val="191"/>
  <attr name="y" type="s16" val="271"/>
-</obj>
-
-<obj class="Point" id="3 CustomTCMaker-2-CustomTCMakerConf-via-configuration">
- <attr name="x" type="s16" val="76"/>
- <attr name="y" type="s16" val="939"/>
 </obj>
 
 <obj class="Point" id="3 DataProcessor-2-HSIFrameProcessor">
@@ -1226,19 +1147,9 @@
  <attr name="y" type="s16" val="117"/>
 </obj>
 
-<obj class="Point" id="3 StandaloneTCMakerModule-2-CustomTCMaker">
- <attr name="x" type="s16" val="45"/>
- <attr name="y" type="s16" val="820"/>
-</obj>
-
 <obj class="Point" id="3 StandaloneTCMakerModule-2-RandomTCMakerModule">
  <attr name="x" type="s16" val="44"/>
  <attr name="y" type="s16" val="820"/>
-</obj>
-
-<obj class="Point" id="3 StandaloneTCMakerConf-2-CustomTCMakerConf">
- <attr name="x" type="s16" val="76"/>
- <attr name="y" type="s16" val="783"/>
 </obj>
 
 <obj class="Point" id="3 StandaloneTCMakerConf-2-RandomTCMakerConf">
@@ -1284,11 +1195,6 @@
 <obj class="Point" id="3 TriggerApplication-2-DataHandlerConf-via-trigger_inputs_handler">
  <attr name="x" type="s16" val="58"/>
  <attr name="y" type="s16" val="271"/>
-</obj>
-
-<obj class="Point" id="4 CustomTCMaker-2-CustomTCMakerConf-via-configuration">
- <attr name="x" type="s16" val="76"/>
- <attr name="y" type="s16" val="26"/>
 </obj>
 
 <obj class="Point" id="4 DataProcessor-2-HSIFrameProcessor">
@@ -1420,19 +1326,9 @@
  <attr name="y" type="s16" val="21"/>
 </obj>
 
-<obj class="Point" id="4 StandaloneTCMakerModule-2-CustomTCMaker">
- <attr name="x" type="s16" val="45"/>
- <attr name="y" type="s16" val="8"/>
-</obj>
-
 <obj class="Point" id="4 StandaloneTCMakerModule-2-RandomTCMakerModule">
  <attr name="x" type="s16" val="44"/>
  <attr name="y" type="s16" val="12"/>
-</obj>
-
-<obj class="Point" id="4 StandaloneTCMakerConf-2-CustomTCMakerConf">
- <attr name="x" type="s16" val="76"/>
- <attr name="y" type="s16" val="26"/>
 </obj>
 
 <obj class="Point" id="4 StandaloneTCMakerConf-2-RandomTCMakerConf">
