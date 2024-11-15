@@ -266,7 +266,7 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
   conffwk::ConfigObject hbNetObj;
   std::string fragNetUid = fragNetDesc->get_uid_base() + UID();
   std::string dfodecNetUid = dfodecNetDesc->get_uid_base() + UID();
-  std::string hbNetUid = hbNetDesc->get_uid_base();
+  std::string hbNetUid = hbNetDesc->get_uid_base() + UID();
   confdb->create(dbfile, "NetworkConnection", fragNetUid, fragNetObj);
   confdb->create(dbfile, "NetworkConnection", dfodecNetUid, dfodecNetObj);
   confdb->create(dbfile, "NetworkConnection", hbNetUid, hbNetObj);

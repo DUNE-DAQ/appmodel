@@ -64,7 +64,6 @@ DFOApplication::generate_modules(conffwk::Configuration* confdb,
   std::vector<const conffwk::ConfigObject*> input_conns;
   conffwk::ConfigObject tdInObj;
   conffwk::ConfigObject busyOutObj;
-  conffwk::ConfigObject tokenInObj;
 
   for (auto rule : get_network_rules()) {
     auto endpoint_class = rule->get_endpoint_class();
@@ -83,15 +82,7 @@ DFOApplication::generate_modules(conffwk::Configuration* confdb,
         tdInObj = connObj;
         input_conns.push_back(&tdInObj);
       } 
-    }
-    else if (descriptor->get_data_type() == "DataflowHeartbeat") {
-        tokenInObj = connObj;
-        input_conns.push_back(&tokenInObj);
-    } else if (descriptor->get_data_type() == "TriggerDecisionToken") {
-      tokenInObj = connObj;
-      input_conns.push_back(&tokenInObj);
-    }
-
+    } 
     else if (descriptor->get_data_type() == "TriggerInhibit") {
       busyOutObj = connObj;
       output_conns.push_back(&busyOutObj);
@@ -104,14 +95,12 @@ DFOApplication::generate_modules(conffwk::Configuration* confdb,
   if (busyOutObj == nullptr) {
     throw(BadConf(ERS_HERE, "No TriggerInhibit output connection descriptor given"));
   }
-  if (tokenInObj == nullptr) {
-    throw(BadConf(ERS_HERE, "No DataflowHeartbeat input connection descriptor given"));
-  }
 
   // Process special Network rules!
   // Looking for DataRequest rules from ReadoutAppplications in current Session
   auto sessionApps = session->get_enabled_applications();
   std::vector<conffwk::ConfigObject> tdOutObjs;
+  std::vector<conffwk::ConfigObject> hbInObjs;
   for (auto app : sessionApps) {
     auto dfapp = app->cast<appmodel::DFApplication>();
     if (dfapp == nullptr)
@@ -121,7 +110,7 @@ DFOApplication::generate_modules(conffwk::Configuration* confdb,
     for (auto rule : dfNRules) {
       auto descriptor = rule->get_descriptor();
       auto data_type = descriptor->get_data_type();
-      if (data_type == "TriggerDecision") {
+      if (data_type == "DFODecision") {
         std::string dreqNetUid(descriptor->get_uid_base() + dfapp->UID());
         tdOutObjs.emplace_back();
         confdb->create(dbfile, "NetworkConnection", dreqNetUid, tdOutObjs.back());
@@ -131,12 +120,26 @@ DFOApplication::generate_modules(conffwk::Configuration* confdb,
 
         auto serviceObj = descriptor->get_associated_service()->config_object();
         tdOutObjs.back().set_obj("associated_service", &serviceObj);
-      } // If network rule has TriggerDecision type of data
+      } // If network rule has DFODecision type of data
+      if (data_type == "DataflowHeartbeat") {
+        std::string hbNetUid(descriptor->get_uid_base() + dfapp->UID());
+        hbInObjs.emplace_back();
+        confdb->create(dbfile, "NetworkConnection", hbNetUid, hbInObjs.back());
+
+        hbInObjs.back().set_by_val<std::string>("data_type", descriptor->get_data_type());
+        hbInObjs.back().set_by_val<std::string>("connection_type", descriptor->get_connection_type());
+
+        auto serviceObj = descriptor->get_associated_service()->config_object();
+        hbInObjs.back().set_obj("associated_service", &serviceObj);
+      }
     }   // Loop over Apps network rules
   }     // loop over Session specific Apps
 
   for (auto& tdOut : tdOutObjs) {
     output_conns.push_back(&tdOut);
+  }
+  for (auto& hbIn : hbInObjs) {
+    input_conns.push_back(&hbIn);
   }
 
   dfoObj.set_objs("inputs", input_conns);
