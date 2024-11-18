@@ -14,6 +14,7 @@
 #include "appmodel/DFOApplication.hpp"
 #include "appmodel/DFOConf.hpp"
 #include "appmodel/DFOModule.hpp"
+#include "appmodel/FakeDFOTestApplication.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
@@ -81,9 +82,8 @@ DFOApplication::generate_modules(conffwk::Configuration* confdb,
       if (endpoint_class == "DFOModule") {
         tdInObj = connObj;
         input_conns.push_back(&tdInObj);
-      } 
-    } 
-    else if (descriptor->get_data_type() == "TriggerInhibit") {
+      }
+    } else if (descriptor->get_data_type() == "TriggerInhibit") {
       busyOutObj = connObj;
       output_conns.push_back(&busyOutObj);
     }
@@ -102,16 +102,18 @@ DFOApplication::generate_modules(conffwk::Configuration* confdb,
   std::vector<conffwk::ConfigObject> tdOutObjs;
   std::vector<conffwk::ConfigObject> hbInObjs;
   for (auto app : sessionApps) {
+    auto smartapp = app->cast<appmodel::SmartDaqApplication>();
     auto dfapp = app->cast<appmodel::DFApplication>();
-    if (dfapp == nullptr)
+    auto fdfoapp = app->cast<appmodel::FakeDFOTestApplication>();
+    if (dfapp == nullptr && fdfoapp == nullptr)
       continue;
 
-    auto dfNRules = dfapp->get_network_rules();
+    auto dfNRules = smartapp->get_network_rules();
     for (auto rule : dfNRules) {
       auto descriptor = rule->get_descriptor();
       auto data_type = descriptor->get_data_type();
       if (data_type == "DFODecision") {
-        std::string dreqNetUid(descriptor->get_uid_base() + dfapp->UID());
+        std::string dreqNetUid(descriptor->get_uid_base() + smartapp->UID());
         tdOutObjs.emplace_back();
         confdb->create(dbfile, "NetworkConnection", dreqNetUid, tdOutObjs.back());
 
@@ -122,7 +124,7 @@ DFOApplication::generate_modules(conffwk::Configuration* confdb,
         tdOutObjs.back().set_obj("associated_service", &serviceObj);
       } // If network rule has DFODecision type of data
       if (data_type == "DataflowHeartbeat") {
-        std::string hbNetUid(descriptor->get_uid_base() + dfapp->UID());
+        std::string hbNetUid(descriptor->get_uid_base() + smartapp->UID());
         hbInObjs.emplace_back();
         confdb->create(dbfile, "NetworkConnection", hbNetUid, hbInObjs.back());
 
@@ -132,8 +134,8 @@ DFOApplication::generate_modules(conffwk::Configuration* confdb,
         auto serviceObj = descriptor->get_associated_service()->config_object();
         hbInObjs.back().set_obj("associated_service", &serviceObj);
       }
-    }   // Loop over Apps network rules
-  }     // loop over Session specific Apps
+    } // Loop over Apps network rules
+  } // loop over Session specific Apps
 
   for (auto& tdOut : tdOutObjs) {
     output_conns.push_back(&tdOut);

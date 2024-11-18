@@ -125,7 +125,7 @@ FakeDFOTestApplication::generate_modules(conffwk::Configuration* confdb,
   conffwk::ConfigObject dfodecNetObj;
   conffwk::ConfigObject hbNetObj;
   std::string dfodecNetUid = dfodecNetDesc->get_uid_base() + UID();
-  std::string hbNetUid = hbNetDesc->get_uid_base();
+  std::string hbNetUid = hbNetDesc->get_uid_base() + UID();
   confdb->create(dbfile, "NetworkConnection", dfodecNetUid, dfodecNetObj);
   confdb->create(dbfile, "NetworkConnection", hbNetUid, hbNetObj);
   fill_netconn_object_from_desc(dfodecNetDesc, dfodecNetObj);
