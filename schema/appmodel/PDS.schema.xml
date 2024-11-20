@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="9" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="mroda" last-modified-on="theta.ph.liv.ac.uk" last-modification-time="20241106T163025"/>
+<info name="" type="" num-of-items="9" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20241120T152745"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -155,6 +155,12 @@
   <attribute name="address" description="ip address of the board" type="string" is-not-null="yes"/>
   <attribute name="slot" description="slot of the board" type="u16" is-not-null="yes"/>
   <relationship name="daphne_conf" class-type="DaphneConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <method name="get_board_conf" description="method to retrieve the board configuration">
+   <method-implementation language="c++" prototype="DaphneBoardConf* get_board_conf() const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &lt;appmodel/DaphneConf.hpp&gt;&#xA;END_HEADER_PROLOGUE&#xA;&#xA;return get_daphne_conf()-&gt;get_board_conf(get_address());"/>
+  </method>
+  <method name="channel_used" description="check if a channel has been used">
+   <method-implementation language="c++" prototype="bool channel_used(uint8_t channel)" body="return false;"/>
+  </method>
  </class>
 
  <class name="DaphneLNA" description="info to generate Reg52 value">
