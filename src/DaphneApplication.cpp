@@ -108,5 +108,13 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
 
 uint16_t DaphneConf::get_board_slot(const std::string & ip) const {
 
+  auto conf_dict = get_configuration();
+  auto list = conf_dict["configuration_dict"];
+  for ( auto it = list.begin(); it!= list.end(); ++it ) {
+    if (it->at("ip").get<std::string>() == ip) {
+      return it->at("slot").get<uint16_t>();
+    }
+  }
+  
   return 0;
 }
