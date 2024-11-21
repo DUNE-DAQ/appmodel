@@ -19,7 +19,7 @@
 
 #include "appmodel/FelixDataSender.hpp"
 #include "appmodel/DaphneConf.hpp"
-#include "appmodel/DaphneControllerModule.hpp"
+#include "appmodel/DaphneV2ControllerModule.hpp"
 #include "appmodel/DaphneApplication.hpp"
 
 
@@ -91,12 +91,12 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
 
       conffwk::ConfigObject module_obj;
       std::string module_name = fmt::format("controller-{}", slot);
-      config -> create( dbfile, "DaphneControllerModule", module_name, module_obj);
+      config -> create( dbfile, "DaphneV2ControllerModule", module_name, module_obj);
       module_obj.set_by_val<std::string>("address", ip);
       module_obj.set_by_val<uint16_t>("slot", slot);
       module_obj.set_obj("daphne_conf", & daphne_conf -> config_object() );
 
-      modules.push_back(config->get<appmodel::DaphneControllerModule>(module_obj));
+      modules.push_back(config->get<appmodel::DaphneV2ControllerModule>(module_obj));
 
     } // loop over data senders
 

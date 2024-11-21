@@ -150,7 +150,7 @@
   </method>
  </class>
 
- <class name="DaphneControllerModule">
+ <class name="DaphneV2ControllerModule">
   <superclass name="DaqModule"/>
   <attribute name="address" description="ip address of the board" type="string" is-not-null="yes"/>
   <attribute name="slot" description="slot of the board" type="u16" is-not-null="yes"/>
