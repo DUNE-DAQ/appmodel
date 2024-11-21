@@ -90,7 +90,7 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
       auto slot = daphne_conf -> get_board_slot(ip);
 
       conffwk::ConfigObject module_obj;
-      std::string module_name = "controller-" + slot;
+      std::string module_name = fmt::format("controller-{}", slot);
       config -> create( dbfile, "DaphneControllerModule", module_name, module_obj);
       module_obj.set_by_val<std::string>("address", ip);
       module_obj.set_by_val<uint16_t>("slot", slot);
@@ -109,12 +109,12 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
 uint16_t DaphneConf::get_board_slot(const std::string & ip) const {
 
   auto conf_dict = get_configuration();
-  auto list = conf_dict["configuration_dict"];
-  for ( auto it = list.begin(); it!= list.end(); ++it ) {
-    if (it->at("ip").get<std::string>() == ip) {
-      return it->at("slot").get<uint16_t>();
-    }
+  auto it = conf_dict.find(ip);
+  if ( it == conf_dict.end() ) {
+    throw MissingIP(ERS_HERE, ip);
   }
-  
+
+  return it->at("slot").get<uint16_t>();
+ 
   return 0;
 }
