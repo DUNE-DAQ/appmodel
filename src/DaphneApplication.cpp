@@ -19,6 +19,7 @@
 
 #include "appmodel/FelixDataSender.hpp"
 #include "appmodel/DaphneConf.hpp"
+#include "appmodel/DaphneV2BoardConf.hpp"
 #include "appmodel/DaphneV2ControllerModule.hpp"
 #include "appmodel/DaphneApplication.hpp"
 
@@ -76,6 +77,9 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
     // Loop over senders
     for (const auto* sender : det_senders) {
 
+      if ( sender->disabled(*session) ) {
+	TLOG() << "Skipping disabled sender: " << sender->UID();
+      }
       // Check the sender type, must me a FelixDataSender
       const auto* felix_sender = sender->cast<appmodel::FelixDataSender>();
       if (!felix_sender ) {
@@ -86,18 +90,28 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
       }
 
       auto ip = felix_sender -> get_control_host();
-
       auto slot = daphne_conf -> get_board_slot(ip);
 
+      const auto raw_conf = daphne_conf->get_configuration().at(ip);
+
+      conffwk::ConfigObject board_obj;
+      config->create(dbfile, "DaphneV2BoardConf",
+       		     fmt::format("daphne-{}-conf", slot), board_obj);
+      board_obj.set_by_val<uint16_t>("bias_ctrl", raw_conf.at("bias_ctrl"));
+      board_obj.set_by_val<uint64_t>("self_trigger_threshold", raw_conf.at("self_trigger_threshold"));
+      auto conf = config->get<appmodel::DaphneV2BoardConf>(board_obj);
+      
       conffwk::ConfigObject module_obj;
       std::string module_name = fmt::format("controller-{}", slot);
       config -> create( dbfile, "DaphneV2ControllerModule", module_name, module_obj);
       module_obj.set_by_val<std::string>("address", ip);
       module_obj.set_by_val<uint16_t>("slot", slot);
       module_obj.set_obj("daphne_conf", & daphne_conf -> config_object() );
+      module_obj.set_obj("board_conf", & conf -> config_object() );
 
-      modules.push_back(config->get<appmodel::DaphneV2ControllerModule>(module_obj));
-
+      auto module = config->get<appmodel::DaphneV2ControllerModule>(module_obj);
+      modules.push_back(module);
+      
     } // loop over data senders
 
   }  // loop over detector 2 daq connections
