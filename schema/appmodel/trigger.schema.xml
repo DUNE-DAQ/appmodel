@@ -119,19 +119,6 @@
   <attribute name="plane2" description="Threshold for plane 2." type="u16" init-value="100" is-not-null="yes"/>
  </class>
 
- <class name="CustomTCMaker">
-  <superclass name="StandaloneTCMakerModule"/>
-  <relationship name="configuration" class-type="CustomTCMakerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="CustomTCMakerConf">
-  <superclass name="StandaloneTCMakerConf"/>
-  <attribute name="template_for" type="class" init-value="CustomTCMaker"/>
-  <attribute name="trigger_types" type="u32" is-multi-value="yes" init-value="3,7" is-not-null="yes"/>
-  <attribute name="trigger_intervals" type="u32" is-multi-value="yes" init-value="62500000,62500000" is-not-null="yes"/>
-  <attribute name="clock_frequency_hz" type="u32" init-value="62500000"/>
- </class>
-
  <class name="DataSubscriberModule">
   <superclass name="DaqModule"/>
   <relationship name="configuration" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -140,8 +127,8 @@
  <class name="HSI2TCTranslatorConf">
   <superclass name="DataReaderConf"/>
   <attribute name="prescale" description="Prescale factor to apply to HSIEvent input" type="u32" init-value="1" is-not-null="yes"/>
-  <relationship name="signals" class-type="HSISignalWindow" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <attribute name="latency_monitoring" type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="latency_monitoring" description="Should we monitor latency in Grafana?" type="bool" init-value="true" is-not-null="yes"/>
+  <relationship name="signals" description="HSI signal bit-to-TC map, including TC type and TC window size" class-type="HSISignalWindow" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="HSIEventToTCApplication">
@@ -154,10 +141,10 @@
  </class>
 
  <class name="HSISignalWindow">
-  <attribute name="signal_type" type="u32" init-value="0" is-not-null="yes"/>
-  <attribute name="tc_type_name" type="string" init-value="kTiming" is-not-null="yes"/>
-  <attribute name="time_before" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="time_after" type="u32" init-value="20000" is-not-null="yes"/>
+  <attribute name="signal_type" description="HSI signal bit to convert into a TC" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="tc_type_name" description="TC type (as string) to generate for a given HSI bit" type="string" init-value="kTiming" is-not-null="yes"/>
+  <attribute name="time_before" description="Time, in ticks, before the HSI timestamp, for the TriggerCandidate start_time" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="time_after" description="Time, in ticks, after the HSI timestamp, for the TriggerCandidate end_time" type="u32" init-value="20000" is-not-null="yes"/>
  </class>
 
  <class name="MLTApplication">
@@ -172,18 +159,15 @@
 
 
  <class name="SubdetectorReadoutWindowMap">
-  <attribute name="subdetector" type="string" init-value="kUnknown" is-not-null="yes"/>
-  <attribute name="time_before" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="time_after" type="u32" init-value="20000" is-not-null="yes"/>
+  <attribute name="subdetector" description="Name of the subdetector as defined in dunedaq::detdataformats::DetID, e.g. kHD_PDS" type="string" init-value="kUnknown" is-not-null="yes"/>
+  <attribute name="time_before" description="Time, in ticks, before the HSI timestamp, for the TriggerCandidate start_time" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="time_after"  description="Time, in ticks, after the HSI timestamp, for the TriggerCandidate end_time" type="u32" init-value="20000" is-not-null="yes"/>
  </class>
 
  <class name="MLTConf">
   <attribute name="template_for" type="class" init-value="MLTModule"/>
-  <attribute name="td_out_of_timeout" type="bool" init-value="true" is-not-null="yes"/>
-  <attribute name="buffer_timeout" type="u32" init-value="100" is-not-null="yes"/>
-  <attribute name="td_readout_limit" type="u32" init-value="1000" is-not-null="yes"/>
-  <attribute name="latency_monitoring" type="bool" init-value="true" is-not-null="yes"/>
-  <relationship name="subdetector_readout_map" class-type="SubdetectorReadoutWindowMap" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <attribute name="latency_monitoring" description="Should we monitor latency in Grafana?" type="bool" init-value="true" is-not-null="yes"/>
+  <relationship name="subdetector_readout_map" description="Optional detector readout map per sub-dector as defined in dunedaq::detdataformats::DetID::Subdetector" class-type="SubdetectorReadoutWindowMap" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="MLTModule">
@@ -196,18 +180,18 @@
  </class>
 
  <class name="ROIGroupConf">
-  <attribute name="number_of_link_groups" type="u32" init-value="1" is-not-null="yes"/>
-  <attribute name="probability" type="float" init-value="0.1" is-not-null="yes"/>
-  <attribute name="time_window" type="u32" init-value="1" is-not-null="yes"/>
-  <attribute name="groups_selection_mode" type="enum" range="kRandom,kSequential" init-value="kRandom" is-not-null="yes"/>
+  <attribute name="number_of_link_groups" description="Number of groups of links to readout" type="u32" init-value="1" is-not-null="yes"/>
+  <attribute name="probability" description="Probability to select this configuration [0 to 1] (currently not used)" type="float" init-value="0.1" is-not-null="yes"/>
+  <attribute name="time_window" description="Time window to read out pre/post decision, [clock ticks] (currently not used)" type="u32" init-value="1" is-not-null="yes"/>
+  <attribute name="groups_selection_mode" description="Whether to read out random groups or in sequence (currently not used)" type="enum" range="kRandom,kSequential" init-value="kRandom" is-not-null="yes"/>
  </class>
 
  <class name="RandomTCMakerConf">
   <superclass name="StandaloneTCMakerConf"/>
   <attribute name="template_for" type="class" init-value="RandomTCMakerModule"/>
-  <attribute name="trigger_rate_hz" type="float" init-value="1" is-not-null="yes"/>
-  <attribute name="time_distribution" type="enum" range="kUniform,kPoisson" init-value="kUniform" is-not-null="yes"/>
-  <relationship name="tc_readout" class-type="TCReadoutMap" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <attribute name="trigger_rate_hz" description="Trigger rate (in Hz) for the RandomTCMaker to produce the TCs" type="float" init-value="1" is-not-null="yes"/>
+  <attribute name="time_distribution" description="Type of distribution used for random timestamps (uniform or poisson)" type="enum" range="kUniform,kPoisson" init-value="kUniform" is-not-null="yes"/>
+  <relationship name="tc_readout" description="Configuration for the TC output type and the TC window size" class-type="TCReadoutMap" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="RandomTCMakerModule">
@@ -224,8 +208,8 @@
 
  <class name="StandaloneTCMakerConf" is-abstract="yes">
   <attribute name="template_for" type="class" init-value="StandaloneTCMakerModule" is-not-null="yes"/>
-  <attribute name="timestamp_method" type="enum" range="kTimeSync,kSystemClock" init-value="kTimeSync" is-not-null="yes"/>
-  <attribute name="latency_monitoring" type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="timestamp_method" description="Option to pick source for timing (system / timesync)" type="enum" range="kTimeSync,kSystemClock" init-value="kTimeSync" is-not-null="yes"/>
+  <attribute name="latency_monitoring" description="Should we monitor latency in Grafana?" type="bool" init-value="true" is-not-null="yes"/>
  </class>
 
  <class name="StandaloneTCMakerModule">
@@ -309,29 +293,21 @@
  <class name="TCAlgorithm" description="Base class for TC algorithms">
   <superclass name="Jsonable"/>
   <attribute name="prescale" description="Prescale factor to apply to algorithm output" type="u32" init-value="1" is-not-null="yes"/>
- </class>
-
- <class name="TCCustomAlgorithm">
-  <superclass name="TCAlgorithm"/>
-  <attribute name="trigger_types" type="u32" is-multi-value="yes"/>
-  <attribute name="trigger_intervals" type="u32" is-multi-value="yes"/>
-  <attribute name="timestamp_method" type="enum" range="kTimeSync,kSystemClock" init-value="kTimeSync" is-not-null="yes"/>
+  <attribute name="tc_type_name" description="The output TC type name this algorithm will output" type="string" init-value="kUnknown" is-not-null="yes"/>
  </class>
 
  <class name="TCDataProcessor" description="Post-processor for TCs generating the trigger decisions">
   <superclass name="DataProcessor"/>
-  <attribute name="hsi_trigger_type_passthrough" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="merge_overlapping_tcs" type="bool" init-value="true" is-not-null="yes"/>
-  <attribute name="ignore_overlapping_tcs" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="td_out_of_timeout" type="bool" init-value="true" is-not-null="yes"/>
-  <attribute name="buffer_timeout" type="u32" init-value="100" is-not-null="yes"/>
-  <attribute name="td_readout_limit" type="u32" init-value="1000" is-not-null="yes"/>
-  <attribute name="ignore_tc" type="u32" is-multi-value="yes"/>
-  <attribute name="use_bitwords" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="trigger_bitwords" type="string" is-multi-value="yes"/>
-  <relationship name="roi_group_conf" class-type="ROIGroupConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="tc_readout_map" class-type="TCReadoutMap" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="mandatory_links" class-type="SourceIDConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <attribute name="merge_overlapping_tcs" description="Option to turn off merging of overlapping TCs when forming TDs in MLT" type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="ignore_overlapping_tcs" description="Option to ignore consecutive overlapping TCs/pileup events. Cannot run with mlt_merge_overlapping_tcs" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="td_out_of_timeout" description="Option to drop TD if TC comes out of timeout window" type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="buffer_timeout" description="Timeout (buffer) to wait for new overlapping TCs before sending TD, in ms" type="u32" init-value="100" is-not-null="yes"/>
+  <attribute name="td_readout_limit" description="Maximum allowed time length (in ticks) for a readout window of a single TD" type="u32" init-value="1000000" is-not-null="yes"/>
+  <attribute name="ignore_tc" description="Optional list of TC types to be ignored in MLT" type="u32" is-multi-value="yes"/>
+  <attribute name="trigger_bitwords" description="Optional dictionary of bitwords to use when forming trigger decisions in MLT (currently not used)" type="string" is-multi-value="yes"/>
+  <relationship name="roi_group_conf" description="The configuration (table) for ROI readout (currently not used)" class-type="ROIGroupConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="tc_readout_map" description="The readout windows assigned to TDs in MLT, based on TC type." class-type="TCReadoutMap" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="mandatory_links" description="Source Ids that will always be included in a trigger decision." class-type="SourceIDConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="TCMakerADCSimpleWindowAlgorithm">
@@ -394,22 +370,15 @@
  </class>
 
  <class name="TCReadoutMap">
-  <attribute name="tc_type_name" type="string" init-value="kTiming" is-not-null="yes"/>
-  <attribute name="time_before" type="u32" init-value="1000" is-not-null="yes"/>
-  <attribute name="time_after" type="u32" init-value="1001" is-not-null="yes"/>
- </class>
-
- <class name="TPChannelFilterConf">
-  <attribute name="keep_collection" description="Whether to keep the collection channel TPs." type="bool" init-value="true" is-not-null="yes"/>
-  <attribute name="keep_induction" description="Whether to keep the induction channel TPs." type="bool" init-value="true" is-not-null="yes"/>
-  <attribute name="channel_map_name" description="Name of the channel map." type="string" is-not-null="yes"/>
+  <attribute name="tc_type_name" description="Enumerator name of the TC type, e.g. kTiming" type="string" init-value="kTiming" is-not-null="yes"/>
+  <attribute name="time_before" description="Time, in ticks, before the HSI timestamp, for the TriggerCandidate start_time" type="u32" init-value="1000" is-not-null="yes"/>
+  <attribute name="time_after" description="Time, in ticks, after the HSI timestamp, for the TriggerCandidate end_time" type="u32" init-value="1001" is-not-null="yes"/>
  </class>
 
  <class name="TPDataProcessor">
   <superclass name="DataProcessor"/>
   <attribute name="print_tp_info" description="Whether to print TP information in the TA processor" type="bool" init-value="false"/>
   <relationship name="algorithms" class-type="TAAlgorithm" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="channel_filter_conf" class-type="TPChannelFilterConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="TriggerApplication">
