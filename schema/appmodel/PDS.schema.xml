@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="9" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20241122T174146"/>
+<info name="" type="" num-of-items="9" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20241122T180722"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -119,6 +119,9 @@
   <attribute name="low_resolution" description="true=12bit, false=14bit" type="bool" init-value="false" is-not-null="yes"/>
   <attribute name="output_offset_binary" description="true=Offset Binary, false=2s complement" type="bool" init-value="true" is-not-null="yes"/>
   <attribute name="MSB_first" description="Which Significant bit comes first, true=MSB, false=LSB" type="bool" init-value="true" is-not-null="yes"/>
+  <method name="get_reg4" description="">
+   <method-implementation language="c++" prototype="uint16_t get_reg4() const" body=""/>
+  </method>
  </class>
 
  <class name="DaphneV2AFE">

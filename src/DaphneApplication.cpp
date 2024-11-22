@@ -22,12 +22,14 @@
 #include "appmodel/DaphneV2BoardConf.hpp"
 #include "appmodel/DaphneV2Channel.hpp"
 #include "appmodel/DaphneV2AFE.hpp"
+#include "appmodel/DaphneV2ADC.hpp"
 #include "appmodel/DaphneV2ControllerModule.hpp"
 #include "appmodel/DaphneApplication.hpp"
 
 
 #include <string>
 #include <vector>
+#include <bitset>
 #include <iostream>
 #include <fmt/core.h>
 
@@ -190,3 +192,18 @@ DaphneV2BoardConf::get_afe(size_t ch) const {
   
   return *get_default_afe();
 }
+
+
+uint16_t
+DaphneV2ADC::get_reg4() const {
+
+  // ADC, reg 4 has no parsing as it's all made of booleans                                                     
+  std::bitset<5> reg4;                                                                                          
+  // bits 0 and 2 are reserved                                                                                  
+  reg4[1] = get_low_resolution();
+  reg4[3] = get_output_offset_binary();
+  reg4[4] = get_MSB_first();
+  return reg4.to_ulong(); 
+}
+
+
