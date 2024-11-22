@@ -21,6 +21,7 @@
 #include "appmodel/DaphneConf.hpp"
 #include "appmodel/DaphneV2BoardConf.hpp"
 #include "appmodel/DaphneV2Channel.hpp"
+#include "appmodel/DaphneV2AFE.hpp"
 #include "appmodel/DaphneV2ControllerModule.hpp"
 #include "appmodel/DaphneApplication.hpp"
 
@@ -95,6 +96,7 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
 
       const auto raw_conf = daphne_conf->get_configuration().at(ip);
 
+      // setup channels
       std::vector<const conffwk::ConfigObject*> channels;
       auto raw_channels = raw_conf["channel_analog_conf"];
       auto raw_ids = raw_channels["ids"].get<std::vector<uint8_t>>();
@@ -114,12 +116,22 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
 	channels.push_back(& ch -> config_object());
       }
 
+      //setup afes
+      std::vector<const conffwk::ConfigObject*> afes;
+      // auto raw_afes = raw_conf["afes"];
+      // auto raw_biases = raw_afes["v_biases"];
+      // for ( auto bias : raw_biases ) {
+	
+      // }
+
+      
       conffwk::ConfigObject board_obj;
       config->create(dbfile, "DaphneV2BoardConf",
        		     fmt::format("daphne-{}-conf", slot), board_obj);
       board_obj.set_by_val<uint16_t>("bias_ctrl", raw_conf.at("bias_ctrl"));
       board_obj.set_by_val<uint64_t>("self_trigger_threshold", raw_conf.at("self_trigger_threshold"));
       board_obj.set_objs("active_channels", channels);
+      board_obj.set_objs("active_afes", afes);
       auto conf = config->get<appmodel::DaphneV2BoardConf>(board_obj);
       
       conffwk::ConfigObject module_obj;
@@ -156,11 +168,7 @@ uint16_t DaphneConf::get_board_slot(const std::string & ip) const {
 
 
 const DaphneV2Channel &
-DaphneV2BoardConf::get_channel(uint8_t ch, bool turning_on) const {
-
-  if (! turning_on) {
-    return *get_default_channel();
-  }
+DaphneV2BoardConf::get_channel(size_t ch) const {
 
   for ( auto ch_p : get_active_channels() ) {
     if ( ch_p->get_channel_id() == ch ) {
@@ -169,4 +177,16 @@ DaphneV2BoardConf::get_channel(uint8_t ch, bool turning_on) const {
   }
   
   return *get_default_channel();
+}
+
+const DaphneV2AFE &
+DaphneV2BoardConf::get_afe(size_t ch) const {
+
+  for ( auto afe_p : get_active_afes() ) {
+    if ( afe_p->get_afe_id() == ch ) {
+      return *afe_p;
+    }
+  }
+  
+  return *get_default_afe();
 }
