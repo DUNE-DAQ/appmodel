@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="9" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20241122T121300"/>
+<info name="" type="" num-of-items="9" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20241122T122121"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -122,7 +122,7 @@
  </class>
 
  <class name="DaphneV2AFE">
-  <attribute name="id" description="id in the [0,5) range" type="u8" range="0..4" is-not-null="yes"/>
+  <attribute name="id" description="id in the [0,5) range" type="u8" range="0..4,100" init-value="100" is-not-null="yes"/>
   <attribute name="v_gain" type="u16" range="0..4096" is-not-null="yes"/>
   <attribute name="v_bias" description="Value for V gain of the AFE, 12 bit register" type="u16" range="0..1500" is-not-null="yes"/>
   <relationship name="adc" class-type="DaphneV2ADC" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
