@@ -16,6 +16,7 @@ __generate_class_map = {
     'HSIEventToTCApplication': hsieventtotc_application_generate,
     'MLTApplication': mlt_application_generate,
     'WIECApplication': wiec_application_generate,
+    'DaphneApplication': daphne_application_generate,
 
 }
 

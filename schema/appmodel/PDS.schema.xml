@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="9" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20241122T142442"/>
+<info name="" type="" num-of-items="9" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20241122T161057"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -139,7 +139,7 @@
   <relationship name="default_channel" class-type="DaphneV2Channel" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="default_afe" class-type="DaphneV2AFE" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="get_channel" description="Retrieve the correct channel configuration">
-   <method-implementation language="c++" prototype="const DaphneV2Channel &amp; get_channel( uint8_t ch, bool scrap) const " body=""/>
+   <method-implementation language="c++" prototype="const DaphneV2Channel &amp; get_channel( uint8_t ch, bool turning_on=true) const " body=""/>
   </method>
   <method name="get_afe" description="retrieve the correct afe configuration">
    <method-implementation language="c++" prototype="const DaphneV2AFE &amp; get_afe( uint8_t id, bool scrap) const " body=""/>

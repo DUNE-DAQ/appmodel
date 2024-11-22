@@ -20,6 +20,7 @@
 #include "appmodel/FelixDataSender.hpp"
 #include "appmodel/DaphneConf.hpp"
 #include "appmodel/DaphneV2BoardConf.hpp"
+#include "appmodel/DaphneV2Channel.hpp"
 #include "appmodel/DaphneV2ControllerModule.hpp"
 #include "appmodel/DaphneApplication.hpp"
 
@@ -94,11 +95,31 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
 
       const auto raw_conf = daphne_conf->get_configuration().at(ip);
 
+      std::vector<const conffwk::ConfigObject*> channels;
+      auto raw_channels = raw_conf["channel_analog_conf"];
+      auto raw_ids = raw_channels["ids"].get<std::vector<uint8_t>>();
+      auto raw_gains = raw_channels["gains"].get<std::vector<uint8_t>>();
+      auto raw_offsets = raw_channels["offsets"].get<std::vector<uint16_t>>();
+      auto raw_trims = raw_channels["trims"].get<std::vector<uint16_t>>();
+      for ( size_t i = 0; i < raw_ids.size(); ++i ) {
+	auto id = raw_ids[i];
+	conffwk::ConfigObject channel_obj;
+	config->create(dbfile, "DaphneV2Channel",
+		       fmt::format("daphne-{}-channel-{}", slot, id), channel_obj );
+	channel_obj.set_by_val<uint8_t>("channel_id", id);
+	channel_obj.set_by_val<uint8_t>("gain", raw_gains[i]);
+	channel_obj.set_by_val<uint16_t>("offset", raw_offsets[i]);
+	channel_obj.set_by_val<uint16_t>("trim", raw_trims[i]);
+	auto ch = config->get<appmodel::DaphneV2Channel>(channel_obj);
+	channels.push_back(& ch -> config_object());
+      }
+
       conffwk::ConfigObject board_obj;
       config->create(dbfile, "DaphneV2BoardConf",
        		     fmt::format("daphne-{}-conf", slot), board_obj);
       board_obj.set_by_val<uint16_t>("bias_ctrl", raw_conf.at("bias_ctrl"));
       board_obj.set_by_val<uint64_t>("self_trigger_threshold", raw_conf.at("self_trigger_threshold"));
+      board_obj.set_objs("active_channels", channels);
       auto conf = config->get<appmodel::DaphneV2BoardConf>(board_obj);
       
       conffwk::ConfigObject module_obj;
@@ -131,4 +152,21 @@ uint16_t DaphneConf::get_board_slot(const std::string & ip) const {
   return it->at("slot").get<uint16_t>();
  
   return 0;
+}
+
+
+const DaphneV2Channel &
+DaphneV2BoardConf::get_channel(uint8_t ch, bool turning_on) const {
+
+  if (! turning_on) {
+    return *get_default_channel();
+  }
+
+  for ( auto ch_p : get_active_channels() ) {
+    if ( ch_p->get_channel_id() == ch ) {
+      return *ch_p;
+    }
+  }
+  
+  return *get_default_channel();
 }
