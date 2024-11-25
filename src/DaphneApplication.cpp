@@ -96,7 +96,7 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
       auto ip = felix_sender -> get_control_host();
       auto slot = daphne_conf -> get_board_slot(ip);
 
-      const auto raw_conf = daphne_conf->get_configuration().at(ip);
+      const auto raw_conf = daphne_conf->get_json().at(ip);
 
       // setup channels
       std::vector<const conffwk::ConfigObject*> channels;
@@ -157,15 +157,13 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
 
 uint16_t DaphneConf::get_board_slot(const std::string & ip) const {
 
-  auto conf_dict = get_configuration();
+  auto conf_dict = get_json();
   auto it = conf_dict.find(ip);
   if ( it == conf_dict.end() ) {
     throw MissingIP(ERS_HERE, ip);
   }
 
   return it->at("slot").get<uint16_t>();
- 
-  return 0;
 }
 
 
