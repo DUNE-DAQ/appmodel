@@ -187,8 +187,12 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
        		     fmt::format("daphne-{}-conf", slot), board_obj);
       board_obj.set_by_val<uint16_t>("bias_ctrl", raw_conf.at("bias_ctrl"));
       board_obj.set_by_val<uint64_t>("self_trigger_threshold", raw_conf.at("self_trigger_threshold"));
+      board_obj.set_by_val<std::vector<uint8_t>>("full_stream_channels",
+						 raw_conf.at("full_stream_channels").get<std::vector<uint8_t>>());
       board_obj.set_objs("active_channels", channels);
       board_obj.set_objs("active_afes", afes);
+      board_obj.set_obj("default_channel", & daphne_conf->get_default_v2_settings()->get_default_channel()->config_object());
+      board_obj.set_obj("default_afe", & daphne_conf->get_default_v2_settings()->get_default_afe()->config_object());
       auto conf = config->get<appmodel::DaphneV2BoardConf>(board_obj);
       
       conffwk::ConfigObject module_obj;
@@ -198,7 +202,7 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
       module_obj.set_by_val<uint16_t>("slot", slot);
       module_obj.set_obj("daphne_conf", & daphne_conf -> config_object() );
       module_obj.set_obj("board_conf", & conf -> config_object() );
-
+      
       auto module = config->get<appmodel::DaphneV2ControllerModule>(module_obj);
       modules.push_back(module);
       
