@@ -23,6 +23,8 @@
 #include "appmodel/DaphneV2Channel.hpp"
 #include "appmodel/DaphneV2AFE.hpp"
 #include "appmodel/DaphneV2ADC.hpp"
+#include "appmodel/DaphneV2PGA.hpp"
+#include "appmodel/DaphneV2LNA.hpp"
 #include "appmodel/DaphneV2ControllerModule.hpp"
 #include "appmodel/DaphneApplication.hpp"
 
@@ -229,4 +231,35 @@ DaphneV2ADC::get_reg4() const {
   return reg4.to_ulong(); 
 }
 
+uint16_t
+DaphneV2PGA::get_reg51() const {
 
+  std::bitset<14> reg51(get_lpf_cut_frequency());
+  reg51 <<= 1;                                                                                                  
+  reg51[4] = get_integrator_disable();
+  reg51[7] = true;  // clamp is always disabled and we are in low noise mode
+  reg51[13] = get_gain();
+
+  return reg51.to_ulong() ;                  
+}
+
+uint16_t
+DaphneV2LNA::get_reg52() const {
+
+  std::bitset<16> reg52;                                                                                        
+
+  decltype(reg52) clamp(get_clamp());
+  clamp <<= 6;
+
+  reg52[12] = get_integrator_disable();
+  
+  decltype(reg52) gain(get_gain());
+  clamp <<= 13;
+
+  reg52 |= clamp;
+  reg52 |= gain;
+
+  return reg52.to_ulong();
+}
+
+ 

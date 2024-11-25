@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="9" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20241125T112947"/>
+<info name="" type="" num-of-items="9" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20241125T115328"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -174,12 +174,18 @@
   <attribute name="clamp" description="0=auto setting, 1=1.5 Vpp, 2=1.15 Vpp, 3=0.6 Vpp" type="u8" range="0..3" init-value="0" is-not-null="yes"/>
   <attribute name="integrator_disable" type="bool" init-value="true" is-not-null="yes"/>
   <attribute name="gain" description="0=18 dB, 1=24 dB, 2=12 dB" type="u8" range="0..2" init-value="2" is-not-null="yes"/>
+  <method name="get_reg52" description="get register 51 from configuration">
+   <method-implementation language="c++" prototype="uint16_t get_reg52() const" body=""/>
+  </method>
  </class>
 
  <class name="DaphneV2PGA">
   <attribute name="lpf_cut_frequency" description="cut frequency, only 4 values acceptable. 0=15MHz, 2=20MHz, 3=30MHz, 4=10MHz" type="u8" range="0..4" init-value="0" is-not-null="yes"/>
   <attribute name="integrator_disable" type="bool" init-value="true" is-not-null="yes"/>
   <attribute name="gain" description="rue=30 dB, false=24 dB" type="bool" init-value="false" is-not-null="yes"/>
+  <method name="get_reg51" description="create registry 51 from the configuration">
+   <method-implementation language="c++" prototype="uint16_t get_reg51() const" body=""/>
+  </method>
  </class>
 
 </oks-schema>
