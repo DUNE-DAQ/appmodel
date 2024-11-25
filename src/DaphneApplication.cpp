@@ -166,6 +166,17 @@ uint16_t DaphneConf::get_board_slot(const std::string & ip) const {
   return it->at("slot").get<uint16_t>();
 }
 
+bool
+DaphneV2BoardConf::is_channel_used(size_t ch) const {
+
+  for ( auto ch_p : get_active_channels() ) {
+    if ( ch_p->get_channel_id() == ch ) {
+      return true;
+    }
+  }
+  
+  return false;
+}
 
 const DaphneV2Channel &
 DaphneV2BoardConf::get_channel(size_t ch) const {
@@ -179,9 +190,23 @@ DaphneV2BoardConf::get_channel(size_t ch) const {
   return *get_default_channel();
 }
 
+bool
+DaphneV2BoardConf::is_afe_used(size_t afe) const {
+
+  auto begin = afe*8;
+  auto end   = (afe+1)*8;
+  for ( size_t i = begin; i < end; ++i) {
+    if( is_channel_used(i) ) return true;
+  }
+  
+  return false;
+}
+
 const DaphneV2AFE &
 DaphneV2BoardConf::get_afe(size_t ch) const {
 
+  if ( ! is_afe_used(ch) ) return *get_default_afe();
+  
   for ( auto afe_p : get_active_afes() ) {
     if ( afe_p->get_afe_id() == ch ) {
       return *afe_p;

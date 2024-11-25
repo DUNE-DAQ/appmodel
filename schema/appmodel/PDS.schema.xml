@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="9" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20241125T111845"/>
+<info name="" type="" num-of-items="9" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20241125T112947"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -147,6 +147,12 @@
   <method name="get_afe" description="retrieve the correct afe configuration">
    <method-implementation language="c++" prototype="const DaphneV2AFE &amp; get_afe( size_t id) const " body=""/>
   </method>
+  <method name="is_channel_used" description="check if a channel is turned on">
+   <method-implementation language="c++" prototype="bool is_channel_used(size_t ch) const" body=""/>
+  </method>
+  <method name="is_afe_used" description="check if an AFE is used">
+   <method-implementation language="c++" prototype="bool is_afe_used(size_t ch) const" body=""/>
+  </method>
  </class>
 
  <class name="DaphneV2Channel">
@@ -162,9 +168,6 @@
   <attribute name="slot" description="slot of the board" type="u16" is-not-null="yes"/>
   <relationship name="daphne_conf" class-type="DaphneConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="board_conf" class-type="DaphneV2BoardConf" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
-  <method name="channel_used" description="check if a channel has been used">
-   <method-implementation language="c++" prototype="bool channel_used(uint8_t channel) const" body="return false;"/>
-  </method>
  </class>
 
  <class name="DaphneV2LNA" description="info to generate Reg52 value">
