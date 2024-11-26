@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="9" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20241126T161904"/>
+<info name="" type="" num-of-items="9" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20241126T165916"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -124,7 +124,7 @@
  <class name="DaphneV2AFE">
   <attribute name="afe_id" description="id in the [0,5) range" type="u8" range="0..4,100" init-value="100" is-not-null="yes"/>
   <attribute name="attenuator" type="u16" range="0..4095" init-value="0" is-not-null="yes"/>
-  <attribute name="v_bias" description="Value for V gain of the AFE, 12 bit register" type="u16" range="0..1500" is-not-null="yes"/>
+  <attribute name="v_bias" description="Value for V gain of the AFE, 12 bit register.&#xA;The bias have to be under a certain value to operate in cold temperature, the maximum value depends on the brand of the SiPM, but it&apos;s always smaller than 1500 anyway    " type="u16" range="0..1500" init-value="0" is-not-null="yes"/>
   <relationship name="adc" class-type="DaphneV2ADC" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
   <relationship name="pga" class-type="DaphneV2PGA" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
   <relationship name="lna" class-type="DaphneV2LNA" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
@@ -132,7 +132,7 @@
 
  <class name="DaphneV2BoardConf" description="Top entry for the configuraiton of a single daphne board">
   <attribute name="bias_ctrl" description="V bias control" type="u16" range="0..4095" is-not-null="yes"/>
-  <attribute name="self_trigger_threshold" description="Configuration for full stream case. If it is 0, the channels will go in full stream. In that case, which channels will be set via the &quot;full_stream_channels&quot; list." type="u64" range="0..16383" is-not-null="yes"/>
+  <attribute name="self_trigger_threshold" description="Configuration for full stream case. If it is 0, the channels will go in full stream. In that case, which channels will be set via the &quot;full_stream_channels&quot; list." type="u64" range="0..16383" init-value="0" is-not-null="yes"/>
   <attribute name="full_stream_channels" description="list of channels to be used in full stream" type="u8" range="0..39" is-multi-value="yes" is-not-null="yes"/>
   <relationship name="active_channels" class-type="DaphneV2Channel" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="active_afes" class-type="DaphneV2AFE" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -177,7 +177,7 @@
  </class>
 
  <class name="DaphneV2PGA">
-  <attribute name="lpf_cut_frequency" description="cut frequency, only 4 values acceptable. 0=15MHz, 2=20MHz, 3=30MHz, 4=10MHz" type="u8" range="0..4" init-value="0" is-not-null="yes"/>
+  <attribute name="lpf_cut_frequency" description="cut frequency, only 4 values acceptable. 0=15MHz, 2=20MHz, 3=30MHz, 4=10MHz" type="u8" range="0,2,3,4" init-value="0" is-not-null="yes"/>
   <attribute name="integrator_disable" type="bool" init-value="true" is-not-null="yes"/>
   <attribute name="gain" description="rue=30 dB, false=24 dB" type="bool" init-value="false" is-not-null="yes"/>
   <method name="get_reg51" description="create registry 51 from the configuration">
