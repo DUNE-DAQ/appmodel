@@ -127,14 +127,14 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
           rule->get_descriptor()->get_data_type() == "TriggerCandidate") {
         // For TA->TC
         tout_net_desc = rule->get_descriptor();
-	handler_name = "tahandler";
+        handler_name = "tahandler";
       }
       else if (tin_net_desc->get_data_type() == "TriggerCandidate" &&
           rule->get_descriptor()->get_data_type() == "TriggerActivity") {
         // For TA->TC if we saved TC network connection as input first...
         tout_net_desc = tin_net_desc;
         tin_net_desc = rule->get_descriptor();
-	handler_name = "tahandler";
+        handler_name = "tahandler";
       }
       else {
         throw (BadConf(ERS_HERE, "Unexpected input & output network connection descriptors provided"));
@@ -156,7 +156,6 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
   conffwk::ConfigObject tin_net_obj;
   conffwk::ConfigObject tout_net_obj;
   conffwk::ConfigObject tset_out_net_obj;
-  //auto handlerConf = get_trigger_inputs_handler();
 
   if ( req_net_desc== nullptr) {
       throw (BadConf(ERS_HERE, "No network descriptor given to receive request and send data was set"));
@@ -177,36 +176,19 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
   input_queue_obj.set_by_val<std::string>("queue_type", ti_inputq_desc->get_queue_type());
   input_queue_obj.set_by_val<uint32_t>("capacity", ti_inputq_desc->get_capacity());
 
-  auto req_service_obj = req_net_desc->get_associated_service()->config_object();
-  std::string req_net_uid(req_net_desc->get_uid_base()+UID());;
-  confdb->create(dbfile, "NetworkConnection", req_net_uid, req_net_obj);
-  req_net_obj.set_by_val<std::string>("connection_type", req_net_desc->get_connection_type());
-  req_net_obj.set_by_val<std::string>("data_type", req_net_desc->get_data_type());
-  req_net_obj.set_obj("associated_service", &req_service_obj);
+  
+  req_net_obj = create_network_connection(req_net_desc->get_uid_base()+UID(),
+                                           req_net_desc, confdb, dbfile);
 
-  auto tin_service_obj = tin_net_desc->get_associated_service()->config_object();
-  std::string t_in_stream_uid(tin_net_desc->get_uid_base()+".*");
-  confdb->create(dbfile, "NetworkConnection", t_in_stream_uid, tin_net_obj);
-  tin_net_obj.set_by_val<std::string>("data_type", tin_net_desc->get_data_type());
-  tin_net_obj.set_by_val<std::string>("connection_type", tin_net_desc->get_connection_type());
-  tin_net_obj.set_obj("associated_service", &tin_service_obj);
+  tin_net_obj = create_network_connection(tin_net_desc->get_uid_base()+".*",
+                                          tin_net_desc, confdb, dbfile);
 
-  auto tout_service_obj = tout_net_desc->get_associated_service()->config_object();
-  std::string t_stream_uid(tout_net_desc->get_uid_base()+UID());
-  confdb->create(dbfile, "NetworkConnection", t_stream_uid, tout_net_obj);
-  tout_net_obj.set_by_val<std::string>("data_type", tout_net_desc->get_data_type());
-  tout_net_obj.set_by_val<std::string>("connection_type", tout_net_desc->get_connection_type());
-  tout_net_obj.set_obj("associated_service", &tout_service_obj);
-
-
+  tout_net_obj = create_network_connection(tout_net_desc->get_uid_base()+UID(),
+                                          tout_net_desc, confdb, dbfile);
 
   if (tset_out_net_desc) {
-    auto tset_out_service_obj = tset_out_net_desc->get_associated_service()->config_object();
-    std::string tset_stream_uid(tset_out_net_desc->get_uid_base()+UID());
-    confdb->create(dbfile, "NetworkConnection", tset_stream_uid, tset_out_net_obj);
-    tset_out_net_obj.set_by_val<std::string>("data_type", tset_out_net_desc->get_data_type());
-    tset_out_net_obj.set_by_val<std::string>("connection_type", tset_out_net_desc->get_connection_type());
-    tset_out_net_obj.set_obj("associated_service", &tset_out_service_obj);
+    tset_out_net_obj = create_network_connection(tset_out_net_desc->get_uid_base()+UID(),
+                                                 tset_out_net_desc, confdb, dbfile);
   }
 
   auto ti_conf_obj = ti_conf->config_object();
@@ -219,6 +201,13 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
   confdb->create(dbfile, ti_class, ti_uid, ti_obj);
   ti_obj.set_by_val<uint32_t>("source_id", source_id);
   ti_obj.set_by_val<uint32_t>("detector_id", 1); // 1 == kDAQ
+  if (handler_name == "tphandler") {
+    ti_obj.set_by_val<bool>("post_processing_enabled", get_ta_generation_enabled());
+  }
+  if (handler_name == "tahandler") {
+    ti_obj.set_by_val<bool>("post_processing_enabled", get_tc_generation_enabled());
+  }
+
   ti_obj.set_obj("module_configuration", &ti_conf_obj);
   ti_obj.set_objs("inputs", {&input_queue_obj, &req_net_obj});
   if (tset_out_net_desc!= nullptr) {
