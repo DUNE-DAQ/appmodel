@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="9" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20241125T115328"/>
+<info name="" type="" num-of-items="9" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20241126T161904"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -106,9 +106,6 @@
   </method>
   <method name="get_json" description="Getter to cast the configuration into a json">
    <method-implementation language="C++" prototype="nlohmann::json get_json() const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &lt;nlohmann/json.hpp&gt;&#xA;END_HEADER_PROLOGUE&#xA;&#xA;return nlohmann::json::parse(get_json_file());"/>
-  </method>
-  <method name="get_board_conf" description="generate the DaphneV2BoardConf for a given board">
-   <method-implementation language="C++" prototype="DaphneV2BoardConf* get_board_conf(const std::string &amp; ip) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &lt;string&gt;&#xA;END_HEADER_PROLOGUE&#xA;&#xA;return nullptr;"/>
   </method>
   <method name="get_board_slot" description="Get the board slot from the IP">
    <method-implementation language="c++" prototype="uint16_t get_board_slot(const std::string &amp; ip) const" body=""/>
