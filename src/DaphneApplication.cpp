@@ -124,7 +124,7 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
       std::vector<const conffwk::ConfigObject*> afes;
       const auto raw_afes = raw_conf["afes"];
       const auto raw_afe_ids = raw_afes["ids"].get<std::vector<size_t>>();
-      const auto raw_afe_attenuators = raw_afes["atenuators"].get<std::vector<uint16_t>>();
+      const auto raw_afe_attenuators = raw_afes["attenuators"].get<std::vector<uint16_t>>();
       const auto raw_afe_biases = raw_afes["v_biases"].get<std::vector<uint16_t>>();
       const auto raw_adcs = raw_afes["adcs"];
       const auto raw_adc_res = raw_adcs["resolution"].get<std::vector<uint16_t>>();
