@@ -77,12 +77,21 @@ class ReadoutObjFactory {
   std::string dbfile;
   std::string app_uid;
 
+
+  conffwk::ConfigObject create(const std::string& class_name, const std::string& id) {
+    conffwk::ConfigObject cfg_obj;
+    config->create(this->dbfile, class_name, id, cfg_obj);
+    return cfg_obj;
+
+  }
+
   //---
   conffwk::ConfigObject create_queue_obj(const QueueDescriptor* qdesc) {
-    conffwk::ConfigObject queue_obj;
+    // conffwk::ConfigObject queue_obj;
 
     std::string queue_uid(qdesc->get_uid_base());
-    config->create(this->dbfile, "Queue", queue_uid, queue_obj);
+    // config->create(this->dbfile, "Queue", queue_uid, queue_obj);
+    auto queue_obj = this->create("Queue", queue_uid);
     queue_obj.set_by_val<std::string>("data_type", qdesc->get_data_type());
     queue_obj.set_by_val<std::string>("queue_type", qdesc->get_queue_type());
     queue_obj.set_by_val<uint32_t>("capacity", qdesc->get_capacity());
@@ -92,10 +101,12 @@ class ReadoutObjFactory {
 
   //---
   conffwk::ConfigObject create_queue_sid_obj(const QueueDescriptor* qdesc, uint32_t src_id) {
-    conffwk::ConfigObject queue_obj;
+    // conffwk::ConfigObject queue_obj;
 
     std::string queue_uid(fmt::format("{}{}", qdesc->get_uid_base(), src_id));
-    config->create(this->dbfile, "QueueWithSourceId", queue_uid, queue_obj);
+    // config->create(this->dbfile, "QueueWithSourceId", queue_uid, queue_obj);
+    auto queue_obj = this->create("QueueWithSourceId", queue_uid);
+
     queue_obj.set_by_val<std::string>("data_type", qdesc->get_data_type());
     queue_obj.set_by_val<std::string>("queue_type", qdesc->get_queue_type());
     queue_obj.set_by_val<uint32_t>("capacity", qdesc->get_capacity());
@@ -113,11 +124,13 @@ class ReadoutObjFactory {
 
   //---
   conffwk::ConfigObject create_net_obj(const NetworkConnectionDescriptor* ndesc, std::string uid) {
-    conffwk::ConfigObject net_obj;
+    // conffwk::ConfigObject net_obj;
 
     auto svc_obj = ndesc->get_associated_service()->config_object();
     std::string net_id = ndesc->get_uid_base() + uid;
-    config->create(this->dbfile, "NetworkConnection", net_id, net_obj);
+    // config->create(this->dbfile, "NetworkConnection", net_id, net_obj);
+    auto net_obj = this->create("NetworkConnection", net_id);
+
     net_obj.set_by_val<std::string>("data_type", ndesc->get_data_type());
     net_obj.set_by_val<std::string>("connection_type", ndesc->get_connection_type());
     net_obj.set_obj("associated_service", &svc_obj);
@@ -232,8 +245,11 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   // and the cooresponding datalink handlers
 
   // Collect all streams
-  std::vector<const confmodel::DetectorStream*> det_streams;
-  std::vector<const conffwk::ConfigObject*> d2d_conn_objs;
+  std::vector<const confmodel::DetectorStream*> all_enabled_det_streams;
+  std::map<uint32_t, const confmodel::Connection*> data_queues_by_sid;
+
+  // std::vector<const conffwk::ConfigObject*> d2d_conn_objs;
+  uint16_t conn_idx = 0;
 
   for (auto d2d_conn_res : get_contains()) {
 
@@ -243,7 +259,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
       continue;
     }
 
-    d2d_conn_objs.push_back(&d2d_conn_res->config_object());
+    // d2d_conn_objs.push_back(&d2d_conn_res->config_object());
 
     TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn_res->UID();
     // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader module
@@ -261,6 +277,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
     auto det_senders = d2d_conn->get_senders();
     auto det_receiver = d2d_conn->get_receiver();
 
+    std::vector<const confmodel::DetectorStream*> enabled_det_streams;
     // Loop over senders
     for (auto stream : d2d_conn->get_streams()) {
 
@@ -271,7 +288,8 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
       }
 
       // loop over streams
-      det_streams.push_back(stream);
+      all_enabled_det_streams.push_back(stream);
+      enabled_det_streams.push_back(stream);
     }
 
 
@@ -308,7 +326,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
         throw(BadConf(ERS_HERE, "Non-felix DetDataSener found with FelixDataReceiver"));
       }
     }
-  }
+  // }
 
   //-----------------------------------------------------------------
   //
@@ -319,34 +337,35 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   // Instantiate DataReaderModule of type DPDKReaderModule
   //
 
-  // Create the DPDKReaderModule object
+   // Create the Data reader object
 
-  uint16_t conn_idx = 0;
-  std::string reader_uid(fmt::format("datareader-{}-{}", this->UID(), std::to_string(conn_idx++)));
-  conffwk::ConfigObject reader_obj;
-  TLOG_DEBUG(6) << fmt::format("creating OKS configuration object for Data reader class {} with id {}", reader_class, reader_uid);
-  config->create(dbfile, reader_class, reader_uid, reader_obj);
+    std::string reader_uid(fmt::format("datareader-{}-{}", this->UID(), std::to_string(conn_idx++)));
+    conffwk::ConfigObject reader_obj;
+    TLOG_DEBUG(6) << fmt::format("creating OKS configuration object for Data reader class {} with id {}", reader_class, reader_uid);
+    config->create(dbfile, reader_class, reader_uid, reader_obj);
 
-  // Populate configuration and interfaces (leave output queues for later)
-  reader_obj.set_obj("configuration", &reader_conf->config_object());
-  reader_obj.set_objs("connections", d2d_conn_objs);
+    // Populate configuration and interfaces (leave output queues for later)
+    reader_obj.set_obj("configuration", &reader_conf->config_object());
+    reader_obj.set_objs("connections", {&d2d_conn_res->config_object()});
 
-  // Create the raw data queues
-  std::vector<const conffwk::ConfigObject*> data_queue_objs;
-  // keep a map for convenience
-  std::map<uint32_t, const confmodel::Connection*> data_queues_by_sid;
+    // Create the raw data queues
+    std::vector<const conffwk::ConfigObject*> data_queue_objs;
+    // keep a map for convenience
 
-  // Create data queues
-  for (auto ds : det_streams) {
-    conffwk::ConfigObject queue_obj = obj_fac.create_queue_sid_obj(dlh_input_qdesc, ds);
-    const auto* connection = config->get<confmodel::Connection>(queue_obj.UID());
-    data_queue_objs.push_back(&connection->config_object());
-    data_queues_by_sid[ds->get_source_id()] = connection;
+    // Create data queues
+    for (auto ds : enabled_det_streams) {
+      conffwk::ConfigObject queue_obj = obj_fac.create_queue_sid_obj(dlh_input_qdesc, ds);
+      const auto* data_queue = config->get<confmodel::Connection>(queue_obj.UID());
+      data_queue_objs.push_back(&data_queue->config_object());
+      data_queues_by_sid[ds->get_source_id()] = data_queue;
+    }
+
+    reader_obj.set_objs("outputs", data_queue_objs);
+
+    modules.push_back(config->get<confmodel::DaqModule>(reader_uid));
+
   }
 
-  reader_obj.set_objs("outputs", data_queue_objs);
-
-  modules.push_back(config->get<confmodel::DaqModule>(reader_uid));
 
   //-----------------------------------------------------------------
   //
@@ -405,7 +424,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   //
   // Recover the emulation flag
   auto emulation_mode = reader_conf->get_emulation_mode();
-  for (auto ds : det_streams) {
+  for (auto ds : all_enabled_det_streams) {
 
     uint32_t sid = ds->get_source_id();
     TLOG_DEBUG(6) << fmt::format("Processing stream {}, id {}, det id {}", ds->UID(), ds->get_source_id(), ds->get_geo_id()->get_detector_id());
