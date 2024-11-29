@@ -81,8 +81,8 @@ class ReadoutObjFactory {
   conffwk::ConfigObject create(const std::string& class_name, const std::string& id) {
     conffwk::ConfigObject cfg_obj;
     config->create(this->dbfile, class_name, id, cfg_obj);
+    // config->create(this->dbfile, class_name, fmt::format("{}_{}", app_uid, id), cfg_obj);
     return cfg_obj;
-
   }
 
   //---
@@ -340,9 +340,8 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
    // Create the Data reader object
 
     std::string reader_uid(fmt::format("datareader-{}-{}", this->UID(), std::to_string(conn_idx++)));
-    conffwk::ConfigObject reader_obj;
     TLOG_DEBUG(6) << fmt::format("creating OKS configuration object for Data reader class {} with id {}", reader_class, reader_uid);
-    config->create(dbfile, reader_class, reader_uid, reader_obj);
+    auto reader_obj = obj_fac.create(reader_class, reader_uid);
 
     // Populate configuration and interfaces (leave output queues for later)
     reader_obj.set_obj("configuration", &reader_conf->config_object());
@@ -362,7 +361,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
 
     reader_obj.set_objs("outputs", data_queue_objs);
 
-    modules.push_back(config->get<confmodel::DaqModule>(reader_uid));
+    modules.push_back(config->get<confmodel::DaqModule>(reader_obj.UID()));
 
   }
 
@@ -381,9 +380,8 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
     for (auto sid : tpsrc_ids) {
       conffwk::ConfigObject tp_queue_obj;
       conffwk::ConfigObject tpreq_queue_obj;
-      conffwk::ConfigObject tph_obj;
       std::string tp_uid("tphandler-" + std::to_string(sid->get_sid()));
-      config->create(dbfile, tph_class, tp_uid, tph_obj);
+      auto tph_obj = obj_fac.create(tph_class, tp_uid);
       tph_obj.set_by_val<uint32_t>("source_id", sid->get_sid());
       tph_obj.set_by_val<uint32_t>("detector_id", 1); // 1 == kDAQ
       tph_obj.set_by_val<bool>("post_processing_enabled", get_ta_generation_enabled());
@@ -408,7 +406,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
       // Register queues with tp hankder
       tph_obj.set_objs("inputs", { &tp_queue_obj, &tpreq_queue_obj });
       tph_obj.set_objs("outputs", { &tp_net_obj, &ta_net_obj, &frag_queue_obj });
-      modules.push_back(config->get<confmodel::DaqModule>(tp_uid));
+      modules.push_back(config->get<confmodel::DaqModule>(tph_obj.UID()));
     }
   }
 
@@ -429,9 +427,8 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
     uint32_t sid = ds->get_source_id();
     TLOG_DEBUG(6) << fmt::format("Processing stream {}, id {}, det id {}", ds->UID(), ds->get_source_id(), ds->get_geo_id()->get_detector_id());
     std::string uid(fmt::format("DLH-{}", sid));
-    conffwk::ConfigObject dlh_obj;
     TLOG_DEBUG(6) << fmt::format("creating OKS configuration object for Data Link Handler class {}, if {}", dlh_class, sid);
-    config->create(dbfile, dlh_class, uid, dlh_obj);
+    auto dlh_obj = obj_fac.create(dlh_class, uid);
     dlh_obj.set_by_val<uint32_t>("source_id", sid);
     dlh_obj.set_by_val<uint32_t>("detector_id", ds->get_geo_id()->get_detector_id());
     dlh_obj.set_by_val<bool>("post_processing_enabled", get_tp_generation_enabled());
@@ -467,17 +464,15 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
     dlh_obj.set_objs("inputs", dlh_ins);
     dlh_obj.set_objs("outputs", dlh_outs);
 
-    modules.push_back(config->get<confmodel::DaqModule>(uid));
+    modules.push_back(config->get<confmodel::DaqModule>(dlh_obj.UID()));
   }
 
 
   // Finally create Fragment Aggregator
   std::string faUid("fragmentaggregator-" + UID());
-  conffwk::ConfigObject frag_aggr;
+  // conffwk::ConfigObject frag_aggr;
   TLOG_DEBUG(7) << "creating OKS configuration object for Fragment Aggregator class ";
-  config->create(dbfile, "FragmentAggregatorModule", faUid, frag_aggr);
-
-  // Add network connection from TRBs
+  auto frag_aggr = obj_fac.create("FragmentAggregatorModule", faUid);
   conffwk::ConfigObject fa_net_obj = obj_fac.create_net_obj(fa_net_desc);
 
   // Process special Network rules!
@@ -495,8 +490,9 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
       auto data_type = descriptor->get_data_type();
       if (data_type == "Fragment") {
         std::string dreqNetUid(descriptor->get_uid_base() + dfapp->UID());
-        conffwk::ConfigObject frag_conn;
-        config->create(dbfile, "NetworkConnection", dreqNetUid, frag_conn);
+        // conffwk::ConfigObject frag_conn;
+        // config->create(dbfile, "NetworkConnection", dreqNetUid, frag_conn);
+        auto frag_conn = obj_fac.create("NetworkConnection", dreqNetUid);
 
         frag_conn.set_by_val<std::string>("data_type", descriptor->get_data_type());
         frag_conn.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
