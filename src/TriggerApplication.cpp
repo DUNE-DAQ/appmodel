@@ -201,12 +201,7 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
   confdb->create(dbfile, ti_class, ti_uid, ti_obj);
   ti_obj.set_by_val<uint32_t>("source_id", source_id);
   ti_obj.set_by_val<uint32_t>("detector_id", 1); // 1 == kDAQ
-  if (handler_name == "tphandler") {
-    ti_obj.set_by_val<bool>("post_processing_enabled", get_ta_generation_enabled());
-  }
-  if (handler_name == "tahandler") {
-    ti_obj.set_by_val<bool>("post_processing_enabled", get_tc_generation_enabled());
-  }
+  ti_obj.set_by_val<bool>("post_processing_enabled", !get_tx_generation_disabled());
 
   ti_obj.set_obj("module_configuration", &ti_conf_obj);
   ti_obj.set_objs("inputs", {&input_queue_obj, &req_net_obj});
