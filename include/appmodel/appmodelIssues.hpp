@@ -1,3 +1,4 @@
+
 #ifndef APPDALISSUES_HPP
 #define APPDALISSUES_HPP
 
@@ -13,7 +14,12 @@ namespace dunedaq {
 		    MissingIP,
 		    "Daphne configuration has no IP " << ip,
 		    ((std::string)ip))
-		    
+
+  ERS_DECLARE_ISSUE(appmodel,
+		    MissingDaphne,
+		    "Daphne " << id << " has active channels but its turned off",
+		    ((size_t)id))
+
 }
 
 

@@ -172,6 +172,7 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
 	conffwk::ConfigObject afe_obj;
 	config->create(dbfile, "DaphneV2AFE",
 		       fmt::format("daphne-{}-afe-{}", slot, id),afe_obj );
+	afe_obj.set_by_val<uint8_t>("afe_id", id);
 	afe_obj.set_by_val<uint16_t>("attenuator", raw_afe_attenuators[i]);
 	afe_obj.set_by_val<uint16_t>("v_bias", raw_afe_biases[i]);
 	afe_obj.set_obj("adc", & adc -> config_object() );
@@ -233,7 +234,7 @@ DaphneV2BoardConf::is_channel_used(size_t ch) const {
       return true;
     }
   }
-  
+
   return false;
 }
 
@@ -257,7 +258,7 @@ DaphneV2BoardConf::is_afe_used(size_t afe) const {
   for ( size_t i = begin; i < end; ++i) {
     if( is_channel_used(i) ) return true;
   }
-  
+
   return false;
 }
 
@@ -271,8 +272,8 @@ DaphneV2BoardConf::get_afe(size_t ch) const {
       return *afe_p;
     }
   }
-  
-  return *get_default_afe();
+
+  throw appmodel::MissingDaphne(ERS_HERE, ch);
 }
 
 
