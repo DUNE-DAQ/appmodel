@@ -185,4 +185,31 @@
   </method>
  </class>
 
+ <class name="SSPLEDCalibModule" description="SSP LED Calib DAQ Module configuration">
+  <superclass name="DaqModule"/>
+  <attribute name="card_id" description="Physical card identifier (in the same host)" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="board_id" description="Board ID used for configuration and metric tracking" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="module_id" description="Module ID used for configuration and metric tracking" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="board_ip" description="IP address of the board" type="string" init-value="127.0.0.1" is-not-null="yes"/>
+  <attribute name="partition_number" description="FIXME: partition number for the SSP board" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="timing_address" description="Timing address of the SSP board" type="u32" init-value="32" is-not-null="yes"/>
+  <attribute name="number_channels" description="Decimal number of the number of channels in the card, should be either 5 or 12" type="u32" range="5,12" init-value="12" is-not-null="yes"/>
+  <attribute name="channel_mask" description="Decimal number for the 12-bit channel mask where 1 is on, e.g. 4095 is all channels on" type="u32" range="0..4095" init-value="4095" is-not-null="yes"/>
+  <attribute name="pulse_mode" type="enum" range="single,double,burst" init-value="single" is-not-null="yes"/>
+  <attribute name="burst_count" description="Number of LED calib pulses to send in a burst" type="u32" range="0..10000" init-value="1000" is-not-null="yes"/>
+  <attribute name="double_pulse_delay_ticks" description="number of ticks between first and second pulse in double pulse mode" type="u32" range="0..4095" init-value="100" is-not-null="yes"/>
+  <attribute name="pulse1_width_ticks" description="Width of first pulse in time ticks" type="u32" range="0..255" init-value="100" is-not-null="yes"/>
+  <attribute name="pulse2_width_ticks" description="width of second pulse " type="u32" range="0..255" init-value="100" is-not-null="yes"/>
+  <attribute name="pulse_bias_percent_270nm" description="the fraction of bias applied to 270 nm LED" type="u32" init-value="100" is-not-null="yes"/>
+  <attribute name="pulse_bias_percent_367nm" description="the fraction of bias applied to 367 nm LEDs" type="u32" init-value="100" is-not-null="yes"/>
+  <relationship name="hardware_configuration" class-type="SSPRegister" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="SSPRegister">
+  <attribute name="name" type="string" init-value="unknown" is-not-null="yes"/>
+  <attribute name="address" type="u32" format="hex" init-value="0x0" is-not-null="yes"/>
+  <attribute name="value" type="u32" format="hex" init-value="0x0" is-not-null="yes"/>
+  <attribute name="mask" type="u32" format="hex" init-value="0xffffffff" is-not-null="yes"/>
+ </class>
+
 </oks-schema>
