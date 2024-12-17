@@ -399,4 +399,36 @@
   <relationship name="mandatory_source_ids" description="Source Ids that will always be included in a trigger decision." class-type="SourceIDConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
+ <class name="TriggerPrimitiveMakerModule">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="TriggerPrimitiveMakerModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="TriggerPrimitiveMakerModuleConf">
+  <attribute name="template_for" type="class" init-value="TriggerPrimitiveMakerModule"/>
+  <attribute name="number_of_loops" type="u32" init-value="1" is-not-null="yes"/>
+  <attribute name="tpset_time_offset" type="u32" init-value="1" is-not-null="yes"/>
+  <attribute name="tpset_time_width" type="u32" init-value="1" is-not-null="yes"/>
+  <attribute name="maximum_wait_time_us" type="u32" init-value="1000" is-not-null="yes"/>
+  <relationship name="tp_streams" class-type="TPStreamConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="TPStreamConf">
+  <attribute name="filename" type="string"/>
+  <attribute name="element_id" type="u32" init-value="0"/>
+  <attribute name="output_sink_name" type="string" init-value="replay_tps"/>
+ </class>
+
+ <class name="TriggerReplayApplication">
+  <superclass name="Resource"/>
+  <superclass name="SmartDaqApplication"/>
+  <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
+  <relationship name="tp_source_ids" class-type="SourceIDConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="tpmm_conf" class-type="TriggerPrimitiveMakerModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="tp_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <method name="generate_modules" description="Generate daq module dal objects for TriggerReplayApplication on the fly">
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
+  </method>
+ </class>
+
 </oks-schema>

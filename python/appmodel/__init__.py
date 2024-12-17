@@ -15,6 +15,7 @@ __generate_class_map = {
     'FakeHSIApplication': fakehsi_application_generate,
     'HSIEventToTCApplication': hsieventtotc_application_generate,
     'MLTApplication': mlt_application_generate,
+    'TriggerReplayApplication': replay_application_generate,
     'WIECApplication': wiec_application_generate,
 
 }

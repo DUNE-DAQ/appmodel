@@ -25,6 +25,7 @@
 #include "appmodel/SmartDaqApplication.hpp"
 #include "appmodel/TPStreamWriterApplication.hpp"
 #include "appmodel/TriggerApplication.hpp"
+#include "appmodel/TriggerReplayApplication.hpp"
 
 #include "appmodel/appmodelIssues.hpp"
 
