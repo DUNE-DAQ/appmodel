@@ -415,8 +415,6 @@
 
  <class name="TPStreamConf">
   <attribute name="filename" type="string"/>
-  <attribute name="element_id" type="u32" init-value="0"/>
-  <attribute name="output_sink_name" type="string" init-value="replay_tps"/>
  </class>
 
  <class name="TriggerReplayApplication">
