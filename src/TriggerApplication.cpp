@@ -34,6 +34,7 @@
 #include "appmodel/SourceIDConf.hpp"
 
 #include "appmodel/TriggerApplication.hpp"
+#include "appmodel/DFApplication.hpp"
 #include "appmodel/appmodelIssues.hpp"
 
 #include "logging/Logging.hpp"
@@ -82,7 +83,7 @@ create_network_connection(std::string uid,
 std::vector<const confmodel::DaqModule*>
 TriggerApplication::generate_modules(conffwk::Configuration* confdb,
                                      const std::string& dbfile,
-                                     const confmodel::Session* /*session*/) const
+                                     const confmodel::Session* session) const
 {
   std::vector<const confmodel::DaqModule*> modules;
 
@@ -99,7 +100,7 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
       ti_inputq_desc = rule->get_descriptor();
     }
   }
-  // Process the network rules looking for the Fragment Aggregator and TP handler data reuest inputs
+  // Process the network rules looking for the TP handler data reuest inputs
   const NetworkConnectionDescriptor* req_net_desc = nullptr;
   const NetworkConnectionDescriptor* tin_net_desc = nullptr;
   const NetworkConnectionDescriptor* tout_net_desc = nullptr;
@@ -149,6 +150,35 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
     }
   }
 
+  // Process special Network rules!
+  // Looking for Fragment rules from DFAppplications in current Session
+  auto sessionApps = session->get_enabled_applications();
+  std::vector<conffwk::ConfigObject> fragOutObjs;
+  for (auto app : sessionApps) {
+    auto dfapp = app->cast<appmodel::DFApplication>();
+    if (dfapp == nullptr)
+      continue;
+
+    auto dfNRules = dfapp->get_network_rules();
+    for (auto rule : dfNRules) {
+      auto descriptor = rule->get_descriptor();
+      auto data_type = descriptor->get_data_type();
+      if (data_type == "Fragment") {
+        std::string dreqNetUid(descriptor->get_uid_base() + dfapp->UID());
+        conffwk::ConfigObject frag_conn;
+        //create_mlt_network_connection(ti_net_desc->get_uid_base(), ti_net_desc, confdb, dbfile);
+        confdb->create(dbfile, "NetworkConnection", dreqNetUid, frag_conn);
+
+        frag_conn.set_by_val<std::string>("data_type", descriptor->get_data_type());
+        frag_conn.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
+
+        auto serviceObj = descriptor->get_associated_service()->config_object();
+        frag_conn.set_obj("associated_service", &serviceObj);
+        fragOutObjs.push_back(frag_conn);
+      } // If network rule has TriggerDecision type of data
+    }   // Loop over Apps network rules
+  }     // loop over Session specific Apps
+
   // Now create the Data Handler and its associated queue and network
   // connections
   conffwk::ConfigObject input_queue_obj;
@@ -191,6 +221,16 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
                                                  tset_out_net_desc, confdb, dbfile);
   }
 
+  // build up the full list of outputs
+  std::vector<const conffwk::ConfigObject*> ti_output_objs;
+  for (auto& fNet : fragOutObjs) {
+    ti_output_objs.push_back(&fNet);
+  }
+  ti_output_objs.push_back(&tout_net_obj);
+  if (tset_out_net_desc!= nullptr) {
+    ti_output_objs.push_back(&tset_out_net_obj);
+  }
+
   auto ti_conf_obj = ti_conf->config_object();
   conffwk::ConfigObject ti_obj;
   if (get_source_id() == nullptr) {
@@ -205,14 +245,9 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
 
   ti_obj.set_obj("module_configuration", &ti_conf_obj);
   ti_obj.set_objs("inputs", {&input_queue_obj, &req_net_obj});
-  if (tset_out_net_desc!= nullptr) {
-    ti_obj.set_objs("outputs", {&tout_net_obj, &tset_out_net_obj});
-  }
-  else {
-    ti_obj.set_objs("outputs", {&tout_net_obj});
-  }
+  ti_obj.set_objs("outputs", ti_output_objs);
   // Add to our list of modules to return
-   modules.push_back(confdb->get<DataHandlerModule>(ti_uid));
+  modules.push_back(confdb->get<DataHandlerModule>(ti_uid));
 
 
   // Now create the DataSubscriberModule object
