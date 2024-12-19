@@ -119,19 +119,6 @@
   <attribute name="plane2" description="Threshold for plane 2." type="u16" init-value="100" is-not-null="yes"/>
  </class>
 
- <class name="CustomTCMaker">
-  <superclass name="StandaloneTCMakerModule"/>
-  <relationship name="configuration" class-type="CustomTCMakerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="CustomTCMakerConf">
-  <superclass name="StandaloneTCMakerConf"/>
-  <attribute name="template_for" type="class" init-value="CustomTCMaker"/>
-  <attribute name="trigger_types" description="List of TC-Types (as ints) for the CTCM to produce" type="u32" is-multi-value="yes" init-value="3,7" is-not-null="yes"/>
-  <attribute name="trigger_intervals" description="List time intervals between consecutive TCs generated, one for each TC-type" type="u32" is-multi-value="yes" init-value="62500000,62500000" is-not-null="yes"/>
-  <attribute name="clock_frequency_hz" description="Detector clock frequency (in Hz)" type="u32" init-value="62500000"/>
- </class>
-
  <class name="DataSubscriberModule">
   <superclass name="DaqModule"/>
   <relationship name="configuration" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -398,6 +385,7 @@
   <superclass name="ResourceSetAND"/>
   <superclass name="SmartDaqApplication"/>
   <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
+  <attribute name="tx_generation_disabled" description="Disable TA/TC generation as a post-processing task -- only to be done by the experts for e.g. TP performance studies" type="bool" init-value="false"/>
   <relationship name="data_subscriber" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="trigger_inputs_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate daq module dal objects for streams of thie TriggerApplication on the fly">

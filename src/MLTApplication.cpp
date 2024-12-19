@@ -51,6 +51,7 @@
 #include "appmodel/ReadoutApplication.hpp"
 #include "appmodel/TriggerApplication.hpp"
 #include "appmodel/appmodelIssues.hpp"
+#include "appmodel/DFApplication.hpp"
 
 #include "appmodel/StandaloneTCMakerConf.hpp"
 #include "appmodel/StandaloneTCMakerModule.hpp"
@@ -406,6 +407,42 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
    * Create the TC handler
    **************************************************************/
 
+  // Process special Network rules!
+  // Looking for Fragment rules from DFAppplications in current Session
+  auto sessionApps = session->get_enabled_applications();
+  std::vector<conffwk::ConfigObject> fragOutObjs;
+  for (auto app : sessionApps) {
+    auto dfapp = app->cast<appmodel::DFApplication>();
+    if (dfapp == nullptr)
+      continue;
+
+    auto dfNRules = dfapp->get_network_rules();
+    for (auto rule : dfNRules) {
+      auto descriptor = rule->get_descriptor();
+      auto data_type = descriptor->get_data_type();
+      if (data_type == "Fragment") {
+        std::string dreqNetUid(descriptor->get_uid_base() + dfapp->UID());
+        conffwk::ConfigObject frag_conn;
+        //create_mlt_network_connection(ti_net_desc->get_uid_base(), ti_net_desc, confdb, dbfile);
+        confdb->create(dbfile, "NetworkConnection", dreqNetUid, frag_conn);
+
+        frag_conn.set_by_val<std::string>("data_type", descriptor->get_data_type());
+        frag_conn.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
+
+        auto serviceObj = descriptor->get_associated_service()->config_object();
+        frag_conn.set_obj("associated_service", &serviceObj);
+        fragOutObjs.push_back(frag_conn);
+      } // If network rule has TriggerDecision type of data
+    }   // Loop over Apps network rules
+  }     // loop over Session specific Apps
+
+  // build up the full list of outputs
+  std::vector<const conffwk::ConfigObject*> ti_output_objs;
+  for (auto& fNet : fragOutObjs) {
+    ti_output_objs.push_back(&fNet);
+  }
+  ti_output_objs.push_back(&output_queue_obj);
+
   auto tch_conf_obj = tch_conf->config_object();
   conffwk::ConfigObject ti_obj;
   if (get_source_id() == nullptr) {
@@ -420,7 +457,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
   ti_obj.set_objs("enabled_source_ids", sourceIds);
   ti_obj.set_objs("mandatory_source_ids", mandatory_sids);
   ti_obj.set_objs("inputs", { &input_queue_obj, &dr_net_obj });
-  ti_obj.set_objs("outputs", { &output_queue_obj });
+  ti_obj.set_objs("outputs", ti_output_objs);
 
   // Add to our list of modules to return
   modules.push_back(confdb->get<DataHandlerModule>(ti_uid));
