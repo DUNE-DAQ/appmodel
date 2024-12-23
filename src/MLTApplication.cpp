@@ -43,13 +43,14 @@
 #include "appmodel/MLTConf.hpp"
 #include "appmodel/MLTModule.hpp"
 
+#include "appmodel/DTSHSIApplication.hpp"
 #include "appmodel/FakeDataApplication.hpp"
 #include "appmodel/FakeDataProdConf.hpp"
 #include "appmodel/FakeHSIApplication.hpp"
-#include "appmodel/DTSHSIApplication.hpp"
 #include "appmodel/MLTApplication.hpp"
 #include "appmodel/ReadoutApplication.hpp"
 #include "appmodel/TriggerApplication.hpp"
+#include "appmodel/TriggerReplayApplication.hpp"
 #include "appmodel/appmodelIssues.hpp"
 
 #include "appmodel/StandaloneTCMakerConf.hpp"
@@ -323,6 +324,13 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
         // *tpSourceIdConf); tpSourceIdConf->set_by_val<uint32_t>("sid", ro_app->get_tp_source_id());
         // tpSourceIdConf->set_by_val<std::string>("subsystem", "Trigger");
         // sourceIds.push_back(tpSourceIdConf);
+      }
+    }
+
+    auto replay_app = app->cast<appmodel::TriggerReplayApplication>();
+    if (replay_app != nullptr) {
+      for (auto sid : replay_app->get_tp_source_ids()) {
+        sourceIds.push_back(&(sid->config_object()));
       }
     }
 

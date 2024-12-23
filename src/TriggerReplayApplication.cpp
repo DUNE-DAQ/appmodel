@@ -36,8 +36,8 @@
 #include "appmodel/TriggerPrimitiveMakerModule.hpp"
 #include "appmodel/TriggerPrimitiveMakerModuleConf.hpp"
 
-#include "appmodel/TriggerReplayApplication.hpp"
 #include "appmodel/TriggerApplication.hpp"
+#include "appmodel/TriggerReplayApplication.hpp"
 #include "appmodel/appmodelIssues.hpp"
 
 #include "logging/Logging.hpp"
@@ -59,8 +59,8 @@ static ModuleFactory::Registrator __reg__("TriggerReplayApplication",
 
 std::vector<const confmodel::DaqModule*>
 TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
-                                 const std::string& dbfile,
-                                 const confmodel::Session* /*session*/) const
+                                           const std::string& dbfile,
+                                           const confmodel::Session* /*session*/) const
 {
 
   /***** MODULES *****/
@@ -90,6 +90,9 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
     tph_class = tph_conf->get_template_for();
   }
 
+  // Source IDs
+  auto tpsrc_ids = get_tp_source_ids();
+
   // For now, have X identical config TP Handlers
   // X = either num of files if < 4; or 4
   // Later, do this dynamically, but that requires opening the HDF5s...
@@ -104,7 +107,7 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
     std::string tp_uid = "tphandler-replay-" + std::to_string(i);
     TPHs_uids.push_back(tp_uid);
     confdb->create(dbfile, tph_class, tp_uid, *tph_obj);
-    tph_obj->set_by_val<uint32_t>("source_id", i);
+    tph_obj->set_by_val<uint32_t>("source_id", tpsrc_ids[i - 1]->get_sid());
     tph_obj->set_by_val<uint32_t>("detector_id", 1); // 1 == kDAQ
     tph_obj->set_by_val<bool>("post_processing_enabled", true);
     tph_obj->set_obj("module_configuration", &tph_conf_obj);
@@ -130,11 +133,10 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
   for (int i = 1; i <= APA_limit; i++) {
     auto tp_q_obj = std::make_shared<conffwk::ConfigObject>();
     std::string tp_q_uid = "tpinput-" + std::to_string(i);
-    confdb->create(dbfile, "QueueWithSourceId", tp_q_uid, *tp_q_obj);
+    confdb->create(dbfile, "Queue", tp_q_uid, *tp_q_obj);
     tp_q_obj->set_by_val<std::string>("data_type", tp_inputq_desc->get_data_type());
     tp_q_obj->set_by_val<std::string>("queue_type", tp_inputq_desc->get_queue_type());
     tp_q_obj->set_by_val<uint32_t>("capacity", tp_inputq_desc->get_capacity());
-    tp_q_obj->set_by_val<uint32_t>("source_id", i);
     TP_queues.push_back(tp_q_obj);
   }
 
@@ -167,10 +169,12 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
     ta_net_obj->set_by_val<std::string>("connection_type", ta_net_desc->get_connection_type());
     ta_net_obj->set_obj("associated_service", &ta_service_obj);
     ta_net_objects.push_back(ta_net_obj);
+  }
 
+  for (int i = 1; i <= APA_limit; i++) {
     auto dr_net_obj = std::make_shared<conffwk::ConfigObject>();
     auto dr_service_obj = dr_net_desc->get_associated_service()->config_object();
-    std::string dr_stream_uid = dr_net_desc->get_uid_base() + UID() + "-" + std::to_string(i);
+    std::string dr_stream_uid = dr_net_desc->get_uid_base() + UID() + "-10000" + std::to_string(i - 1);
     confdb->create(dbfile, "NetworkConnection", dr_stream_uid, *dr_net_obj);
     dr_net_obj->set_by_val<std::string>("data_type", dr_net_desc->get_data_type());
     dr_net_obj->set_by_val<std::string>("connection_type", dr_net_desc->get_connection_type());
@@ -190,10 +194,7 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
 
   for (int i = 1; i <= APA_limit; i++) {
     // Convert network objects to raw pointers
-    std::vector<const conffwk::ConfigObject*> temp_inputs = {
-      TP_queues[i - 1].get(),
-      dr_net_objects[i - 1].get()
-    };
+    std::vector<const conffwk::ConfigObject*> temp_inputs = { TP_queues[i - 1].get(), dr_net_objects[i - 1].get() };
     TPHs[i - 1]->set_objs("inputs", temp_inputs);
     TPHs[i - 1]->set_objs("outputs", { ta_net_objects[i - 1].get() });
   }
