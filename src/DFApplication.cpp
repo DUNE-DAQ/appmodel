@@ -26,6 +26,8 @@
 #include "appmodel/TRBConf.hpp"
 #include "appmodel/TRBModule.hpp"
 #include "appmodel/TriggerReplayApplication.hpp"
+#include "appmodel/TriggerPrimitiveMakerModuleConf.hpp"
+#include "appmodel/TPStreamConf.hpp"
 #include "appmodel/appmodelIssues.hpp"
 #include "conffwk/Configuration.hpp"
 #include "confmodel/Connection.hpp"
@@ -89,7 +91,24 @@ fill_sourceid_object_from_app(conffwk::Configuration* confdb,
                               const NetworkConnectionDescriptor* descriptor,
                               std::string smartapp_uid)
 {
+
+  // Set to hold unique integers
+  auto tpmm_conf = rapp->get_tpmm_conf();
+  std::set<int> unique_ro_units;
+  for (auto& stream : tpmm_conf->get_tp_streams()) {
+    int ro_unit = TriggerReplayApplication::get_ro_unit(stream->get_filename());
+    // Add the RO unit to the set
+    if (ro_unit != -1) { // Ignore invalid results
+      unique_ro_units.insert(ro_unit);
+    }
+  } 
+  int APA_limit = unique_ro_units.size();
+  int APA_counter = 0;
   for (auto tp_sid : rapp->get_tp_source_ids()) {
+    if (APA_counter >= APA_limit) {
+        break; // Exit the loop once APA_limit iterations are reached
+    }
+    APA_counter++;
     std::string name = tp_sid->UID();
     size_t pos = name.find_last_of('-');
     std::string ext;

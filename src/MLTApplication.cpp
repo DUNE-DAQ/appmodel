@@ -51,6 +51,8 @@
 #include "appmodel/ReadoutApplication.hpp"
 #include "appmodel/TriggerApplication.hpp"
 #include "appmodel/TriggerReplayApplication.hpp"
+#include "appmodel/TriggerPrimitiveMakerModuleConf.hpp"
+#include "appmodel/TPStreamConf.hpp"
 #include "appmodel/appmodelIssues.hpp"
 
 #include "appmodel/StandaloneTCMakerConf.hpp"
@@ -329,7 +331,21 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
 
     auto replay_app = app->cast<appmodel::TriggerReplayApplication>();
     if (replay_app != nullptr) {
+      auto tpmm_conf = replay_app->get_tpmm_conf();
+      std::set<int> unique_ro_units;
+      for (auto& stream : tpmm_conf->get_tp_streams()) {
+        int ro_unit = TriggerReplayApplication::get_ro_unit(stream->get_filename());
+        if (ro_unit != -1) { // Ignore invalid results
+          unique_ro_units.insert(ro_unit);
+        }
+      }
+      int APA_limit = unique_ro_units.size();
+      int APA_counter = 0; 
       for (auto sid : replay_app->get_tp_source_ids()) {
+	if (APA_counter >= APA_limit) {
+          break; // Exit the loop once APA_limit iterations are reached
+        }
+        APA_counter++;
         sourceIds.push_back(&(sid->config_object()));
       }
     }

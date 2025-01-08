@@ -35,6 +35,7 @@
 
 #include "appmodel/TriggerPrimitiveMakerModule.hpp"
 #include "appmodel/TriggerPrimitiveMakerModuleConf.hpp"
+#include "appmodel/TPStreamConf.hpp"
 
 #include "appmodel/TriggerApplication.hpp"
 #include "appmodel/TriggerReplayApplication.hpp"
@@ -42,6 +43,7 @@
 
 #include "logging/Logging.hpp"
 
+#include <set>
 #include <string>
 #include <vector>
 
@@ -56,6 +58,46 @@ static ModuleFactory::Registrator __reg__("TriggerReplayApplication",
                                             auto app = smartApp->cast<TriggerReplayApplication>();
                                             return app->generate_modules(confdb, dbfile, session);
                                           });
+
+int
+TriggerReplayApplication::get_ro_unit(const std::string& path)
+{
+  // Step 1: Find the last part of the path before ".hdf5"
+  size_t lastSlashPos = path.rfind('/');
+  std::string filename = path.substr(lastSlashPos + 1);
+
+  size_t hdf5Pos = filename.find(".hdf5");
+  if (hdf5Pos == std::string::npos) return -1; // .hdf5 not found
+
+  // Extract the filename before ".hdf5"
+  filename = filename.substr(0, hdf5Pos);
+
+  // Step 2: Find "tp-stream-writer" and extract the part after it
+  size_t tpPos = filename.find("tp-stream-writer");
+  if (tpPos == std::string::npos) return -1; // "tp-stream-writer" not found
+
+  std::string afterTp = filename.substr(tpPos + 17); // length of "tp-stream-writer" is 17
+
+  // Step 3: Check for "apa" or "crp" and extract the number
+  std::string prefix;
+  size_t prefixPos;
+
+  if ((prefixPos = afterTp.find("apa")) != std::string::npos) {
+    prefix = "apa";
+  } else if ((prefixPos = afterTp.find("crp")) != std::string::npos) {
+    prefix = "crp";
+  } else {
+    return -1; // Neither "apa" nor "crp" found
+  }
+
+  // Extract the prefix part (e.g., "apaX" or "crpX") and convert the number
+  std::string part = afterTp.substr(prefixPos, prefix.size() + 1); // Get prefix + number
+  if (part.size() == prefix.size() + 1 && std::isdigit(part.back())) {
+    return std::stoi(part.substr(prefix.size())); // Convert the number part to integer
+  }
+    
+  return -1; // Return -1 if something goes wrong
+}
 
 std::vector<const confmodel::DaqModule*>
 TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
@@ -82,6 +124,19 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
   tpm_obj.set_obj("configuration", &(tpmm_conf->config_object()));
 
   /**************************************************************
+   * Extract # Readout units from files - this affects the rest
+   **************************************************************/
+  // Set to hold unique integers
+  std::set<int> unique_ro_units;
+  for (auto& stream : tpmm_conf->get_tp_streams()) {
+    int ro_unit = get_ro_unit(stream->get_filename());
+    // Add the RO unit to the set
+    if (ro_unit != -1) { // Ignore invalid results
+      unique_ro_units.insert(ro_unit);
+    }
+  }
+
+  /**************************************************************
    * Instantiate the TP Handler (TA Maker) module
    **************************************************************/
   auto tph_conf = get_tp_handler();
@@ -90,16 +145,13 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
     tph_class = tph_conf->get_template_for();
   }
 
-  // Source IDs
-  auto tpsrc_ids = get_tp_source_ids();
-
   // For now, have X identical config TP Handlers
-  // X = either num of files if < 4; or 4
-  // Later, do this dynamically, but that requires opening the HDF5s...
-  int max_APAs = tpmm_conf->get_tp_streams().size();
-  int APA_limit = std::min(max_APAs, 4);
+  int APA_limit = unique_ro_units.size();
   std::vector<std::shared_ptr<conffwk::ConfigObject>> TPHs;
   std::vector<std::string> TPHs_uids;
+
+  // Source IDs
+  auto tpsrc_ids = get_tp_source_ids();
 
   auto tph_conf_obj = tph_conf->config_object();
   for (int i = 1; i <= APA_limit; i++) {

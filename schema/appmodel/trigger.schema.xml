@@ -433,6 +433,9 @@
   <method name="generate_modules" description="Generate daq module dal objects for TriggerReplayApplication on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
   </method>
+  <method name="get_ro_unit" description="">
+    <method-implementation language="c++" prototype="static int get_ro_unit(const std::string&amp; path)" body=""/>
+  </method>
  </class>
 
 </oks-schema>
