@@ -8,7 +8,7 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
+#include "confmodel/ModuleFactory.hpp"
 
 #include "conffwk/Configuration.hpp"
 
@@ -25,13 +25,13 @@
 #include "appmodel/DataHandlerModule.hpp"
 #include "appmodel/DataHandlerConf.hpp"
 
-#include "appmodel/NetworkConnectionRule.hpp"
-#include "appmodel/QueueConnectionRule.hpp"
+#include "confmodel/NetworkConnectionRule.hpp"
+#include "confmodel/QueueConnectionRule.hpp"
 
-#include "appmodel/QueueDescriptor.hpp"
-#include "appmodel/NetworkConnectionDescriptor.hpp"
+#include "confmodel/QueueDescriptor.hpp"
+#include "confmodel/NetworkConnectionDescriptor.hpp"
 
-#include "appmodel/SourceIDConf.hpp"
+#include "confmodel/SourceIDConf.hpp"
 
 #include "appmodel/TriggerApplication.hpp"
 #include "appmodel/DFApplication.hpp"
@@ -45,11 +45,11 @@
 using namespace dunedaq;
 using namespace dunedaq::appmodel;
 
-static ModuleFactory::Registrator __reg__("TriggerApplication",
-                                          [](const SmartDaqApplication* smartApp,
+static confmodel::ModuleFactory::Registrator __reg__("TriggerApplication",
+                                          [](const confmodel::SmartDaqApplication* smartApp,
                                              conffwk::Configuration* confdb,
                                              const std::string& dbfile,
-                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
+                                             const confmodel::Session* session) -> confmodel::ModuleFactory::ReturnType {
                                             auto app = smartApp->cast<TriggerApplication>();
                                             return app->generate_modules(confdb, dbfile, session);
                                           });
@@ -66,7 +66,7 @@ static ModuleFactory::Registrator __reg__("TriggerApplication",
  */
 conffwk::ConfigObject
 create_network_connection(std::string uid,
-                          const NetworkConnectionDescriptor* ntDesc,
+                          const confmodel::NetworkConnectionDescriptor* ntDesc,
                           conffwk::Configuration* confdb,
                           const std::string& dbfile)
 {
@@ -91,7 +91,7 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
   auto ti_class = ti_conf->get_template_for();
   std::string handler_name("");
   // Process the queue rules looking for inputs to our trigger handler modules
-  const QueueDescriptor* ti_inputq_desc = nullptr;
+  const confmodel::QueueDescriptor* ti_inputq_desc = nullptr;
 
   for (auto rule : get_queue_rules()) {
     auto destination_class = rule->get_destination_class();
@@ -101,10 +101,10 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
     }
   }
   // Process the network rules looking for the TP handler data reuest inputs
-  const NetworkConnectionDescriptor* req_net_desc = nullptr;
-  const NetworkConnectionDescriptor* tin_net_desc = nullptr;
-  const NetworkConnectionDescriptor* tout_net_desc = nullptr;
-  const NetworkConnectionDescriptor* tset_out_net_desc = nullptr;
+  const confmodel::NetworkConnectionDescriptor* req_net_desc = nullptr;
+  const confmodel::NetworkConnectionDescriptor* tin_net_desc = nullptr;
+  const confmodel::NetworkConnectionDescriptor* tout_net_desc = nullptr;
+  const confmodel::NetworkConnectionDescriptor* tset_out_net_desc = nullptr;
   for (auto rule : get_network_rules()) {
     auto endpoint_class = rule->get_endpoint_class();
     auto data_type = rule->get_descriptor()->get_data_type();
@@ -122,7 +122,7 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
       else if (rule->get_descriptor()->get_data_type() == tin_net_desc->get_data_type()) {
         // For now endpoint_class of DataSubscriberModule for both input and output
         // with the same data type is not possible.
-        throw (BadConf(ERS_HERE, "Have two network connections of the same data_type and the same endpoint_class"));
+        throw (confmodel::BadConf(ERS_HERE, "Have two network connections of the same data_type and the same endpoint_class"));
       }
       else if (tin_net_desc->get_data_type() == "TriggerActivity" &&
           rule->get_descriptor()->get_data_type() == "TriggerCandidate") {
@@ -138,7 +138,7 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
         handler_name = "tahandler";
       }
       else {
-        throw (BadConf(ERS_HERE, "Unexpected input & output network connection descriptors provided"));
+        throw (confmodel::BadConf(ERS_HERE, "Unexpected input & output network connection descriptors provided"));
       }
     }
     else if (data_type == "TriggerActivity" || data_type == "TriggerCandidate"){
@@ -188,16 +188,16 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
   conffwk::ConfigObject tset_out_net_obj;
 
   if ( req_net_desc== nullptr) {
-      throw (BadConf(ERS_HERE, "No network descriptor given to receive request and send data was set"));
+      throw (confmodel::BadConf(ERS_HERE, "No network descriptor given to receive request and send data was set"));
   }
   if ( tin_net_desc== nullptr) {
-      throw (BadConf(ERS_HERE, "No network descriptor given to receive trigger objects"));
+      throw (confmodel::BadConf(ERS_HERE, "No network descriptor given to receive trigger objects"));
   }
   if ( tout_net_desc== nullptr) {
-      throw (BadConf(ERS_HERE, "No network descriptor given to publish trigger objects"));
+      throw (confmodel::BadConf(ERS_HERE, "No network descriptor given to publish trigger objects"));
   }
   if (ti_inputq_desc == nullptr) {
-      throw (BadConf(ERS_HERE, "No data input queue descriptor given"));
+      throw (confmodel::BadConf(ERS_HERE, "No data input queue descriptor given"));
   }
 
   std::string queue_uid(ti_inputq_desc->get_uid_base());
@@ -234,7 +234,7 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
   auto ti_conf_obj = ti_conf->config_object();
   conffwk::ConfigObject ti_obj;
   if (get_source_id() == nullptr) {
-    throw(BadConf(ERS_HERE, "No source_id associated with this TriggerApplication!"));
+    throw(confmodel::BadConf(ERS_HERE, "No source_id associated with this TriggerApplication!"));
   }
   uint32_t source_id = get_source_id()->get_sid();
   std::string ti_uid(handler_name + "-" + std::to_string(source_id));
@@ -253,7 +253,7 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
   // Now create the DataSubscriberModule object
   auto rdr_conf = get_data_subscriber();
   if (rdr_conf == nullptr) {
-    throw (BadConf(ERS_HERE, "No DataReaderModule configuration given"));
+    throw (confmodel::BadConf(ERS_HERE, "No DataReaderModule configuration given"));
   }
 
   // Create a DataReaderModule

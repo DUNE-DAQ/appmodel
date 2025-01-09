@@ -8,7 +8,7 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
+#include "confmodel/ModuleFactory.hpp"
 
 #include "conffwk/Configuration.hpp"
 #include "oks/kernel.hpp"
@@ -24,10 +24,10 @@
 #include "appmodel/FakeDataProdConf.hpp"
 #include "appmodel/FakeDataProdModule.hpp"
 #include "appmodel/FragmentAggregatorModule.hpp"
-#include "appmodel/NetworkConnectionDescriptor.hpp"
-#include "appmodel/NetworkConnectionRule.hpp"
-#include "appmodel/QueueConnectionRule.hpp"
-#include "appmodel/QueueDescriptor.hpp"
+#include "confmodel/NetworkConnectionDescriptor.hpp"
+#include "confmodel/NetworkConnectionRule.hpp"
+#include "confmodel/QueueConnectionRule.hpp"
+#include "confmodel/QueueDescriptor.hpp"
 
 #include "appmodel/appmodelIssues.hpp"
 
@@ -39,11 +39,11 @@
 using namespace dunedaq;
 using namespace dunedaq::appmodel;
 
-static ModuleFactory::Registrator __reg__("FakeDataApplication",
-                                          [](const SmartDaqApplication* smartApp,
+static confmodel::ModuleFactory::Registrator __reg__("FakeDataApplication",
+                                          [](const confmodel::SmartDaqApplication* smartApp,
                                              conffwk::Configuration* confdb,
                                              const std::string& dbfile,
-                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
+                                             const confmodel::Session* session) -> confmodel::ModuleFactory::ReturnType {
                                             auto app = smartApp->cast<FakeDataApplication>();
                                             return app->generate_modules(confdb, dbfile, session);
                                           });
@@ -58,8 +58,8 @@ FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
   std::vector<const confmodel::DaqModule*> modules;
 
   // Process the queue rules looking for inputs to our DL/TP handler modules
-  const QueueDescriptor* dlhReqInputQDesc = nullptr;
-  const QueueDescriptor* faOutputQDesc = nullptr;
+  const confmodel::QueueDescriptor* dlhReqInputQDesc = nullptr;
+  const confmodel::QueueDescriptor* faOutputQDesc = nullptr;
 
   for (auto rule : get_queue_rules()) {
     auto destination_class = rule->get_destination_class();
@@ -73,14 +73,14 @@ FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
     }
   }
   if (faOutputQDesc == nullptr) {
-    throw(BadConf(ERS_HERE, "No fragment output queue descriptor given"));
+    throw(confmodel::BadConf(ERS_HERE, "No fragment output queue descriptor given"));
   }
   if (dlhReqInputQDesc == nullptr) {
-    throw(BadConf(ERS_HERE, "No DLH request input queue descriptor given"));
+    throw(confmodel::BadConf(ERS_HERE, "No DLH request input queue descriptor given"));
   }
   // Process the network rules looking for the Fragment Aggregator and TP handler data reuest inputs
-  const NetworkConnectionDescriptor* faNetDesc = nullptr;
-  const NetworkConnectionDescriptor* tsNetDesc = nullptr;
+  const confmodel::NetworkConnectionDescriptor* faNetDesc = nullptr;
+  const confmodel::NetworkConnectionDescriptor* tsNetDesc = nullptr;
   for (auto rule : get_network_rules()) {
     auto endpoint_class = rule->get_endpoint_class();
     if (endpoint_class == "FragmentAggregatorModule") {
@@ -90,10 +90,10 @@ FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
     }
   }
   if (faNetDesc == nullptr) {
-    throw(BadConf(ERS_HERE, "No Fragment output network descriptor given"));
+    throw(confmodel::BadConf(ERS_HERE, "No Fragment output network descriptor given"));
   }
   if (tsNetDesc == nullptr) {
-    throw(BadConf(ERS_HERE, "No TimeSync output network descriptor given"));
+    throw(confmodel::BadConf(ERS_HERE, "No TimeSync output network descriptor given"));
   }
 
   // Create here the Queue on which all data fragments are forwarded to the fragment aggregator
@@ -118,7 +118,7 @@ FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
 
     auto stream = fdpConf->cast<appmodel::FakeDataProdConf>();
     if (stream == nullptr) {
-      throw(BadConf(ERS_HERE, "ReadoutGroup contains something other than FakeDataProdConf"));
+      throw(confmodel::BadConf(ERS_HERE, "ReadoutGroup contains something other than FakeDataProdConf"));
     }
 
     auto id = stream->get_source_id();

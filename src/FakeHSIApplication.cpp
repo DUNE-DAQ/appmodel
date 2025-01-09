@@ -8,18 +8,18 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
+#include "confmodel/ModuleFactory.hpp"
 
 #include "appmodel/FakeHSIApplication.hpp"
 #include "appmodel/FakeHSIEventGeneratorModule.hpp"
 #include "appmodel/FakeHSIEventGeneratorConf.hpp"
-#include "appmodel/NetworkConnectionDescriptor.hpp"
-#include "appmodel/NetworkConnectionRule.hpp"
-#include "appmodel/QueueConnectionRule.hpp"
-#include "appmodel/QueueDescriptor.hpp"
+#include "confmodel/NetworkConnectionDescriptor.hpp"
+#include "confmodel/NetworkConnectionRule.hpp"
+#include "confmodel/QueueConnectionRule.hpp"
+#include "confmodel/QueueDescriptor.hpp"
 #include "appmodel/DataHandlerModule.hpp"
 #include "appmodel/DataHandlerConf.hpp"
-#include "appmodel/SourceIDConf.hpp"
+#include "confmodel/SourceIDConf.hpp"
 #include "appmodel/appmodelIssues.hpp"
 #include "confmodel/Connection.hpp"
 #include "confmodel/NetworkConnection.hpp"
@@ -35,11 +35,11 @@
 using namespace dunedaq;
 using namespace dunedaq::appmodel;
 
-static ModuleFactory::Registrator __reg__("FakeHSIApplication",
-                                          [](const SmartDaqApplication* smartApp,
+static confmodel::ModuleFactory::Registrator __reg__("FakeHSIApplication",
+                                          [](const confmodel::SmartDaqApplication* smartApp,
                                              conffwk::Configuration* confdb,
                                              const std::string& dbfile,
-                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
+                                             const confmodel::Session* session) -> confmodel::ModuleFactory::ReturnType {
                                             auto app = smartApp->cast<FakeHSIApplication>();
                                             return app->generate_modules(confdb, dbfile, session);
                                           });
@@ -54,7 +54,7 @@ FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
   auto dlhConf = get_link_handler();
   auto dlhClass = dlhConf->get_template_for();
 
-  const QueueDescriptor* dlhInputQDesc = nullptr;
+  const confmodel::QueueDescriptor* dlhInputQDesc = nullptr;
 
   for (auto rule : get_queue_rules()) {
     auto destination_class = rule->get_destination_class();
@@ -64,9 +64,9 @@ FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
     }
   }
 
-  const NetworkConnectionDescriptor* dlhReqInputNetDesc = nullptr;
-  const NetworkConnectionDescriptor* tsNetDesc = nullptr;
-  const NetworkConnectionDescriptor* hsiNetDesc = nullptr;
+  const confmodel::NetworkConnectionDescriptor* dlhReqInputNetDesc = nullptr;
+  const confmodel::NetworkConnectionDescriptor* tsNetDesc = nullptr;
+  const confmodel::NetworkConnectionDescriptor* hsiNetDesc = nullptr;
 
   for (auto rule : get_network_rules()) {
     auto endpoint_class = rule->get_endpoint_class();
@@ -87,21 +87,21 @@ FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
 
   auto rdrConf = get_generator();
   if (rdrConf == 0) {
-    throw(BadConf(ERS_HERE, "No FakeHSIEventGeneratorModule configuration given"));
+    throw(confmodel::BadConf(ERS_HERE, "No FakeHSIEventGeneratorModule configuration given"));
   }
   if (dlhInputQDesc == nullptr) {
-    throw(BadConf(ERS_HERE, "No DLH data input queue descriptor given"));
+    throw(confmodel::BadConf(ERS_HERE, "No DLH data input queue descriptor given"));
   }
   if (dlhReqInputNetDesc == nullptr) {
-    throw(BadConf(ERS_HERE, "No DLH request input network descriptor given"));
+    throw(confmodel::BadConf(ERS_HERE, "No DLH request input network descriptor given"));
   }
   if (hsiNetDesc == nullptr) {
-    throw(BadConf(ERS_HERE, "No HSIEvent output network descriptor given"));
+    throw(confmodel::BadConf(ERS_HERE, "No HSIEvent output network descriptor given"));
   }
 
   auto idconf = get_source_id();
   if (idconf == nullptr) {
-    throw(BadConf(ERS_HERE, "No SourceIDConf given"));
+    throw(confmodel::BadConf(ERS_HERE, "No SourceIDConf given"));
   }
   auto id = idconf->get_sid();
 

@@ -8,7 +8,7 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
+#include "confmodel/ModuleFactory.hpp"
 
 #include "conffwk/Configuration.hpp"
 #include "oks/kernel.hpp"
@@ -37,11 +37,11 @@
 using namespace dunedaq;
 using namespace dunedaq::appmodel;
 
-static ModuleFactory::Registrator
-__reg__("WIECApplication", [] (const SmartDaqApplication* smartApp,
+static confmodel::ModuleFactory::Registrator
+__reg__("WIECApplication", [] (const confmodel::SmartDaqApplication* smartApp,
                              conffwk::Configuration* config,
                              const std::string& dbfile,
-                             const confmodel::Session* session) -> ModuleFactory::ReturnType
+                             const confmodel::Session* session) -> confmodel::ModuleFactory::ReturnType
   {
     auto app = smartApp->cast<WIECApplication>();
     return app->generate_modules(config, dbfile, session);
@@ -72,11 +72,11 @@ WIECApplication::generate_modules(conffwk::Configuration* config,
     auto d2d_conn = d2d_conn_res->cast<confmodel::DetectorToDaqConnection>();
 
     if (!d2d_conn) {
-      throw(BadConf(ERS_HERE, "ReadoutApplication contains something other than DetectorToDaqConnection"));
+      throw(confmodel::BadConf(ERS_HERE, "ReadoutApplication contains something other than DetectorToDaqConnection"));
     }
 
     if (d2d_conn->get_contains().empty()) {
-      throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain sebders or receivers"));
+      throw(confmodel::BadConf(ERS_HERE, "DetectorToDaqConnection does not contain sebders or receivers"));
     }
 
     auto det_senders = d2d_conn->get_senders();
@@ -86,7 +86,7 @@ WIECApplication::generate_modules(conffwk::Configuration* config,
     const auto* nw_receiver = det_receiver->cast<appmodel::NWDetDataReceiver>();
 
     if ( !nw_receiver ) {
-      throw(BadConf(ERS_HERE, fmt::format("WEICApplication requires NWDetDataReceiver, found {} of class {}", det_receiver->UID(), det_receiver->class_name())));
+      throw(confmodel::BadConf(ERS_HERE, fmt::format("WEICApplication requires NWDetDataReceiver, found {} of class {}", det_receiver->UID(), det_receiver->class_name())));
     }
   
     // Loop over senders
@@ -95,7 +95,7 @@ WIECApplication::generate_modules(conffwk::Configuration* config,
       // Check the sender type, must me a HermesSender
       const auto* hrms_sender = sender->cast<appmodel::HermesDataSender>();
       if (!hrms_sender ) {
-        throw(BadConf(ERS_HERE, fmt::format("DataSender {} is not a appmodel::HermesDataSender", sender->UID())));
+        throw(confmodel::BadConf(ERS_HERE, fmt::format("DataSender {} is not a appmodel::HermesDataSender", sender->UID())));
       }
 
       ctrlhost_sender_map[hrms_sender->get_control_host()].push_back(hrms_sender);

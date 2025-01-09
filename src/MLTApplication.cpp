@@ -8,7 +8,7 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
+#include "confmodel/ModuleFactory.hpp"
 
 #include "conffwk/Configuration.hpp"
 
@@ -24,13 +24,13 @@
 #include "confmodel/Service.hpp"
 #include "confmodel/Session.hpp"
 
-#include "appmodel/NetworkConnectionRule.hpp"
-#include "appmodel/QueueConnectionRule.hpp"
+#include "confmodel/NetworkConnectionRule.hpp"
+#include "confmodel/QueueConnectionRule.hpp"
 
-#include "appmodel/NetworkConnectionDescriptor.hpp"
-#include "appmodel/QueueDescriptor.hpp"
+#include "confmodel/NetworkConnectionDescriptor.hpp"
+#include "confmodel/QueueDescriptor.hpp"
 
-#include "appmodel/SourceIDConf.hpp"
+#include "confmodel/SourceIDConf.hpp"
 
 #include "appmodel/DataReaderConf.hpp"
 #include "appmodel/DataRecorderConf.hpp"
@@ -64,11 +64,11 @@
 using namespace dunedaq;
 using namespace dunedaq::appmodel;
 
-static ModuleFactory::Registrator __reg__("MLTApplication",
-                                          [](const SmartDaqApplication* smartApp,
+static confmodel::ModuleFactory::Registrator __reg__("MLTApplication",
+                                          [](const confmodel::SmartDaqApplication* smartApp,
                                              conffwk::Configuration* confdb,
                                              const std::string& dbfile,
-                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
+                                             const confmodel::Session* session) -> confmodel::ModuleFactory::ReturnType {
                                             auto app = smartApp->cast<MLTApplication>();
                                             return app->generate_modules(confdb, dbfile, session);
                                           });
@@ -85,7 +85,7 @@ static ModuleFactory::Registrator __reg__("MLTApplication",
  */
 conffwk::ConfigObject
 create_mlt_network_connection(std::string uid,
-                              const NetworkConnectionDescriptor* ntDesc,
+                              const confmodel::NetworkConnectionDescriptor* ntDesc,
                               conffwk::Configuration* confdb,
                               const std::string& dbfile)
 {
@@ -117,13 +117,13 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
   std::string handler_name(tch_conf->UID());
 
   if (!mlt_conf) {
-    throw(BadConf(ERS_HERE, "No MLT configuration in MLTApplication given"));
+    throw(confmodel::BadConf(ERS_HERE, "No MLT configuration in MLTApplication given"));
   }
 
   // Queue descriptors
   // Process the queue rules looking for inputs to our trigger handler modules
-  const QueueDescriptor* tc_inputq_desc = nullptr;
-  const QueueDescriptor* td_outputq_desc = nullptr;
+  const confmodel::QueueDescriptor* tc_inputq_desc = nullptr;
+  const confmodel::QueueDescriptor* td_outputq_desc = nullptr;
 
   for (auto rule : get_queue_rules()) {
     auto destination_class = rule->get_destination_class();
@@ -136,10 +136,10 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
   }
 
   if (tc_inputq_desc == nullptr) {
-    throw(BadConf(ERS_HERE, "No TC input queue descriptor given"));
+    throw(confmodel::BadConf(ERS_HERE, "No TC input queue descriptor given"));
   }
   if (td_outputq_desc == nullptr) {
-    throw(BadConf(ERS_HERE, "No TD output-input queue descriptor given"));
+    throw(confmodel::BadConf(ERS_HERE, "No TD output-input queue descriptor given"));
   }
 
   // Create queues
@@ -160,11 +160,11 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
   output_queue_obj.set_by_val<uint32_t>("capacity", td_outputq_desc->get_capacity());
 
   // Net descriptors
-  const NetworkConnectionDescriptor* req_net_desc = nullptr;
-  const NetworkConnectionDescriptor* tc_net_desc = nullptr;
-  const NetworkConnectionDescriptor* ti_net_desc = nullptr;
-  const NetworkConnectionDescriptor* td_net_desc = nullptr;
-  const NetworkConnectionDescriptor* timesync_net_desc = nullptr;
+  const confmodel::NetworkConnectionDescriptor* req_net_desc = nullptr;
+  const confmodel::NetworkConnectionDescriptor* tc_net_desc = nullptr;
+  const confmodel::NetworkConnectionDescriptor* ti_net_desc = nullptr;
+  const confmodel::NetworkConnectionDescriptor* td_net_desc = nullptr;
+  const confmodel::NetworkConnectionDescriptor* timesync_net_desc = nullptr;
 
   for (auto rule : get_network_rules()) {
     std::string data_type = rule->get_descriptor()->get_data_type();
@@ -190,16 +190,16 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
   }
 
   if (!td_net_desc) {
-    throw(BadConf(ERS_HERE, "No MLT network connection for the output TriggerDecision given"));
+    throw(confmodel::BadConf(ERS_HERE, "No MLT network connection for the output TriggerDecision given"));
   }
   if (!ti_net_desc) {
-    throw(BadConf(ERS_HERE, "No MLT network connection for the output TriggerInhibit given"));
+    throw(confmodel::BadConf(ERS_HERE, "No MLT network connection for the output TriggerInhibit given"));
   }
   if (!tc_net_desc) {
-    throw(BadConf(ERS_HERE, "No MLT network connection for the Input of TriggerCandidates given"));
+    throw(confmodel::BadConf(ERS_HERE, "No MLT network connection for the Input of TriggerCandidates given"));
   }
   if (!req_net_desc) {
-    throw(BadConf(ERS_HERE, "No MLT network connection for the Input of DataRequests given"));
+    throw(confmodel::BadConf(ERS_HERE, "No MLT network connection for the Input of DataRequests given"));
   }
   // Network connection for input TriggerInhibit, input TCs
 
@@ -251,7 +251,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
    **************************************************************/
   auto rdr_conf = get_data_subscriber();
   if (rdr_conf == nullptr) {
-    throw(BadConf(ERS_HERE, "No DataReaderModule configuration given"));
+    throw(confmodel::BadConf(ERS_HERE, "No DataReaderModule configuration given"));
   }
 
   std::string reader_uid("data-reader-" + UID());
@@ -286,18 +286,18 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
 
         auto d2d_conn = d2d_conn_res->cast<confmodel::DetectorToDaqConnection>();
         if (d2d_conn == nullptr) {
-          throw(BadConf(
+          throw(confmodel::BadConf(
             ERS_HERE,
             "MLTApplication's detectordaq connections list contains something other than DetectorToDaqConnection"));
         }
         if (d2d_conn->get_contains().empty()) {
-          throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain interfaces"));
+          throw(confmodel::BadConf(ERS_HERE, "DetectorToDaqConnection does not contain interfaces"));
         }
 
         // Interate over all the streams
         for (auto stream : d2d_conn->get_streams()) {
           if (stream == nullptr) {
-            throw(BadConf(ERS_HERE, "ReadoutInterface contains something other than DetectorStream"));
+            throw(confmodel::BadConf(ERS_HERE, "ReadoutInterface contains something other than DetectorStream"));
           }
           if (stream->disabled(*session)) {
             TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
@@ -353,7 +353,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
       }
     }
 
-    // SmartDaqApplication now has source_id member, might want to use that but make sure that it's actually a data
+    // confmodel::SmartDaqApplication now has source_id member, might want to use that but make sure that it's actually a data
     // source somehow...
     auto trg_app = app->cast<appmodel::TriggerApplication>();
     if (trg_app != nullptr && trg_app->get_source_id() != nullptr) {
@@ -446,7 +446,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
   auto tch_conf_obj = tch_conf->config_object();
   conffwk::ConfigObject ti_obj;
   if (get_source_id() == nullptr) {
-    throw(BadConf(ERS_HERE, "No source_id associated with this TriggerApplication!"));
+    throw(confmodel::BadConf(ERS_HERE, "No source_id associated with this TriggerApplication!"));
   }
   uint32_t source_id = get_source_id()->get_sid();
   std::string ti_uid(handler_name + "-" + std::to_string(source_id));

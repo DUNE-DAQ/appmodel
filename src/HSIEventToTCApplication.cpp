@@ -8,7 +8,7 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
+#include "confmodel/ModuleFactory.hpp"
 
 #include "conffwk/Configuration.hpp"
 #include "oks/kernel.hpp"
@@ -17,10 +17,10 @@
 #include "appmodel/DataSubscriberModule.hpp"
 #include "appmodel/HSIEventToTCApplication.hpp"
 #include "appmodel/HSI2TCTranslatorConf.hpp"
-#include "appmodel/NetworkConnectionRule.hpp"
-#include "appmodel/NetworkConnectionDescriptor.hpp"
-#include "appmodel/QueueConnectionRule.hpp"
-#include "appmodel/QueueDescriptor.hpp"
+#include "confmodel/NetworkConnectionRule.hpp"
+#include "confmodel/NetworkConnectionDescriptor.hpp"
+#include "confmodel/QueueConnectionRule.hpp"
+#include "confmodel/QueueDescriptor.hpp"
 #include "confmodel/Service.hpp"
 #include "appmodel/appmodelIssues.hpp"
 #include "logging/Logging.hpp"
@@ -31,11 +31,11 @@
 using namespace dunedaq;
 using namespace dunedaq::appmodel;
 
-static ModuleFactory::Registrator
-__reg__("HSIEventToTCApplication", [] (const SmartDaqApplication* smartApp,
+static confmodel::ModuleFactory::Registrator
+__reg__("HSIEventToTCApplication", [] (const confmodel::SmartDaqApplication* smartApp,
                              conffwk::Configuration* confdb,
                              const std::string& dbfile,
-                             const confmodel::Session* session) -> ModuleFactory::ReturnType
+                             const confmodel::Session* session) -> confmodel::ModuleFactory::ReturnType
   {
     auto app = smartApp->cast<HSIEventToTCApplication>();
     return app->generate_modules(confdb, dbfile, session);
@@ -59,7 +59,7 @@ HSIEventToTCApplication::generate_modules(conffwk::Configuration* confdb,
   hstcObj.set_obj("configuration", &hstcConf->config_object());
 
   if (hstcConf == 0) {
-    throw(BadConf(ERS_HERE, "No HSI2TCTranslatorConf configuration given"));
+    throw(confmodel::BadConf(ERS_HERE, "No HSI2TCTranslatorConf configuration given"));
   }
 
   conffwk::ConfigObject inObj;
@@ -91,10 +91,10 @@ HSIEventToTCApplication::generate_modules(conffwk::Configuration* confdb,
   } 
 
   if (inObj == nullptr) {
-    throw(BadConf(ERS_HERE, "No HSIEvent input connection descriptor given"));
+    throw(confmodel::BadConf(ERS_HERE, "No HSIEvent input connection descriptor given"));
   }
   if (outObj == nullptr) {
-    throw(BadConf(ERS_HERE, "No TriggerCandidate output connection descriptor given"));
+    throw(confmodel::BadConf(ERS_HERE, "No TriggerCandidate output connection descriptor given"));
   }
 
   hstcObj.set_objs("inputs", {&inObj});

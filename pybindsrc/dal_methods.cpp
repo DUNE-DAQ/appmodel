@@ -60,7 +60,7 @@ namespace dunedaq::appmodel::python {
   std::vector<std::string> smart_daq_application_construct_commandline_parameters(const conffwk::Configuration& db,
                                                                                   const std::string& session_id,
                                                                                   const std::string& app_id) {
-    const auto* app = const_cast<conffwk::Configuration&>(db).get<dunedaq::appmodel::SmartDaqApplication>(app_id);
+    const auto* app = const_cast<conffwk::Configuration&>(db).get<dunedaq::confmodel::SmartDaqApplication>(app_id);
     const auto* session = const_cast<conffwk::Configuration&>(db).get<dunedaq::confmodel::Session>(session_id);
     return app->construct_commandline_parameters(db, session);
   }

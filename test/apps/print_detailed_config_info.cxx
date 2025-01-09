@@ -22,7 +22,7 @@
 #include "appmodel/DFOApplication.hpp"
 #include "appmodel/MLTApplication.hpp"
 #include "appmodel/ReadoutApplication.hpp"
-#include "appmodel/SmartDaqApplication.hpp"
+#include "confmodel/SmartDaqApplication.hpp"
 #include "appmodel/TPStreamWriterApplication.hpp"
 #include "appmodel/TriggerApplication.hpp"
 
@@ -162,7 +162,7 @@ main(int argc, char* argv[])
     }
     session = confdb->get<confmodel::Session>(sessionName);
 
-    auto daqapp = confdb->get<appmodel::SmartDaqApplication>(list_of_application_names[idx]);
+    auto daqapp = confdb->get<confmodel::SmartDaqApplication>(list_of_application_names[idx]);
     std::string appName = list_of_application_names[idx];
     if (daqapp) {
       std::cout << appName << " is of class " << daqapp->class_name() << std::endl;

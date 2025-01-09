@@ -19,7 +19,7 @@
 #include "appmodel/DFApplication.hpp"
 #include "appmodel/DFOApplication.hpp"
 #include "appmodel/ReadoutApplication.hpp"
-#include "appmodel/SmartDaqApplication.hpp"
+#include "confmodel/SmartDaqApplication.hpp"
 #include "appmodel/TriggerApplication.hpp"
 #include "appmodel/MLTApplication.hpp"
 #include "appmodel/TPStreamWriterApplication.hpp"
@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
               << " from database\n";
     return 0;
   }
-  auto daqapp = confdb->get<appmodel::SmartDaqApplication>(appName);
+  auto daqapp = confdb->get<confmodel::SmartDaqApplication>(appName);
   if (daqapp) {
     std::cout << appName << " is of class " << daqapp->class_name() << std::endl;
 

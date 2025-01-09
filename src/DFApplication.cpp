@@ -8,7 +8,7 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
+#include "confmodel/ModuleFactory.hpp"
 
 #include "appmodel/DFApplication.hpp"
 #include "appmodel/DataStoreConf.hpp"
@@ -17,12 +17,12 @@
 #include "appmodel/FakeDataApplication.hpp"
 #include "appmodel/FakeDataProdConf.hpp"
 #include "appmodel/FilenameParams.hpp"
-#include "appmodel/NetworkConnectionDescriptor.hpp"
-#include "appmodel/NetworkConnectionRule.hpp"
-#include "appmodel/QueueConnectionRule.hpp"
-#include "appmodel/QueueDescriptor.hpp"
+#include "confmodel/NetworkConnectionDescriptor.hpp"
+#include "confmodel/NetworkConnectionRule.hpp"
+#include "confmodel/QueueConnectionRule.hpp"
+#include "confmodel/QueueDescriptor.hpp"
 #include "appmodel/ReadoutApplication.hpp"
-#include "appmodel/SourceIDConf.hpp"
+#include "confmodel/SourceIDConf.hpp"
 #include "appmodel/TRBConf.hpp"
 #include "appmodel/TRBModule.hpp"
 #include "appmodel/appmodelIssues.hpp"
@@ -42,17 +42,17 @@
 using namespace dunedaq;
 using namespace dunedaq::appmodel;
 
-static ModuleFactory::Registrator __reg__("DFApplication",
-                                          [](const SmartDaqApplication* smartApp,
+static confmodel::ModuleFactory::Registrator __reg__("DFApplication",
+                                          [](const confmodel::SmartDaqApplication* smartApp,
                                              conffwk::Configuration* confdb,
                                              const std::string& dbfile,
-                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
+                                             const confmodel::Session* session) -> confmodel::ModuleFactory::ReturnType {
                                             auto app = smartApp->cast<DFApplication>();
                                             return app->generate_modules(confdb, dbfile, session);
                                           });
 
 inline void
-fill_queue_object_from_desc(const QueueDescriptor* qDesc, conffwk::ConfigObject& qObj)
+fill_queue_object_from_desc(const confmodel::QueueDescriptor* qDesc, conffwk::ConfigObject& qObj)
 {
   qObj.set_by_val<std::string>("data_type", qDesc->get_data_type());
   qObj.set_by_val<std::string>("queue_type", qDesc->get_queue_type());
@@ -60,7 +60,7 @@ fill_queue_object_from_desc(const QueueDescriptor* qDesc, conffwk::ConfigObject&
 }
 
 inline void
-fill_netconn_object_from_desc(const NetworkConnectionDescriptor* netDesc, conffwk::ConfigObject& netObj)
+fill_netconn_object_from_desc(const confmodel::NetworkConnectionDescriptor* netDesc, conffwk::ConfigObject& netObj)
 {
   netObj.set_by_val<std::string>("data_type", netDesc->get_data_type());
   netObj.set_by_val<std::string>("connection_type", netDesc->get_connection_type());
@@ -70,7 +70,7 @@ fill_netconn_object_from_desc(const NetworkConnectionDescriptor* netDesc, conffw
 }
 
 inline void
-fill_sourceid_object_from_app(const SmartDaqApplication* smartapp,
+fill_sourceid_object_from_app(const confmodel::SmartDaqApplication* smartapp,
                               const conffwk::ConfigObject* netConn,
                               conffwk::ConfigObject& sidNetObj)
 {
@@ -191,15 +191,15 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
   // -- First, we process expected Queue and Network connections and create their objects.
 
   // Process the queue rules looking for the TriggerRecord queue between TRB and DataWriterModule
-  const QueueDescriptor* trQDesc = nullptr;
+  const confmodel::QueueDescriptor* trQDesc = nullptr;
   for (auto rule : get_queue_rules()) {
     auto destination_class = rule->get_destination_class();
     if (destination_class == "DataWriterModule") {
       trQDesc = rule->get_descriptor();
     }
   }
-  if (trQDesc == nullptr) { // BadConf if no descriptor between TRB and DataWriterModule
-    throw(BadConf(ERS_HERE, "Could not find queue descriptor rule for TriggerRecords!"));
+  if (trQDesc == nullptr) { // confmodel::BadConf if no descriptor between TRB and DataWriterModule
+    throw(confmodel::BadConf(ERS_HERE, "Could not find queue descriptor rule for TriggerRecords!"));
   }
   // Create queue connection config object
   conffwk::ConfigObject trQueueObj;
@@ -210,9 +210,9 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
   trbOutputObjs.push_back(&trQueueObj);
 
   // Process the network rules looking for the Fragments and TriggerDecision inputs for TRB
-  const NetworkConnectionDescriptor* fragNetDesc = nullptr;
-  const NetworkConnectionDescriptor* trigdecNetDesc = nullptr;
-  const NetworkConnectionDescriptor* tokenNetDesc = nullptr;
+  const confmodel::NetworkConnectionDescriptor* fragNetDesc = nullptr;
+  const confmodel::NetworkConnectionDescriptor* trigdecNetDesc = nullptr;
+  const confmodel::NetworkConnectionDescriptor* tokenNetDesc = nullptr;
   for (auto rule : get_network_rules()) {
     auto descriptor = rule->get_descriptor();
     auto data_type = descriptor->get_data_type();
@@ -224,17 +224,17 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
       tokenNetDesc = rule->get_descriptor();
     }
   }
-  if (fragNetDesc == nullptr) { // BadConf if no descriptor for Fragments into TRB
-    throw(BadConf(ERS_HERE, "Could not find network descriptor rule for input Fragments!"));
+  if (fragNetDesc == nullptr) { // confmodel::BadConf if no descriptor for Fragments into TRB
+    throw(confmodel::BadConf(ERS_HERE, "Could not find network descriptor rule for input Fragments!"));
   }
-  if (trigdecNetDesc == nullptr) { // BadCond if no descriptor for TriggerDecisions into TRB
-    throw(BadConf(ERS_HERE, "Could not find network descriptor rule for input TriggerDecisions!"));
+  if (trigdecNetDesc == nullptr) { // confmodel::BadCond if no descriptor for TriggerDecisions into TRB
+    throw(confmodel::BadConf(ERS_HERE, "Could not find network descriptor rule for input TriggerDecisions!"));
   }
-  if (tokenNetDesc == nullptr) { // BadCond if no descriptor for Tokens out of DataWriterModule
-    throw(BadConf(ERS_HERE, "Could not find network descriptor rule for output TriggerDecisionTokens!"));
+  if (tokenNetDesc == nullptr) { // confmodel::BadCond if no descriptor for Tokens out of DataWriterModule
+    throw(confmodel::BadConf(ERS_HERE, "Could not find network descriptor rule for output TriggerDecisionTokens!"));
   }
   if (get_source_id() == nullptr) {
-    throw(BadConf(ERS_HERE, "Could not retrieve SourceIDConf"));
+    throw(confmodel::BadConf(ERS_HERE, "Could not retrieve SourceIDConf"));
   }
   // Create network connection config object
   conffwk::ConfigObject fragNetObj;
@@ -257,7 +257,7 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
   std::vector<conffwk::ConfigObject> sidNetObjs;
   std::vector<std::shared_ptr<conffwk::ConfigObject>> sidObjs;
   for (auto app : sessionApps) {
-    auto smartapp = app->cast<appmodel::SmartDaqApplication>();
+    auto smartapp = app->cast<confmodel::SmartDaqApplication>();
     auto roapp = app->cast<appmodel::ReadoutApplication>();
     auto fdapp = app->cast<appmodel::FakeDataApplication>();
     auto dfapp = app->cast<appmodel::DFApplication>();
@@ -306,7 +306,7 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
   // Get TRB Config Object
   auto trbConf = get_trb();
   if (trbConf == nullptr) {
-    throw(BadConf(ERS_HERE, "No DataWriterModule or TRB configuration given"));
+    throw(confmodel::BadConf(ERS_HERE, "No DataWriterModule or TRB configuration given"));
   }
   auto trbConfObj = trbConf->config_object();
   trbConfObj.set_by_val<uint32_t>("source_id", get_source_id()->get_sid());
@@ -324,7 +324,7 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
   // Get DataWriterModule Config Object (only one for now, maybe more later?)
   auto dwrConfs = get_data_writers();
   if (dwrConfs.size() == 0) {
-    throw(BadConf(ERS_HERE, "No DataWriterModule or TRB configuration given"));
+    throw(confmodel::BadConf(ERS_HERE, "No DataWriterModule or TRB configuration given"));
   }
   uint dw_idx = 0;
   for (auto dwrConf : dwrConfs) {

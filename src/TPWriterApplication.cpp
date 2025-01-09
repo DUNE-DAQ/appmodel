@@ -8,7 +8,7 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
+#include "confmodel/ModuleFactory.hpp"
 
 #include "conffwk/Configuration.hpp"
 #include "oks/kernel.hpp"
@@ -18,10 +18,10 @@
 #include "appmodel/TPStreamWriterApplication.hpp"
 #include "appmodel/TPStreamWriterModule.hpp"
 #include "appmodel/TPStreamWriterConf.hpp"
-#include "appmodel/NetworkConnectionRule.hpp"
-#include "appmodel/NetworkConnectionDescriptor.hpp"
+#include "confmodel/NetworkConnectionRule.hpp"
+#include "confmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/ReadoutApplication.hpp"
-#include "appmodel/SourceIDConf.hpp"
+#include "confmodel/SourceIDConf.hpp"
 #include "appmodel/appmodelIssues.hpp"
 #include "logging/Logging.hpp"
 
@@ -33,11 +33,11 @@
 using namespace dunedaq;
 using namespace dunedaq::appmodel;
 
-static ModuleFactory::Registrator
-__reg__("TPStreamWriterApplication", [] (const SmartDaqApplication* smartApp,
+static confmodel::ModuleFactory::Registrator
+__reg__("TPStreamWriterApplication", [] (const confmodel::SmartDaqApplication* smartApp,
                              conffwk::Configuration* confdb,
                              const std::string& dbfile,
-                             const confmodel::Session* session) -> ModuleFactory::ReturnType
+                             const confmodel::Session* session) -> confmodel::ModuleFactory::ReturnType
   {
     auto app = smartApp->cast<TPStreamWriterApplication>();
     return app->generate_modules(confdb, dbfile, session);
@@ -53,11 +53,11 @@ TPStreamWriterApplication::generate_modules(conffwk::Configuration* confdb,
 
   auto tpwriterConf = get_tp_writer();
   if (tpwriterConf == 0) {
-    throw (BadConf(ERS_HERE, "No TPStreamWriterModule configuration given"));
+    throw (confmodel::BadConf(ERS_HERE, "No TPStreamWriterModule configuration given"));
   }
   auto tpwriterConfObj = tpwriterConf->config_object();
 
-  const NetworkConnectionDescriptor* tset_in_net_desc = nullptr;
+  const confmodel::NetworkConnectionDescriptor* tset_in_net_desc = nullptr;
   for (auto rule : get_network_rules()) {
     auto endpoint_class = rule->get_endpoint_class();
     auto data_type = rule->get_descriptor()->get_data_type();
@@ -66,7 +66,7 @@ TPStreamWriterApplication::generate_modules(conffwk::Configuration* confdb,
     }
   }
   if ( tset_in_net_desc== nullptr) {
-      throw (BadConf(ERS_HERE, "No network descriptor given to receive TPSets"));
+      throw (confmodel::BadConf(ERS_HERE, "No network descriptor given to receive TPSets"));
   }
   // Create Network Connection
   conffwk::ConfigObject tset_in_net_obj;
@@ -81,7 +81,7 @@ TPStreamWriterApplication::generate_modules(conffwk::Configuration* confdb,
 
   auto source_id = get_source_id();
   if (source_id == nullptr) {
-    throw(BadConf(ERS_HERE, "No SourceIDConf given to TPWriterApplication!"));  
+    throw(confmodel::BadConf(ERS_HERE, "No SourceIDConf given to TPWriterApplication!"));  
   }
 
   uint tpw_idx = 0;

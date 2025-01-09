@@ -8,16 +8,16 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
+#include "confmodel/ModuleFactory.hpp"
 
 #include "appmodel/DFApplication.hpp"
 #include "appmodel/DFOApplication.hpp"
 #include "appmodel/DFOConf.hpp"
 #include "appmodel/DFOModule.hpp"
-#include "appmodel/NetworkConnectionDescriptor.hpp"
-#include "appmodel/NetworkConnectionRule.hpp"
-#include "appmodel/QueueConnectionRule.hpp"
-#include "appmodel/QueueDescriptor.hpp"
+#include "confmodel/NetworkConnectionDescriptor.hpp"
+#include "confmodel/NetworkConnectionRule.hpp"
+#include "confmodel/QueueConnectionRule.hpp"
+#include "confmodel/QueueDescriptor.hpp"
 #include "appmodel/appmodelIssues.hpp"
 #include "conffwk/Configuration.hpp"
 #include "confmodel/Connection.hpp"
@@ -32,11 +32,11 @@
 using namespace dunedaq;
 using namespace dunedaq::appmodel;
 
-static ModuleFactory::Registrator __reg__("DFOApplication",
-                                          [](const SmartDaqApplication* smartApp,
+static confmodel::ModuleFactory::Registrator __reg__("DFOApplication",
+                                          [](const confmodel::SmartDaqApplication* smartApp,
                                              conffwk::Configuration* confdb,
                                              const std::string& dbfile,
-                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
+                                             const confmodel::Session* session) -> confmodel::ModuleFactory::ReturnType {
                                             auto app = smartApp->cast<DFOApplication>();
                                             return app->generate_modules(confdb, dbfile, session);
                                           });
@@ -57,7 +57,7 @@ DFOApplication::generate_modules(conffwk::Configuration* confdb,
   dfoObj.set_obj("configuration", &dfoConf->config_object());
 
   if (dfoConf == 0) {
-    throw(BadConf(ERS_HERE, "No DFOConf configuration given"));
+    throw(confmodel::BadConf(ERS_HERE, "No DFOConf configuration given"));
   }
 
   std::vector<const conffwk::ConfigObject*> output_conns;
@@ -95,13 +95,13 @@ DFOApplication::generate_modules(conffwk::Configuration* confdb,
   }
 
   if (tdInObj == nullptr) {
-    throw(BadConf(ERS_HERE, "No TriggerDecision input connection descriptor given"));
+    throw(confmodel::BadConf(ERS_HERE, "No TriggerDecision input connection descriptor given"));
   }
   if (busyOutObj == nullptr) {
-    throw(BadConf(ERS_HERE, "No TriggerInhibit output connection descriptor given"));
+    throw(confmodel::BadConf(ERS_HERE, "No TriggerInhibit output connection descriptor given"));
   }
   if (tokenInObj == nullptr) {
-    throw(BadConf(ERS_HERE, "No TriggerDecisionToken input connection descriptor given"));
+    throw(confmodel::BadConf(ERS_HERE, "No TriggerDecisionToken input connection descriptor given"));
   }
 
   // Process special Network rules!

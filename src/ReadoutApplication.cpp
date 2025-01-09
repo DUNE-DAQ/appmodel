@@ -8,7 +8,7 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
+#include "confmodel/ModuleFactory.hpp"
 
 #include "appmodel/DFApplication.hpp"
 #include "appmodel/ReadoutApplication.hpp"
@@ -31,7 +31,7 @@
 #include "confmodel/ResourceSet.hpp"
 #include "confmodel/Service.hpp"
 
-#include "appmodel/SourceIDConf.hpp"
+#include "confmodel/SourceIDConf.hpp"
 #include "appmodel/DataReaderModule.hpp"
 #include "appmodel/DataReaderConf.hpp"
 #include "appmodel/DataRecorderModule.hpp"
@@ -40,10 +40,10 @@
 #include "appmodel/DataHandlerModule.hpp"
 #include "appmodel/DataHandlerConf.hpp"
 #include "appmodel/FragmentAggregatorModule.hpp"
-#include "appmodel/NetworkConnectionDescriptor.hpp"
-#include "appmodel/NetworkConnectionRule.hpp"
-#include "appmodel/QueueConnectionRule.hpp"
-#include "appmodel/QueueDescriptor.hpp"
+#include "confmodel/NetworkConnectionDescriptor.hpp"
+#include "confmodel/NetworkConnectionRule.hpp"
+#include "confmodel/QueueConnectionRule.hpp"
+#include "confmodel/QueueDescriptor.hpp"
 #include "appmodel/RequestHandler.hpp"
 
 #include "appmodel/appmodelIssues.hpp"
@@ -60,7 +60,7 @@
 namespace dunedaq {
 namespace appmodel {
 
-static ModuleFactory::Registrator __reg__("ReadoutApplication", [](const SmartDaqApplication* smartApp, conffwk::Configuration* config, const std::string& dbfile, const confmodel::Session* session) -> ModuleFactory::ReturnType {
+static confmodel::ModuleFactory::Registrator __reg__("ReadoutApplication", [](const confmodel::SmartDaqApplication* smartApp, conffwk::Configuration* config, const std::string& dbfile, const confmodel::Session* session) -> confmodel::ModuleFactory::ReturnType {
   auto app = smartApp->cast<ReadoutApplication>();
   return app->generate_modules(config, dbfile, session);
 });
@@ -73,7 +73,7 @@ class ReadoutObjFactory {
   std::string app_uid;
 
   //---
-  conffwk::ConfigObject create_queue_obj(const QueueDescriptor* qdesc) {
+  conffwk::ConfigObject create_queue_obj(const confmodel::QueueDescriptor* qdesc) {
     conffwk::ConfigObject queue_obj;
 
     std::string queue_uid(qdesc->get_uid_base());
@@ -86,7 +86,7 @@ class ReadoutObjFactory {
   }
 
   //---
-  conffwk::ConfigObject create_queue_sid_obj(const QueueDescriptor* qdesc, uint32_t src_id) {
+  conffwk::ConfigObject create_queue_sid_obj(const confmodel::QueueDescriptor* qdesc, uint32_t src_id) {
     conffwk::ConfigObject queue_obj;
 
     std::string queue_uid(fmt::format("{}{}", qdesc->get_uid_base(), src_id));
@@ -100,14 +100,14 @@ class ReadoutObjFactory {
   }
 
   //---
-  conffwk::ConfigObject create_queue_sid_obj(const QueueDescriptor* qdesc, const confmodel::DetectorStream* stream) {
+  conffwk::ConfigObject create_queue_sid_obj(const confmodel::QueueDescriptor* qdesc, const confmodel::DetectorStream* stream) {
     return this->create_queue_sid_obj(qdesc, stream->get_source_id());
   }
 
 
 
   //---
-  conffwk::ConfigObject create_net_obj(const NetworkConnectionDescriptor* ndesc, std::string uid) {
+  conffwk::ConfigObject create_net_obj(const confmodel::NetworkConnectionDescriptor* ndesc, std::string uid) {
     conffwk::ConfigObject net_obj;
 
     auto svc_obj = ndesc->get_associated_service()->config_object();
@@ -121,7 +121,7 @@ class ReadoutObjFactory {
 
   }
 
-  conffwk::ConfigObject create_net_obj(const NetworkConnectionDescriptor* ndesc) {
+  conffwk::ConfigObject create_net_obj(const confmodel::NetworkConnectionDescriptor* ndesc) {
     return this->create_net_obj(ndesc, this->app_uid);
   }
 
@@ -142,7 +142,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   // Data reader
   auto reader_conf = get_data_reader();
   if (reader_conf == 0) {
-    throw(BadConf(ERS_HERE, "No DataReaderModule configuration given"));
+    throw(confmodel::BadConf(ERS_HERE, "No DataReaderModule configuration given"));
   }
   std::string reader_class = reader_conf->get_template_for();
 
@@ -153,7 +153,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
 
   auto tph_conf = get_tp_handler();
   if (tph_conf==nullptr && get_tp_generation_enabled()) {
-    throw(BadConf(ERS_HERE, "TP generation is enabled but there is no TP data handler configuration"));
+    throw(confmodel::BadConf(ERS_HERE, "TP generation is enabled but there is no TP data handler configuration"));
   }
 
   std::string tph_class = "";
@@ -164,11 +164,11 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   //
   // Process the queue rules looking for inputs to our DL/TP handler modules
   //
-  const QueueDescriptor* dlh_input_qdesc = nullptr;
-  const QueueDescriptor* dlh_reqinput_qdesc = nullptr;
-  const QueueDescriptor* tp_input_qdesc = nullptr;
-  // const QueueDescriptor* tpReqInputQDesc = nullptr;
-  const QueueDescriptor* fa_output_qdesc = nullptr;
+  const confmodel::QueueDescriptor* dlh_input_qdesc = nullptr;
+  const confmodel::QueueDescriptor* dlh_reqinput_qdesc = nullptr;
+  const confmodel::QueueDescriptor* tp_input_qdesc = nullptr;
+  // const confmodel::QueueDescriptor* tpReqInputQDesc = nullptr;
+  const confmodel::QueueDescriptor* fa_output_qdesc = nullptr;
 
   for (auto rule : get_queue_rules()) {
     auto destination_class = rule->get_destination_class();
@@ -190,10 +190,10 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   //
   // Process the network rules looking for the Fragment Aggregator and TP handler data reuest inputs
   //
-  const NetworkConnectionDescriptor* fa_net_desc = nullptr;
-  const NetworkConnectionDescriptor* tp_net_desc = nullptr;
-  const NetworkConnectionDescriptor* ta_net_desc = nullptr;
-  const NetworkConnectionDescriptor* ts_net_desc = nullptr;
+  const confmodel::NetworkConnectionDescriptor* fa_net_desc = nullptr;
+  const confmodel::NetworkConnectionDescriptor* tp_net_desc = nullptr;
+  const confmodel::NetworkConnectionDescriptor* ta_net_desc = nullptr;
+  const confmodel::NetworkConnectionDescriptor* ts_net_desc = nullptr;
   for (auto rule : get_network_rules()) {
     auto endpoint_class = rule->get_endpoint_class();
     auto data_type = rule->get_descriptor()->get_data_type();
@@ -212,7 +212,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   // Create here the Queue on which all data fragments are forwarded to the fragment aggregator
   // and a container for the queues of data request to TP handler and DLH
   if (fa_output_qdesc == nullptr) {
-    throw(BadConf(ERS_HERE, "No fragment output queue descriptor given"));
+    throw(confmodel::BadConf(ERS_HERE, "No fragment output queue descriptor given"));
   }
   std::vector<const confmodel::Connection*> req_queues;
   conffwk::ConfigObject frag_queue_obj = obj_fac.create_queue_obj(fa_output_qdesc);
@@ -245,11 +245,11 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
     auto d2d_conn = d2d_conn_res->cast<confmodel::DetectorToDaqConnection>();
 
     if (!d2d_conn) {
-      throw(BadConf(ERS_HERE, "ReadoutApplication contains something other than DetectorToDaqConnection"));
+      throw(confmodel::BadConf(ERS_HERE, "ReadoutApplication contains something other than DetectorToDaqConnection"));
     }
 
     if (d2d_conn->get_contains().empty()) {
-      throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain sebders or receivers"));
+      throw(confmodel::BadConf(ERS_HERE, "DetectorToDaqConnection does not contain sebders or receivers"));
     }
 
     // Loop over detector 2 daq connections to find senders and receivers
@@ -275,7 +275,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
     // Rules of engagement: if the receiver interface is network or felix, the receivers should be castable to the counterpart
     if (reader_class == "DPDKReaderModule") {
       if (!det_receiver->cast<appmodel::DPDKReceiver>()) {
-        throw(BadConf(ERS_HERE, fmt::format("DPDKReaderModule requires NWDetDataReceiver, found {} of class {}", det_receiver->UID(), det_receiver->class_name())));
+        throw(confmodel::BadConf(ERS_HERE, fmt::format("DPDKReaderModule requires NWDetDataReceiver, found {} of class {}", det_receiver->UID(), det_receiver->class_name())));
       }
 
       bool all_nw_senders = true;
@@ -285,7 +285,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
 
       // Ensure that all senders are compatible with receiver
       if (!all_nw_senders) {
-        throw(BadConf(ERS_HERE, "Non-network DetDataSener found with NWreceiver"));
+        throw(confmodel::BadConf(ERS_HERE, "Non-network DetDataSener found with NWreceiver"));
       }
     }
   }

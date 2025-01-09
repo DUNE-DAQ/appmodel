@@ -10,7 +10,7 @@
 #include "confmodel/Segment.hpp"
 #include "confmodel/Session.hpp"
 
-#include "appmodel/SmartDaqApplication.hpp"
+#include "confmodel/SmartDaqApplication.hpp"
 
 #include <iostream>
 #include <string>
@@ -33,10 +33,10 @@ void print_segment_application_commandline(
       std::cout << "\n" << app->UID() << "\n";
       std::vector<std::string> CLAs;
       if (app->castable("SmartDaqApplication")) {
-        auto const* sdapp = db->get<dunedaq::appmodel::SmartDaqApplication>(app->UID());
+        auto const* sdapp = db->get<dunedaq::confmodel::SmartDaqApplication>(app->UID());
         CLAs = sdapp->construct_commandline_parameters(*db, session);
       } else if (app->castable("DaqApplication")) {
-        auto const* dapp = db->get<dunedaq::appmodel::SmartDaqApplication>(app->UID());
+        auto const* dapp = db->get<dunedaq::confmodel::SmartDaqApplication>(app->UID());
         CLAs = dapp->construct_commandline_parameters(*db, session);
       } else {
         CLAs = app->get_commandline_parameters();
