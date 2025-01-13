@@ -17,6 +17,7 @@
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
 #include "appmodel/QueueDescriptor.hpp"
+#include "appmodel/DFApplication.hpp"
 #include "appmodel/DataHandlerModule.hpp"
 #include "appmodel/DataHandlerConf.hpp"
 #include "appmodel/SourceIDConf.hpp"
@@ -47,7 +48,7 @@ static ModuleFactory::Registrator __reg__("FakeHSIApplication",
 std::vector<const confmodel::DaqModule*>
 FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
                                      const std::string& dbfile,
-                                     const confmodel::Session* /*session*/) const
+                                     const confmodel::Session* session) const
 {
   std::vector<const confmodel::DaqModule*> modules;
 
@@ -115,6 +116,40 @@ FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
   dlhObj.set_by_val<bool>("post_processing_enabled", false);
   dlhObj.set_obj("module_configuration", &dlhConf->config_object());
 
+  // Process special Network rules!
+  // Looking for Fragment rules from DFAppplications in current Session
+  auto sessionApps = session->get_enabled_applications();
+  std::vector<conffwk::ConfigObject> fragOutObjs;
+  for (auto app : sessionApps) {
+    auto dfapp = app->cast<appmodel::DFApplication>();
+    if (dfapp == nullptr)
+      continue;
+
+    auto dfNRules = dfapp->get_network_rules();
+    for (auto rule : dfNRules) {
+      auto descriptor = rule->get_descriptor();
+      auto data_type = descriptor->get_data_type();
+      if (data_type == "Fragment") {
+        std::string dreqNetUid(descriptor->get_uid_base() + dfapp->UID());
+        conffwk::ConfigObject frag_conn;
+        confdb->create(dbfile, "NetworkConnection", dreqNetUid, frag_conn);
+
+        frag_conn.set_by_val<std::string>("data_type", descriptor->get_data_type());
+        frag_conn.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
+
+        auto serviceObj = descriptor->get_associated_service()->config_object();
+        frag_conn.set_obj("associated_service", &serviceObj);
+        fragOutObjs.push_back(frag_conn);
+      } // If network rule has TriggerDecision type of data
+    }   // Loop over Apps network rules
+  }     // loop over Session specific Apps
+
+  // start building the list of outputs
+  std::vector<const conffwk::ConfigObject*> fh_output_objs;
+  for (auto& fNet : fragOutObjs) {
+    fh_output_objs.push_back(&fNet);
+  }
+
   // Time Sync network connection
   if (dlhConf->get_generate_timesync()) {
     std::string tsStreamUid = tsNetDesc->get_uid_base() + std::to_string(id);
@@ -124,11 +159,10 @@ FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
     tsNetObj.set_by_val<std::string>("connection_type", tsNetDesc->get_connection_type());
     tsNetObj.set_by_val<std::string>("data_type", tsNetDesc->get_data_type());
     tsNetObj.set_obj("associated_service", &tsServiceObj);
-
-    dlhObj.set_objs("outputs", { &tsNetObj });
-  } else {
-    dlhObj.set_objs("outputs", {});
+    fh_output_objs.push_back(&tsNetObj);
   }
+  dlhObj.set_objs("outputs", fh_output_objs);
+
   std::string dataQueueUid(dlhInputQDesc->get_uid_base() + std::to_string(id));
   conffwk::ConfigObject queueObj;
   confdb->create(dbfile, "QueueWithSourceId", dataQueueUid, queueObj);
