@@ -166,7 +166,6 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
       if (data_type == "Fragment") {
         std::string dreqNetUid(descriptor->get_uid_base() + dfapp->UID());
         conffwk::ConfigObject frag_conn;
-        //create_mlt_network_connection(ti_net_desc->get_uid_base(), ti_net_desc, confdb, dbfile);
         confdb->create(dbfile, "NetworkConnection", dreqNetUid, frag_conn);
 
         frag_conn.set_by_val<std::string>("data_type", descriptor->get_data_type());
