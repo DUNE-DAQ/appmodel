@@ -16,7 +16,9 @@
 #include "conffwk/Configuration.hpp"
 #include "confmodel/DetDataReceiver.hpp"
 #include "confmodel/DetDataSender.hpp"
+#include "confmodel/DetSenderSet.hpp"
 #include "confmodel/DetectorStream.hpp"
+#include "confmodel/DetectorToDaqConnection.hpp"
 #include "confmodel/Session.hpp"
 
 #include "appmodel/NWDetDataReceiver.hpp"
@@ -30,7 +32,6 @@
 #include "confmodel/QueueWithSourceId.hpp"
 
 #include "confmodel/Connection.hpp"
-#include "confmodel/DetectorToDaqConnection.hpp"
 #include "confmodel/GeoId.hpp"
 #include "confmodel/NetworkConnection.hpp"
 #include "confmodel/ResourceSet.hpp"
@@ -202,7 +203,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
     }
 
     // Loop over detector 2 daq connections to find senders and receivers
-    auto det_senders = d2d_conn->get_senders();
+    auto det_senders = d2d_conn->get_senders()->get_senders();
     auto det_receiver = d2d_conn->get_receiver();
 
     std::vector<const confmodel::DetectorStream*> enabled_det_streams;
