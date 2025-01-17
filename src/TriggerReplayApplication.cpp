@@ -43,6 +43,7 @@
 
 #include "logging/Logging.hpp"
 
+#include <iomanip>
 #include <set>
 #include <string>
 #include <vector>
@@ -137,6 +138,12 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
   }
 
   /**************************************************************
+   * Extract # of filtered planes (to only use qs/mods as needed
+   **************************************************************/
+  auto plane_filtering = tpmm_conf->get_filter_out_plane();
+  int n_planes_to_use = 3 - plane_filtering.size();
+
+  /**************************************************************
    * Instantiate the TP Handler (TA Maker) module
    **************************************************************/
   auto tph_conf = get_tp_handler();
@@ -154,7 +161,7 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
   auto tpsrc_ids = get_tp_source_ids();
 
   auto tph_conf_obj = tph_conf->config_object();
-  for (int i = 1; i <= APA_limit; i++) {
+  for (int i = 1; i <= (APA_limit * n_planes_to_use); i++) {
     auto tph_obj = std::make_shared<conffwk::ConfigObject>();
     std::string tp_uid = "tphandler-replay-" + std::to_string(i);
     TPHs_uids.push_back(tp_uid);
@@ -182,7 +189,7 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
 
   // Same as above, later dynamically
   std::vector<std::shared_ptr<conffwk::ConfigObject>> TP_queues;
-  for (int i = 1; i <= APA_limit; i++) {
+  for (int i = 1; i <= (APA_limit * n_planes_to_use); i++) {
     auto tp_q_obj = std::make_shared<conffwk::ConfigObject>();
     std::string tp_q_uid = "tpinput-" + std::to_string(i);
     confdb->create(dbfile, "Queue", tp_q_uid, *tp_q_obj);
@@ -212,7 +219,7 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
   std::vector<std::shared_ptr<conffwk::ConfigObject>> ta_net_objects;
   std::vector<std::shared_ptr<conffwk::ConfigObject>> dr_net_objects;
 
-  for (int i = 1; i <= APA_limit; i++) {
+  for (int i = 1; i <= (APA_limit * n_planes_to_use); i++) {
     auto ta_net_obj = std::make_shared<conffwk::ConfigObject>();
     auto ta_service_obj = ta_net_desc->get_associated_service()->config_object();
     std::string ta_stream_uid = ta_net_desc->get_uid_base() + UID() + "-" + std::to_string(i);
@@ -223,10 +230,18 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
     ta_net_objects.push_back(ta_net_obj);
   }
 
-  for (int i = 1; i <= APA_limit; i++) {
+  for (int i = 1; i <= (APA_limit * n_planes_to_use); i++) {
     auto dr_net_obj = std::make_shared<conffwk::ConfigObject>();
     auto dr_service_obj = dr_net_desc->get_associated_service()->config_object();
-    std::string dr_stream_uid = dr_net_desc->get_uid_base() + UID() + "-10000" + std::to_string(i - 1);
+        // Format the integer with leading zeros to maintain consistent length
+    std::ostringstream oss;
+    oss << dr_net_desc->get_uid_base() 
+        << UID() 
+        << "-1000" 
+        << std::setfill('0') 
+        << std::setw(2) // Ensures at least 2 digits (e.g., 01, 10)
+        << (i - 1);
+    std::string dr_stream_uid = oss.str();
     confdb->create(dbfile, "NetworkConnection", dr_stream_uid, *dr_net_obj);
     dr_net_obj->set_by_val<std::string>("data_type", dr_net_desc->get_data_type());
     dr_net_obj->set_by_val<std::string>("connection_type", dr_net_desc->get_connection_type());
@@ -244,7 +259,7 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
   }
   tpm_obj.set_objs("outputs", raw_tp_queues);
 
-  for (int i = 1; i <= APA_limit; i++) {
+  for (int i = 1; i <= (APA_limit * n_planes_to_use); i++) {
     // Convert network objects to raw pointers
     std::vector<const conffwk::ConfigObject*> temp_inputs = { TP_queues[i - 1].get(), dr_net_objects[i - 1].get() };
     TPHs[i - 1]->set_objs("inputs", temp_inputs);
@@ -253,7 +268,7 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
 
   // Store modules
   modules.push_back(confdb->get<confmodel::DaqModule>(tpmm_conf->UID()));
-  for (int i = 1; i <= APA_limit; i++) {
+  for (int i = 1; i <= (APA_limit * n_planes_to_use); i++) {
     modules.push_back(confdb->get<confmodel::DaqModule>(TPHs_uids[i - 1]));
   }
 

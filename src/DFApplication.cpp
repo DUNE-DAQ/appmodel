@@ -103,12 +103,17 @@ fill_sourceid_object_from_app(conffwk::Configuration* confdb,
     }
   } 
   int APA_limit = unique_ro_units.size();
-  int APA_counter = 0;
+  int APA_plane_counter = 0;
+
+  // Get # of planes
+  auto plane_filtering = tpmm_conf->get_filter_out_plane();
+  int n_planes_to_use = 3 - plane_filtering.size();
+
   for (auto tp_sid : rapp->get_tp_source_ids()) {
-    if (APA_counter >= APA_limit) {
+    if (APA_plane_counter >= (APA_limit * n_planes_to_use)) {
         break; // Exit the loop once APA_limit iterations are reached
     }
-    APA_counter++;
+    APA_plane_counter++;
     std::string name = tp_sid->UID();
     size_t pos = name.find_last_of('-');
     std::string ext;
