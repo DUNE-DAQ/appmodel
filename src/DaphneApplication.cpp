@@ -34,6 +34,7 @@
 #include <bitset>
 #include <iostream>
 #include <fmt/core.h>
+#include <set>
 
 using namespace dunedaq;
 using namespace dunedaq::appmodel;
@@ -57,6 +58,8 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
   std::vector<const confmodel::DaqModule*> modules;
 
   auto daphne_conf = get_configuration();
+
+  std::set<std::string> ips;
   
   for (auto d2d_conn_res : get_contains()) {
 
@@ -96,120 +99,126 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
       }
 
       auto ip = felix_sender -> get_control_host();
-      auto slot = daphne_conf -> get_board_slot(ip);
 
-      const auto raw_conf = daphne_conf->get_json().at(ip);
+      ips.insert(ip);
+    } // loop over det_senders
 
-      // setup channels
-      std::vector<const conffwk::ConfigObject*> channels;
-      const auto raw_channels = raw_conf["channel_analog_conf"];
-      const auto raw_ids = raw_channels["ids"].get<std::vector<uint8_t>>();
-      const auto raw_gains = raw_channels["gains"].get<std::vector<uint8_t>>();
-      const auto raw_offsets = raw_channels["offsets"].get<std::vector<uint16_t>>();
-      const auto raw_trims = raw_channels["trims"].get<std::vector<uint16_t>>();
-      for ( size_t i = 0; i < raw_ids.size(); ++i ) {
-	auto id = raw_ids[i];
-	conffwk::ConfigObject channel_obj;
-	config->create(dbfile, "DaphneV2Channel",
-		       fmt::format("daphne-{}-channel-{}", slot, id), channel_obj );
-	channel_obj.set_by_val<uint8_t>("channel_id", id);
-	channel_obj.set_by_val<uint8_t>("gain", raw_gains[i]);
-	channel_obj.set_by_val<uint16_t>("offset", raw_offsets[i]);
-	channel_obj.set_by_val<uint16_t>("trim", raw_trims[i]);
-	auto ch = config->get<appmodel::DaphneV2Channel>(channel_obj);
-	channels.push_back(& ch -> config_object());
-      }
+  } // loop over det2DAQ Connections
 
-      //setup afes
-      std::vector<const conffwk::ConfigObject*> afes;
-      const auto raw_afes = raw_conf["afes"];
-      const auto raw_afe_ids = raw_afes["ids"].get<std::vector<size_t>>();
-      const auto raw_afe_attenuators = raw_afes["attenuators"].get<std::vector<uint16_t>>();
-      const auto raw_afe_biases = raw_afes["v_biases"].get<std::vector<uint16_t>>();
-      const auto raw_adcs = raw_afes["adcs"];
-      const auto raw_adc_res = raw_adcs["resolution"].get<std::vector<uint16_t>>();
-      const auto raw_adc_format = raw_adcs["output_format"].get<std::vector<uint16_t>>();
-      const auto raw_adc_SB = raw_adcs["SB_first"].get<std::vector<uint16_t>>();
-      const auto raw_lnas = raw_afes["lnas"];
-      const auto raw_lna_clamps = raw_lnas["clamp"].get<std::vector<uint8_t>>();
-      const auto raw_lna_gains = raw_lnas["gain"].get<std::vector<uint8_t>>();
-      const auto raw_lna_integrators = raw_lnas["integrator_disable"].get<std::vector<uint16_t>>();
-      const auto raw_pgas = raw_afes["pgas"];
-      const auto raw_pga_cuts = raw_pgas["lpf_cut_frequency"].get<std::vector<uint8_t>>();
-      const auto raw_pga_integrators = raw_pgas["integrator_disable"].get<std::vector<uint16_t>>();
-      const auto raw_pga_gains = raw_pgas["gain"].get<std::vector<uint16_t>>();
-      for ( size_t i = 0; i < raw_afe_ids.size(); ++i ) {
-	auto id = raw_afe_ids[i];
+  for ( const auto & ip : ips ) {
+  
+    auto slot = daphne_conf -> get_board_slot(ip);
 
-	// create the adc
-	conffwk::ConfigObject adc_obj;
-	config->create(dbfile, "DaphneV2ADC",
-		       fmt::format("daphne-{}-adc-{}", slot, id), adc_obj);
-	adc_obj.set_by_val<bool>("low_resolution",  raw_adc_res[i] > 0);
-	adc_obj.set_by_val<bool>("output_offset_binary",  raw_adc_format[i] > 0 );
-	adc_obj.set_by_val<bool>("MSB_first",  raw_adc_SB[i] > 0);
-	auto adc = config->get<appmodel::DaphneV2ADC>(adc_obj);
+    const auto raw_conf = daphne_conf->get_json().at(ip);
 
-	// create the lna
-	conffwk::ConfigObject lna_obj;
-	config->create(dbfile, "DaphneV2LNA",
-		       fmt::format("daphne-{}-lna-{}", slot, id), lna_obj);
-	lna_obj.set_by_val<uint8_t>("clamp",  raw_lna_clamps[i]);
-	lna_obj.set_by_val<uint8_t>("gain",  raw_lna_gains[i]);
-	lna_obj.set_by_val<bool>("integrator_disable",  raw_lna_integrators[i]>0);
-	auto lna = config->get<appmodel::DaphneV2LNA>(lna_obj);
-
-	// create the pga
-	conffwk::ConfigObject pga_obj;
-	config->create(dbfile, "DaphneV2PGA",
-		       fmt::format("daphne-{}-pga-{}", slot, id), pga_obj);
-	pga_obj.set_by_val<uint8_t>("lpf_cut_frequency",  raw_pga_cuts[i]);
-	pga_obj.set_by_val<bool>("gain",  raw_pga_gains[i]>0);
-	pga_obj.set_by_val<bool>("integrator_disable",  raw_pga_integrators[i]>0);
-	auto pga = config->get<appmodel::DaphneV2PGA>(pga_obj);
-
-	// finally create the afe
-	conffwk::ConfigObject afe_obj;
-	config->create(dbfile, "DaphneV2AFE",
-		       fmt::format("daphne-{}-afe-{}", slot, id),afe_obj );
-	afe_obj.set_by_val<uint8_t>("afe_id", id);
-	afe_obj.set_by_val<uint16_t>("attenuator", raw_afe_attenuators[i]);
-	afe_obj.set_by_val<uint16_t>("v_bias", raw_afe_biases[i]);
-	afe_obj.set_obj("adc", & adc -> config_object() );
-	afe_obj.set_obj("lna", & lna -> config_object() );
-	afe_obj.set_obj("pga", & pga -> config_object() );
-	auto afe = config->get<appmodel::DaphneV2AFE>(afe_obj);
-	afes.push_back( & afe-> config_object());
-      }
+    // setup channels
+    std::vector<const conffwk::ConfigObject*> channels;
+    const auto raw_channels = raw_conf["channel_analog_conf"];
+    const auto raw_ids = raw_channels["ids"].get<std::vector<uint8_t>>();
+    const auto raw_gains = raw_channels["gains"].get<std::vector<uint8_t>>();
+    const auto raw_offsets = raw_channels["offsets"].get<std::vector<uint16_t>>();
+    const auto raw_trims = raw_channels["trims"].get<std::vector<uint16_t>>();
+    for ( size_t i = 0; i < raw_ids.size(); ++i ) {
+      auto id = raw_ids[i];
+      conffwk::ConfigObject channel_obj;
+      config->create(dbfile, "DaphneV2Channel",
+		     fmt::format("daphne-{}-channel-{}", slot, id), channel_obj );
+      channel_obj.set_by_val<uint8_t>("channel_id", id);
+      channel_obj.set_by_val<uint8_t>("gain", raw_gains[i]);
+      channel_obj.set_by_val<uint16_t>("offset", raw_offsets[i]);
+      channel_obj.set_by_val<uint16_t>("trim", raw_trims[i]);
+      auto ch = config->get<appmodel::DaphneV2Channel>(channel_obj);
+      channels.push_back(& ch -> config_object());
+    }
+    
+    //setup afes
+    std::vector<const conffwk::ConfigObject*> afes;
+    const auto raw_afes = raw_conf["afes"];
+    const auto raw_afe_ids = raw_afes["ids"].get<std::vector<size_t>>();
+    const auto raw_afe_attenuators = raw_afes["attenuators"].get<std::vector<uint16_t>>();
+    const auto raw_afe_biases = raw_afes["v_biases"].get<std::vector<uint16_t>>();
+    const auto raw_adcs = raw_afes["adcs"];
+    const auto raw_adc_res = raw_adcs["resolution"].get<std::vector<uint16_t>>();
+    const auto raw_adc_format = raw_adcs["output_format"].get<std::vector<uint16_t>>();
+    const auto raw_adc_SB = raw_adcs["SB_first"].get<std::vector<uint16_t>>();
+    const auto raw_lnas = raw_afes["lnas"];
+    const auto raw_lna_clamps = raw_lnas["clamp"].get<std::vector<uint8_t>>();
+    const auto raw_lna_gains = raw_lnas["gain"].get<std::vector<uint8_t>>();
+    const auto raw_lna_integrators = raw_lnas["integrator_disable"].get<std::vector<uint16_t>>();
+    const auto raw_pgas = raw_afes["pgas"];
+    const auto raw_pga_cuts = raw_pgas["lpf_cut_frequency"].get<std::vector<uint8_t>>();
+    const auto raw_pga_integrators = raw_pgas["integrator_disable"].get<std::vector<uint16_t>>();
+    const auto raw_pga_gains = raw_pgas["gain"].get<std::vector<uint16_t>>();
+    for ( size_t i = 0; i < raw_afe_ids.size(); ++i ) {
+      auto id = raw_afe_ids[i];
       
+      // create the adc
+      conffwk::ConfigObject adc_obj;
+      config->create(dbfile, "DaphneV2ADC",
+		     fmt::format("daphne-{}-adc-{}", slot, id), adc_obj);
+      adc_obj.set_by_val<bool>("low_resolution",  raw_adc_res[i] > 0);
+      adc_obj.set_by_val<bool>("output_offset_binary",  raw_adc_format[i] > 0 );
+      adc_obj.set_by_val<bool>("MSB_first",  raw_adc_SB[i] > 0);
+      auto adc = config->get<appmodel::DaphneV2ADC>(adc_obj);
       
-      conffwk::ConfigObject board_obj;
-      config->create(dbfile, "DaphneV2BoardConf",
-       		     fmt::format("daphne-{}-conf", slot), board_obj);
-      board_obj.set_by_val<uint16_t>("bias_ctrl", raw_conf.at("bias_ctrl"));
-      board_obj.set_by_val<uint64_t>("self_trigger_threshold", raw_conf.at("self_trigger_threshold"));
-      board_obj.set_by_val<std::vector<uint8_t>>("full_stream_channels",
-						 raw_conf.at("full_stream_channels").get<std::vector<uint8_t>>());
-      board_obj.set_objs("active_channels", channels);
-      board_obj.set_objs("active_afes", afes);
-      board_obj.set_obj("default_channel", & daphne_conf->get_default_v2_settings()->get_default_channel()->config_object());
-      board_obj.set_obj("default_afe", & daphne_conf->get_default_v2_settings()->get_default_afe()->config_object());
-      auto conf = config->get<appmodel::DaphneV2BoardConf>(board_obj);
+      // create the lna
+      conffwk::ConfigObject lna_obj;
+      config->create(dbfile, "DaphneV2LNA",
+		     fmt::format("daphne-{}-lna-{}", slot, id), lna_obj);
+      lna_obj.set_by_val<uint8_t>("clamp",  raw_lna_clamps[i]);
+      lna_obj.set_by_val<uint8_t>("gain",  raw_lna_gains[i]);
+      lna_obj.set_by_val<bool>("integrator_disable",  raw_lna_integrators[i]>0);
+      auto lna = config->get<appmodel::DaphneV2LNA>(lna_obj);
       
-      conffwk::ConfigObject module_obj;
-      std::string module_name = fmt::format("controller-{}", slot);
-      config -> create( dbfile, "DaphneV2ControllerModule", module_name, module_obj);
-      module_obj.set_by_val<std::string>("address", ip);
-      module_obj.set_by_val<uint16_t>("slot", slot);
-      module_obj.set_obj("daphne_conf", & daphne_conf -> config_object() );
-      module_obj.set_obj("board_conf", & conf -> config_object() );
+      // create the pga
+      conffwk::ConfigObject pga_obj;
+      config->create(dbfile, "DaphneV2PGA",
+		     fmt::format("daphne-{}-pga-{}", slot, id), pga_obj);
+      pga_obj.set_by_val<uint8_t>("lpf_cut_frequency",  raw_pga_cuts[i]);
+      pga_obj.set_by_val<bool>("gain",  raw_pga_gains[i]>0);
+      pga_obj.set_by_val<bool>("integrator_disable",  raw_pga_integrators[i]>0);
+      auto pga = config->get<appmodel::DaphneV2PGA>(pga_obj);
       
-      auto module = config->get<appmodel::DaphneV2ControllerModule>(module_obj);
-      modules.push_back(module);
-      
-    } // loop over data senders
-
-  }  // loop over detector 2 daq connections
+      // finally create the afe
+      conffwk::ConfigObject afe_obj;
+      config->create(dbfile, "DaphneV2AFE",
+		     fmt::format("daphne-{}-afe-{}", slot, id),afe_obj );
+      afe_obj.set_by_val<uint8_t>("afe_id", id);
+      afe_obj.set_by_val<uint16_t>("attenuator", raw_afe_attenuators[i]);
+      afe_obj.set_by_val<uint16_t>("v_bias", raw_afe_biases[i]);
+      afe_obj.set_obj("adc", & adc -> config_object() );
+      afe_obj.set_obj("lna", & lna -> config_object() );
+      afe_obj.set_obj("pga", & pga -> config_object() );
+      auto afe = config->get<appmodel::DaphneV2AFE>(afe_obj);
+      afes.push_back( & afe-> config_object());
+    }
+    
+    
+    conffwk::ConfigObject board_obj;
+    config->create(dbfile, "DaphneV2BoardConf",
+		   fmt::format("daphne-{}-conf", slot), board_obj);
+    board_obj.set_by_val<uint16_t>("bias_ctrl", raw_conf.at("bias_ctrl"));
+    board_obj.set_by_val<uint64_t>("self_trigger_threshold", raw_conf.at("self_trigger_threshold"));
+    board_obj.set_by_val<std::vector<uint8_t>>("full_stream_channels",
+					       raw_conf.at("full_stream_channels").get<std::vector<uint8_t>>());
+    board_obj.set_objs("active_channels", channels);
+    board_obj.set_objs("active_afes", afes);
+    board_obj.set_obj("default_channel", & daphne_conf->get_default_v2_settings()->get_default_channel()->config_object());
+    board_obj.set_obj("default_afe", & daphne_conf->get_default_v2_settings()->get_default_afe()->config_object());
+    auto conf = config->get<appmodel::DaphneV2BoardConf>(board_obj);
+    
+    conffwk::ConfigObject module_obj;
+    std::string module_name = fmt::format("controller-{}", slot);
+    config -> create( dbfile, "DaphneV2ControllerModule", module_name, module_obj);
+    module_obj.set_by_val<std::string>("address", ip);
+    module_obj.set_by_val<uint16_t>("slot", slot);
+    module_obj.set_obj("daphne_conf", & daphne_conf -> config_object() );
+    module_obj.set_obj("board_conf", & conf -> config_object() );
+    
+    auto module = config->get<appmodel::DaphneV2ControllerModule>(module_obj);
+    modules.push_back(module);
+    
+  } // ips
 
   return modules;
 }
