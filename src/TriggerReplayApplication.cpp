@@ -138,9 +138,12 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
   }
 
   /**************************************************************
-   * Extract # of filtered planes (to only use qs/mods as needed
+   * Extract # of filtered planes (to only use qs/mods as needed)
    **************************************************************/
   auto plane_filtering = tpmm_conf->get_filter_out_plane();
+  if (plane_filtering.size() >= 3) {
+    throw(BadConf(ERS_HERE, "TriggerReplayApplication: too many planes configured for filtering!"));
+  }
   int n_planes_to_use = 3 - plane_filtering.size();
 
   /**************************************************************
