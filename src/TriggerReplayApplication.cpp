@@ -33,9 +33,9 @@
 #include "appmodel/DataHandlerModule.hpp"
 #include "appmodel/TCDataProcessor.hpp"
 
+#include "appmodel/TPStreamConf.hpp"
 #include "appmodel/TriggerPrimitiveMakerModule.hpp"
 #include "appmodel/TriggerPrimitiveMakerModuleConf.hpp"
-#include "appmodel/TPStreamConf.hpp"
 
 #include "appmodel/TriggerApplication.hpp"
 #include "appmodel/TriggerReplayApplication.hpp"
@@ -68,14 +68,16 @@ TriggerReplayApplication::get_ro_unit(const std::string& path)
   std::string filename = path.substr(lastSlashPos + 1);
 
   size_t hdf5Pos = filename.find(".hdf5");
-  if (hdf5Pos == std::string::npos) return -1; // .hdf5 not found
+  if (hdf5Pos == std::string::npos)
+    return -1; // .hdf5 not found
 
   // Extract the filename before ".hdf5"
   filename = filename.substr(0, hdf5Pos);
 
   // Step 2: Find "tp-stream-writer" and extract the part after it
   size_t tpPos = filename.find("tp-stream-writer");
-  if (tpPos == std::string::npos) return -1; // "tp-stream-writer" not found
+  if (tpPos == std::string::npos)
+    return -1; // "tp-stream-writer" not found
 
   std::string afterTp = filename.substr(tpPos + 17); // length of "tp-stream-writer" is 17
 
@@ -96,7 +98,7 @@ TriggerReplayApplication::get_ro_unit(const std::string& path)
   if (part.size() == prefix.size() + 1 && std::isdigit(part.back())) {
     return std::stoi(part.substr(prefix.size())); // Convert the number part to integer
   }
-    
+
   return -1; // Return -1 if something goes wrong
 }
 
@@ -236,12 +238,9 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
   for (int i = 1; i <= (APA_limit * n_planes_to_use); i++) {
     auto dr_net_obj = std::make_shared<conffwk::ConfigObject>();
     auto dr_service_obj = dr_net_desc->get_associated_service()->config_object();
-        // Format the integer with leading zeros to maintain consistent length
+    // Format the integer with leading zeros to maintain consistent length
     std::ostringstream oss;
-    oss << dr_net_desc->get_uid_base() 
-        << UID() 
-        << "-1000" 
-        << std::setfill('0') 
+    oss << dr_net_desc->get_uid_base() << UID() << "-1000" << std::setfill('0')
         << std::setw(2) // Ensures at least 2 digits (e.g., 01, 10)
         << (i - 1);
     std::string dr_stream_uid = oss.str();
