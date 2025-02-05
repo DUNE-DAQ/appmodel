@@ -23,9 +23,9 @@
 #include "appmodel/QueueDescriptor.hpp"
 #include "appmodel/ReadoutApplication.hpp"
 #include "appmodel/SourceIDConf.hpp"
+#include "appmodel/TPStreamConf.hpp"
 #include "appmodel/TRBConf.hpp"
 #include "appmodel/TRBModule.hpp"
-#include "appmodel/TPStreamConf.hpp"
 #include "appmodel/TriggerPrimitiveMakerModuleConf.hpp"
 #include "appmodel/TriggerReplayApplication.hpp"
 #include "appmodel/appmodelIssues.hpp"
@@ -103,7 +103,7 @@ fill_sourceid_object_from_app(conffwk::Configuration* confdb,
     if (ro_unit != -1) { // Ignore invalid results
       unique_ro_units.insert(ro_unit);
     }
-  } 
+  }
   int APA_limit = unique_ro_units.size();
   int APA_plane_counter = 0;
 
@@ -121,7 +121,7 @@ fill_sourceid_object_from_app(conffwk::Configuration* confdb,
     // Number of handlers (buffers) is dynamic
     // given by unique ROUs * planes
     if (APA_plane_counter >= (APA_limit * n_planes_to_use)) {
-        break; // Exit the loop once APA_limit iterations are reached
+      break; // Exit the loop once APA_limit iterations are reached
     }
     APA_plane_counter++;
     std::string name = tp_sid->UID();

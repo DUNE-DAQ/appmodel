@@ -340,10 +340,10 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
       } else {
         n_planes_to_use = 3 - plane_filtering.size();
       }
-      
-      int APA_plane_counter = 0; 
+
+      int APA_plane_counter = 0;
       for (auto sid : replay_app->get_tp_source_ids()) {
-	if (APA_plane_counter >= (APA_limit * n_planes_to_use)) {
+        if (APA_plane_counter >= (APA_limit * n_planes_to_use)) {
           break; // Exit the loop once APA_limit iterations are reached
         }
         APA_plane_counter++;
