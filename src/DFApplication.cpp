@@ -25,16 +25,19 @@
 #include "appmodel/SourceIDConf.hpp"
 #include "appmodel/TRBConf.hpp"
 #include "appmodel/TRBModule.hpp"
-#include "appmodel/TriggerReplayApplication.hpp"
-#include "appmodel/TriggerPrimitiveMakerModuleConf.hpp"
 #include "appmodel/TPStreamConf.hpp"
+#include "appmodel/TriggerPrimitiveMakerModuleConf.hpp"
+#include "appmodel/TriggerReplayApplication.hpp"
 #include "appmodel/appmodelIssues.hpp"
+
 #include "conffwk/Configuration.hpp"
+
 #include "confmodel/Connection.hpp"
 #include "confmodel/DetectorStream.hpp"
 #include "confmodel/DetectorToDaqConnection.hpp"
 #include "confmodel/NetworkConnection.hpp"
 #include "confmodel/Service.hpp"
+
 #include "logging/Logging.hpp"
 #include "oks/kernel.hpp"
 
@@ -91,9 +94,8 @@ fill_sourceid_object_from_app(conffwk::Configuration* confdb,
                               const NetworkConnectionDescriptor* descriptor,
                               std::string smartapp_uid)
 {
-
-  // Set to hold unique integers
   auto tpmm_conf = rapp->get_tpmm_conf();
+  // Unique ReadOut Units
   std::set<int> unique_ro_units;
   for (auto& stream : tpmm_conf->get_tp_streams()) {
     int ro_unit = TriggerReplayApplication::get_ro_unit(stream->get_filename());
@@ -107,9 +109,17 @@ fill_sourceid_object_from_app(conffwk::Configuration* confdb,
 
   // Get # of planes
   auto plane_filtering = tpmm_conf->get_filter_out_plane();
-  int n_planes_to_use = 3 - plane_filtering.size();
+  int n_planes_to_use;
+  if (plane_filtering.size() >= 3) {
+    throw(BadConf(ERS_HERE, "TriggerReplayApplication: too many planes configured for filtering!"));
+    n_planes_to_use = 0;
+  } else {
+    n_planes_to_use = 3 - plane_filtering.size();
+  }
 
   for (auto tp_sid : rapp->get_tp_source_ids()) {
+    // Number of handlers (buffers) is dynamic
+    // given by unique ROUs * planes
     if (APA_plane_counter >= (APA_limit * n_planes_to_use)) {
         break; // Exit the loop once APA_limit iterations are reached
     }

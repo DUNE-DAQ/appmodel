@@ -14,30 +14,23 @@
 
 #include "confmodel/Connection.hpp"
 #include "confmodel/NetworkConnection.hpp"
-
 #include "confmodel/ResourceSet.hpp"
 #include "confmodel/Service.hpp"
 
-#include "appmodel/NetworkConnectionRule.hpp"
-#include "appmodel/QueueConnectionRule.hpp"
-
-#include "appmodel/NetworkConnectionDescriptor.hpp"
-#include "appmodel/QueueDescriptor.hpp"
-
-#include "appmodel/SourceIDConf.hpp"
-
-#include "appmodel/DataReaderConf.hpp"
-#include "appmodel/DataSubscriberModule.hpp"
-
 #include "appmodel/DataHandlerConf.hpp"
 #include "appmodel/DataHandlerModule.hpp"
+#include "appmodel/DataReaderConf.hpp"
+#include "appmodel/DataSubscriberModule.hpp"
+#include "appmodel/NetworkConnectionDescriptor.hpp"
+#include "appmodel/NetworkConnectionRule.hpp"
+#include "appmodel/QueueConnectionRule.hpp"
+#include "appmodel/QueueDescriptor.hpp"
+#include "appmodel/SourceIDConf.hpp"
 #include "appmodel/TCDataProcessor.hpp"
-
 #include "appmodel/TPStreamConf.hpp"
+#include "appmodel/TriggerApplication.hpp"
 #include "appmodel/TriggerPrimitiveMakerModule.hpp"
 #include "appmodel/TriggerPrimitiveMakerModuleConf.hpp"
-
-#include "appmodel/TriggerApplication.hpp"
 #include "appmodel/TriggerReplayApplication.hpp"
 #include "appmodel/appmodelIssues.hpp"
 
@@ -60,6 +53,8 @@ static ModuleFactory::Registrator __reg__("TriggerReplayApplication",
                                             return app->generate_modules(confdb, dbfile, session);
                                           });
 
+// Helper function to get ROU from file's path
+// (requires consistent naming for tpstream files)
 int
 TriggerReplayApplication::get_ro_unit(const std::string& path)
 {
@@ -119,7 +114,7 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
   auto tpmm_conf = get_tpmm_conf();
 
   if (!tpmm_conf) {
-    throw(BadConf(ERS_HERE, "No Replay configuration in TriggerReplayApplication given"));
+    throw(BadConf(ERS_HERE, "No TPPM configuration in TriggerReplayApplication given"));
   }
 
   conffwk::ConfigObject tpm_obj;
@@ -143,13 +138,16 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
    * Extract # of filtered planes (to only use qs/mods as needed)
    **************************************************************/
   auto plane_filtering = tpmm_conf->get_filter_out_plane();
+  int n_planes_to_use;
   if (plane_filtering.size() >= 3) {
     throw(BadConf(ERS_HERE, "TriggerReplayApplication: too many planes configured for filtering!"));
+    n_planes_to_use = 0;
+  } else {
+    n_planes_to_use = 3 - plane_filtering.size();
   }
-  int n_planes_to_use = 3 - plane_filtering.size();
 
   /**************************************************************
-   * Instantiate the TP Handler (TA Maker) module
+   * Instantiate the TP Handler (TA Maker) module(s)
    **************************************************************/
   auto tph_conf = get_tp_handler();
   std::string tph_class = "";
@@ -158,6 +156,7 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
   }
 
   // For now, have X identical config TP Handlers
+  // X = ROUs * planes
   int APA_limit = unique_ro_units.size();
   std::vector<std::shared_ptr<conffwk::ConfigObject>> TPHs;
   std::vector<std::string> TPHs_uids;
@@ -192,7 +191,7 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
     }
   }
 
-  // Same as above, later dynamically
+  // Same as above (ROUs * planes queues), later dynamically
   std::vector<std::shared_ptr<conffwk::ConfigObject>> TP_queues;
   for (int i = 1; i <= (APA_limit * n_planes_to_use); i++) {
     auto tp_q_obj = std::make_shared<conffwk::ConfigObject>();
@@ -224,6 +223,7 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
   std::vector<std::shared_ptr<conffwk::ConfigObject>> ta_net_objects;
   std::vector<std::shared_ptr<conffwk::ConfigObject>> dr_net_objects;
 
+  // Outputs for each handler
   for (int i = 1; i <= (APA_limit * n_planes_to_use); i++) {
     auto ta_net_obj = std::make_shared<conffwk::ConfigObject>();
     auto ta_service_obj = ta_net_desc->get_associated_service()->config_object();
@@ -235,6 +235,7 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
     ta_net_objects.push_back(ta_net_obj);
   }
 
+  // Data requests
   for (int i = 1; i <= (APA_limit * n_planes_to_use); i++) {
     auto dr_net_obj = std::make_shared<conffwk::ConfigObject>();
     auto dr_service_obj = dr_net_desc->get_associated_service()->config_object();

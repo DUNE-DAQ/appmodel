@@ -19,44 +19,36 @@
 // #include "confmodel/DetectorStream.hpp"
 #include "confmodel/DetectorStream.hpp"
 #include "confmodel/DetectorToDaqConnection.hpp"
-
 #include "confmodel/ResourceSet.hpp"
 #include "confmodel/Service.hpp"
 #include "confmodel/Session.hpp"
 
-#include "appmodel/NetworkConnectionRule.hpp"
-#include "appmodel/QueueConnectionRule.hpp"
-
-#include "appmodel/NetworkConnectionDescriptor.hpp"
-#include "appmodel/QueueDescriptor.hpp"
-
-#include "appmodel/SourceIDConf.hpp"
-
+#include "appmodel/DTSHSIApplication.hpp"
+#include "appmodel/DataHandlerConf.hpp"
+#include "appmodel/DataHandlerModule.hpp"
 #include "appmodel/DataReaderConf.hpp"
 #include "appmodel/DataRecorderConf.hpp"
 #include "appmodel/DataSubscriberModule.hpp"
-
-#include "appmodel/DataHandlerConf.hpp"
-#include "appmodel/DataHandlerModule.hpp"
-#include "appmodel/TCDataProcessor.hpp"
-
-#include "appmodel/MLTConf.hpp"
-#include "appmodel/MLTModule.hpp"
-
-#include "appmodel/DTSHSIApplication.hpp"
 #include "appmodel/FakeDataApplication.hpp"
 #include "appmodel/FakeDataProdConf.hpp"
 #include "appmodel/FakeHSIApplication.hpp"
 #include "appmodel/MLTApplication.hpp"
+#include "appmodel/MLTConf.hpp"
+#include "appmodel/MLTModule.hpp"
+#include "appmodel/NetworkConnectionDescriptor.hpp"
+#include "appmodel/NetworkConnectionRule.hpp"
+#include "appmodel/QueueConnectionRule.hpp"
+#include "appmodel/QueueDescriptor.hpp"
 #include "appmodel/ReadoutApplication.hpp"
-#include "appmodel/TriggerApplication.hpp"
-#include "appmodel/TriggerReplayApplication.hpp"
-#include "appmodel/TriggerPrimitiveMakerModuleConf.hpp"
-#include "appmodel/TPStreamConf.hpp"
-#include "appmodel/appmodelIssues.hpp"
-
+#include "appmodel/SourceIDConf.hpp"
 #include "appmodel/StandaloneTCMakerConf.hpp"
 #include "appmodel/StandaloneTCMakerModule.hpp"
+#include "appmodel/TCDataProcessor.hpp"
+#include "appmodel/TPStreamConf.hpp"
+#include "appmodel/TriggerApplication.hpp"
+#include "appmodel/TriggerPrimitiveMakerModuleConf.hpp"
+#include "appmodel/TriggerReplayApplication.hpp"
+#include "appmodel/appmodelIssues.hpp"
 
 #include "logging/Logging.hpp"
 
@@ -341,7 +333,14 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
       }
       int APA_limit = unique_ro_units.size();
       auto plane_filtering = tpmm_conf->get_filter_out_plane();
-      int n_planes_to_use = 3 - plane_filtering.size();
+      int n_planes_to_use;
+      if (plane_filtering.size() >= 3) {
+        throw(BadConf(ERS_HERE, "TriggerReplayApplication: too many planes configured for filtering!"));
+        n_planes_to_use = 0;
+      } else {
+        n_planes_to_use = 3 - plane_filtering.size();
+      }
+      
       int APA_plane_counter = 0; 
       for (auto sid : replay_app->get_tp_source_ids()) {
 	if (APA_plane_counter >= (APA_limit * n_planes_to_use)) {
