@@ -22,6 +22,7 @@
 #include "appmodel/HSIEventToTCApplication.hpp"
 #include "appmodel/MLTApplication.hpp"
 #include "appmodel/WIECApplication.hpp"
+#include "appmodel/DaphneApplication.hpp"
 
 #include <sstream>
 
@@ -83,7 +84,8 @@ register_dal_methods(py::module& m)
   m.def("hsieventtotc_application_generate", &application_generate_template<HSIEventToTCApplication>, "Generate DaqModules required by HSIEventToTCApplication");
   m.def("mlt_application_generate", &application_generate_template<MLTApplication>, "Generate DaqModules required by MLTApplication");
   m.def("wiec_application_generate", &application_generate_template<WIECApplication>, "Generate DaqModules required by WIECApplication");
-
+  m.def("daphne_application_generate", &application_generate_template<DaphneApplication>, "Generate DaqModules required by DaphneApplication");
+  
   m.def("smart_daq_application_construct_commandline_parameters", &smart_daq_application_construct_commandline_parameters, "Get a version of the command line agruments parsed");
 }
 
