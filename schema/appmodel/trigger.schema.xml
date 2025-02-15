@@ -293,6 +293,7 @@
  <class name="TCAlgorithm" description="Base class for TC algorithms">
   <superclass name="Jsonable"/>
   <attribute name="prescale" description="Prescale factor to apply to algorithm output" type="u32" init-value="1" is-not-null="yes"/>
+  <attribute name="tc_type_name" description="The output TC type name this algorithm will output" type="string" init-value="kUnknown" is-not-null="yes"/>
  </class>
 
  <class name="TCDataProcessor" description="Post-processor for TCs generating the trigger decisions">
