@@ -17,6 +17,7 @@ __generate_class_map = {
     'MLTApplication': mlt_application_generate,
     'TriggerReplayApplication': replay_application_generate,
     'WIECApplication': wiec_application_generate,
+    'DaphneApplication': daphne_application_generate,
 
 }
 
