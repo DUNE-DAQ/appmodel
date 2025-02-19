@@ -94,36 +94,7 @@ fill_sourceid_object_from_app(conffwk::Configuration* confdb,
                               const NetworkConnectionDescriptor* descriptor,
                               std::string smartapp_uid)
 {
-  auto tpmm_conf = rapp->get_tpmm_conf();
-  // Unique ReadOut Units
-  std::set<int> unique_ro_units;
-  for (auto& stream : tpmm_conf->get_tp_streams()) {
-    int ro_unit = TriggerReplayApplication::get_ro_unit(stream->get_filename());
-    // Add the RO unit to the set
-    if (ro_unit != -1) { // Ignore invalid results
-      unique_ro_units.insert(ro_unit);
-    }
-  }
-  int APA_limit = unique_ro_units.size();
-  int APA_plane_counter = 0;
-
-  // Get # of planes
-  auto plane_filtering = tpmm_conf->get_filter_out_plane();
-  int n_planes_to_use;
-  if (plane_filtering.size() >= 3) {
-    throw(BadConf(ERS_HERE, "TriggerReplayApplication: too many planes configured for filtering!"));
-    n_planes_to_use = 0;
-  } else {
-    n_planes_to_use = 3 - plane_filtering.size();
-  }
-
   for (auto tp_sid : rapp->get_tp_source_ids()) {
-    // Number of handlers (buffers) is dynamic
-    // given by unique ROUs * planes
-    if (APA_plane_counter >= (APA_limit * n_planes_to_use)) {
-      break; // Exit the loop once APA_limit iterations are reached
-    }
-    APA_plane_counter++;
     std::string name = tp_sid->UID();
     size_t pos = name.find_last_of('-');
     std::string ext;

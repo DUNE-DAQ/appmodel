@@ -409,9 +409,10 @@
   <attribute name="number_of_loops" type="u32" init-value="1" is-not-null="yes"/>
   <attribute name="maximum_wait_time_us" type="u32" init-value="1000" is-not-null="yes"/>
   <attribute name="channel_map" type="string" init-value="PD2HDChannelMap" is-not-null="yes"/>
+  <attribute name="total_planes" type="u32" init-value="0" is-not-null="yes"/>
   <relationship name="filter_out_plane" class-type="PlaneNumberConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="tp_streams" class-type="TPStreamConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
+</class>
 
  <class name="PlaneNumberConf">
   <attribute name="plane" type="u32" init-value="0" is-not-null="yes"/>
@@ -430,9 +431,6 @@
   <relationship name="tp_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate daq module dal objects for TriggerReplayApplication on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
-  </method>
-  <method name="get_ro_unit" description="">
-    <method-implementation language="c++" prototype="static int get_ro_unit(const std::string&amp; path)" body=""/>
   </method>
  </class>
 

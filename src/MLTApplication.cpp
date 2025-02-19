@@ -324,30 +324,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
 
     auto replay_app = app->cast<appmodel::TriggerReplayApplication>();
     if (replay_app != nullptr) {
-      auto tpmm_conf = replay_app->get_tpmm_conf();
-      std::set<int> unique_ro_units;
-      for (auto& stream : tpmm_conf->get_tp_streams()) {
-        int ro_unit = TriggerReplayApplication::get_ro_unit(stream->get_filename());
-        if (ro_unit != -1) { // Ignore invalid results
-          unique_ro_units.insert(ro_unit);
-        }
-      }
-      int APA_limit = unique_ro_units.size();
-      auto plane_filtering = tpmm_conf->get_filter_out_plane();
-      int n_planes_to_use;
-      if (plane_filtering.size() >= 3) {
-        throw(BadConf(ERS_HERE, "TriggerReplayApplication: too many planes configured for filtering!"));
-        n_planes_to_use = 0;
-      } else {
-        n_planes_to_use = 3 - plane_filtering.size();
-      }
-
-      int APA_plane_counter = 0;
       for (auto sid : replay_app->get_tp_source_ids()) {
-        if (APA_plane_counter >= (APA_limit * n_planes_to_use)) {
-          break; // Exit the loop once APA_limit iterations are reached
-        }
-        APA_plane_counter++;
         sourceIds.push_back(&(sid->config_object()));
       }
     }

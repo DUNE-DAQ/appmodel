@@ -53,50 +53,6 @@ static ModuleFactory::Registrator __reg__("TriggerReplayApplication",
                                             return app->generate_modules(confdb, dbfile, session);
                                           });
 
-// Helper function to get ROU from file's path
-// (requires consistent naming for tpstream files)
-int
-TriggerReplayApplication::get_ro_unit(const std::string& path)
-{
-  // Step 1: Find the last part of the path before ".hdf5"
-  size_t lastSlashPos = path.rfind('/');
-  std::string filename = path.substr(lastSlashPos + 1);
-
-  size_t hdf5Pos = filename.find(".hdf5");
-  if (hdf5Pos == std::string::npos)
-    return -1; // .hdf5 not found
-
-  // Extract the filename before ".hdf5"
-  filename = filename.substr(0, hdf5Pos);
-
-  // Step 2: Find "tp-stream-writer" and extract the part after it
-  size_t tpPos = filename.find("tp-stream-writer");
-  if (tpPos == std::string::npos)
-    return -1; // "tp-stream-writer" not found
-
-  std::string afterTp = filename.substr(tpPos + 17); // length of "tp-stream-writer" is 17
-
-  // Step 3: Check for "apa" or "crp" and extract the number
-  std::string prefix;
-  size_t prefixPos;
-
-  if ((prefixPos = afterTp.find("apa")) != std::string::npos) {
-    prefix = "apa";
-  } else if ((prefixPos = afterTp.find("crp")) != std::string::npos) {
-    prefix = "crp";
-  } else {
-    return -1; // Neither "apa" nor "crp" found
-  }
-
-  // Extract the prefix part (e.g., "apaX" or "crpX") and convert the number
-  std::string part = afterTp.substr(prefixPos, prefix.size() + 1); // Get prefix + number
-  if (part.size() == prefix.size() + 1 && std::isdigit(part.back())) {
-    return std::stoi(part.substr(prefix.size())); // Convert the number part to integer
-  }
-
-  return -1; // Return -1 if something goes wrong
-}
-
 std::vector<const confmodel::DaqModule*>
 TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
                                            const std::string& dbfile,
@@ -122,28 +78,18 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
   tpm_obj.set_obj("configuration", &(tpmm_conf->config_object()));
 
   /**************************************************************
-   * Extract # Readout units from files - this affects the rest
+   * Get total planes from config
    **************************************************************/
-  // Set to hold unique integers
-  std::set<int> unique_ro_units;
-  for (auto& stream : tpmm_conf->get_tp_streams()) {
-    int ro_unit = get_ro_unit(stream->get_filename());
-    // Add the RO unit to the set
-    if (ro_unit != -1) { // Ignore invalid results
-      unique_ro_units.insert(ro_unit);
-    }
-  }
+  int total_planes = tpmm_conf->get_total_planes();
+  std::cout << "TOTAL PLANES: " << total_planes << std::endl; 
 
   /**************************************************************
-   * Extract # of filtered planes (to only use qs/mods as needed)
+   * Extract # of filtered planes
    **************************************************************/
+  // TODO: this needs improving
   auto plane_filtering = tpmm_conf->get_filter_out_plane();
-  int n_planes_to_use;
   if (plane_filtering.size() >= 3) {
     throw(BadConf(ERS_HERE, "TriggerReplayApplication: too many planes configured for filtering!"));
-    n_planes_to_use = 0;
-  } else {
-    n_planes_to_use = 3 - plane_filtering.size();
   }
 
   /**************************************************************
@@ -155,9 +101,7 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
     tph_class = tph_conf->get_template_for();
   }
 
-  // For now, have X identical config TP Handlers
-  // X = ROUs * planes
-  int APA_limit = unique_ro_units.size();
+  // For now, have X (X=total_planes) identical config TP Handlers
   std::vector<std::shared_ptr<conffwk::ConfigObject>> TPHs;
   std::vector<std::string> TPHs_uids;
 
@@ -165,7 +109,7 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
   auto tpsrc_ids = get_tp_source_ids();
 
   auto tph_conf_obj = tph_conf->config_object();
-  for (int i = 1; i <= (APA_limit * n_planes_to_use); i++) {
+  for (int i = 1; i <= total_planes; i++) {
     auto tph_obj = std::make_shared<conffwk::ConfigObject>();
     std::string tp_uid = "tphandler-replay-" + std::to_string(i);
     TPHs_uids.push_back(tp_uid);
@@ -193,7 +137,7 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
 
   // Same as above (ROUs * planes queues), later dynamically
   std::vector<std::shared_ptr<conffwk::ConfigObject>> TP_queues;
-  for (int i = 1; i <= (APA_limit * n_planes_to_use); i++) {
+  for (int i = 1; i <= total_planes; i++) {
     auto tp_q_obj = std::make_shared<conffwk::ConfigObject>();
     std::string tp_q_uid = "tpinput-" + std::to_string(i);
     confdb->create(dbfile, "Queue", tp_q_uid, *tp_q_obj);
@@ -224,7 +168,7 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
   std::vector<std::shared_ptr<conffwk::ConfigObject>> dr_net_objects;
 
   // Outputs for each handler
-  for (int i = 1; i <= (APA_limit * n_planes_to_use); i++) {
+  for (int i = 1; i <= total_planes; i++) {
     auto ta_net_obj = std::make_shared<conffwk::ConfigObject>();
     auto ta_service_obj = ta_net_desc->get_associated_service()->config_object();
     std::string ta_stream_uid = ta_net_desc->get_uid_base() + UID() + "-" + std::to_string(i);
@@ -236,7 +180,7 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
   }
 
   // Data requests
-  for (int i = 1; i <= (APA_limit * n_planes_to_use); i++) {
+  for (int i = 1; i <= total_planes; i++) {
     auto dr_net_obj = std::make_shared<conffwk::ConfigObject>();
     auto dr_service_obj = dr_net_desc->get_associated_service()->config_object();
     // Format the integer with leading zeros to maintain consistent length
@@ -262,7 +206,7 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
   }
   tpm_obj.set_objs("outputs", raw_tp_queues);
 
-  for (int i = 1; i <= (APA_limit * n_planes_to_use); i++) {
+  for (int i = 1; i <= total_planes; i++) {
     // Convert network objects to raw pointers
     std::vector<const conffwk::ConfigObject*> temp_inputs = { TP_queues[i - 1].get(), dr_net_objects[i - 1].get() };
     TPHs[i - 1]->set_objs("inputs", temp_inputs);
@@ -271,7 +215,7 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
 
   // Store modules
   modules.push_back(confdb->get<confmodel::DaqModule>(tpmm_conf->UID()));
-  for (int i = 1; i <= (APA_limit * n_planes_to_use); i++) {
+  for (int i = 1; i <= total_planes; i++) {
     modules.push_back(confdb->get<confmodel::DaqModule>(TPHs_uids[i - 1]));
   }
 
