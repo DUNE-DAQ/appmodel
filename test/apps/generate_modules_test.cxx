@@ -16,6 +16,7 @@
 #include "confmodel/Connection.hpp"
 #include "confmodel/DaqModule.hpp"
 
+#include "appmodel/ConfigurationHelper.hpp"
 #include "appmodel/DFApplication.hpp"
 #include "appmodel/DFOApplication.hpp"
 #include "appmodel/ReadoutApplication.hpp"
@@ -28,6 +29,7 @@
 
 #include <string>
 using namespace dunedaq;
+using namespace dunedaq::appmodel;
 
 int main(int argc, char* argv[]) {
   if (argc < 4) {
@@ -65,9 +67,12 @@ int main(int argc, char* argv[]) {
       std::cout << "Application " << appName << " is disabled" << std::endl;
       return 0;
     }
+
+    auto helper = std::make_shared<ConfigurationHelper>(session);
+
     std::vector<const confmodel::DaqModule*> modules;
     try {
-      modules = daqapp->generate_modules(confdb, dbfile, session);
+      modules = daqapp->generate_modules(confdb, dbfile, helper);
     }
     catch (appmodel::BadConf& exc) {
       std::cout << "Caught BadConf exception: " << exc << std::endl;

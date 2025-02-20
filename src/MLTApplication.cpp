@@ -10,6 +10,7 @@
 
 #include "ModuleFactory.hpp"
 
+#include "appmodel/ConfigurationHelper.hpp"
 #include "conffwk/Configuration.hpp"
 
 #include "confmodel/Connection.hpp"
@@ -22,7 +23,6 @@
 
 #include "confmodel/ResourceSet.hpp"
 #include "confmodel/Service.hpp"
-#include "confmodel/Session.hpp"
 
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
@@ -68,9 +68,9 @@ static ModuleFactory::Registrator __reg__("MLTApplication",
                                           [](const SmartDaqApplication* smartApp,
                                              conffwk::Configuration* confdb,
                                              const std::string& dbfile,
-                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
+                                             std::shared_ptr<appmodel::ConfigurationHelper> helper) -> ModuleFactory::ReturnType {
                                             auto app = smartApp->cast<MLTApplication>();
-                                            return app->generate_modules(confdb, dbfile, session);
+                                            return app->generate_modules(confdb, dbfile, helper);
                                           });
 
 /**
@@ -102,7 +102,7 @@ create_mlt_network_connection(std::string uid,
 std::vector<const confmodel::DaqModule*>
 MLTApplication::generate_modules(conffwk::Configuration* confdb,
                                  const std::string& dbfile,
-                                 const confmodel::Session* session) const
+                                 std::shared_ptr<appmodel::ConfigurationHelper> helper) const
 {
   std::vector<const confmodel::DaqModule*> modules;
 
@@ -269,130 +269,153 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
    * Create the readout map
    **************************************************************/
 
-  std::vector<const dunedaq::confmodel::Application*> apps = session->get_enabled_applications();
-
   std::vector<const conffwk::ConfigObject*> sourceIds;
-
-  for (auto app : apps) {
-    auto ro_app = app->cast<appmodel::ReadoutApplication>();
-    if (ro_app != nullptr) {
-      auto resources = ro_app->get_contains();
-      // Interate over all the readout groups
-      for (auto d2d_conn_res : resources) {
-        if (d2d_conn_res->disabled(*session)) {
-          TLOG_DEBUG(7) << "Ignoring disabled Detector2DaqConnection " << d2d_conn_res->UID();
-          continue;
-        }
-
-        auto d2d_conn = d2d_conn_res->cast<confmodel::DetectorToDaqConnection>();
-        if (d2d_conn == nullptr) {
-          throw(BadConf(
-            ERS_HERE,
-            "MLTApplication's detectordaq connections list contains something other than DetectorToDaqConnection"));
-        }
-        if (d2d_conn->get_contains().empty()) {
-          throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain interfaces"));
-        }
-
-        // Interate over all the streams
-        for (auto stream : d2d_conn->get_streams()) {
-          if (stream == nullptr) {
-            throw(BadConf(ERS_HERE, "ReadoutInterface contains something other than DetectorStream"));
-          }
-          if (stream->disabled(*session)) {
-            TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
-            continue;
-          }
-
-          // Create SourceIDConf object for the MLT
-          auto id = stream->get_source_id();
-          conffwk::ConfigObject* sourceIdConf = new conffwk::ConfigObject();
-          std::string sourceIdConfUID = "dro-mlt-stream-config-" + std::to_string(id);
-          confdb->create(dbfile, "SourceIDConf", sourceIdConfUID, *sourceIdConf);
-          sourceIdConf->set_by_val<uint32_t>("sid", id);
-          // https://github.com/DUNE-DAQ/daqdataformats/blob/5b99506675a586c8a09123900e224f2371d96df9/include/daqdataformats/detail/SourceID.hxx#L108
-          sourceIdConf->set_by_val<std::string>("subsystem", "Detector_Readout");
-          sourceIds.push_back(sourceIdConf);
-        }
-      }
-      if (ro_app->get_tp_generation_enabled()) {
-        for (auto sid : ro_app->get_tp_source_ids()) {
-          sourceIds.push_back(&(sid->config_object()));
-        }
-        // conffwk::ConfigObject* tpSourceIdConf = new conffwk::ConfigObject();
-        // confdb->create(dbfile, "SourceIDConf", ro_app->UID()+"-"+ std::to_string(ro_app->get_tp_source_id()),
-        // *tpSourceIdConf); tpSourceIdConf->set_by_val<uint32_t>("sid", ro_app->get_tp_source_id());
-        // tpSourceIdConf->set_by_val<std::string>("subsystem", "Trigger");
-        // sourceIds.push_back(tpSourceIdConf);
-      }
-    }
-
-    auto fd_app = app->cast<appmodel::FakeDataApplication>();
-    if (fd_app != nullptr) {
-
-      auto resources = fd_app->get_contains();
-      // Interate over all the FakeDataProd modules
-      for (auto stream_res : resources) {
-
-        if (stream_res->disabled(*session)) {
-          TLOG_DEBUG(7) << "Ignoring disabled FakeDataProdConf " << stream_res->UID();
-          continue;
-        }
-
-        auto stream = stream_res->cast<appmodel::FakeDataProdConf>();
-
-        // Create SourceIDConf object for the MLT
-        auto id = stream->get_source_id();
-        conffwk::ConfigObject* sourceIdConf = new conffwk::ConfigObject();
-        std::string sourceIdConfUID = "dro-mlt-stream-config-" + std::to_string(id);
-        confdb->create(dbfile, "SourceIDConf", sourceIdConfUID, *sourceIdConf);
-        sourceIdConf->set_by_val<uint32_t>("sid", id);
-        // https://github.com/DUNE-DAQ/daqdataformats/blob/5b99506675a586c8a09123900e224f2371d96df9/include/daqdataformats/detail/SourceID.hxx#L108
-        sourceIdConf->set_by_val<std::string>("subsystem", "Detector_Readout");
-        sourceIds.push_back(sourceIdConf);
-      }
-    }
-
-    // SmartDaqApplication now has source_id member, might want to use that but make sure that it's actually a data
-    // source somehow...
-    auto trg_app = app->cast<appmodel::TriggerApplication>();
-    if (trg_app != nullptr && trg_app->get_source_id() != nullptr) {
-      conffwk::ConfigObject* tcSourceIdConf = new conffwk::ConfigObject();
-      confdb->create(dbfile,
-                     "SourceIDConf",
-                     trg_app->UID() + "-" + std::to_string(trg_app->get_source_id()->get_sid()),
-                     *tcSourceIdConf);
-      tcSourceIdConf->set_by_val<uint32_t>("sid", trg_app->get_source_id()->get_sid());
-      tcSourceIdConf->set_by_val<std::string>("subsystem", trg_app->get_source_id()->get_subsystem());
-      sourceIds.push_back(tcSourceIdConf);
-    }
-
-    // FIXME: add here same logics for HSI application(s)
-    //
-    auto hsi_app = app->cast<appmodel::FakeHSIApplication>();
-    if (hsi_app != nullptr && hsi_app->get_source_id() != nullptr) {
-      conffwk::ConfigObject* hsEventSourceIdConf = new conffwk::ConfigObject();
-      confdb->create(dbfile,
-                     "SourceIDConf",
-                     hsi_app->UID() + "-" + std::to_string(hsi_app->get_source_id()->get_sid()),
-                     *hsEventSourceIdConf);
-      hsEventSourceIdConf->set_by_val<uint32_t>("sid", hsi_app->get_source_id()->get_sid());
-      hsEventSourceIdConf->set_by_val<std::string>("subsystem", hsi_app->get_source_id()->get_subsystem());
-      sourceIds.push_back(hsEventSourceIdConf);
-    }
-
-    auto dts_hsi_app = app->cast<appmodel::DTSHSIApplication>();
-    if (dts_hsi_app != nullptr && dts_hsi_app->get_source_id() != nullptr) {
-      conffwk::ConfigObject* hsEventSourceIdConf = new conffwk::ConfigObject();
-      confdb->create(dbfile,
-                     "SourceIDConf",
-                     dts_hsi_app->UID() + "-" + std::to_string(dts_hsi_app->get_source_id()->get_sid()),
-                     *hsEventSourceIdConf);
-      hsEventSourceIdConf->set_by_val<uint32_t>("sid", dts_hsi_app->get_source_id()->get_sid());
-      hsEventSourceIdConf->set_by_val<std::string>("subsystem", dts_hsi_app->get_source_id()->get_subsystem());
-      sourceIds.push_back(hsEventSourceIdConf);
+  for (auto [uid, source_ids]: helper->get_stream_source_ids()) {
+    for (auto src_id: source_ids) {
+      // Create SourceIDConf object for the MLT
+      conffwk::ConfigObject* sourceIdConf = new conffwk::ConfigObject();
+      std::string sourceIdConfUID = "dro-mlt-stream-config-" +
+        std::to_string(src_id);
+      confdb->create(dbfile, "SourceIDConf", sourceIdConfUID, *sourceIdConf);
+      sourceIdConf->set_by_val<uint32_t>("sid", src_id);
+      // https://github.com/DUNE-DAQ/daqdataformats/blob/5b99506675a586c8a09123900e224f2371d96df9/include/daqdataformats/detail/SourceID.hxx#L108
+      sourceIdConf->set_by_val<std::string>("subsystem", "Detector_Readout");
+      sourceIds.push_back(sourceIdConf);
     }
   }
+  for (auto [uid, source_ids]: helper->get_tp_source_ids()) {
+    for (auto src_id: source_ids) {
+      sourceIds.push_back(&(src_id->config_object()));
+    }
+  }
+
+  for (auto app_class: {"TriggerApplication", "FakeHSIApplication",
+      "DTSHSIApplication"}) {
+    for (auto [uid, src_id]: helper->get_app_source_ids(app_class)) {
+      sourceIds.push_back(&(src_id->config_object()));
+    }
+  }
+
+  // for (auto app : apps) {
+  //   auto ro_app = app->cast<appmodel::ReadoutApplication>();
+  //   if (ro_app != nullptr) {
+  //     auto resources = ro_app->get_contains();
+  //     // Interate over all the readout groups
+  //     for (auto d2d_conn_res : resources) {
+  //       if (d2d_conn_res->disabled(*session)) {
+  //         TLOG_DEBUG(7) << "Ignoring disabled Detector2DaqConnection " << d2d_conn_res->UID();
+  //         continue;
+  //       }
+
+  //       auto d2d_conn = d2d_conn_res->cast<confmodel::DetectorToDaqConnection>();
+  //       if (d2d_conn == nullptr) {
+  //         throw(BadConf(
+  //           ERS_HERE,
+  //           "MLTApplication's detectordaq connections list contains something other than DetectorToDaqConnection"));
+  //       }
+  //       if (d2d_conn->get_contains().empty()) {
+  //         throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain interfaces"));
+  //       }
+
+  //       // Interate over all the streams
+  //       for (auto stream : d2d_conn->get_streams()) {
+  //         if (stream == nullptr) {
+  //           throw(BadConf(ERS_HERE, "ReadoutInterface contains something other than DetectorStream"));
+  //         }
+  //         if (stream->disabled(*session)) {
+  //           TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
+  //           continue;
+  //         }
+
+  //         // Create SourceIDConf object for the MLT
+  //         auto id = stream->get_source_id();
+  //         conffwk::ConfigObject* sourceIdConf = new conffwk::ConfigObject();
+  //         std::string sourceIdConfUID = "dro-mlt-stream-config-" + std::to_string(id);
+  //         confdb->create(dbfile, "SourceIDConf", sourceIdConfUID, *sourceIdConf);
+  //         sourceIdConf->set_by_val<uint32_t>("sid", id);
+  //         // https://github.com/DUNE-DAQ/daqdataformats/blob/5b99506675a586c8a09123900e224f2371d96df9/include/daqdataformats/detail/SourceID.hxx#L108
+  //         sourceIdConf->set_by_val<std::string>("subsystem", "Detector_Readout");
+  //         sourceIds.push_back(sourceIdConf);
+  //       }
+  //     }
+  //     if (ro_app->get_tp_generation_enabled()) {
+  //       for (auto sid : ro_app->get_tp_source_ids()) {
+  //         sourceIds.push_back(&(sid->config_object()));
+  //       }
+  //       // conffwk::ConfigObject* tpSourceIdConf = new conffwk::ConfigObject();
+  //       // confdb->create(dbfile, "SourceIDConf", ro_app->UID()+"-"+ std::to_string(ro_app->get_tp_source_id()),
+  //       // *tpSourceIdConf); tpSourceIdConf->set_by_val<uint32_t>("sid", ro_app->get_tp_source_id());
+  //       // tpSourceIdConf->set_by_val<std::string>("subsystem", "Trigger");
+  //       // sourceIds.push_back(tpSourceIdConf);
+  //     }
+  //   }
+
+    // auto fd_app = app->cast<appmodel::FakeDataApplication>();
+    // if (fd_app != nullptr) {
+
+    //   auto resources = fd_app->get_contains();
+    //   // Interate over all the FakeDataProd modules
+    //   for (auto stream_res : resources) {
+
+    //     if (stream_res->disabled(*session)) {
+    //       TLOG_DEBUG(7) << "Ignoring disabled FakeDataProdConf " << stream_res->UID();
+    //       continue;
+    //     }
+
+    //     auto stream = stream_res->cast<appmodel::FakeDataProdConf>();
+
+    //     // Create SourceIDConf object for the MLT
+    //     auto id = stream->get_source_id();
+    //     conffwk::ConfigObject* sourceIdConf = new conffwk::ConfigObject();
+    //     std::string sourceIdConfUID = "dro-mlt-stream-config-" + std::to_string(id);
+    //     confdb->create(dbfile, "SourceIDConf", sourceIdConfUID, *sourceIdConf);
+    //     sourceIdConf->set_by_val<uint32_t>("sid", id);
+    //     // https://github.com/DUNE-DAQ/daqdataformats/blob/5b99506675a586c8a09123900e224f2371d96df9/include/daqdataformats/detail/SourceID.hxx#L108
+    //     sourceIdConf->set_by_val<std::string>("subsystem", "Detector_Readout");
+    //     sourceIds.push_back(sourceIdConf);
+    //   }
+    // }
+
+  //   // SmartDaqApplication now has source_id member, might want to use that but make sure that it's actually a data
+  //   // source somehow...
+  //   auto trg_app = app->cast<appmodel::TriggerApplication>();
+  //   if (trg_app != nullptr && trg_app->get_source_id() != nullptr) {
+  //     conffwk::ConfigObject* tcSourceIdConf = new conffwk::ConfigObject();
+  //     confdb->create(dbfile,
+  //                    "SourceIDConf",
+  //                    trg_app->UID() + "-" + std::to_string(trg_app->get_source_id()->get_sid()),
+  //                    *tcSourceIdConf);
+  //     tcSourceIdConf->set_by_val<uint32_t>("sid", trg_app->get_source_id()->get_sid());
+  //     tcSourceIdConf->set_by_val<std::string>("subsystem", trg_app->get_source_id()->get_subsystem());
+  //     sourceIds.push_back(tcSourceIdConf);
+  //   }
+
+  //   // FIXME: add here same logics for HSI application(s)
+  //   //
+  //   auto hsi_app = app->cast<appmodel::FakeHSIApplication>();
+  //   if (hsi_app != nullptr && hsi_app->get_source_id() != nullptr) {
+  //     conffwk::ConfigObject* hsEventSourceIdConf = new conffwk::ConfigObject();
+  //     confdb->create(dbfile,
+  //                    "SourceIDConf",
+  //                    hsi_app->UID() + "-" + std::to_string(hsi_app->get_source_id()->get_sid()),
+  //                    *hsEventSourceIdConf);
+  //     hsEventSourceIdConf->set_by_val<uint32_t>("sid", hsi_app->get_source_id()->get_sid());
+  //     hsEventSourceIdConf->set_by_val<std::string>("subsystem", hsi_app->get_source_id()->get_subsystem());
+  //     sourceIds.push_back(hsEventSourceIdConf);
+  //   }
+
+  //   auto dts_hsi_app = app->cast<appmodel::DTSHSIApplication>();
+  //   if (dts_hsi_app != nullptr && dts_hsi_app->get_source_id() != nullptr) {
+  //     conffwk::ConfigObject* hsEventSourceIdConf = new conffwk::ConfigObject();
+  //     confdb->create(dbfile,
+  //                    "SourceIDConf",
+  //                    dts_hsi_app->UID() + "-" + std::to_string(dts_hsi_app->get_source_id()->get_sid()),
+  //                    *hsEventSourceIdConf);
+  //     hsEventSourceIdConf->set_by_val<uint32_t>("sid", dts_hsi_app->get_source_id()->get_sid());
+  //     hsEventSourceIdConf->set_by_val<std::string>("subsystem", dts_hsi_app->get_source_id()->get_subsystem());
+  //     sourceIds.push_back(hsEventSourceIdConf);
+  //   }
+  // }
 
   // Get mandatory links
   std::vector<const conffwk::ConfigObject*> mandatory_sids;
@@ -409,31 +432,47 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
 
   // Process special Network rules!
   // Looking for Fragment rules from DFAppplications in current Session
-  auto sessionApps = session->get_enabled_applications();
+  // auto sessionApps = session->get_enabled_applications();
+  // std::vector<conffwk::ConfigObject> fragOutObjs;
+  // for (auto app : sessionApps) {
+  //   auto dfapp = app->cast<appmodel::DFApplication>();
+  //   if (dfapp == nullptr)
+  //     continue;
+
+  //   auto dfNRules = dfapp->get_network_rules();
+  //   for (auto rule : dfNRules) {
+  //     auto descriptor = rule->get_descriptor();
+  //     auto data_type = descriptor->get_data_type();
+  //     if (data_type == "Fragment") {
+  //       std::string dreqNetUid(descriptor->get_uid_base() + dfapp->UID());
+  //       conffwk::ConfigObject frag_conn;
+  //       confdb->create(dbfile, "NetworkConnection", dreqNetUid, frag_conn);
+
+  //       frag_conn.set_by_val<std::string>("data_type", descriptor->get_data_type());
+  //       frag_conn.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
+
+  //       auto serviceObj = descriptor->get_associated_service()->config_object();
+  //       frag_conn.set_obj("associated_service", &serviceObj);
+  //       fragOutObjs.push_back(frag_conn);
+  //     } // If network rule has TriggerDecision type of data
+  //   }   // Loop over Apps network rules
+  // }     // loop over Session specific Apps
+
   std::vector<conffwk::ConfigObject> fragOutObjs;
-  for (auto app : sessionApps) {
-    auto dfapp = app->cast<appmodel::DFApplication>();
-    if (dfapp == nullptr)
-      continue;
+  for (auto [uid, descriptor]:
+         helper->get_netdescriptors("Fragment", "DFApplication")) {
+    std::string dreqNetUid(descriptor->get_uid_base() + uid);
+    conffwk::ConfigObject frag_conn;
+    confdb->create(dbfile, "NetworkConnection", dreqNetUid, frag_conn);
+    // auto frag_conn = obj_fac.create("NetworkConnection", dreqNetUid);
 
-    auto dfNRules = dfapp->get_network_rules();
-    for (auto rule : dfNRules) {
-      auto descriptor = rule->get_descriptor();
-      auto data_type = descriptor->get_data_type();
-      if (data_type == "Fragment") {
-        std::string dreqNetUid(descriptor->get_uid_base() + dfapp->UID());
-        conffwk::ConfigObject frag_conn;
-        confdb->create(dbfile, "NetworkConnection", dreqNetUid, frag_conn);
+    frag_conn.set_by_val<std::string>("data_type", descriptor->get_data_type());
+    frag_conn.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
 
-        frag_conn.set_by_val<std::string>("data_type", descriptor->get_data_type());
-        frag_conn.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
-
-        auto serviceObj = descriptor->get_associated_service()->config_object();
-        frag_conn.set_obj("associated_service", &serviceObj);
-        fragOutObjs.push_back(frag_conn);
-      } // If network rule has TriggerDecision type of data
-    }   // Loop over Apps network rules
-  }     // loop over Session specific Apps
+    auto serviceObj = descriptor->get_associated_service()->config_object();
+    frag_conn.set_obj("associated_service", &serviceObj);
+    fragOutObjs.push_back(frag_conn);
+  }    
 
   // build up the full list of outputs
   std::vector<const conffwk::ConfigObject*> ti_output_objs;

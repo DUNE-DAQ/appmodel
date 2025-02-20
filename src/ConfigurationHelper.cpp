@@ -1,0 +1,157 @@
+/**
+ * @file generate_modules.cpp
+ *
+ * Implementation of ConfigurationHelper class
+ *
+ * This is part of the DUNE DAQ Software Suite, copyright 2023.
+ * Licensing/copyright details are in the COPYING file that you should have
+ * received with this code.
+ */
+
+#include "appmodel/appmodelIssues.hpp"
+#include "appmodel/ConfigurationHelper.hpp"
+#include "appmodel/FakeDataApplication.hpp"
+#include "appmodel/FakeDataProdConf.hpp"
+#include "appmodel/NetworkConnectionDescriptor.hpp"
+#include "appmodel/NetworkConnectionRule.hpp"
+#include "appmodel/ReadoutApplication.hpp"
+#include "appmodel/SmartDaqApplication.hpp"
+#include "confmodel/DetectorStream.hpp"
+#include "confmodel/DetectorToDaqConnection.hpp"
+#include "confmodel/NetworkConnection.hpp"
+#include "confmodel/Queue.hpp"
+#include "confmodel/ResourceBase.hpp"
+#include "confmodel/Service.hpp"
+#include "confmodel/Session.hpp"
+
+using namespace dunedaq;
+using namespace dunedaq::appmodel;
+
+std::vector<std::pair<std::string, const appmodel::NetworkConnectionDescriptor*>>
+ConfigurationHelper::get_netdescriptors(
+  const std::string& data_type,
+  const std::string& app_class) {
+    std::vector<std::pair<std::string, const appmodel::NetworkConnectionDescriptor*>>
+      result;
+    for (auto app: m_session->get_enabled_applications()) {
+      if (app_class.empty() || app->castable(app_class)) {
+        auto smart_app = app->cast<appmodel::SmartDaqApplication>();
+        if (smart_app == nullptr) {
+          // Only SmartDaqApplications have network rules
+          continue;
+        }
+        for (auto rule: smart_app->get_network_rules()) {
+          auto desc = rule->get_descriptor();
+          if (desc->get_data_type() == data_type) {
+            result.emplace_back(std::pair{app->UID(), desc});
+          }
+        }
+      }
+    }
+    return result;
+}
+
+
+std::vector<const confmodel::Service*> ConfigurationHelper::get_services(
+  std::string app_class,
+  std::string data_type)
+{
+  std::vector<const confmodel::Service*> result;
+  for (auto app: m_session->get_enabled_applications()) {
+    if (app->castable(app_class)) {
+      auto smart_app = app->cast<appmodel::SmartDaqApplication>();
+      if (smart_app == nullptr) {
+        throw (NotSmart(ERS_HERE, app->full_name()));
+      }
+      for (auto rule: smart_app->get_network_rules()) {
+        if (rule->get_descriptor()->get_data_type() == data_type) {
+          result.push_back(rule->get_descriptor()->get_associated_service());
+        }
+      }
+    }
+  }
+  return result;
+}
+
+
+std::map<std::string,std::vector<uint32_t>> ConfigurationHelper::get_stream_source_ids() {
+  std::map<std::string,std::vector<uint32_t>> result;
+  for (auto app: m_session->get_enabled_applications()) {
+    auto ro_app = app->cast<appmodel::ReadoutApplication>();
+    if (ro_app != nullptr) {
+      std::vector<uint32_t> streams;
+      for (auto res: ro_app->get_contains()) {
+        if (!res->disabled(*m_session)) {
+          auto d2d = res->cast<confmodel::DetectorToDaqConnection>();
+          if (d2d == nullptr) {
+            throw (BadD2d(ERS_HERE, app->full_name(), res->full_name()));
+          }
+          for (auto stream: d2d->get_streams()) {
+            streams.push_back(stream->get_source_id());
+          }
+        }
+      }
+      result.insert(std::pair{app->UID(), streams});
+    }
+    else {
+      auto fake_app = app->cast<appmodel::FakeDataApplication>();
+      if (fake_app != nullptr) {
+        std::vector<uint32_t> streams;
+        for (auto res: fake_app->get_contains()) {
+          if (!res->disabled(*m_session)) {
+            auto fdpc = res->cast<appmodel::FakeDataProdConf>();
+            if (!fdpc) {
+              continue;
+            }
+            streams.push_back(fdpc->get_source_id());
+          }
+        }
+        result.insert({app->UID(), streams});
+      }
+    }
+  }
+  return result;
+}
+
+std::map<std::string, std::vector<const SourceIDConf*>>
+ConfigurationHelper::get_tp_source_ids(){
+  std::map<std::string, std::vector<const SourceIDConf*>> result;
+  for (auto app: m_session->get_enabled_applications()) {
+    auto ro_app = app->cast<appmodel::ReadoutApplication>();
+    if (ro_app != nullptr) {
+      result.insert({app->UID(), ro_app->get_tp_source_ids()});
+    }
+  }
+  return result;
+}
+
+std::vector<std::string> ConfigurationHelper::get_app_uids(
+  std::string app_class){
+  std::vector<std::string> result;
+  for (auto app: m_session->get_enabled_applications()) {
+    if (app_class.empty() || app->castable(app_class)) {
+      result.push_back(app->UID());
+    }
+  }
+  return result;
+}
+
+std::map<std::string, const SourceIDConf*>
+ConfigurationHelper::get_app_source_ids(std::string app_class) {
+  std::map<std::string, const SourceIDConf*> result;
+  for (auto app: m_session->get_enabled_applications()) {
+    if (app_class.empty() || app->castable(app_class)) {
+      auto smart_app = app->cast<SmartDaqApplication>();
+      result.insert({app->UID(), smart_app->get_source_id()});
+    }
+  }
+  return result;
+}
+
+bool ConfigurationHelper::enabled(const conffwk::DalObject* item) {
+  auto res = item->cast<confmodel::ResourceBase>();
+  if (res == nullptr) {
+    return true;
+  }
+  return !res->disabled(*m_session);
+}

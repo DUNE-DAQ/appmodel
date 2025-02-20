@@ -10,13 +10,13 @@
 
 #include "ModuleFactory.hpp"
 
+#include "appmodel/ConfigurationHelper.hpp"
 #include "appmodel/DFApplication.hpp"
 #include "appmodel/ReadoutApplication.hpp"
 #include "conffwk/Configuration.hpp"
 #include "confmodel/DetDataReceiver.hpp"
 #include "confmodel/DetDataSender.hpp"
 #include "confmodel/DetectorStream.hpp"
-#include "confmodel/Session.hpp"
 
 #include "appmodel/NWDetDataReceiver.hpp"
 #include "appmodel/NWDetDataSender.hpp"
@@ -65,9 +65,9 @@
 namespace dunedaq {
 namespace appmodel {
 
-static ModuleFactory::Registrator __reg__("ReadoutApplication", [](const SmartDaqApplication* smartApp, conffwk::Configuration* config, const std::string& dbfile, const confmodel::Session* session) -> ModuleFactory::ReturnType {
+  static ModuleFactory::Registrator __reg__("ReadoutApplication", [](const SmartDaqApplication* smartApp, conffwk::Configuration* config, const std::string& dbfile, std::shared_ptr<appmodel::ConfigurationHelper> helper) -> ModuleFactory::ReturnType {
   auto app = smartApp->cast<ReadoutApplication>();
-  return app->generate_modules(config, dbfile, session);
+  return app->generate_modules(config, dbfile, helper);
 });
 
 class ReadoutObjFactory {
@@ -148,7 +148,7 @@ class ReadoutObjFactory {
 
 //-----------------------------------------------------------------------------
 std::vector<const confmodel::DaqModule*>
-ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::string& dbfile, const confmodel::Session* session) const
+ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::string& dbfile, std::shared_ptr<ConfigurationHelper> helper) const
 {
 
   TLOG_DEBUG(6) << "Generating modules for application " << this->UID();
@@ -254,7 +254,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   for (auto d2d_conn_res : get_contains()) {
 
     // Are we sure?
-    if (d2d_conn_res->disabled(*session)) {
+    if (!helper->enabled(d2d_conn_res)) {
       TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn_res->UID();
       continue;
     }
@@ -282,7 +282,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
     for (auto stream : d2d_conn->get_streams()) {
 
       // Are we sure?
-      if (stream->disabled(*session)) {
+      if (!helper->enabled(stream)) {
         TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
         continue;
       }
@@ -477,32 +477,46 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
 
   // Process special Network rules!
   // Looking for Fragment rules from DFAppplications in current Session
-  auto sessionApps = session->get_enabled_applications();
+  // auto sessionApps = session->get_enabled_applications();
+  // std::vector<conffwk::ConfigObject> fragOutObjs;
+  // for (auto app : sessionApps) {
+  //   auto dfapp = app->cast<appmodel::DFApplication>();
+  //   if (dfapp == nullptr)
+  //     continue;
+
+  //   auto dfNRules = dfapp->get_network_rules();
+  //   for (auto rule : dfNRules) {
+  //     auto descriptor = rule->get_descriptor();
+  //     auto data_type = descriptor->get_data_type();
+  //     if (data_type == "Fragment") {
+  //       std::string dreqNetUid(descriptor->get_uid_base() + dfapp->UID());
+  //       // conffwk::ConfigObject frag_conn;
+  //       // config->create(dbfile, "NetworkConnection", dreqNetUid, frag_conn);
+  //       auto frag_conn = obj_fac.create("NetworkConnection", dreqNetUid);
+
+  //       frag_conn.set_by_val<std::string>("data_type", descriptor->get_data_type());
+  //       frag_conn.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
+
+  //       auto serviceObj = descriptor->get_associated_service()->config_object();
+  //       frag_conn.set_obj("associated_service", &serviceObj);
+  //       fragOutObjs.push_back(frag_conn);
+  //     } // If network rule has TriggerDecision type of data
+  //   }   // Loop over Apps network rules
+  // }     // loop over Session specific Apps
+
   std::vector<conffwk::ConfigObject> fragOutObjs;
-  for (auto app : sessionApps) {
-    auto dfapp = app->cast<appmodel::DFApplication>();
-    if (dfapp == nullptr)
-      continue;
+  for (auto [uid, descriptor]:
+         helper->get_netdescriptors("Fragment", "DFApplication")) {
+    std::string dreqNetUid(descriptor->get_uid_base() + uid);
+    auto frag_conn = obj_fac.create("NetworkConnection", dreqNetUid);
 
-    auto dfNRules = dfapp->get_network_rules();
-    for (auto rule : dfNRules) {
-      auto descriptor = rule->get_descriptor();
-      auto data_type = descriptor->get_data_type();
-      if (data_type == "Fragment") {
-        std::string dreqNetUid(descriptor->get_uid_base() + dfapp->UID());
-        // conffwk::ConfigObject frag_conn;
-        // config->create(dbfile, "NetworkConnection", dreqNetUid, frag_conn);
-        auto frag_conn = obj_fac.create("NetworkConnection", dreqNetUid);
+    frag_conn.set_by_val<std::string>("data_type", descriptor->get_data_type());
+    frag_conn.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
 
-        frag_conn.set_by_val<std::string>("data_type", descriptor->get_data_type());
-        frag_conn.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
-
-        auto serviceObj = descriptor->get_associated_service()->config_object();
-        frag_conn.set_obj("associated_service", &serviceObj);
-        fragOutObjs.push_back(frag_conn);
-      } // If network rule has TriggerDecision type of data
-    }   // Loop over Apps network rules
-  }     // loop over Session specific Apps
+    auto serviceObj = descriptor->get_associated_service()->config_object();
+    frag_conn.set_obj("associated_service", &serviceObj);
+    fragOutObjs.push_back(frag_conn);
+  }    
 
   // Add output queueus of data requests and Fragments
   std::vector<const conffwk::ConfigObject*> fa_output_objs;
@@ -522,6 +536,5 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   return modules;
 }
 
-  
-}
-}
+} // namespace appmodel
+} // namespace dunedaq

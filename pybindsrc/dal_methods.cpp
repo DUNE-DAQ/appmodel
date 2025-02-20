@@ -13,6 +13,7 @@
 #include "confmodel/DaqModule.hpp"
 #include "confmodel/Session.hpp"
 
+#include "appmodel/ConfigurationHelper.hpp"
 #include "appmodel/DFApplication.hpp"
 #include "appmodel/DFOApplication.hpp"
 #include "appmodel/ReadoutApplication.hpp"
@@ -45,14 +46,13 @@ namespace dunedaq::appmodel::python {
                                 const std::string& app_id,
                                 const std::string& session_id)
   {
-    auto app =
+    const auto app =
       const_cast<conffwk::Configuration&>(confdb).get<ApplicationType>(app_id);
-    auto session =
-      const_cast<conffwk::Configuration&>(confdb).get<confmodel::Session>(session_id);
-
+    const auto* session = const_cast<conffwk::Configuration&>(confdb).get<dunedaq::confmodel::Session>(session_id);
+    auto helper = std::make_shared<ConfigurationHelper>(session);
     std::vector<ObjectLocator> mods;
     for (auto mod : app->generate_modules(
-           const_cast<conffwk::Configuration*>(&confdb), dbfile, session)) {
+           const_cast<conffwk::Configuration*>(&confdb), dbfile, helper)) {
       mods.push_back({mod->UID(),mod->class_name()});
     }
     return mods;

@@ -43,17 +43,17 @@ static ModuleFactory::Registrator
 __reg__("DaphneApplication", [] (const SmartDaqApplication* smartApp,
                              conffwk::Configuration* config,
                              const std::string& dbfile,
-                             const confmodel::Session* session) -> ModuleFactory::ReturnType
+                             std::shared_ptr<appmodel::ConfigurationHelper> helper) -> ModuleFactory::ReturnType
   {
     auto app = smartApp->cast<DaphneApplication>();
-    return app->generate_modules(config, dbfile, session);
+    return app->generate_modules(config, dbfile, helper);
   }
   );
 
 std::vector<const confmodel::DaqModule*> 
 DaphneApplication::generate_modules(conffwk::Configuration* config,
 				    const std::string& dbfile,
-				    const confmodel::Session* session) const
+				    std::shared_ptr<appmodel::ConfigurationHelper> helper) const
 {
   std::vector<const confmodel::DaqModule*> modules;
 
@@ -64,7 +64,7 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
   for (auto d2d_conn_res : get_contains()) {
 
     // A Resource can be disabled and still its application can be enabled because the application can have multile resources, so we need to check which resources are enabled
-    if (d2d_conn_res->disabled(*session)) {
+    if (!helper->enabled(d2d_conn_res)) {
       TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn_res->UID();
       continue;
     }
@@ -86,8 +86,8 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
     // Loop over senders
     for (const auto* sender : det_senders) {
 
-      if ( sender->disabled(*session) ) {
-	TLOG() << "Skipping disabled sender: " << sender->UID();
+      if ( !helper->enabled(sender) ) {
+        TLOG() << "Skipping disabled sender: " << sender->UID();
       }
       // Check the sender type, must me a FelixDataSender
       const auto* felix_sender = sender->cast<appmodel::FelixDataSender>();

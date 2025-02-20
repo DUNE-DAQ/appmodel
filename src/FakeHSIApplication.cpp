@@ -10,6 +10,7 @@
 
 #include "ModuleFactory.hpp"
 
+#include "appmodel/ConfigurationHelper.hpp"
 #include "appmodel/FakeHSIApplication.hpp"
 #include "appmodel/FakeHSIEventGeneratorModule.hpp"
 #include "appmodel/FakeHSIEventGeneratorConf.hpp"
@@ -40,15 +41,15 @@ static ModuleFactory::Registrator __reg__("FakeHSIApplication",
                                           [](const SmartDaqApplication* smartApp,
                                              conffwk::Configuration* confdb,
                                              const std::string& dbfile,
-                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
+                                             std::shared_ptr<appmodel::ConfigurationHelper> helper) -> ModuleFactory::ReturnType {
                                             auto app = smartApp->cast<FakeHSIApplication>();
-                                            return app->generate_modules(confdb, dbfile, session);
+                                            return app->generate_modules(confdb, dbfile, helper);
                                           });
 
 std::vector<const confmodel::DaqModule*>
 FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
                                      const std::string& dbfile,
-                                     const confmodel::Session* session) const
+                                     std::shared_ptr<appmodel::ConfigurationHelper> helper) const
 {
   std::vector<const confmodel::DaqModule*> modules;
 
@@ -118,31 +119,22 @@ FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
 
   // Process special Network rules!
   // Looking for Fragment rules from DFAppplications in current Session
-  auto sessionApps = session->get_enabled_applications();
   std::vector<conffwk::ConfigObject> fragOutObjs;
-  for (auto app : sessionApps) {
-    auto dfapp = app->cast<appmodel::DFApplication>();
-    if (dfapp == nullptr)
-      continue;
+  for (auto [uid, descriptor]:
+         helper->get_netdescriptors("Fragment", "DFApplication")) {
+    std::string dreqNetUid(descriptor->get_uid_base() + uid);
 
-    auto dfNRules = dfapp->get_network_rules();
-    for (auto rule : dfNRules) {
-      auto descriptor = rule->get_descriptor();
-      auto data_type = descriptor->get_data_type();
-      if (data_type == "Fragment") {
-        std::string dreqNetUid(descriptor->get_uid_base() + dfapp->UID());
-        conffwk::ConfigObject frag_conn;
-        confdb->create(dbfile, "NetworkConnection", dreqNetUid, frag_conn);
+    conffwk::ConfigObject frag_conn;
+    confdb->create(dbfile, "NetworkConnection", dreqNetUid, frag_conn);
+    // auto frag_conn = obj_fac.create("NetworkConnection", dreqNetUid);
 
-        frag_conn.set_by_val<std::string>("data_type", descriptor->get_data_type());
-        frag_conn.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
+    frag_conn.set_by_val<std::string>("data_type", descriptor->get_data_type());
+    frag_conn.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
 
-        auto serviceObj = descriptor->get_associated_service()->config_object();
-        frag_conn.set_obj("associated_service", &serviceObj);
-        fragOutObjs.push_back(frag_conn);
-      } // If network rule has TriggerDecision type of data
-    }   // Loop over Apps network rules
-  }     // loop over Session specific Apps
+    auto serviceObj = descriptor->get_associated_service()->config_object();
+    frag_conn.set_obj("associated_service", &serviceObj);
+    fragOutObjs.push_back(frag_conn);
+  }    
 
   // start building the list of outputs
   std::vector<const conffwk::ConfigObject*> fh_output_objs;

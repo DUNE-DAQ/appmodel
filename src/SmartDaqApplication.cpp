@@ -9,13 +9,13 @@ using namespace dunedaq::appmodel;
 std::vector<const dunedaq::confmodel::DaqModule*>
 SmartDaqApplication::generate_modules(conffwk::Configuration* confdb,
                                       const std::string& dbfile,
-                                      const confmodel::Session* session) const {
+                                      std::shared_ptr<appmodel::ConfigurationHelper> helper) const {
   oks::OksFile::set_nolock_mode(true);
   return ModuleFactory::instance().generate(class_name(),
                                             this,
                                             confdb,
                                             dbfile,
-                                            session);
+                                            helper);
 }
 
 const std::vector<std::string> SmartDaqApplication::construct_commandline_parameters(

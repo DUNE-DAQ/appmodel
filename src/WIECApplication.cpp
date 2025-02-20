@@ -41,17 +41,17 @@ static ModuleFactory::Registrator
 __reg__("WIECApplication", [] (const SmartDaqApplication* smartApp,
                              conffwk::Configuration* config,
                              const std::string& dbfile,
-                             const confmodel::Session* session) -> ModuleFactory::ReturnType
+                             std::shared_ptr<appmodel::ConfigurationHelper> helper) -> ModuleFactory::ReturnType
   {
     auto app = smartApp->cast<WIECApplication>();
-    return app->generate_modules(config, dbfile, session);
+    return app->generate_modules(config, dbfile, helper);
   }
   );
 
 std::vector<const confmodel::DaqModule*> 
 WIECApplication::generate_modules(conffwk::Configuration* config,
                                             const std::string& dbfile,
-                                            const confmodel::Session* session) const
+                                            std::shared_ptr<appmodel::ConfigurationHelper> helper) const
 {
   std::vector<const confmodel::DaqModule*> modules;
 
@@ -62,7 +62,7 @@ WIECApplication::generate_modules(conffwk::Configuration* config,
   for (auto d2d_conn_res : get_contains()) {
 
     // Are we sure?
-    if (d2d_conn_res->disabled(*session)) {
+    if (!helper->enabled(d2d_conn_res)) {
       TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn_res->UID();
       continue;
     }

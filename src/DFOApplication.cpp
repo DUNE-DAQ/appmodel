@@ -10,6 +10,7 @@
 
 #include "ModuleFactory.hpp"
 
+#include "appmodel/ConfigurationHelper.hpp"
 #include "appmodel/DFApplication.hpp"
 #include "appmodel/DFOApplication.hpp"
 #include "appmodel/DFOConf.hpp"
@@ -36,15 +37,15 @@ static ModuleFactory::Registrator __reg__("DFOApplication",
                                           [](const SmartDaqApplication* smartApp,
                                              conffwk::Configuration* confdb,
                                              const std::string& dbfile,
-                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
+                                             std::shared_ptr<appmodel::ConfigurationHelper> helper) -> ModuleFactory::ReturnType {
                                             auto app = smartApp->cast<DFOApplication>();
-                                            return app->generate_modules(confdb, dbfile, session);
+                                            return app->generate_modules(confdb, dbfile, helper);
                                           });
 
 std::vector<const confmodel::DaqModule*>
 DFOApplication::generate_modules(conffwk::Configuration* confdb,
                                  const std::string& dbfile,
-                                 const confmodel::Session* session) const
+                                 std::shared_ptr<appmodel::ConfigurationHelper> helper) const
 {
   std::vector<const confmodel::DaqModule*> modules;
 
@@ -106,30 +107,44 @@ DFOApplication::generate_modules(conffwk::Configuration* confdb,
 
   // Process special Network rules!
   // Looking for DataRequest rules from ReadoutAppplications in current Session
-  auto sessionApps = session->get_enabled_applications();
+  // auto sessionApps = session->get_enabled_applications();
+  // std::vector<conffwk::ConfigObject> tdOutObjs;
+  // for (auto app : sessionApps) {
+  //   auto dfapp = app->cast<appmodel::DFApplication>();
+  //   if (dfapp == nullptr)
+  //     continue;
+
+  //   auto dfNRules = dfapp->get_network_rules();
+  //   for (auto rule : dfNRules) {
+  //     auto descriptor = rule->get_descriptor();
+  //     auto data_type = descriptor->get_data_type();
+  //     if (data_type == "TriggerDecision") {
+  //       std::string dreqNetUid(descriptor->get_uid_base() + dfapp->UID());
+  //       tdOutObjs.emplace_back();
+  //       confdb->create(dbfile, "NetworkConnection", dreqNetUid, tdOutObjs.back());
+
+  //       tdOutObjs.back().set_by_val<std::string>("data_type", descriptor->get_data_type());
+  //       tdOutObjs.back().set_by_val<std::string>("connection_type", descriptor->get_connection_type());
+
+  //       auto serviceObj = descriptor->get_associated_service()->config_object();
+  //       tdOutObjs.back().set_obj("associated_service", &serviceObj);
+  //     } // If network rule has TriggerDecision type of data
+  //   }   // Loop over Apps network rules
+  // }     // loop over Session specific Apps
+
   std::vector<conffwk::ConfigObject> tdOutObjs;
-  for (auto app : sessionApps) {
-    auto dfapp = app->cast<appmodel::DFApplication>();
-    if (dfapp == nullptr)
-      continue;
+  for (auto [uid, descriptor]:
+         helper->get_netdescriptors("TriggerDecision", "DFApplication")) {
+    std::string dreqNetUid(descriptor->get_uid_base() + uid);
+    tdOutObjs.emplace_back();
+    confdb->create(dbfile, "NetworkConnection", dreqNetUid, tdOutObjs.back());
 
-    auto dfNRules = dfapp->get_network_rules();
-    for (auto rule : dfNRules) {
-      auto descriptor = rule->get_descriptor();
-      auto data_type = descriptor->get_data_type();
-      if (data_type == "TriggerDecision") {
-        std::string dreqNetUid(descriptor->get_uid_base() + dfapp->UID());
-        tdOutObjs.emplace_back();
-        confdb->create(dbfile, "NetworkConnection", dreqNetUid, tdOutObjs.back());
+    tdOutObjs.back().set_by_val<std::string>("data_type", descriptor->get_data_type());
+    tdOutObjs.back().set_by_val<std::string>("connection_type", descriptor->get_connection_type());
 
-        tdOutObjs.back().set_by_val<std::string>("data_type", descriptor->get_data_type());
-        tdOutObjs.back().set_by_val<std::string>("connection_type", descriptor->get_connection_type());
-
-        auto serviceObj = descriptor->get_associated_service()->config_object();
-        tdOutObjs.back().set_obj("associated_service", &serviceObj);
-      } // If network rule has TriggerDecision type of data
-    }   // Loop over Apps network rules
-  }     // loop over Session specific Apps
+    auto serviceObj = descriptor->get_associated_service()->config_object();
+    tdOutObjs.back().set_obj("associated_service", &serviceObj);
+  }
 
   for (auto& tdOut : tdOutObjs) {
     output_conns.push_back(&tdOut);

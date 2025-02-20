@@ -21,7 +21,18 @@ namespace dunedaq {
 		    "Daphne " << id << " has active channels but its turned off",
 		    ((size_t)id))
 
-}
+
+  ERS_DECLARE_ISSUE(appmodel,
+                    NotSmart,
+                    "Object is not a SmartDaqApplication: " << obj,
+                    ((std::string)obj))
+
+  ERS_DECLARE_ISSUE(appmodel,
+                    BadD2d,
+                    "Contained object is not a DetectorToDaqConnection: " << obj,
+                    ((std::string)obj))
+
+} // namespace dunedaq
 
 
 #endif // APPDALISSUES_HPP

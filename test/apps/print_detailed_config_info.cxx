@@ -30,6 +30,7 @@
 
 #include <string>
 using namespace dunedaq;
+using namespace dunedaq::appmodel;
 
 // forward declaration
 void
@@ -161,9 +162,10 @@ main(int argc, char* argv[])
       return 0;
     }
     session = confdb->get<confmodel::Session>(sessionName);
+    auto helper = std::make_shared<ConfigurationHelper>(session);
 
-    auto daqapp = confdb->get<appmodel::SmartDaqApplication>(list_of_application_names[idx]);
     std::string appName = list_of_application_names[idx];
+    auto daqapp = confdb->get<appmodel::SmartDaqApplication>(appName);
     if (daqapp) {
       std::cout << appName << " is of class " << daqapp->class_name() << std::endl;
 
@@ -174,7 +176,7 @@ main(int argc, char* argv[])
       }
       std::vector<const confmodel::DaqModule*> modules;
       try {
-        modules = daqapp->generate_modules(confdb, dbfile, session);
+        modules = daqapp->generate_modules(confdb, dbfile, helper);
       } catch (appmodel::BadConf& exc) {
         std::cout << "Caught BadConf exception: " << exc << std::endl;
         exit(-1);

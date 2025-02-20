@@ -10,6 +10,7 @@
 
 #include "ModuleFactory.hpp"
 
+#include "appmodel/ConfigurationHelper.hpp"
 #include "appmodel/DTSHSIApplication.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
@@ -39,15 +40,15 @@ static ModuleFactory::Registrator __reg__("DTSHSIApplication",
                                           [](const SmartDaqApplication* smartApp,
                                              conffwk::Configuration* confdb,
                                              const std::string& dbfile,
-                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
+                                             std::shared_ptr<appmodel::ConfigurationHelper> helper) -> ModuleFactory::ReturnType {
                                             auto app = smartApp->cast<DTSHSIApplication>();
-                                            return app->generate_modules(confdb, dbfile, session);
+                                            return app->generate_modules(confdb, dbfile, helper);
                                           });
 
 std::vector<const confmodel::DaqModule*>
 DTSHSIApplication::generate_modules(conffwk::Configuration* confdb,
-                                     const std::string& dbfile,
-                                     const confmodel::Session* /*session*/) const
+                                    const std::string& dbfile,
+                                    std::shared_ptr<appmodel::ConfigurationHelper> /*helper*/) const
 {
   std::vector<const confmodel::DaqModule*> modules;
 
