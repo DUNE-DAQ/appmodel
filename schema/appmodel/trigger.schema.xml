@@ -420,6 +420,7 @@
 
  <class name="TPStreamConf">
   <attribute name="filename" type="string" init-value="1" is-not-null="yes"/>
+  <attribute name="index" type="u32" init-value="0" is-not-null="yes"/>
  </class>
 
  <class name="TriggerReplayApplication">
