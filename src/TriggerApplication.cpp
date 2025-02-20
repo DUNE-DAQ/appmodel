@@ -151,33 +151,6 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
   }
 
   // Process special Network rules!
-  // Looking for Fragment rules from DFAppplications in current Session
-  // auto sessionApps = session->get_enabled_applications();
-  // std::vector<conffwk::ConfigObject> fragOutObjs;
-  // for (auto app : sessionApps) {
-  //   auto dfapp = app->cast<appmodel::DFApplication>();
-  //   if (dfapp == nullptr)
-  //     continue;
-
-  //   auto dfNRules = dfapp->get_network_rules();
-  //   for (auto rule : dfNRules) {
-  //     auto descriptor = rule->get_descriptor();
-  //     auto data_type = descriptor->get_data_type();
-  //     if (data_type == "Fragment") {
-  //       std::string dreqNetUid(descriptor->get_uid_base() + dfapp->UID());
-  //       conffwk::ConfigObject frag_conn;
-  //       confdb->create(dbfile, "NetworkConnection", dreqNetUid, frag_conn);
-
-  //       frag_conn.set_by_val<std::string>("data_type", descriptor->get_data_type());
-  //       frag_conn.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
-
-  //       auto serviceObj = descriptor->get_associated_service()->config_object();
-  //       frag_conn.set_obj("associated_service", &serviceObj);
-  //       fragOutObjs.push_back(frag_conn);
-  //     } // If network rule has TriggerDecision type of data
-  //   }   // Loop over Apps network rules
-  // }     // loop over Session specific Apps
-
   std::vector<conffwk::ConfigObject> fragOutObjs;
   for (auto [uid, descriptor]:
          helper->get_netdescriptors("Fragment", "DFApplication")) {

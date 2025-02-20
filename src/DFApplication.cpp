@@ -226,46 +226,9 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
 
   // Process special Network rules!
   // Looking for DataRequest rules from ReadoutAppplications in current Session
-  // auto sessionApps = session->get_enabled_applications();
   std::vector<conffwk::ConfigObject> dreqNetObjs;
   std::vector<conffwk::ConfigObject> sidNetObjs;
   std::vector<std::shared_ptr<conffwk::ConfigObject>> sidObjs;
-  // for (auto app : sessionApps) {
-  //   auto smartapp = app->cast<appmodel::SmartDaqApplication>();
-  //   auto roapp = app->cast<appmodel::ReadoutApplication>();
-  //   auto fdapp = app->cast<appmodel::FakeDataApplication>();
-  //   auto dfapp = app->cast<appmodel::DFApplication>();
-  //   if (smartapp == nullptr || dfapp != nullptr)
-  //     continue;
-  //   auto src_id_check = smartapp->get_source_id();
-  //   if (roapp == nullptr && fdapp == nullptr && src_id_check == nullptr) {
-  //     continue;
-  //   }
-
-  //   auto roQRules = smartapp->get_network_rules();
-  //   for (auto rule : roQRules) {
-  //     auto descriptor = rule->get_descriptor();
-  //     auto data_type = descriptor->get_data_type();
-  //     if (data_type == "DataRequest") {
-  //       std::string dreqNetUid(descriptor->get_uid_base() + smartapp->UID());
-  //       dreqNetObjs.emplace_back();
-  //       confdb->create(dbfile, "NetworkConnection", dreqNetUid, dreqNetObjs.back());
-  //       fill_netconn_object_from_desc(descriptor, dreqNetObjs.back());
-
-  //       std::string sidToNetUid(descriptor->get_uid_base() + smartapp->UID() + "-sids");
-  //       sidNetObjs.emplace_back();
-  //       confdb->create(dbfile, "SourceIDToNetworkConnection", sidToNetUid, sidNetObjs.back());
-  //       if (roapp != nullptr) {
-  //         fill_sourceid_object_from_app(confdb, dbfile, roapp, &dreqNetObjs.back(), sidNetObjs.back(), sidObjs);
-  //       } else if (fdapp != nullptr) {
-  //         fill_sourceid_object_from_app(confdb, dbfile, fdapp, &dreqNetObjs.back(), sidNetObjs.back(), sidObjs);
-  //       } else {
-  //         fill_sourceid_object_from_app(smartapp, &dreqNetObjs.back(), sidNetObjs.back());
-  //       }
-  //     } // If network rule has DataRequest type of data
-  //   }   // Loop over Apps network rules
-  // }     // loop over Session specific Apps
-
   std::set<std::string> processed_apps;
   for (auto uid: helper->get_app_uids("DFApplication")) {
     processed_apps.insert(uid);
