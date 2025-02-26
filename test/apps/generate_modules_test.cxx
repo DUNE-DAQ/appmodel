@@ -68,7 +68,7 @@ int main(int argc, char* argv[]) {
       return 0;
     }
 
-    auto helper = std::make_shared<ConfigurationHelper>(session);
+    auto helper = std::make_shared<ConfigurationHelper>(session, appName);
 
     std::vector<const confmodel::DaqModule*> modules;
     try {

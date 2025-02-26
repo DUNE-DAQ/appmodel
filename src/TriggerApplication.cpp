@@ -11,6 +11,8 @@
 #include "ModuleFactory.hpp"
 
 #include "appmodel/ConfigurationHelper.hpp"
+#include "appmodel/ObjectFactory.hpp"
+
 #include "conffwk/Configuration.hpp"
 
 #include "confmodel/Connection.hpp"
@@ -54,31 +56,6 @@ static ModuleFactory::Registrator __reg__("TriggerApplication",
                                             return app->generate_modules(confdb, dbfile, helper);
                                           });
 
-/**
- * \brief Helper function that gets a network connection config
- *
- * \param idname Unique ID name of the config object
- * \param ntDesc Network connection descriptor object
- * \param confdb Global database configuration
- * \param dbfile Database file location
- *
- * \ret OKS configuration object for the network connection
- */
-conffwk::ConfigObject
-create_network_connection(std::string uid,
-                          const NetworkConnectionDescriptor* ntDesc,
-                          conffwk::Configuration* confdb,
-                          const std::string& dbfile)
-{
-  auto ntServiceObj = ntDesc->get_associated_service()->config_object();
-  conffwk::ConfigObject ntObj;
-  confdb->create(dbfile, "NetworkConnection", uid, ntObj);
-  ntObj.set_by_val<std::string>("data_type", ntDesc->get_data_type());
-  ntObj.set_by_val<std::string>("connection_type", ntDesc->get_connection_type());
-  ntObj.set_obj("associated_service", &ntServiceObj);
-
-  return ntObj;
-}
 
 std::vector<const confmodel::DaqModule*>
 TriggerApplication::generate_modules(conffwk::Configuration* confdb,
@@ -86,6 +63,8 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
                                      std::shared_ptr<appmodel::ConfigurationHelper> helper) const
 {
   std::vector<const confmodel::DaqModule*> modules;
+
+  const ObjectFactory obj_fac = helper->object_factory();
 
   auto ti_conf = get_trigger_inputs_handler();
   auto ti_class = ti_conf->get_template_for();
@@ -170,11 +149,6 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
 
   // Now create the Data Handler and its associated queue and network
   // connections
-  conffwk::ConfigObject input_queue_obj;
-  conffwk::ConfigObject req_net_obj;
-  conffwk::ConfigObject tin_net_obj;
-  conffwk::ConfigObject tout_net_obj;
-  conffwk::ConfigObject tset_out_net_obj;
 
   if ( req_net_desc== nullptr) {
       throw (BadConf(ERS_HERE, "No network descriptor given to receive request and send data was set"));
@@ -189,25 +163,21 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
       throw (BadConf(ERS_HERE, "No data input queue descriptor given"));
   }
 
-  std::string queue_uid(ti_inputq_desc->get_uid_base());
-  confdb->create(dbfile, "Queue", queue_uid, input_queue_obj);
-  input_queue_obj.set_by_val<std::string>("data_type", ti_inputq_desc->get_data_type());
-  input_queue_obj.set_by_val<std::string>("queue_type", ti_inputq_desc->get_queue_type());
-  input_queue_obj.set_by_val<uint32_t>("capacity", ti_inputq_desc->get_capacity());
 
-  
-  req_net_obj = create_network_connection(req_net_desc->get_uid_base()+UID(),
-                                           req_net_desc, confdb, dbfile);
+  auto input_queue_obj = obj_fac.create_queue_obj(ti_inputq_desc);
 
-  tin_net_obj = create_network_connection(tin_net_desc->get_uid_base()+".*",
-                                          tin_net_desc, confdb, dbfile);
+  auto req_net_obj = obj_fac.create_net_obj(req_net_desc,
+                                            req_net_desc->get_uid_base()+UID());
 
-  tout_net_obj = create_network_connection(tout_net_desc->get_uid_base()+UID(),
-                                          tout_net_desc, confdb, dbfile);
+  auto tin_net_obj = obj_fac.create_net_obj(tin_net_desc,
+                                            tin_net_desc->get_uid_base()+".*");
 
+  auto tout_net_obj = obj_fac.create_net_obj(tout_net_desc,
+                                             tout_net_desc->get_uid_base()+UID());
+  conffwk::ConfigObject tset_out_net_obj;
   if (tset_out_net_desc) {
-    tset_out_net_obj = create_network_connection(tset_out_net_desc->get_uid_base()+UID(),
-                                                 tset_out_net_desc, confdb, dbfile);
+    tset_out_net_obj = obj_fac.create_net_obj(tset_out_net_desc,
+                                              tset_out_net_desc->get_uid_base()+UID());
   }
 
   // build up the full list of outputs

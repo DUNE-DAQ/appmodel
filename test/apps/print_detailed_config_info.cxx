@@ -162,9 +162,8 @@ main(int argc, char* argv[])
       return 0;
     }
     session = confdb->get<confmodel::Session>(sessionName);
-    auto helper = std::make_shared<ConfigurationHelper>(session);
-
     std::string appName = list_of_application_names[idx];
+    auto helper = std::make_shared<ConfigurationHelper>(session, appName);
     auto daqapp = confdb->get<appmodel::SmartDaqApplication>(appName);
     if (daqapp) {
       std::cout << appName << " is of class " << daqapp->class_name() << std::endl;

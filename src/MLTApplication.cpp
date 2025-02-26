@@ -73,31 +73,6 @@ static ModuleFactory::Registrator __reg__("MLTApplication",
                                             return app->generate_modules(confdb, dbfile, helper);
                                           });
 
-/**
- * \brief Helper function that gets a network connection config
- *
- * \param idname Unique ID name of the config object
- * \param ntDesc Network connection descriptor object
- * \param confdb Global database configuration
- * \param dbfile Database file location
- *
- * \ret OKS configuration object for the network connection
- */
-conffwk::ConfigObject
-create_mlt_network_connection(std::string uid,
-                              const NetworkConnectionDescriptor* ntDesc,
-                              conffwk::Configuration* confdb,
-                              const std::string& dbfile)
-{
-  auto ntServiceObj = ntDesc->get_associated_service()->config_object();
-  conffwk::ConfigObject ntObj;
-  confdb->create(dbfile, "NetworkConnection", uid, ntObj);
-  ntObj.set_by_val<std::string>("data_type", ntDesc->get_data_type());
-  ntObj.set_by_val<std::string>("connection_type", ntDesc->get_connection_type());
-  ntObj.set_obj("associated_service", &ntServiceObj);
-
-  return ntObj;
-}
 
 std::vector<const confmodel::DaqModule*>
 MLTApplication::generate_modules(conffwk::Configuration* confdb,
@@ -105,6 +80,8 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
                                  std::shared_ptr<appmodel::ConfigurationHelper> helper) const
 {
   std::vector<const confmodel::DaqModule*> modules;
+
+  const ObjectFactory obj_fac = helper->object_factory();
 
   // auto mlt_conf = get_mlt_conf();
   // auto mlt_class = mlt_conf->get_template_for();
@@ -204,23 +181,23 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
   // Network connection for input TriggerInhibit, input TCs
 
   conffwk::ConfigObject ti_net_obj =
-    create_mlt_network_connection(ti_net_desc->get_uid_base(), ti_net_desc, confdb, dbfile);
+    obj_fac.create_net_obj(ti_net_desc, "");
 
   conffwk::ConfigObject tc_net_obj =
-    create_mlt_network_connection(tc_net_desc->get_uid_base() + ".*", tc_net_desc, confdb, dbfile);
+    obj_fac.create_net_obj(tc_net_desc, ".*");
 
   // Network connection for output TriggerDecision
   conffwk::ConfigObject td_net_obj =
-    create_mlt_network_connection(td_net_desc->get_uid_base(), td_net_desc, confdb, dbfile);
+    obj_fac.create_net_obj(td_net_desc, "");
 
   // Network conection for the input Data Requests
   conffwk::ConfigObject dr_net_obj =
-    create_mlt_network_connection(req_net_desc->get_uid_base() + UID(), req_net_desc, confdb, dbfile);
+    obj_fac.create_net_obj(req_net_desc, UID());
 
   conffwk::ConfigObject timesync_net_obj;
   if (timesync_net_desc != nullptr) {
     timesync_net_obj =
-      create_mlt_network_connection(timesync_net_desc->get_uid_base() + ".*", timesync_net_desc, confdb, dbfile);
+      obj_fac.create_net_obj(timesync_net_desc, ".*");
   }
 
   /**************************************************************
@@ -239,7 +216,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
     }
 
     auto tc_net_gen =
-      create_mlt_network_connection(tc_net_desc->get_uid_base() + gen_conf->UID(), tc_net_desc, confdb, dbfile);
+      obj_fac.create_net_obj(tc_net_desc, gen_conf->UID());
     generated_tc_conns.push_back(tc_net_gen);
 
     gen_obj.set_objs("outputs", { &generated_tc_conns.back() });

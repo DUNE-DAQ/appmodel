@@ -10,6 +10,9 @@
 #ifndef APPMODEL_INCLUDE_CONFIGURATIONHELPER_HPP_
 #define APPMODEL_INCLUDE_CONFIGURATIONHELPER_HPP_
 
+#include "appmodel/ObjectFactory.hpp"
+#include "confmodel/Session.hpp"
+
 #include <cstdint>
 #include <map>
 #include <string>
@@ -17,7 +20,6 @@
 #include <vector>
 
 namespace dunedaq::confmodel {
-  class Session;
   class Service;
 } //namespace dunedaq::confmodel
 namespace dunedaq::conffwk {
@@ -30,9 +32,11 @@ namespace dunedaq::appmodel {
 
   class ConfigurationHelper {
   public:
-    explicit ConfigurationHelper(const confmodel::Session* ses)
-      : m_session(ses) {}
-
+    explicit ConfigurationHelper(const confmodel::Session* ses, std::string app_uid)
+      : m_session(ses),
+        m_object_factory(&m_session->configuration(),
+                         m_session->config_object().contained_in(),
+                         app_uid) {}
 
     /// Get the exposed Services of all network connections with given
     /// data_type from all applications of given type 
@@ -63,8 +67,13 @@ namespace dunedaq::appmodel {
     /// Check the enabled state of the given item
     bool enabled(const conffwk::DalObject* item);
 
+    /// Get the object factory
+    const ObjectFactory& object_factory() {
+      return m_object_factory;
+    }
   private:
     const confmodel::Session* m_session;
+    ObjectFactory m_object_factory;
   };
 
 } //namespace dunedaq::appmodel
