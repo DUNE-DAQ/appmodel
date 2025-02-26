@@ -16,12 +16,16 @@ static ModuleFactory::Registrator __reg__("DFOApplication",
                                           [](const SmartDaqApplication* smartApp,
                                              conffwk::Configuration* confdb,
                                              const std::string& dbfile,
-                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
+                                             std::shared_ptr<appmodel::ConfigurationHelper> helper) -> ModuleFactory::ReturnType {
                                             auto app = smartApp->cast<DFOApplication>();
-                                            return app->generate_modules(confdb, dbfile, session);
+                                            return app->generate_modules(confdb, dbfile, helper);
                                           });
 
 ```
+
+### The generate_modules method
+
+The boilerplate code above references a  method called generate_modules() which you have to supply. The `confdb` and `dbfile` arguments are used to create configuration objects in the database (see below). The helper argument is a pointer to a helper object with methods for extracting configuration data not belonging to the current application.
 
 ### Creating a module
 
