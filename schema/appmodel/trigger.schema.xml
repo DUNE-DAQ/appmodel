@@ -422,7 +422,7 @@
 </class>
 
  <class name="PlaneNumberConf">
-  <attribute name="plane" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="plane" type="u32" init-value="4294967295" is-not-null="yes"/>
  </class>
 
  <class name="TPStreamConf">
