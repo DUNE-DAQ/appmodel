@@ -26,8 +26,8 @@
 #include "appmodel/TPStreamConf.hpp"
 #include "appmodel/TRBConf.hpp"
 #include "appmodel/TRBModule.hpp"
-#include "appmodel/TriggerPrimitiveMakerModuleConf.hpp"
-#include "appmodel/TriggerReplayApplication.hpp"
+#include "appmodel/TPReplayModuleConf.hpp"
+#include "appmodel/TPReplayApplication.hpp"
 #include "appmodel/appmodelIssues.hpp"
 
 #include "conffwk/Configuration.hpp"
@@ -87,7 +87,7 @@ fill_sourceid_object_from_app(const SmartDaqApplication* smartapp,
 inline void
 fill_sourceid_object_from_app(conffwk::Configuration* confdb,
                               const std::string& dbfile,
-                              const TriggerReplayApplication* rapp,
+                              const TPReplayApplication* rapp,
                               std::vector<conffwk::ConfigObject>* dreqNetObjs,
                               std::vector<conffwk::ConfigObject>* sidNetObjs,
                               std::vector<std::shared_ptr<conffwk::ConfigObject>> sidObjs,
@@ -299,7 +299,7 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
     auto roapp = app->cast<appmodel::ReadoutApplication>();
     auto fdapp = app->cast<appmodel::FakeDataApplication>();
     auto dfapp = app->cast<appmodel::DFApplication>();
-    auto rapp = app->cast<appmodel::TriggerReplayApplication>();
+    auto rapp = app->cast<appmodel::TPReplayApplication>();
     if (smartapp == nullptr || dfapp != nullptr) {
       continue;
     }

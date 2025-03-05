@@ -47,8 +47,8 @@
 #include "appmodel/TCDataProcessor.hpp"
 #include "appmodel/TPStreamConf.hpp"
 #include "appmodel/TriggerApplication.hpp"
-#include "appmodel/TriggerPrimitiveMakerModuleConf.hpp"
-#include "appmodel/TriggerReplayApplication.hpp"
+#include "appmodel/TPReplayModuleConf.hpp"
+#include "appmodel/TPReplayApplication.hpp"
 #include "appmodel/appmodelIssues.hpp"
 
 #include "logging/Logging.hpp"
@@ -322,9 +322,9 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
       }
     }
 
-    auto replay_app = app->cast<appmodel::TriggerReplayApplication>();
-    if (replay_app != nullptr) {
-      for (auto sid : replay_app->get_tp_source_ids()) {
+    auto tpreplay_app = app->cast<appmodel::TPReplayApplication>();
+    if (tpreplay_app != nullptr) {
+      for (auto sid : tpreplay_app->get_tp_source_ids()) {
         sourceIds.push_back(&(sid->config_object()));
       }
     }

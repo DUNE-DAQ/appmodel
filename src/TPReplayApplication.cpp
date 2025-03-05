@@ -1,7 +1,7 @@
 /**
  * @file generate_modules.cpp
  *
- * Implementation of TriggerReplayApplication's generate_modules dal method
+ * Implementation of TPReplayApplication's generate_modules dal method
  *
  * This is part of the DUNE DAQ Software Suite, copyright 2023.
  * Licensing/copyright details are in the COPYING file that you should have
@@ -29,9 +29,9 @@
 #include "appmodel/TCDataProcessor.hpp"
 #include "appmodel/TPStreamConf.hpp"
 #include "appmodel/TriggerApplication.hpp"
-#include "appmodel/TriggerPrimitiveMakerModule.hpp"
-#include "appmodel/TriggerPrimitiveMakerModuleConf.hpp"
-#include "appmodel/TriggerReplayApplication.hpp"
+#include "appmodel/TPReplayModule.hpp"
+#include "appmodel/TPReplayModuleConf.hpp"
+#include "appmodel/TPReplayApplication.hpp"
 #include "appmodel/appmodelIssues.hpp"
 
 #include "logging/Logging.hpp"
@@ -44,17 +44,17 @@
 using namespace dunedaq;
 using namespace dunedaq::appmodel;
 
-static ModuleFactory::Registrator __reg__("TriggerReplayApplication",
+static ModuleFactory::Registrator __reg__("TPReplayApplication",
                                           [](const SmartDaqApplication* smartApp,
                                              conffwk::Configuration* confdb,
                                              const std::string& dbfile,
                                              const confmodel::Session* session) -> ModuleFactory::ReturnType {
-                                            auto app = smartApp->cast<TriggerReplayApplication>();
+                                            auto app = smartApp->cast<TPReplayApplication>();
                                             return app->generate_modules(confdb, dbfile, session);
                                           });
 
 std::vector<const confmodel::DaqModule*>
-TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
+TPReplayApplication::generate_modules(conffwk::Configuration* confdb,
                                            const std::string& dbfile,
                                            const confmodel::Session* /*session*/) const
 {
@@ -67,29 +67,29 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
    * Instantiate the Trigger Primitive Maker Module module
    **************************************************************/
 
-  auto tpmm_conf = get_tpmm_conf();
+  auto tprm_conf = get_tprm_conf();
 
-  if (!tpmm_conf) {
-    throw(BadConf(ERS_HERE, "No TPPM configuration in TriggerReplayApplication given"));
+  if (!tprm_conf) {
+    throw(BadConf(ERS_HERE, "No TPPM configuration in TPReplayApplication given"));
   }
 
   conffwk::ConfigObject tpm_obj;
-  confdb->create(dbfile, tpmm_conf->get_template_for(), tpmm_conf->UID(), tpm_obj);
-  tpm_obj.set_obj("configuration", &(tpmm_conf->config_object()));
+  confdb->create(dbfile, tprm_conf->get_template_for(), tprm_conf->UID(), tpm_obj);
+  tpm_obj.set_obj("configuration", &(tprm_conf->config_object()));
 
   /**************************************************************
    * Get total planes from config
    **************************************************************/
-  int total_planes = tpmm_conf->get_total_planes();
+  int total_planes = tprm_conf->get_total_planes();
   std::cout << "TOTAL PLANES: " << total_planes << std::endl; 
 
   /**************************************************************
    * Extract # of filtered planes
    **************************************************************/
   // TODO: this needs improving
-  auto plane_filtering = tpmm_conf->get_filter_out_plane();
+  auto plane_filtering = tprm_conf->get_filter_out_plane();
   if (plane_filtering.size() >= 3) {
-    throw(BadConf(ERS_HERE, "TriggerReplayApplication: too many planes configured for filtering!"));
+    throw(BadConf(ERS_HERE, "TPReplayApplication: too many planes configured for filtering!"));
   }
 
   /**************************************************************
@@ -111,7 +111,7 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
   auto tph_conf_obj = tph_conf->config_object();
   for (int i = 1; i <= total_planes; i++) {
     auto tph_obj = std::make_shared<conffwk::ConfigObject>();
-    std::string tp_uid = "tphandler-replay-" + std::to_string(i);
+    std::string tp_uid = "tphandler-tpreplay-" + std::to_string(i);
     TPHs_uids.push_back(tp_uid);
     confdb->create(dbfile, tph_class, tp_uid, *tph_obj);
     tph_obj->set_by_val<uint32_t>("source_id", tpsrc_ids[i - 1]->get_sid());
@@ -214,7 +214,7 @@ TriggerReplayApplication::generate_modules(conffwk::Configuration* confdb,
   }
 
   // Store modules
-  modules.push_back(confdb->get<confmodel::DaqModule>(tpmm_conf->UID()));
+  modules.push_back(confdb->get<confmodel::DaqModule>(tprm_conf->UID()));
   for (int i = 1; i <= total_planes; i++) {
     modules.push_back(confdb->get<confmodel::DaqModule>(TPHs_uids[i - 1]));
   }
