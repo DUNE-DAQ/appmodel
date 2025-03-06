@@ -60,10 +60,11 @@ namespace dunedaq::appmodel::python {
 
   std::vector<std::string> smart_daq_application_construct_commandline_parameters(const conffwk::Configuration& db,
                                                                                   const std::string& session_id,
-                                                                                  const std::string& app_id) {
+                                                                                  const std::string& app_id,
+                                                                                  const std::string& session_name) {
     const auto* app = const_cast<conffwk::Configuration&>(db).get<dunedaq::appmodel::SmartDaqApplication>(app_id);
     const auto* session = const_cast<conffwk::Configuration&>(db).get<dunedaq::confmodel::Session>(session_id);
-    return app->construct_commandline_parameters(db, session);
+    return app->construct_commandline_parameters(db, session, session_name);
   }
 
 void
@@ -85,7 +86,7 @@ register_dal_methods(py::module& m)
   m.def("mlt_application_generate", &application_generate_template<MLTApplication>, "Generate DaqModules required by MLTApplication");
   m.def("wiec_application_generate", &application_generate_template<WIECApplication>, "Generate DaqModules required by WIECApplication");
   m.def("daphne_application_generate", &application_generate_template<DaphneApplication>, "Generate DaqModules required by DaphneApplication");
-  
+
   m.def("smart_daq_application_construct_commandline_parameters", &smart_daq_application_construct_commandline_parameters, "Get a version of the command line agruments parsed");
 }
 

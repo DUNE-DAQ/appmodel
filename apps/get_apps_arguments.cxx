@@ -21,12 +21,13 @@ using namespace dunedaq;
 void print_segment_application_commandline(
   const dunedaq::confmodel::Segment* segment,
   const dunedaq::confmodel::Session* session,
-  conffwk::Configuration* db) {
+  conffwk::Configuration* db,
+  const std::string &session_name) {
 
   auto const* controller = segment->get_controller();
 
     std::cout << "\n" << controller->UID() << "\n";
-    for (auto const& CLA: controller->construct_commandline_parameters(*db, session))
+    for (auto const& CLA: controller->construct_commandline_parameters(*db, session, session_name))
       std::cout << "CLA: " << CLA << "\n";
 
     for (auto const& app: segment->get_applications()) {
@@ -34,10 +35,10 @@ void print_segment_application_commandline(
       std::vector<std::string> CLAs;
       if (app->castable("SmartDaqApplication")) {
         auto const* sdapp = db->get<dunedaq::appmodel::SmartDaqApplication>(app->UID());
-        CLAs = sdapp->construct_commandline_parameters(*db, session);
+        CLAs = sdapp->construct_commandline_parameters(*db, session, session_name);
       } else if (app->castable("DaqApplication")) {
         auto const* dapp = db->get<dunedaq::appmodel::SmartDaqApplication>(app->UID());
-        CLAs = dapp->construct_commandline_parameters(*db, session);
+        CLAs = dapp->construct_commandline_parameters(*db, session, session_name);
       } else {
         CLAs = app->get_commandline_parameters();
       }
@@ -47,29 +48,31 @@ void print_segment_application_commandline(
     }
 
   for (auto const& segment: segment->get_segments())
-    print_segment_application_commandline(segment, session, db);
+    print_segment_application_commandline(segment, session, db, session_name);
 
 }
 
 
 int main(int argc, char* argv[]) {
 
-  if (argc < 3) {
-    std::cout << "Usage: " << argv[0] << " session database-file\n";
+  if (argc < 4) {
+    std::cout << "Usage: " << argv[0] << " conf-session-id database-file session-name\n";
     return 0;
   }
 
-  std::string sessionName(argv[1]);
-  dunedaq::logging::Logging::setup(sessionName, "get_apps_arguments");
+  std::string session_id(argv[1]);
+  dunedaq::logging::Logging::setup(session_id, "get_apps_arguments");
+
+  std::string session_name(argv[3]);
 
   std::string confimpl = "oksconflibs:" + std::string(argv[2]);
   auto confdb = new conffwk::Configuration(confimpl);
 
-  auto session = confdb->get<confmodel::Session>(sessionName);
+  auto session = confdb->get<confmodel::Session>(session_id);
   if (session==nullptr) {
-    std::cerr << "Session " << sessionName << " not found in database\n";
+    std::cerr << "Session " << session_id << " not found in database\n";
     return -1;
   }
 
-  print_segment_application_commandline(session->get_segment(), session, confdb);
+  print_segment_application_commandline(session->get_segment(), session, confdb, session_name);
 }

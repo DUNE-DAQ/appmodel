@@ -20,6 +20,7 @@ SmartDaqApplication::generate_modules(conffwk::Configuration* confdb,
 
 const std::vector<std::string> SmartDaqApplication::construct_commandline_parameters(
     const conffwk::Configuration& confdb,
-    const dunedaq::confmodel::Session* session) const {
-    return dunedaq::confmodel::construct_commandline_parameters_appfwk<dunedaq::appmodel::SmartDaqApplication>(this, confdb, session);
+    const dunedaq::confmodel::Session* session,
+    const std::string &session_name) const {
+    return dunedaq::confmodel::construct_commandline_parameters_appfwk<dunedaq::appmodel::SmartDaqApplication>(this, confdb, session, session_name);
 }
