@@ -25,6 +25,7 @@
 #include "appmodel/FelixDataReceiver.hpp"
 #include "appmodel/FelixDataSender.hpp"
 
+#include "appmodel/SocketReceiver.hpp"
 #include "confmodel/QueueWithSourceId.hpp"
 
 #include "confmodel/Connection.hpp"
@@ -296,9 +297,10 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
 
     // Here I want to resolve the type of connection (network, felix, or?)
     // Rules of engagement: if the receiver interface is network or felix, the receivers should be castable to the counterpart
-    if (reader_class == "DPDKReaderModule") {
-      if (!det_receiver->cast<appmodel::DPDKReceiver>()) {
-        throw(BadConf(ERS_HERE, fmt::format("DPDKReaderModule requires NWDetDataReceiver, found {} of class {}", det_receiver->UID(), det_receiver->class_name())));
+    if (reader_class == "DPDKReaderModule" || reader_class == "SocketReaderModule") {
+      if ( (reader_class == "DPDKReaderModule" && !det_receiver->cast<appmodel::DPDKReceiver>()) ||
+          (reader_class == "SocketReaderModule" && !det_receiver->cast<appmodel::SocketReceiver>()) ) {
+        throw(BadConf(ERS_HERE, fmt::format("{} requires NWDetDataReceiver, found {} of class {}", reader_class, det_receiver->UID(), det_receiver->class_name())));
       }
 
       bool all_nw_senders = true;
