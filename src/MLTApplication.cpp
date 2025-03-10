@@ -43,15 +43,16 @@
 #include "appmodel/MLTConf.hpp"
 #include "appmodel/MLTModule.hpp"
 
+#include "appmodel/DFApplication.hpp"
+#include "appmodel/DFOApplication.hpp"
+#include "appmodel/DTSHSIApplication.hpp"
 #include "appmodel/FakeDataApplication.hpp"
 #include "appmodel/FakeDataProdConf.hpp"
 #include "appmodel/FakeHSIApplication.hpp"
-#include "appmodel/DTSHSIApplication.hpp"
 #include "appmodel/MLTApplication.hpp"
 #include "appmodel/ReadoutApplication.hpp"
 #include "appmodel/TriggerApplication.hpp"
 #include "appmodel/appmodelIssues.hpp"
-#include "appmodel/DFApplication.hpp"
 
 #include "appmodel/StandaloneTCMakerConf.hpp"
 #include "appmodel/StandaloneTCMakerModule.hpp"
@@ -105,9 +106,6 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
                                  const confmodel::Session* session) const
 {
   std::vector<const confmodel::DaqModule*> modules;
-
-  // auto mlt_conf = get_mlt_conf();
-  // auto mlt_class = mlt_conf->get_template_for();
 
   auto tch_conf = get_trigger_inputs_handler();
   auto tch_class = tch_conf->get_template_for();
@@ -432,8 +430,8 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
         frag_conn.set_obj("associated_service", &serviceObj);
         fragOutObjs.push_back(frag_conn);
       } // If network rule has TriggerDecision type of data
-    }   // Loop over Apps network rules
-  }     // loop over Session specific Apps
+    } // Loop over Apps network rules
+  } // loop over Session specific Apps
 
   // build up the full list of outputs
   std::vector<const conffwk::ConfigObject*> ti_output_objs;
@@ -465,9 +463,25 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
    * Instantiate the MLTModule module
    **************************************************************/
 
+  conffwk::ConfigObject mlt_conf_obj = mlt_conf->config_object();
+  conffwk::ConfigObject dfoobj;
+  if (mlt_conf->get_initial_active_dfo() == nullptr) {
+    // Set the initial active DFO to the first one in the Session
+    for (auto app : sessionApps) {
+      auto dfoapp = app->cast<appmodel::DFOApplication>();
+      if (dfoapp == nullptr)
+        continue;
+
+      TLOG_DEBUG(7) << "Setting initial DFO to " << dfoapp->UID();
+      dfoobj = dfoapp->config_object();
+      mlt_conf_obj.set_obj("initial_active_dfo", &dfoobj);
+      break;
+    }
+  }
+
   conffwk::ConfigObject mlt_obj;
-  confdb->create(dbfile, mlt_conf->get_template_for(), mlt_conf->UID(), mlt_obj);
-  mlt_obj.set_obj("configuration", &(mlt_conf->config_object()));
+  confdb->create(dbfile, mlt_class, mlt_conf->UID(), mlt_obj);
+  mlt_obj.set_obj("configuration", &mlt_conf_obj);
   mlt_obj.set_objs("inputs", { &output_queue_obj, &ti_net_obj });
   mlt_obj.set_objs("outputs", { &td_net_obj });
   modules.push_back(confdb->get<MLTModule>(mlt_conf->UID()));

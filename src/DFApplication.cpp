@@ -11,10 +11,11 @@
 #include "ModuleFactory.hpp"
 
 #include "appmodel/DFApplication.hpp"
+#include "appmodel/DFOApplication.hpp"
+#include "appmodel/DFOBrokerConf.hpp"
+#include "appmodel/DFOBrokerModule.hpp"
 #include "appmodel/DataStoreConf.hpp"
 #include "appmodel/DataWriterConf.hpp"
-#include "appmodel/DFOBrokerModule.hpp"
-#include "appmodel/DFOBrokerConf.hpp"
 #include "appmodel/DataWriterModule.hpp"
 #include "appmodel/FakeDataApplication.hpp"
 #include "appmodel/FakeDataProdConf.hpp"
@@ -192,7 +193,8 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
 
   // -- First, we process expected Queue and Network connections and create their objects.
 
-  // Process the queue rules looking for the TriggerRecord queue between TRB and DataWriterModule, TD queue and Token Queue
+  // Process the queue rules looking for the TriggerRecord queue between TRB and DataWriterModule, TD queue and Token
+  // Queue
   const QueueDescriptor* trQDesc = nullptr;
   const QueueDescriptor* tokenQDesc = nullptr;
   const QueueDescriptor* tdQDesc = nullptr;
@@ -313,8 +315,8 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
           fill_sourceid_object_from_app(smartapp, &dreqNetObjs.back(), sidNetObjs.back());
         }
       } // If network rule has DataRequest type of data
-    }   // Loop over Apps network rules
-  }     // loop over Session specific Apps
+    } // Loop over Apps network rules
+  } // loop over Session specific Apps
 
   // Get pointers to objects here, after vector has been filled so they don't move on us
   for (auto& obj : dreqNetObjs) {
@@ -332,7 +334,20 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
     throw(BadConf(ERS_HERE, "No DFOBroker configuration given"));
   }
   auto brokerConfObj = brokerConf->config_object();
+  conffwk::ConfigObject dfoobj;
+  if (brokerConf->get_initial_active_dfo() == nullptr) {
+    // Set the initial active DFO to the first one in the Session
+    for (auto app : sessionApps) {
+      auto dfoapp = app->cast<appmodel::DFOApplication>();
+      if (dfoapp == nullptr)
+        continue;
 
+      TLOG_DEBUG(7) << "Setting initial DFO to " << dfoapp->UID();
+      dfoobj = dfoapp->config_object();
+      brokerConfObj.set_obj("initial_active_dfo", &dfoobj);
+      break;
+    }
+  }
   conffwk::ConfigObject dfobrokerObj;
   std::string dfobUid(UID() + "-dfobroker");
   confdb->create(dbfile, "DFOBrokerModule", dfobUid, dfobrokerObj);
