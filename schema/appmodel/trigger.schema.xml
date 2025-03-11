@@ -166,7 +166,6 @@
 
  <class name="MLTConf">
   <attribute name="template_for" type="class" init-value="MLTModule"/>
-   <relationship name="initial_active_dfo" class-type="DFOApplication" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <attribute name="latency_monitoring" description="Should we monitor latency in Grafana?" type="bool" init-value="true" is-not-null="yes"/>
   <relationship name="subdetector_readout_map" description="Optional detector readout map per sub-dector as defined in dunedaq::detdataformats::DetID::Subdetector" class-type="SubdetectorReadoutWindowMap" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
