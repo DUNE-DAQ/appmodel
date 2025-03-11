@@ -335,7 +335,10 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
   }
   auto brokerConfObj = brokerConf->config_object();
   conffwk::ConfigObject dfoobj;
-  if (brokerConf->get_initial_active_dfo() == nullptr) {
+  if (brokerConf->get_initial_active_dfo() != nullptr) {
+    dfoobj = brokerConf->get_initial_active_dfo()->config_object();
+  }
+  else {
     // Set the initial active DFO to the first one in the Session
     for (auto app : sessionApps) {
       auto dfoapp = app->cast<appmodel::DFOApplication>();
@@ -344,7 +347,6 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
 
       TLOG_DEBUG(7) << "Setting initial DFO to " << dfoapp->UID();
       dfoobj = dfoapp->config_object();
-      brokerConfObj.set_obj("initial_active_dfo", &dfoobj);
       break;
     }
   }
@@ -352,6 +354,7 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
   std::string dfobUid(UID() + "-dfobroker");
   confdb->create(dbfile, "DFOBrokerModule", dfobUid, dfobrokerObj);
   dfobrokerObj.set_obj("configuration", &brokerConfObj);
+  dfobrokerObj.set_obj("initial_active_dfo", &dfoobj);
   dfobrokerObj.set_objs("inputs", { &dfodecNetObj, &tokenQueueObj });
   dfobrokerObj.set_objs("outputs", { &hbNetObj, &tdQueueObj });
   modules.push_back(confdb->get<DFOBrokerModule>(dfobUid));

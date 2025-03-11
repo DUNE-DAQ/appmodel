@@ -465,7 +465,10 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
 
   conffwk::ConfigObject mlt_conf_obj = mlt_conf->config_object();
   conffwk::ConfigObject dfoobj;
-  if (mlt_conf->get_initial_active_dfo() == nullptr) {
+  if (mlt_conf->get_initial_active_dfo() != nullptr) {
+    dfoobj = mlt_conf->get_initial_active_dfo()->config_object();
+  }
+  else {
     // Set the initial active DFO to the first one in the Session
     for (auto app : sessionApps) {
       auto dfoapp = app->cast<appmodel::DFOApplication>();
@@ -474,7 +477,6 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
 
       TLOG_DEBUG(7) << "Setting initial DFO to " << dfoapp->UID();
       dfoobj = dfoapp->config_object();
-      mlt_conf_obj.set_obj("initial_active_dfo", &dfoobj);
       break;
     }
   }
@@ -482,6 +484,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
   conffwk::ConfigObject mlt_obj;
   confdb->create(dbfile, mlt_class, mlt_conf->UID(), mlt_obj);
   mlt_obj.set_obj("configuration", &mlt_conf_obj);
+  mlt_obj.set_obj("initial_active_dfo", &dfoobj);
   mlt_obj.set_objs("inputs", { &output_queue_obj, &ti_net_obj });
   mlt_obj.set_objs("outputs", { &td_net_obj });
   modules.push_back(confdb->get<MLTModule>(mlt_conf->UID()));

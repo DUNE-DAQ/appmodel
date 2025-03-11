@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="47" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240911T194242"/>
+<info name="" type="" num-of-items="56" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20250311T093200"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -92,7 +92,7 @@
   <superclass name="SmartDaqApplication"/>
   <relationship name="trb" description="Configuration of the TRB to be generated my get_modules()" class-type="TRBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_writers" class-type="DataWriterConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-   <relationship name="broker" description="Configuration for the DFO Broker module" class-type="DFOBrokerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="broker" description="Configuration for the DFO Broker module" class-type="DFOBrokerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="uses" class-type="DFHWConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
@@ -110,15 +110,20 @@
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
   </method>
  </class>
-  
-  <class name="FakeDFOTestApplication">
-    <superclass name="SmartDaqApplication"/>
-    <relationship name="broker" description="Configuration for the DFO Broker module" class-type="DFOBrokerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-    <relationship name="dfoclient" class-type="FakeDFOClientConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-    <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
-      <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
-    </method>
-  </class>
+
+ <class name="DFOBrokerConf">
+  <attribute name="send_heartbeat_interval_ms" type="u32" init-value="1000"/>
+  <attribute name="send_heartbeat_timeout_ms" type="u32" init-value="1000"/>
+  <attribute name="td_timeout_ms" type="u32" init-value="1000"/>
+  <attribute name="stop_timeout_ms" type="u32" init-value="5000"/>
+  <relationship name="initial_active_dfo" description="The active DFO at configuration time. May be changed later by run control command.&#xA;If not specified, the first DFOApplication in the database will be used" class-type="DFOApplication" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="DFOBrokerModule">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="DFOBrokerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="initial_active_dfo" description="The active DFO at configuration time. May be changed later by run control command" class-type="DFOApplication" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
 
  <class name="DFOConf">
   <attribute name="general_queue_timeout_ms" type="u32" is-not-null="yes"/>
@@ -126,7 +131,7 @@
   <attribute name="td_send_retries" type="s32" init-value="5"/>
   <attribute name="busy_threshold" type="s32" init-value="10"/>
   <attribute name="free_threshold" type="s32" init-value="5"/>
-   <attribute name="busy_interval_ms" type="u32" init-value="1000" />
+  <attribute name="busy_interval_ms" type="u32" init-value="1000"/>
  </class>
 
  <class name="DFOModule">
@@ -134,28 +139,15 @@
   <relationship name="configuration" class-type="DFOConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
-  <class name="DFOBrokerConf">
-    <attribute name="send_heartbeat_interval_ms" type="u32" init-value="1000" />
-    <attribute name="send_heartbeat_timeout_ms" type="u32" init-value="1000"/>
-    <attribute name="td_timeout_ms" type="u32" init-value="1000"/>
-    <attribute name="stop_timeout_ms" type="u32" init-value="5000"/>
-    <relationship name="initial_active_dfo" class-type="DFOApplication" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  </class>
-  
-  <class name="DFOBrokerModule">
-    <superclass name="DaqModule"/>
-    <relationship name="configuration" class-type="DFOBrokerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>    
-  </class>
-  
-  <class name="FakeDFOClientConf">
-    <attribute name="token_wait_microseconds" type="u32" init-value="1000" />
-    <attribute name="send_token_timeout_milliseconds" type="u32" init-value="1000"/>
-  </class>
-
-  <class name="FakeDFOClientModule">
-    <superclass name="DaqModule"/>
-    <relationship name="configuration" class-type="FakeDFOClientConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  </class>
+ <class name="DTSHSIApplication">
+  <superclass name="Resource"/>
+  <superclass name="SmartDaqApplication"/>
+  <relationship name="link_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="generator" class-type="HSIReadoutConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
+  </method>
+ </class>
 
  <class name="DataHandlerConf">
   <attribute name="template_for" type="class" init-value="DataHandlerModule" is-not-null="yes"/>
@@ -232,6 +224,25 @@
   <relationship name="configuration" class-type="DataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
+ <class name="FakeDFOClientConf">
+  <attribute name="token_wait_microseconds" type="u32" init-value="1000"/>
+  <attribute name="send_token_timeout_milliseconds" type="u32" init-value="1000"/>
+ </class>
+
+ <class name="FakeDFOClientModule">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="FakeDFOClientConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="FakeDFOTestApplication">
+  <superclass name="SmartDaqApplication"/>
+  <relationship name="broker" description="Configuration for the DFO Broker module" class-type="DFOBrokerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="dfoclient" class-type="FakeDFOClientConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
+  </method>
+ </class>
+
  <class name="FakeDataApplication">
   <superclass name="ResourceSetAND"/>
   <superclass name="SmartDaqApplication"/>
@@ -256,10 +267,6 @@
   <relationship name="configuration" class-type="FakeDataProdConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="HSIEventSender">
-  <superclass name="DaqModule"/>
- </class>
-
  <class name="FakeHSIApplication">
   <superclass name="Resource"/>
   <superclass name="SmartDaqApplication"/>
@@ -282,28 +289,6 @@
  <class name="FakeHSIEventGeneratorModule">
   <superclass name="DaqModule"/>
   <relationship name="configuration" class-type="FakeHSIEventGeneratorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="HSIReadoutConf">
-  <attribute name="connections_file" description="device connections file" type="string" init-value="${TIMING_SHARE}/config/etc/connections.xml"/>
-  <attribute name="uhal_log_level" description="Log level for uhal" type="enum" range="fatal,error,warning,notice,info,debug" init-value="notice"/>
-  <attribute name="readout_period" description="Hardware device poll period [us]" type="u64" init-value="1000" />
-  <attribute name="hsi_device_name" type="string" init-value="Unknown" />
- </class>
-
- <class name="HSIReadout">
-  <superclass name="HSIEventSender"/>
-  <relationship name="configuration" class-type="HSIReadoutConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no" />
- </class>
-
- <class name="DTSHSIApplication">
-  <superclass name="Resource" />
-  <superclass name="SmartDaqApplication" />
-  <relationship name="link_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no" />
-  <relationship name="generator" class-type="HSIReadoutConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no" />
-  <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
-   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
-  </method>
  </class>
 
  <class name="FilenameParams">
@@ -341,8 +326,24 @@
   <superclass name="DataHandlerModule"/>
  </class>
 
+ <class name="HSIEventSender">
+  <superclass name="DaqModule"/>
+ </class>
+
  <class name="HSIFrameProcessor">
   <superclass name="DataProcessor"/>
+ </class>
+
+ <class name="HSIReadout">
+  <superclass name="HSIEventSender"/>
+  <relationship name="configuration" class-type="HSIReadoutConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="HSIReadoutConf">
+  <attribute name="connections_file" description="device connections file" type="string" init-value="${TIMING_SHARE}/config/etc/connections.xml"/>
+  <attribute name="uhal_log_level" description="Log level for uhal" type="enum" range="fatal,error,warning,notice,info,debug" init-value="notice"/>
+  <attribute name="readout_period" description="Hardware device poll period [us]" type="u64" init-value="1000"/>
+  <attribute name="hsi_device_name" type="string" init-value="Unknown"/>
  </class>
 
  <class name="LatencyBuffer">
