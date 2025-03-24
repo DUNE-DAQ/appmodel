@@ -88,6 +88,7 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
 
       if ( sender->disabled(*session) ) {
 	TLOG() << "Skipping disabled sender: " << sender->UID();
+	continue;
       }
       // Check the sender type, must me a FelixDataSender
       const auto* felix_sender = sender->cast<appmodel::FelixDataSender>();
