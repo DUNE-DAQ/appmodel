@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="9" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20241126T165916"/>
+<info name="" type="" num-of-items="11" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250319T104208"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -134,6 +134,10 @@
   <attribute name="bias_ctrl" description="V bias control" type="u16" range="0..4095" is-not-null="yes"/>
   <attribute name="self_trigger_threshold" description="Configuration for full stream case. If it is 0, the channels will go in full stream. In that case, which channels will be set via the &quot;full_stream_channels&quot; list." type="u64" range="0..16383" init-value="0" is-not-null="yes"/>
   <attribute name="full_stream_channels" description="list of channels to be used in full stream" type="u8" range="0..39" is-multi-value="yes" is-not-null="yes"/>
+  <attribute name="self_trigger_xcorr" type="u64" range="0..4398046511103" is-not-null="yes"/>
+  <attribute name="tp_conf" type="u32" is-not-null="yes"/>
+  <attribute name="compensator" type="u64" range="0..1099511627775" is-not-null="yes"/>
+  <attribute name="inverter" type="u64" range="0..1099511627775" is-not-null="yes"/>
   <relationship name="active_channels" class-type="DaphneV2Channel" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="active_afes" class-type="DaphneV2AFE" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="default_channel" class-type="DaphneV2Channel" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
