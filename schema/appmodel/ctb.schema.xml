@@ -80,12 +80,18 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="10" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20240703T085413"/>
+<info name="" type="" num-of-items="11" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250326T143903"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
+ <file path="schema/appmodel/application.schema.xml"/>
 </include>
 
+
+ <class name="CTBApplication" description="Application that controls the CTB">
+  <superclass name="SmartDaqApplication"/>
+  <superclass name="Resource"/>
+ </class>
 
  <class name="CTBModule" description="Top level configuration object for the CTBModule">
   <superclass name="DaqModule"/>
