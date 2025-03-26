@@ -52,7 +52,12 @@ CTBApplication::generate_modules(conffwk::Configuration* config,
 
   auto ctb_conf = get_configuration();
 
+  auto json_true = ctb_conf -> to_json(true);
 
+  auto json_false = ctb_conf -> to_json(false);
+  std::cout << json_true << std::endl
+	    << json_false << std::endl;
+    
   return modules;
 }
 
