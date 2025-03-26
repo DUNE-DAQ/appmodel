@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="11" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250326T143903"/>
+<info name="" type="" num-of-items="11" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250326T145248"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -91,6 +91,10 @@
  <class name="CTBApplication" description="Application that controls the CTB">
   <superclass name="SmartDaqApplication"/>
   <superclass name="Resource"/>
+  <relationship name="configuration" class-type="CTBoardConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
+     <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
+  </method>
  </class>
 
  <class name="CTBModule" description="Top level configuration object for the CTBModule">
