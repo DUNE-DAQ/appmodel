@@ -19,6 +19,7 @@
 
 #include "appmodel/CTBApplication.hpp"
 #include "appmodel/CTBoardConf.hpp"
+#include "appmodel/CTBConf.hpp"
 
 
 
@@ -52,11 +53,10 @@ CTBApplication::generate_modules(conffwk::Configuration* config,
 
   auto ctb_conf = get_configuration();
 
-  auto json_true = ctb_conf -> to_json(true);
+  auto board = ctb_conf->get_board();
+  auto json = board -> to_json(true, true);
 
-  auto json_false = ctb_conf -> to_json(false);
-  std::cout << json_true << std::endl
-	    << json_false << std::endl;
+  std::cout << json << std::endl;
     
   return modules;
 }
