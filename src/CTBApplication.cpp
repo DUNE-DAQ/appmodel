@@ -54,7 +54,7 @@ CTBApplication::generate_modules(conffwk::Configuration* config,
   auto ctb_conf = get_configuration();
 
   auto board = ctb_conf->get_board();
-  auto json = board -> to_json(true, true);
+  auto json = board -> to_json(false, true);
 
   std::cout << json << std::endl;
     
