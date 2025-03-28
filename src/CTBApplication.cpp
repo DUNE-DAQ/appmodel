@@ -20,6 +20,7 @@
 #include "appmodel/CTBApplication.hpp"
 #include "appmodel/CTBoardConf.hpp"
 #include "appmodel/CTBConf.hpp"
+#include "appmodel/CTBModule.hpp"
 
 
 
@@ -46,8 +47,8 @@ __reg__("CTBApplication", [] (const SmartDaqApplication* smartApp,
 
 std::vector<const confmodel::DaqModule*> 
 CTBApplication::generate_modules(conffwk::Configuration* config,
-				    const std::string& dbfile,
-				    const confmodel::Session* session) const
+				 const std::string& dbfile,
+				 const confmodel::Session* session) const
 {
   std::vector<const confmodel::DaqModule*> modules;
 
@@ -57,7 +58,16 @@ CTBApplication::generate_modules(conffwk::Configuration* config,
   auto json = board -> to_json(false, true);
 
   std::cout << json << std::endl;
-    
+
+  conffwk::ConfigObject module_obj;
+  std::string module_name = "ctb-module";
+  config -> create(dbfile, "CTBModule", module_name, module_obj);
+  module_obj.set_obj("board", & board -> config_object() );
+
+  auto module = config->get<appmodel::CTBModule>(module_obj);
+  
+  modules.push_back(module);
+  
   return modules;
 }
 
