@@ -9,7 +9,6 @@ __generate_class_map = {
     'DFOApplication': dfo_application_generate,
     'TPStreamWriterApplication': tpwriter_application_generate,
     'TriggerApplication': trigger_application_generate,
-    'DFOApplication': dfo_application_generate,
     'FakeHSIApplication': fakehsi_application_generate,
     'HSIEventToTCApplication': hsieventtotc_application_generate,
     'FakeHSIApplication': fakehsi_application_generate,

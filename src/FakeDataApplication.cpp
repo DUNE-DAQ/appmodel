@@ -1,5 +1,5 @@
 /**
- * @file generate_modules.cpp
+ * @file FakeDataApplication.cpp
  *
  * Implementation of FakeDataApplication's generate_modules dal method
  *

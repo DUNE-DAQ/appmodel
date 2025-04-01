@@ -1,7 +1,7 @@
 /**
- * @file DFO.cpp
+ * @file HSIEventToTCApplication.cpp
  *
- * Implementation of DFOApplication's generate_modules dal method
+ * Implementation of HSIEventToTCApplication's generate_modules dal method
  *
  * This is part of the DUNE DAQ Software Suite, copyright 2023.
  * Licensing/copyright details are in the COPYING file that you should have

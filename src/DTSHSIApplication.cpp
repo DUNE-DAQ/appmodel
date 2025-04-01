@@ -1,5 +1,5 @@
 /**
- * @file DFO.cpp
+ * @file DTSHSIApplication.cpp
  *
  * Implementation of Dune Timing System HSIApplication's generate_modules dal method
  *

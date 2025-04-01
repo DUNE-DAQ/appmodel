@@ -1,5 +1,5 @@
 /**
- * @file generate_modules.cpp
+ * @file MLTApplication.cpp
  *
  * Implementation of MLTApplication's generate_modules dal method
  *

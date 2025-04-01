@@ -1,5 +1,5 @@
 /**
- * @file DFO.cpp
+ * @file WIECApplication.cpp
  *
  * Implementation of WIECApplication's generate_modules dal method
  *

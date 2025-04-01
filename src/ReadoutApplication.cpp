@@ -1,5 +1,5 @@
 /**
- * @file generate_modules.cpp
+ * @file ReadoutApplication.cpp
  *
  * Implementation of ReadoutApplication's generate_modules dal method
  *
