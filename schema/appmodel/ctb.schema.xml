@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="15" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250328T131226"/>
+<info name="" type="" num-of-items="19" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250401T151840"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -97,9 +97,31 @@
   </method>
  </class>
 
+ <class name="CTBBeamLLT">
+  <superclass name="CTBLLT"/>
+ </class>
+
  <class name="CTBConf">
   <attribute name="ip_address" description="IP address of the board" type="string" is-not-null="yes"/>
   <relationship name="board" class-type="CTBoardConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="CTBCountLLT">
+  <superclass name="CTBLLT"/>
+  <attribute name="count" type="u32" format="hex" is-not-null="yes"/>
+  <attribute name="type" type="u32" format="hex" is-not-null="yes"/>
+ </class>
+
+ <class name="CTBHLT">
+  <superclass name="CTBTrigger"/>
+  <attribute name="minc" type="u32" format="hex" is-not-null="yes"/>
+  <attribute name="mexc" type="u32" format="hex" is-not-null="yes"/>
+  <attribute name="prescale" type="u32" is-not-null="yes"/>
+ </class>
+
+ <class name="CTBLLT">
+  <superclass name="CTBTrigger"/>
+  <attribute name="mask" type="u32" format="hex" is-not-null="yes"/>
  </class>
 
  <class name="CTBModule" description="Top level configuration object for the CTBModule">
@@ -148,16 +170,18 @@
 
  <class name="CTBTrigger">
   <superclass name="Jsonable"/>
+  <superclass name="Resource"/>
   <attribute name="description" type="string" is-not-null="yes"/>
   <method name="get_ctb_json" description="obtain a jsonification specific for the CTB">
   </method>
  </class>
 
  <class name="CTBoardConf">
-  <superclass name="Jsonable"/>
+  <superclass name="ResourceSetAND"/>
   <relationship name="sockets" class-type="CTBSockets" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
   <relationship name="misc" class-type="Misc" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
-  <relationship name="HLT" class-type="CTBTrigger" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="hlts" class-type="CTBHLT" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="crt_llts" class-type="CTBCountLLT" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="yes" is-dependent="no"/>
  </class>
 
  <class name="Misc">
