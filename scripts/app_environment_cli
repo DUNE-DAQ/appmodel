@@ -28,7 +28,7 @@ console = Console()
 
 dal = conffwk.dal.module('x', 'schema/confmodel/dunedaq.schema.xml')
 
-# Process a dal::Variable object, placing key/value pairs in a dictionary
+# Process a appmodel::Variable object, placing key/value pairs in a dictionary
 def collect_variables(variables, envDict):
   for item in variables:
     if item.className() == 'VariableSet':
