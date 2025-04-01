@@ -88,6 +88,7 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
 
       if ( sender->disabled(*session) ) {
 	TLOG() << "Skipping disabled sender: " << sender->UID();
+	continue;
       }
       // Check the sender type, must me a FelixDataSender
       const auto* felix_sender = sender->cast<appmodel::FelixDataSender>();
@@ -201,6 +202,10 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
     board_obj.set_by_val<uint64_t>("self_trigger_threshold", raw_conf.at("self_trigger_threshold"));
     board_obj.set_by_val<std::vector<uint8_t>>("full_stream_channels",
 					       raw_conf.at("full_stream_channels").get<std::vector<uint8_t>>());
+    board_obj.set_by_val<uint64_t>("self_trigger_xcorr", raw_conf.at("self_trigger_xcorr"));
+    board_obj.set_by_val<uint32_t>("tp_conf", raw_conf.at("tp_conf"));
+    board_obj.set_by_val<uint64_t>("compensator", raw_conf.at("compensator"));
+    board_obj.set_by_val<uint64_t>("inverter", raw_conf.at("inverter"));    
     board_obj.set_objs("active_channels", channels);
     board_obj.set_objs("active_afes", afes);
     board_obj.set_obj("default_channel", & daphne_conf->get_default_v2_settings()->get_default_channel()->config_object());
