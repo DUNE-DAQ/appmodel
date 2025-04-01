@@ -123,6 +123,49 @@
   <relationship name="configuration" class-type="DFOConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
+ <class name="SNBTransferApplication">
+  <superclass name="SmartDaqApplication"/>
+  <relationship name="snbt" class-type="SNBTransferConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
+  </method>
+ </class>
+
+ <class name="SNBTransferConf">
+  <attribute name="client_ip" type="string" is-not-null="yes"/>
+  <attribute name="work_dir" type="string" is-not-null="yes"/>
+  <attribute name="connection_prefix" type="string" init-value="snbmodules"/>
+  <attribute name="timeout_send" type="u16" init-value="10"/>
+  <attribute name="timeout_receive" type="u16" init-value="100"/>
+ </class>
+
+ <class name="SNBFileTransfer">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="SNBTransferConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="SNBBookkeeperApplication">
+  <superclass name="SmartDaqApplication"/>
+  <relationship name="snbbk" class-type="SNBBookkeeperConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
+  </method>
+ </class>
+
+ <class name="SNBBookkeeperConf">
+  <attribute name="bookkeeper_ip" type="string" is-not-null="yes"/>
+  <attribute name="bookkeeper_log_path" type="string" is-not-null="yes"/>
+  <attribute name="connection_prefix" type="string" init-value="snbmodules"/>
+  <attribute name="refresh_rate" type="u8" init-value="5"/>
+  <attribute name="timeout_send" type="u16" init-value="10"/>
+  <attribute name="timeout_receive" type="u16" init-value="100"/>
+ </class>
+
+ <class name="SNBTransferBookkeeper">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="SNBBookkeeperConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
  <class name="DataHandlerConf">
   <attribute name="template_for" type="class" init-value="DataHandlerModule" is-not-null="yes"/>
   <attribute name="input_data_type" description="Type of data received by this readout module" type="string" init-value="WIBEthFrame"/>
