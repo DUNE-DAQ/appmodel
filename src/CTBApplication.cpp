@@ -22,6 +22,10 @@
 #include "appmodel/CTBConf.hpp"
 #include "appmodel/CTBModule.hpp"
 #include "appmodel/CTBSockets.hpp"
+#include "appmodel/CTBTrigger.hpp"
+#include "appmodel/CTBMisc.hpp"
+#include "appmodel/CTBRandomTrigger.hpp"
+
 
 
 
@@ -76,8 +80,41 @@ CTBApplication::generate_modules(conffwk::Configuration* config,
 
 nlohmann::json CTBoardConf::get_ctb_json(const dunedaq::confmodel::Session& session) const {
 
-  auto json = get_sockets() -> to_json(false, true);
+  nlohmann::json json;
+  json["sockets"] = get_sockets() -> to_json(false, true);
+
+  nlohmann::json ret;
+  ret["ctb"] = json;
+
+  return ret;
+
+}
+
+
+nlohmann::json CTBMisc::get_ctb_json(const dunedaq::confmodel::Session& session) const {
+
+  nlohmann::json ret;
+  ret["randomtrigger_1"] = get_randomtrigger_1() -> get_ctb_json(session);
+  
+  return ret;
+
+}
+
+
+
+
+nlohmann::json CTBTrigger::get_ctb_json(const dunedaq::confmodel::Session& session) const {
+
+  auto json = this -> to_json(false, true);
+  static std::string enable_tag = "enable";
+  if ( this -> disabled(session) ) {
+    json[enable_tag] = false;
+  }
+  else {
+    json[enable_tag] = true;
+  }
   return json;
 
 }
+
 
