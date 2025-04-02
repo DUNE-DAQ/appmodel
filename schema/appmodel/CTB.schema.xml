@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="19" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250402T143713"/>
+<info name="" type="" num-of-items="19" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250402T151941"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -116,9 +116,9 @@
 
  <class name="CTBHLT">
   <superclass name="CTBTrigger"/>
-  <attribute name="minc" type="u32" format="hex" is-not-null="yes"/>
-  <attribute name="mexc" type="u32" format="hex" is-not-null="yes"/>
-  <attribute name="prescale" type="u32" format="hex" is-not-null="yes"/>
+  <attribute name="minc" type="string" is-not-null="yes"/>
+  <attribute name="mexc" type="string" is-not-null="yes"/>
+  <attribute name="prescale" type="string" is-not-null="yes"/>
  </class>
 
  <class name="CTBLLT">
@@ -167,7 +167,7 @@
   <attribute name="frequency" type="u64" init-value="50" is-not-null="yes"/>
  </class>
 
- <class name="CTBRandomTrigger">
+ <class name="CTBRandomTrigger" description="Period of the trigger in clock ticks units">
   <superclass name="CTBTrigger"/>
   <attribute name="fixed_freq" type="bool" init-value="true" is-not-null="yes"/>
   <attribute name="beam_mode" type="bool" init-value="true" is-not-null="yes"/>
@@ -201,9 +201,9 @@
 
  <class name="CTBTiming" description="Central Trigger Board Timing Configuration">
   <superclass name="Jsonable"/>
-  <attribute name="address" type="u64" format="hex" init-value="F" is-not-null="yes"/>
+  <attribute name="address" type="string" init-value="0xF" is-not-null="yes"/>
   <attribute name="triggers" type="bool" init-value="true" is-not-null="yes"/>
-  <attribute name="lockout" type="u64" format="hex" init-value="0x10" is-not-null="yes"/>
+  <attribute name="lockout" type="string" init-value="0x10" is-not-null="yes"/>
  </class>
 
  <class name="CTBTrigger">
