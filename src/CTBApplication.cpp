@@ -103,11 +103,29 @@ nlohmann::json CTBoardConf::get_ctb_json(const dunedaq::confmodel::Session& sess
     json_hlts.push_back(hlt->get_ctb_json(session));
   }
 
-  nlohmann::json hlt_block(json_hlts);
-
-  hlt["trigger"] = hlt_block;
+  hlt["trigger"] = nlohmann::json(json_hlts);
   
   json["HLT"] = hlt;
+
+  // --------------------------
+  // Subsystems
+  // --------------------------
+  
+  auto & sussystems = json["subsystems"];
+
+  //  ---- Beam ----
+
+  auto & beam_block = json["beam"] = get_beam() -> to_json(false, true);
+  std::list<nlohmann::json> json_beam_llts;
+  auto beam_llts = get_beam_llts();
+  for ( const auto & llt : beam_llts ) {
+    json_beam_llts.push_back(llt->get_ctb_json(session));
+  }
+  
+  beam_block["triggers"] = nlohmann::json(json_beam_llts);
+  
+  
+  
   
   nlohmann::json ret;
   ret["ctb"] = json;
