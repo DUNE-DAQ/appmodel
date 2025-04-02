@@ -25,6 +25,9 @@
 #include "appmodel/CTBTrigger.hpp"
 #include "appmodel/CTBMisc.hpp"
 #include "appmodel/CTBRandomTrigger.hpp"
+#include "appmodel/CTBPulser.hpp"
+#include "appmodel/CTBTiming.hpp"
+#include "appmodel/CTBHLT.hpp"
 
 
 
@@ -83,9 +86,35 @@ nlohmann::json CTBoardConf::get_ctb_json(const dunedaq::confmodel::Session& sess
   nlohmann::json json;
   json["sockets"] = get_sockets() -> to_json(false, true);
   json["misc"] = get_misc() -> get_ctb_json(session);
+
+  nlohmann::json hlt;
+
+  // constant block that we don't even want to configure
+  auto & mask = hlt["command_mask"];
+  mask["12"]="0x0";
+  mask["13"]="0x0";
+  mask["14"]="0x0";
+  mask["15"]="0x0";
+
+  auto hlts = get_hlts();
+
+  std::list<nlohmann::json> json_hlts;
+  for ( const auto & hlt : hlts ) {
+    json_hlts.push_back(hlt->get_ctb_json(session));
+  }
+
+  nlohmann::json hlt_block(json_hlts);
+
+  hlt["trigger"] = hlt_block;
+  
+  json["HLT"] = hlt;
+  
   nlohmann::json ret;
   ret["ctb"] = json;
 
+  
+  
+  
   return ret;
 
 }
@@ -95,7 +124,18 @@ nlohmann::json CTBMisc::get_ctb_json(const dunedaq::confmodel::Session& session)
 
   nlohmann::json ret;
   ret["randomtrigger_1"] = get_randomtrigger_1() -> get_ctb_json(session);
-  
+  ret["randomtrigger_2"] = get_randomtrigger_2() -> get_ctb_json(session);
+  ret["pulser"] = get_pulser() -> to_json(false, true);
+  ret["timing"] = get_timing() ->  to_json(false, true);
+
+  static std::string ch_status_flag = "ch_status";
+  if ( get_ch_status() ) ret[ch_status_flag] = true;
+  else ret[ch_status_flag] = false;
+
+  static std::string standalong_flag = "standalone_enable";
+  if ( get_standalone_enable() ) ret[standalong_flag] = true;
+  else ret[standalong_flag] = false;
+
   return ret;
 
 }
