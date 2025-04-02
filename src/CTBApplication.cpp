@@ -82,7 +82,7 @@ nlohmann::json CTBoardConf::get_ctb_json(const dunedaq::confmodel::Session& sess
 
   nlohmann::json json;
   json["sockets"] = get_sockets() -> to_json(false, true);
-
+  json["misc"] = get_misc() -> get_ctb_json(session);
   nlohmann::json ret;
   ret["ctb"] = json;
 
