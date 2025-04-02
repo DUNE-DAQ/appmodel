@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="19" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250402T091240"/>
+<info name="" type="" num-of-items="19" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250402T092618"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -135,7 +135,7 @@
   <relationship name="pulser" class-type="CTBPulser" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="timing" class-type="CTBTiming" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="get_ctb_json" description="">
-   <method-implementation language="C++" prototype="nlohmann::get_ctb_json(const dunedaq::confmodel::Session&amp; session) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;END_HEADER_PROLOGUE"/>
+   <method-implementation language="C++" prototype="nlohmann::json get_ctb_json(const dunedaq::confmodel::Session&amp; session) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;END_HEADER_PROLOGUE"/>
   </method>
  </class>
 
@@ -211,7 +211,7 @@
   <attribute name="description" type="string" is-not-null="yes"/>
   <attribute name="id" description="this is fixed for the CTB to identify the LLT or the HLT. &#xA;To not be confused with the OKS uid." type="string" is-not-null="yes"/>
   <method name="get_ctb_json" description="obtain a jsonification specific for the CTB">
-   <method-implementation language="c++" prototype="nlohmann::get_ctb_json(const dunedaq::confmodel::Session&amp; session) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;END_HEADER_PROLOGUE"/>
+   <method-implementation language="c++" prototype="nlohmann::json get_ctb_json(const dunedaq::confmodel::Session&amp; session) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;END_HEADER_PROLOGUE"/>
   </method>
  </class>
 
@@ -222,7 +222,7 @@
   <relationship name="hlts" class-type="CTBHLT" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="crt_llts" class-type="CTBCountLLT" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="yes" is-dependent="no"/>
   <method name="get_ctb_json" description="create the json configuration for the board">
-   <method-implementation language="C++" prototype="nlohmann::get_ctb_json(const dunedaq::confmodel::Session&amp; session) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;END_HEADER_PROLOGUE"/>
+   <method-implementation language="C++" prototype="nlohmann::json get_ctb_json(const dunedaq::confmodel::Session&amp; session) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;END_HEADER_PROLOGUE"/>
   </method>
  </class>
 

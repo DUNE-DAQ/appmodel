@@ -21,6 +21,7 @@
 #include "appmodel/CTBoardConf.hpp"
 #include "appmodel/CTBConf.hpp"
 #include "appmodel/CTBModule.hpp"
+#include "appmodel/CTBSockets.hpp"
 
 
 
@@ -55,7 +56,7 @@ CTBApplication::generate_modules(conffwk::Configuration* config,
   auto ctb_conf = get_configuration();
 
   auto board = ctb_conf->get_board();
-  auto json = board -> to_json(false, true);
+  auto json = board -> get_ctb_json(*session);
 
   std::cout << json << std::endl;
 
@@ -71,4 +72,12 @@ CTBApplication::generate_modules(conffwk::Configuration* config,
   return modules;
 }
 
+
+
+nlohmann::json CTBoardConf::get_ctb_json(const dunedaq::confmodel::Session& session) const {
+
+  auto json = get_sockets() -> to_json(false, true);
+  return json;
+
+}
 
