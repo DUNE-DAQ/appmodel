@@ -60,14 +60,14 @@ CTBApplication::generate_modules(conffwk::Configuration* config,
 
   std::cout << json << std::endl;
 
-  conffwk::ConfigObject module_obj;
-  std::string module_name = "ctb-module";
-  config -> create(dbfile, "CTBModule", module_name, module_obj);
-  module_obj.set_obj("board", & board -> config_object() );
+  // conffwk::ConfigObject module_obj;
+  // std::string module_name = "ctb-module";
+  // config -> create(dbfile, "CTBModule", module_name, module_obj);
+  // module_obj.set_obj("board", & board -> config_object() );
 
-  auto module = config->get<appmodel::CTBModule>(module_obj);
+  // auto module = config->get<appmodel::CTBModule>(module_obj);
   
-  modules.push_back(module);
+  // modules.push_back(module);
   
   return modules;
 }
