@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="19" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250401T151840"/>
+<info name="" type="" num-of-items="19" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250402T082033"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -135,9 +135,10 @@
   <relationship name="board" class-type="CTBoardConf" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
  </class>
 
- <class name="CTBMonitorSocket">
+ <class name="CTBMonitorSocket" description="Socket to send a copy of the CTB data. Not implemented yet">
   <attribute name="host" type="string" init-value="localhost" is-not-null="yes"/>
   <attribute name="port" type="u64" init-value="8993" is-not-null="yes"/>
+  <attribute name="enable" type="bool" init-value="0" is-not-null="yes"/>
  </class>
 
  <class name="CTBPDS">
@@ -145,7 +146,7 @@
   <attribute name="dac_thresholds" type="u32" is-multi-value="yes" is-not-null="yes"/>
  </class>
 
- <class name="CTBReceiverSocket" description="Central Trigger Board Receiver Socket Configuration">
+ <class name="CTBReceiverSocket" description="Settings to configure the conditions for the data transmission socket">
   <attribute name="rollover" type="u64" init-value="125000" is-not-null="yes"/>
   <attribute name="host" type="string" init-value="localhost" is-not-null="yes"/>
   <attribute name="port" type="u64" init-value="8992" is-not-null="yes"/>
@@ -157,9 +158,10 @@
   <relationship name="statistics" class-type="CTBStatisticsSocket" low-cc="zero" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
  </class>
 
- <class name="CTBStatisticsSocket">
+ <class name="CTBStatisticsSocket" description="Socket to send periodic trigger statistics. Not implemented yet">
   <attribute name="port" type="u64" init-value="8994" is-not-null="yes"/>
   <attribute name="updt_period" type="bool" init-value="1" is-not-null="yes"/>
+  <attribute name="enable" type="bool" init-value="0" is-not-null="yes"/>
  </class>
 
  <class name="CTBSubsystem">
@@ -179,12 +181,12 @@
  <class name="CTBoardConf">
   <superclass name="ResourceSetAND"/>
   <relationship name="sockets" class-type="CTBSockets" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
-  <relationship name="misc" class-type="Misc" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <relationship name="misc" class-type="CTBMisc" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
   <relationship name="hlts" class-type="CTBHLT" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="crt_llts" class-type="CTBCountLLT" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="yes" is-dependent="no"/>
  </class>
 
- <class name="Misc">
+ <class name="CTBMisc">
   <attribute name="ch_status" type="bool" init-value="false" is-not-null="yes"/>
   <attribute name="standalone_enable" type="bool" init-value="false" is-not-null="yes"/>
   <relationship name="randomtrigger_1" class-type="RandomTrigger" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
