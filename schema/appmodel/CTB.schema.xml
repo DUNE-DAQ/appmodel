@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="19" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250402T082033"/>
+<info name="" type="" num-of-items="19" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250402T084749"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -91,6 +91,7 @@
  <class name="CTBApplication" description="Application that controls the CTB">
   <superclass name="SmartDaqApplication"/>
   <superclass name="Resource"/>
+  <superclass name="ResourceSetAND"/>
   <relationship name="configuration" class-type="CTBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
@@ -102,6 +103,7 @@
  </class>
 
  <class name="CTBConf">
+  <superclass name="ResourceSetAND"/>
   <attribute name="ip_address" description="IP address of the board" type="string" is-not-null="yes"/>
   <relationship name="board" class-type="CTBoardConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
@@ -124,6 +126,16 @@
   <attribute name="mask" type="u32" format="hex" is-not-null="yes"/>
  </class>
 
+ <class name="CTBMisc">
+  <superclass name="ResourceSetAND"/>
+  <attribute name="ch_status" type="bool" init-value="0" is-not-null="yes"/>
+  <attribute name="standalone_enable" type="bool" init-value="0" is-not-null="yes"/>
+  <relationship name="randomtrigger_1" class-type="CTBRandomTrigger" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="randomtrigger_2" class-type="CTBRandomTrigger" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="pulser" class-type="Pulser" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <relationship name="timing" class-type="Timing" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+ </class>
+
  <class name="CTBModule" description="Top level configuration object for the CTBModule">
   <superclass name="DaqModule"/>
   <attribute name="receiver_connection_timeout" description="CTB Receiver Connection Timeout value (microseconds)" type="u64" init-value="1000" is-not-null="yes"/>
@@ -132,7 +144,7 @@
   <attribute name="calibration_stream_output" description="CTB Calibration Stream Output Path" type="string" is-not-null="yes"/>
   <attribute name="calibration_update" description="CTB Calibration Update Interval in minutes" type="u64" init-value="5" is-not-null="yes"/>
   <attribute name="run_trigger_output" description="CTB Trigger Output Path" type="string" init-value="/nfs/sw/trigger/counters" is-not-null="yes"/>
-  <relationship name="board" class-type="CTBoardConf" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <relationship name="configuration" class-type="CTBConf" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
  </class>
 
  <class name="CTBMonitorSocket" description="Socket to send a copy of the CTB data. Not implemented yet">
@@ -146,6 +158,15 @@
   <attribute name="dac_thresholds" type="u32" is-multi-value="yes" is-not-null="yes"/>
  </class>
 
+ <class name="CTBRandomTrigger">
+  <superclass name="CTBTrigger"/>
+  <attribute name="description" type="string" is-not-null="yes"/>
+  <attribute name="enable" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="fixed_freq" type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="beam_mode" type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="period" type="u64" init-value="10000" is-not-null="yes"/>
+ </class>
+
  <class name="CTBReceiverSocket" description="Settings to configure the conditions for the data transmission socket">
   <attribute name="rollover" type="u64" init-value="125000" is-not-null="yes"/>
   <attribute name="host" type="string" init-value="localhost" is-not-null="yes"/>
@@ -153,6 +174,7 @@
  </class>
 
  <class name="CTBSockets">
+  <superclass name="Jsonable"/>
   <relationship name="receiver" class-type="CTBReceiverSocket" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
   <relationship name="monitor" class-type="CTBMonitorSocket" low-cc="zero" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
   <relationship name="statistics" class-type="CTBStatisticsSocket" low-cc="zero" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
@@ -186,26 +208,9 @@
   <relationship name="crt_llts" class-type="CTBCountLLT" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="yes" is-dependent="no"/>
  </class>
 
- <class name="CTBMisc">
-  <attribute name="ch_status" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="standalone_enable" type="bool" init-value="false" is-not-null="yes"/>
-  <relationship name="randomtrigger_1" class-type="RandomTrigger" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
-  <relationship name="randomtrigger_2" class-type="RandomTrigger" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
-  <relationship name="pulser" class-type="Pulser" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
-  <relationship name="timing" class-type="Timing" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
- </class>
-
  <class name="Pulser" description="Central Trigger Board Pulser Configuration">
   <attribute name="enable" type="bool" init-value="false" is-not-null="yes"/>
   <attribute name="frequency" type="u64" init-value="50" is-not-null="yes"/>
- </class>
-
- <class name="RandomTrigger">
-  <attribute name="description" type="string" is-not-null="yes"/>
-  <attribute name="enable" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="fixed_freq" type="bool" init-value="true" is-not-null="yes"/>
-  <attribute name="beam_mode" type="bool" init-value="true" is-not-null="yes"/>
-  <attribute name="period" type="u64" init-value="10000" is-not-null="yes"/>
  </class>
 
  <class name="Timing" description="Central Trigger Board Timing Configuration">
