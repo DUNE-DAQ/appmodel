@@ -28,6 +28,8 @@
 #include "appmodel/CTBPulser.hpp"
 #include "appmodel/CTBTiming.hpp"
 #include "appmodel/CTBHLT.hpp"
+#include "appmodel/CTBLLT.hpp"
+#include "appmodel/CTBSubsystem.hpp"
 
 
 
@@ -96,7 +98,7 @@ nlohmann::json CTBoardConf::get_ctb_json(const dunedaq::confmodel::Session& sess
   mask["14"]="0x0";
   mask["15"]="0x0";
 
-  auto hlts = get_hlts();
+  auto hlts = get_HLTs();
 
   std::list<nlohmann::json> json_hlts;
   for ( const auto & hlt : hlts ) {
@@ -111,11 +113,11 @@ nlohmann::json CTBoardConf::get_ctb_json(const dunedaq::confmodel::Session& sess
   // Subsystems
   // --------------------------
   
-  auto & sussystems = json["subsystems"];
+  auto & subsystems = json["subsystems"];
 
   //  ---- Beam ----
 
-  auto & beam_block = json["beam"] = get_beam() -> to_json(false, true);
+  auto & beam_block = subsystems["beam"] = get_beam() -> to_json(false, true);
   std::list<nlohmann::json> json_beam_llts;
   auto beam_llts = get_beam_llts();
   for ( const auto & llt : beam_llts ) {
@@ -123,10 +125,7 @@ nlohmann::json CTBoardConf::get_ctb_json(const dunedaq::confmodel::Session& sess
   }
   
   beam_block["triggers"] = nlohmann::json(json_beam_llts);
-  
-  
-  
-  
+    
   nlohmann::json ret;
   ret["ctb"] = json;
 
@@ -136,6 +135,8 @@ nlohmann::json CTBoardConf::get_ctb_json(const dunedaq::confmodel::Session& sess
   return ret;
 
 }
+
+
 
 
 nlohmann::json CTBMisc::get_ctb_json(const dunedaq::confmodel::Session& session) const {
@@ -171,6 +172,9 @@ nlohmann::json CTBTrigger::get_ctb_json(const dunedaq::confmodel::Session& sessi
   else {
     json[enable_tag] = true;
   }
+
+  json["id"] = this -> UID();
+  
   return json;
 
 }
