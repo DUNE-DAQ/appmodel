@@ -29,7 +29,9 @@
 #include "appmodel/CTBTiming.hpp"
 #include "appmodel/CTBHLT.hpp"
 #include "appmodel/CTBLLT.hpp"
+#include "appmodel/CTBCountLLT.hpp"
 #include "appmodel/CTBSubsystem.hpp"
+#include "appmodel/CTBCRTSubsystem.hpp"
 
 
 
@@ -119,15 +121,24 @@ nlohmann::json CTBoardConf::get_ctb_json(const dunedaq::confmodel::Session& sess
 
   auto & beam_block = subsystems["beam"] = get_beam() -> to_json(false, true);
   std::list<nlohmann::json> json_beam_llts;
-  auto beam_llts = get_beam_llts();
+  auto beam_llts = get_beam_LLTs();
   for ( const auto & llt : beam_llts ) {
     json_beam_llts.push_back(llt->get_ctb_json(session));
   }
   
   beam_block["triggers"] = nlohmann::json(json_beam_llts);
-    
+
+  //  ---- CRT ----
+  
+  auto & crt_block = subsystems["crt"] = get_crt() -> to_json(false, true);
   nlohmann::json ret;
   ret["ctb"] = json;
+  std::list<nlohmann::json> json_crt_llts;
+  auto crt_llts = get_crt_LLTs();
+  for ( const auto & llt : crt_llts ) {
+    json_crt_llts.push_back(llt->get_ctb_json(session));
+  }
+  crt_block["triggers"] = nlohmann::json(json_crt_llts);
 
   
   

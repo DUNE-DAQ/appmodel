@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="19" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250403T080308"/>
+<info name="" type="" num-of-items="20" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250403T091224"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -100,6 +100,11 @@
 
  <class name="CTBBeamLLT">
   <superclass name="CTBLLT"/>
+ </class>
+
+ <class name="CTBCRTSubsystem">
+  <superclass name="CTBSubsystem"/>
+  <attribute name="pixelate" type="bool" is-not-null="yes"/>
  </class>
 
  <class name="CTBConf">
@@ -196,7 +201,7 @@
  <class name="CTBSubsystem">
   <superclass name="Jsonable"/>
   <attribute name="channel_mask" type="string" is-not-null="yes"/>
-  <attribute name="rehsape_length" type="u32" is-not-null="yes"/>
+  <attribute name="reshape_length" type="u32" is-not-null="yes"/>
   <attribute name="delays" type="u32" is-multi-value="yes" is-not-null="yes"/>
  </class>
 
@@ -220,10 +225,11 @@
   <superclass name="ResourceSetAND"/>
   <relationship name="sockets" class-type="CTBSockets" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
   <relationship name="misc" class-type="CTBMisc" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="crt_llts" class-type="CTBCountLLT" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="yes" is-dependent="no"/>
   <relationship name="beam" class-type="CTBSubsystem" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="beam_llts" class-type="CTBLLT" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="beam_LLTs" class-type="CTBLLT" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="HLTs" class-type="CTBHLT" low-cc="many" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="crt" class-type="CTBCRTSubsystem" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="crt_LLTs" class-type="CTBCountLLT" low-cc="many" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="get_ctb_json" description="create the json configuration for the board">
    <method-implementation language="C++" prototype="nlohmann::json get_ctb_json(const dunedaq::confmodel::Session&amp; session) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;END_HEADER_PROLOGUE"/>
   </method>
