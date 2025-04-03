@@ -32,6 +32,7 @@
 #include "appmodel/CTBCountLLT.hpp"
 #include "appmodel/CTBSubsystem.hpp"
 #include "appmodel/CTBCRTSubsystem.hpp"
+#include "appmodel/CTBPDSSubsystem.hpp"
 
 
 
@@ -140,9 +141,10 @@ nlohmann::json CTBoardConf::get_ctb_json(const dunedaq::confmodel::Session& sess
   }
   crt_block["triggers"] = nlohmann::json(json_crt_llts);
 
+  //  ---- PDS ----
   
-  
-  
+  subsystems["pds"] = get_pds() -> to_json(false, true);
+    
   return ret;
 
 }

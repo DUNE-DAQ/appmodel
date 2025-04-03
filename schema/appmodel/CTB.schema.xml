@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="20" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250403T091224"/>
+<info name="" type="" num-of-items="21" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250403T100605"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -115,8 +115,8 @@
 
  <class name="CTBCountLLT">
   <superclass name="CTBLLT"/>
-  <attribute name="count" type="string" is-not-null="yes"/>
-  <attribute name="type" type="string" is-not-null="yes"/>
+  <attribute name="count" type="string" init-value="0x0" is-not-null="yes"/>
+  <attribute name="type" type="string" init-value="0x1" is-not-null="yes"/>
  </class>
 
  <class name="CTBHLT">
@@ -161,9 +161,19 @@
   <attribute name="enable" type="bool" init-value="0" is-not-null="yes"/>
  </class>
 
- <class name="CTBPDS">
+ <class name="CTBPDSLLT">
+  <attribute name="id" type="string" is-not-null="yes"/>
+  <attribute name="description" type="string" init-value="Spare" is-not-null="yes"/>
+  <attribute name="enable" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="mask" type="string" is-multi-value="yes" init-value="0x0" is-not-null="yes"/>
+  <attribute name="type" type="string" is-multi-value="yes" init-value="0x0" is-not-null="yes"/>
+  <attribute name="count" type="string" init-value="0x0" is-not-null="yes"/>
+ </class>
+
+ <class name="CTBPDSSubsystem">
   <superclass name="CTBSubsystem"/>
   <attribute name="dac_thresholds" type="u32" is-multi-value="yes" is-not-null="yes"/>
+  <relationship name="triggers" class-type="CTBPDSLLT" low-cc="many" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="CTBPulser" description="Test pulser that is routed to the fiber and one of the NIM outputs (back panel)">
@@ -230,6 +240,7 @@
   <relationship name="HLTs" class-type="CTBHLT" low-cc="many" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="crt" class-type="CTBCRTSubsystem" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="crt_LLTs" class-type="CTBCountLLT" low-cc="many" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="pds" class-type="CTBPDSSubsystem" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="get_ctb_json" description="create the json configuration for the board">
    <method-implementation language="C++" prototype="nlohmann::json get_ctb_json(const dunedaq::confmodel::Session&amp; session) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;END_HEADER_PROLOGUE"/>
   </method>
