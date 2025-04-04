@@ -195,7 +195,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
     if (destination_class == "DataHandlerModule" || destination_class == dlh_class || destination_class == tph_class) {
       if (data_type == "DataRequest") {
         dlh_reqinput_qdesc = rule->get_descriptor();
-      } else if (data_type == "TriggerPrimitive" && get_tp_generation_enabled()) {
+      } else if ((data_type == "TriggerPrimitive" || data_type == "TriggerPrimitiveVector") && get_tp_generation_enabled()) {
         tp_input_qdesc = rule->get_descriptor();
       } else {
         dlh_input_qdesc = rule->get_descriptor();
@@ -389,7 +389,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
 
       // Create the TPs aggregator queue (from RawData Handlers to TP handlers)
       tp_queue_obj = obj_fac.create_queue_sid_obj(tp_input_qdesc, sid->get_sid());
-      tp_queue_obj.set_by_val<uint32_t>("recv_timeout_ms", 1);
+      tp_queue_obj.set_by_val<uint32_t>("recv_timeout_ms", 50);
       tp_queue_obj.set_by_val<uint32_t>("send_timeout_ms", 1);
 
       tp_queues.push_back(config->get<confmodel::Connection>(tp_queue_obj.UID()));
