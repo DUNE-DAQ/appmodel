@@ -325,7 +325,7 @@
   <relationship name="uses" class-type="NetworkInterface" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="NWDetDataSender" is-abstract="yes">
+ <class name="NWDetDataSender">
   <superclass name="DetDataSender"/>
   <relationship name="uses" class-type="NetworkInterface" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
