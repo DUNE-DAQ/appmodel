@@ -66,20 +66,19 @@ CTBApplication::generate_modules(conffwk::Configuration* config,
   std::vector<const confmodel::DaqModule*> modules;
 
   auto ctb_conf = get_configuration();
-
-  auto board = ctb_conf->get_board();
+  auto board = get_board();
+  
   auto json = board -> get_ctb_json(*session);
-
   std::cout << json << std::endl;
 
-  // conffwk::ConfigObject module_obj;
-  // std::string module_name = "ctb-module";
-  // config -> create(dbfile, "CTBModule", module_name, module_obj);
-  // module_obj.set_obj("board", & board -> config_object() );
-
-  // auto module = config->get<appmodel::CTBModule>(module_obj);
+  conffwk::ConfigObject module_obj;
+  std::string module_name = "ctb-module";
+  config -> create(dbfile, "CTBModule", module_name, module_obj);
+  module_obj.set_obj("configuration", & ctb_conf -> config_object() );
+  module_obj.set_obj("board", & board -> config_object() );
+  auto module = config->get<appmodel::CTBModule>(module_obj);
   
-  // modules.push_back(module);
+  modules.push_back(module);
   
   return modules;
 }

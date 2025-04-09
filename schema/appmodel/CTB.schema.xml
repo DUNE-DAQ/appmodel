@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="21" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250403T113723"/>
+<info name="" type="" num-of-items="21" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250409T160239"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -93,6 +93,7 @@
   <superclass name="Resource"/>
   <superclass name="ResourceSetAND"/>
   <relationship name="configuration" class-type="CTBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="board" class-type="CTBoardConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
   </method>
@@ -108,9 +109,7 @@
  </class>
 
  <class name="CTBConf">
-  <superclass name="ResourceSetAND"/>
-  <attribute name="ip_address" description="IP address of the board" type="string" is-not-null="yes"/>
-  <relationship name="board" class-type="CTBoardConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <attribute name="ctb_hostname" description="IP address of the board" type="string" is-not-null="yes"/>
  </class>
 
  <class name="CTBCountLLT">
@@ -152,7 +151,8 @@
   <attribute name="calibration_stream_output" description="CTB Calibration Stream Output Path" type="string" is-not-null="yes"/>
   <attribute name="calibration_update" description="CTB Calibration Update Interval in minutes" type="u64" init-value="5" is-not-null="yes"/>
   <attribute name="run_trigger_output" description="CTB Trigger Output Path" type="string" init-value="/nfs/sw/trigger/counters" is-not-null="yes"/>
-  <relationship name="configuration" class-type="CTBConf" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <relationship name="configuration" class-type="CTBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="board" class-type="CTBoardConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="yes"/>
  </class>
 
  <class name="CTBMonitorSocket" description="Socket to send a copy of the CTB data. Not implemented yet">
@@ -236,7 +236,7 @@
   <relationship name="sockets" class-type="CTBSockets" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
   <relationship name="misc" class-type="CTBMisc" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="beam" class-type="CTBSubsystem" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="beam_LLTs" class-type="CTBLLT" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="beam_LLTs" class-type="CTBLLT" low-cc="many" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="HLTs" class-type="CTBHLT" low-cc="many" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="crt" class-type="CTBCRTSubsystem" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="crt_LLTs" class-type="CTBCountLLT" low-cc="many" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
