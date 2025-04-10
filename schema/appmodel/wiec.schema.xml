@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="10" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240618T084639"/>
+<info name="" type="" num-of-items="11" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="dergonul" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20250310T162304"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -120,6 +120,13 @@
   <attribute name="pulse_channels" description="Array of up to 16 true/false values, for whether to send pulser to each corresponding channel per LArASIC." type="bool" is-multi-value="yes"/>
  </class>
 
+ <class name="FakeSocketDataSender">
+  <superclass name="NWDetDataSender"/>
+  <attribute name="link_id" type="u32" is-not-null="yes"/>
+  <attribute name="port" type="u32" init-value="1234" is-not-null="yes"/>
+  <attribute name="control_host" type="string" init-value="localhost" is-not-null="yes"/>
+ </class>
+ 
  <class name="WIBModule">
   <superclass name="DaqModule"/>
   <attribute name="wib_addr" type="string" init-value="tcp://192.168.121.1:1234" is-not-null="yes"/>
@@ -164,6 +171,6 @@
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
   </method>
-</class>
+ </class>
 
 </oks-schema>
