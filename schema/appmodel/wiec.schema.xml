@@ -86,6 +86,7 @@
  <file path="schema/confmodel/dunedaq.schema.xml"/>
  <file path="schema/appmodel/application.schema.xml"/>
  <file path="schema/appmodel/fdmodules.schema.xml"/>
+ <file path="schema/appmodel/hermes.schema.xml"/>
 </include>
 
 
@@ -125,28 +126,7 @@
   <attribute name="port" type="u32" init-value="1234" is-not-null="yes"/>
   <attribute name="control_host" type="string" init-value="localhost" is-not-null="yes"/>
  </class>
-
- <class name="HermesDataSender">
-  <superclass name="NWDetDataSender"/>
-  <attribute name="link_id" type="u32" is-not-null="yes"/>
-  <attribute name="port" type="u32" init-value="17476" is-not-null="yes"/>
-  <attribute name="control_host" type="string" init-value="localhost" is-not-null="yes"/>
- </class>
-
- <class name="HermesModule">
-  <superclass name="DaqModule"/>
-  <superclass name="IpbusDevice"/>
-  <relationship name="links" class-type="HermesDataSender" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="destination" class-type="NetworkInterface" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="HermesModuleConf">
-  <attribute name="ipbus_type" type="string" init-value="ipbusudp-2.0" is-not-null="yes"/>
-  <attribute name="ipbus_port" type="u32" init-value="50001" is-not-null="yes"/>
-  <attribute name="ipbus_timeout_ms" type="u32" init-value="1000" is-not-null="yes"/>
-  <relationship name="address_table" class-type="IpbusAddressTable" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
+ 
  <class name="WIBModule">
   <superclass name="DaqModule"/>
   <attribute name="wib_addr" type="string" init-value="tcp://192.168.121.1:1234" is-not-null="yes"/>
