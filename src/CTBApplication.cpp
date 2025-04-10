@@ -180,8 +180,24 @@ CTBApplication::generate_modules(conffwk::Configuration* config,
     fh_output_objs.push_back(&tsNetObj);
   }
   dlhObj.set_objs("outputs", fh_output_objs);
-  
 
+  // set queues
+  // std::string dataQueueUid(dlhInputQDesc->get_uid_base() + "LLT");
+  // conffwk::ConfigObject queueObj;
+  // config->create(dbfile, "QueueWithSourceId", dataQueueUid, queueObj);
+  // queueObj.set_by_val<std::string>("data_type", dlhInputQDesc->get_data_type());
+  // queueObj.set_by_val<std::string>("queue_type", dlhInputQDesc->get_queue_type());
+  // queueObj.set_by_val<uint32_t>("capacity", dlhInputQDesc->get_capacity());
+  // queueObj.set_by_val<uint32_t>("source_id", id);
+  // std::string dataQueueUid(dlhInputQDesc->get_uid_base() + std::to_string(id));
+  // conffwk::ConfigObject queueObj;
+  // config->create(dbfile, "QueueWithSourceId", dataQueueUid, queueObj);
+  // queueObj.set_by_val<std::string>("data_type", dlhInputQDesc->get_data_type());
+  // queueObj.set_by_val<std::string>("queue_type", dlhInputQDesc->get_queue_type());
+  // queueObj.set_by_val<uint32_t>("capacity", dlhInputQDesc->get_capacity());
+  // queueObj.set_by_val<uint32_t>("source_id", id);
+
+  
   std::string dataQueueUid(dlhInputQDesc->get_uid_base() + std::to_string(id));
   conffwk::ConfigObject queueObj;
   config->create(dbfile, "QueueWithSourceId", dataQueueUid, queueObj);
