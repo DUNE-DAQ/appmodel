@@ -34,8 +34,9 @@
 #include "appmodel/CTBCRTSubsystem.hpp"
 #include "appmodel/CTBPDSSubsystem.hpp"
 
-
-
+#include "appmodel/DataHandlerConf.hpp"
+#include "appmodel/QueueConnectionRule.hpp"
+#include "appmodel/QueueDescriptor.hpp"
 
 #include <string>
 #include <vector>
@@ -65,7 +66,23 @@ CTBApplication::generate_modules(conffwk::Configuration* config,
 {
   std::vector<const confmodel::DaqModule*> modules;
 
-  auto ctb_conf = get_configuration();
+  auto ctb_conf = get_generator();
+
+  auto dlhConf = get_link_handler();
+  auto dlhClass = dlhConf->get_template_for();
+
+  const QueueDescriptor* dlhInputQDesc = nullptr;
+    
+  for (auto rule : get_queue_rules()) {
+    auto destination_class = rule->get_destination_class();
+    auto data_type = rule->get_descriptor()->get_data_type();
+    if (destination_class == "DataHandlerModule" || destination_class == dlhClass) {
+      dlhInputQDesc = rule->get_descriptor();
+    }
+  }
+  
+  
+  
   auto board = get_board();
   
   auto json = board -> get_ctb_json(*session);
