@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="11" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250319T104208"/>
+<info name="" type="" num-of-items="11" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250423T151343"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -138,6 +138,9 @@
   <attribute name="tp_conf" type="u32" is-not-null="yes"/>
   <attribute name="compensator" type="u64" range="0..1099511627775" is-not-null="yes"/>
   <attribute name="inverter" type="u64" range="0..1099511627775" is-not-null="yes"/>
+  <attribute name="detector_id" description="Since the daphne can be configured and connected according to the desire of the PDS people, the detector ID associated to each daphne is configurable." type="u16" range="0..63" is-not-null="yes"/>
+  <attribute name="crate_id" description="Same as detector Id" type="u16" range="0..1023" is-not-null="yes"/>
+  <attribute name="slot_id" type="u16" range="0..15" is-not-null="yes"/>
   <relationship name="active_channels" class-type="DaphneV2Channel" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="active_afes" class-type="DaphneV2AFE" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="default_channel" class-type="DaphneV2Channel" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -166,9 +169,11 @@
  <class name="DaphneV2ControllerModule">
   <superclass name="DaqModule"/>
   <attribute name="address" description="ip address of the board" type="string" is-not-null="yes"/>
-  <attribute name="slot" description="slot of the board" type="u16" is-not-null="yes"/>
   <relationship name="daphne_conf" class-type="DaphneConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="board_conf" class-type="DaphneV2BoardConf" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <method name="get_slot" description="">
+   <method-implementation language="C++" prototype="auto get_slot() const { return get_board_conf()-&gt;get_slot_id(); }" body="BEGIN_HEADER_PROLOGUE&#xA;#include &lt;appmodel/DaphneV2BoardConf.hpp&gt;&#xA;END_HEADER_PROLOGUE"/>
+  </method>
  </class>
 
  <class name="DaphneV2LNA" description="info to generate Reg52 value">

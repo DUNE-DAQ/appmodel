@@ -16,6 +16,8 @@
 
 #include "confmodel/DetectorToDaqConnection.hpp"
 #include "confmodel/DetDataSender.hpp"
+#include "confmodel/GeoId.hpp"
+#include "confmodel/DetectorStream.hpp"
 
 #include "appmodel/FelixDataSender.hpp"
 #include "appmodel/DaphneConf.hpp"
@@ -59,7 +61,7 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
 
   auto daphne_conf = get_configuration();
 
-  std::set<std::string> ips;
+  std::map<std::string, const confmodel::GeoId*> geo_ids;
   
   for (auto d2d_conn_res : get_contains()) {
 
@@ -101,14 +103,31 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
 
       auto ip = felix_sender -> get_control_host();
 
-      ips.insert(ip);
+      // from the felix sender we get the DetStream and then the GeoID
+
+      auto streams = felix_sender -> get_contains();
+
+      for ( const auto * det_s : streams ) {
+
+	if ( det_s->disabled(*session) ) {
+	  TLOG() << "Skipping disabled DetStream: " << det_s->UID();
+	  continue;
+	}
+
+	if (!geo_ids.contains(ip)) {
+	  const auto * temp_stream = det_s->cast<confmodel::DetectorStream>();
+	  geo_ids[ip] = temp_stream->get_geo_id();
+	}
+	 
+      } // loop over DetStreams
+      
     } // loop over det_senders
 
   } // loop over det2DAQ Connections
 
-  for ( const auto & ip : ips ) {
+  for ( const auto & [ip, geo] : geo_ids ) {
   
-    auto slot = daphne_conf -> get_board_slot(ip);
+    auto slot = geo->get_slot_id();
 
     const auto raw_conf = daphne_conf->get_json().at(ip);
 
@@ -205,7 +224,8 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
     board_obj.set_by_val<uint64_t>("self_trigger_xcorr", raw_conf.at("self_trigger_xcorr"));
     board_obj.set_by_val<uint32_t>("tp_conf", raw_conf.at("tp_conf"));
     board_obj.set_by_val<uint64_t>("compensator", raw_conf.at("compensator"));
-    board_obj.set_by_val<uint64_t>("inverter", raw_conf.at("inverter"));    
+    board_obj.set_by_val<uint64_t>("inverter", raw_conf.at("inverter"));
+    board_obj.set_by_val<uint16_t>("slot_id", slot);
     board_obj.set_objs("active_channels", channels);
     board_obj.set_objs("active_afes", afes);
     board_obj.set_obj("default_channel", & daphne_conf->get_default_v2_settings()->get_default_channel()->config_object());
@@ -216,7 +236,6 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
     std::string module_name = fmt::format("controller-{}", slot);
     config -> create( dbfile, "DaphneV2ControllerModule", module_name, module_obj);
     module_obj.set_by_val<std::string>("address", ip);
-    module_obj.set_by_val<uint16_t>("slot", slot);
     module_obj.set_obj("daphne_conf", & daphne_conf -> config_object() );
     module_obj.set_obj("board_conf", & conf -> config_object() );
     

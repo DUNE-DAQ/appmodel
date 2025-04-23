@@ -21,6 +21,7 @@ namespace dunedaq {
 		    "Daphne " << id << " has active channels but its turned off",
 		    ((size_t)id))
 
+
 }
 
 
