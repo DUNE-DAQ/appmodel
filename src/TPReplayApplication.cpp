@@ -187,7 +187,7 @@ TPReplayApplication::generate_modules(conffwk::Configuration* confdb,
     std::ostringstream oss;
     oss << dr_net_desc->get_uid_base() << UID() << "-1000" << std::setfill('0')
         << std::setw(2) // Ensures at least 2 digits (e.g., 01, 10)
-        << (i - 1);
+        << (i);
     std::string dr_stream_uid = oss.str();
     confdb->create(dbfile, "NetworkConnection", dr_stream_uid, *dr_net_obj);
     dr_net_obj->set_by_val<std::string>("data_type", dr_net_desc->get_data_type());
