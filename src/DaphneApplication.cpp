@@ -225,7 +225,9 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
     board_obj.set_by_val<uint32_t>("tp_conf", raw_conf.at("tp_conf"));
     board_obj.set_by_val<uint64_t>("compensator", raw_conf.at("compensator"));
     board_obj.set_by_val<uint64_t>("inverter", raw_conf.at("inverter"));
-    board_obj.set_obj("geo_id", & geo->config_object());
+    board_obj.set_by_val<uint16_t>("slot_id", geo->get_slot_id());
+    board_obj.set_by_val<uint16_t>("crate_id", geo->get_crate_id());
+    board_obj.set_by_val<uint16_t>("detector_id", geo->get_detector_id());
     board_obj.set_objs("active_channels", channels);
     board_obj.set_objs("active_afes", afes);
     board_obj.set_obj("default_channel", & daphne_conf->get_default_v2_settings()->get_default_channel()->config_object());
