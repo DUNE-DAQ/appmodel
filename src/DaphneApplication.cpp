@@ -117,7 +117,7 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
 	if (!geo_ids.contains(ip)) {
 	  const auto * temp_stream = det_s->cast<confmodel::DetectorStream>();
 	  geo_ids[ip] = temp_stream->get_geo_id();
-	}
+	} 
 	 
       } // loop over DetStreams
       
@@ -225,7 +225,7 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
     board_obj.set_by_val<uint32_t>("tp_conf", raw_conf.at("tp_conf"));
     board_obj.set_by_val<uint64_t>("compensator", raw_conf.at("compensator"));
     board_obj.set_by_val<uint64_t>("inverter", raw_conf.at("inverter"));
-    board_obj.set_by_val<uint16_t>("slot_id", slot);
+    board_obj.set_obj("geo_id", & geo->config_object());
     board_obj.set_objs("active_channels", channels);
     board_obj.set_objs("active_afes", afes);
     board_obj.set_obj("default_channel", & daphne_conf->get_default_v2_settings()->get_default_channel()->config_object());
