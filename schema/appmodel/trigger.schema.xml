@@ -413,7 +413,7 @@
 
  <class name="TPReplayModuleConf">
   <attribute name="template_for" type="class" init-value="TPReplayModule"/>
-  <attribute name="number_of_loops" type="u32" init-value="1" is-not-null="yes"/>
+  <attribute name="number_of_loops" type="s32" init-value="1" is-not-null="yes"/>
   <attribute name="maximum_wait_time_us" type="u32" init-value="1000" is-not-null="yes"/>
   <attribute name="channel_map" type="string" init-value="PD2HDChannelMap" is-not-null="yes"/>
   <attribute name="total_planes" type="u32" init-value="0" is-not-null="yes"/>
