@@ -144,9 +144,9 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
     else if (data_type == "TriggerActivity" || data_type == "TriggerCandidate"){
       tout_net_desc = rule->get_descriptor();
       if (data_type == "TriggerActivity")
-	      handler_name = "tphandler";
+        handler_name = "tphandler";
       else
-	      handler_name = "tahandler";
+        handler_name = "tahandler";
     }
   }
 

@@ -54,8 +54,8 @@ __reg__("DaphneApplication", [] (const SmartDaqApplication* smartApp,
 
 std::vector<const confmodel::DaqModule*> 
 DaphneApplication::generate_modules(conffwk::Configuration* config,
-				    const std::string& dbfile,
-				    const confmodel::Session* session) const
+                                    const std::string& dbfile,
+                                    const confmodel::Session* session) const
 {
   std::vector<const confmodel::DaqModule*> modules;
 
@@ -89,16 +89,16 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
     for (const auto* sender : det_senders) {
 
       if ( sender->disabled(*session) ) {
-	TLOG() << "Skipping disabled sender: " << sender->UID();
-	continue;
+        TLOG() << "Skipping disabled sender: " << sender->UID();
+        continue;
       }
       // Check the sender type, must me a FelixDataSender
       const auto* felix_sender = sender->cast<appmodel::FelixDataSender>();
       if (!felix_sender ) {
-	//throw(BadConf(ERS_HERE, fmt::format("DataSender {} is not a appmodel::HermesDataSender", sender->UID())));
-	continue;
-	// MaR: I don't think we should throw here because there can be other connections other than felix
-	// MaR: should we be worried that we assume that a Felix connection is a Daphne?
+        //throw(BadConf(ERS_HERE, fmt::format("DataSender {} is not a appmodel::HermesDataSender", sender->UID())));
+        continue;
+        // MaR: I don't think we should throw here because there can be other connections other than felix
+        // MaR: should we be worried that we assume that a Felix connection is a Daphne?
       }
 
       auto ip = felix_sender -> get_control_host();
@@ -142,7 +142,7 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
       auto id = raw_ids[i];
       conffwk::ConfigObject channel_obj;
       config->create(dbfile, "DaphneV2Channel",
-		     fmt::format("daphne-{}-channel-{}", slot, id), channel_obj );
+                     fmt::format("daphne-{}-channel-{}", slot, id), channel_obj );
       channel_obj.set_by_val<uint8_t>("channel_id", id);
       channel_obj.set_by_val<uint8_t>("gain", raw_gains[i]);
       channel_obj.set_by_val<uint16_t>("offset", raw_offsets[i]);
@@ -175,7 +175,7 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
       // create the adc
       conffwk::ConfigObject adc_obj;
       config->create(dbfile, "DaphneV2ADC",
-		     fmt::format("daphne-{}-adc-{}", slot, id), adc_obj);
+                     fmt::format("daphne-{}-adc-{}", slot, id), adc_obj);
       adc_obj.set_by_val<bool>("low_resolution",  raw_adc_res[i] > 0);
       adc_obj.set_by_val<bool>("output_offset_binary",  raw_adc_format[i] > 0 );
       adc_obj.set_by_val<bool>("MSB_first",  raw_adc_SB[i] > 0);
@@ -184,7 +184,7 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
       // create the lna
       conffwk::ConfigObject lna_obj;
       config->create(dbfile, "DaphneV2LNA",
-		     fmt::format("daphne-{}-lna-{}", slot, id), lna_obj);
+                     fmt::format("daphne-{}-lna-{}", slot, id), lna_obj);
       lna_obj.set_by_val<uint8_t>("clamp",  raw_lna_clamps[i]);
       lna_obj.set_by_val<uint8_t>("gain",  raw_lna_gains[i]);
       lna_obj.set_by_val<bool>("integrator_disable",  raw_lna_integrators[i]>0);
@@ -193,7 +193,7 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
       // create the pga
       conffwk::ConfigObject pga_obj;
       config->create(dbfile, "DaphneV2PGA",
-		     fmt::format("daphne-{}-pga-{}", slot, id), pga_obj);
+                     fmt::format("daphne-{}-pga-{}", slot, id), pga_obj);
       pga_obj.set_by_val<uint8_t>("lpf_cut_frequency",  raw_pga_cuts[i]);
       pga_obj.set_by_val<bool>("gain",  raw_pga_gains[i]>0);
       pga_obj.set_by_val<bool>("integrator_disable",  raw_pga_integrators[i]>0);
@@ -202,7 +202,7 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
       // finally create the afe
       conffwk::ConfigObject afe_obj;
       config->create(dbfile, "DaphneV2AFE",
-		     fmt::format("daphne-{}-afe-{}", slot, id),afe_obj );
+                     fmt::format("daphne-{}-afe-{}", slot, id),afe_obj );
       afe_obj.set_by_val<uint8_t>("afe_id", id);
       afe_obj.set_by_val<uint16_t>("attenuator", raw_afe_attenuators[i]);
       afe_obj.set_by_val<uint16_t>("v_bias", raw_afe_biases[i]);
@@ -216,11 +216,11 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
     
     conffwk::ConfigObject board_obj;
     config->create(dbfile, "DaphneV2BoardConf",
-		   fmt::format("daphne-{}-conf", slot), board_obj);
+                   fmt::format("daphne-{}-conf", slot), board_obj);
     board_obj.set_by_val<uint16_t>("bias_ctrl", raw_conf.at("bias_ctrl"));
     board_obj.set_by_val<uint64_t>("self_trigger_threshold", raw_conf.at("self_trigger_threshold"));
     board_obj.set_by_val<std::vector<uint8_t>>("full_stream_channels",
-					       raw_conf.at("full_stream_channels").get<std::vector<uint8_t>>());
+                                               raw_conf.at("full_stream_channels").get<std::vector<uint8_t>>());
     board_obj.set_by_val<uint64_t>("self_trigger_xcorr", raw_conf.at("self_trigger_xcorr"));
     board_obj.set_by_val<uint32_t>("tp_conf", raw_conf.at("tp_conf"));
     board_obj.set_by_val<uint64_t>("compensator", raw_conf.at("compensator"));

@@ -130,7 +130,12 @@
  <class name="WIBModule">
   <superclass name="DaqModule"/>
   <attribute name="wib_addr" type="string" init-value="tcp://192.168.121.1:1234" is-not-null="yes"/>
+  <attribute name="enabled_femb0" description="Enable FEMB 0" type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="enabled_femb1" description="Enable FEMB 1" type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="enabled_femb2" description="Enable FEMB 2" type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="enabled_femb3" description="Enable FEMB 3" type="bool" init-value="true" is-not-null="yes"/>
   <relationship name="conf" class-type="WIBSettings" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+
  </class>
 
  <class name="WIBModuleConf">
