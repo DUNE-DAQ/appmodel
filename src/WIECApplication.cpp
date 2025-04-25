@@ -116,14 +116,18 @@ WIECApplication::generate_modules(conffwk::Configuration* config,
 
         bool enable_fembs[4] = {false, false, false, false};
 
-        for ( const auto* sndr : senders ){
-          for ( const auto* res : sndr->get_contains() ) {
-            // Retrieve and use the stream id to calculate the femb_id
-            uint32_t stream_id = res->cast<confmodel::DetectorStream>()->get_geo_id()->get_stream_id();
+        for ( const auto* sender : senders ){
+          for ( const auto* res : sender->get_contains() ) {
+            // Loop over streams for this sender
+            const auto* det_stream = res->cast<confmodel::DetectorStream>();
+            // Retrieve stream_id and calculate the femb_id
+            uint32_t stream_id = det_stream->get_geo_id()->get_stream_id();
             uint32_t femb_id = (stream_id & 0xf) / 2 + 2*((stream_id >> 6) & 0xf);
+
             // std::cout << std::format("stream {} -> femb {}", stream_id, femb_id) << std::endl;
 
             // Enable the femb if any of the associated streams is enabld
+            // Senders in this senders list should be enabled, but better safe than sorry.
             enable_fembs[femb_id] |= !det_stream->disabled(*session);
           }
         }
