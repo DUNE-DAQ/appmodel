@@ -170,7 +170,7 @@
 
  <class name="WIECApplication" description="Application describing the controller of a detector unit using WIBs inside a WIEC.">
   <superclass name="SmartDaqApplication"/>
-  <superclass name="ResourceSetAND"/>
+  <superclass name="ResourceSet"/>
   <relationship name="wib_module_conf" class-type="WIBModuleConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="hermes_module_conf" class-type="HermesModuleConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
