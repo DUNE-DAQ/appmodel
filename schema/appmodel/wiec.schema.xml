@@ -169,7 +169,7 @@
   <relationship name="wib_module_conf" class-type="WIBModuleConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="hermes_module_conf" class-type="HermesModuleConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
-   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, std::shared_ptr&lt;appmodel::ConfigurationHelper&gt;) const override" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;appmodel/ConfigurationHelper.hpp&quot;&#xA;END_HEADER_PROLOGUE"/>
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, std::shared_ptr&lt;appmodel::ConfigurationHelper&gt;) const override" body=""/>
   </method>
  </class>
 
