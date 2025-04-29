@@ -417,13 +417,9 @@
   <attribute name="maximum_wait_time_us" type="u32" init-value="1000" is-not-null="yes"/>
   <attribute name="channel_map" type="string" init-value="PD2HDChannelMap" is-not-null="yes"/>
   <attribute name="total_planes" type="u32" init-value="0" is-not-null="yes"/>
-  <relationship name="filter_out_plane" class-type="PlaneNumberConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <attribute name="filter_out_plane" type="u32" range="0..2" init-value="0" is-multi-value="yes"/>
   <relationship name="tp_streams" class-type="TPStreamConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
 </class>
-
- <class name="PlaneNumberConf">
-  <attribute name="plane" type="u32" init-value="4294967295" is-not-null="yes"/>
- </class>
 
  <class name="TPStreamConf">
   <attribute name="filename" type="string" init-value="1" is-not-null="yes"/>

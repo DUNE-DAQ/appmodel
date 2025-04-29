@@ -81,12 +81,10 @@ TPReplayApplication::generate_modules(conffwk::Configuration* confdb,
    * Get total planes from config
    **************************************************************/
   int total_planes = tprm_conf->get_total_planes();
-  std::cout << "TOTAL PLANES: " << total_planes << std::endl; 
 
   /**************************************************************
    * Extract # of filtered planes
    **************************************************************/
-  // TODO: this needs improving
   auto plane_filtering = tprm_conf->get_filter_out_plane();
   if (plane_filtering.size() >= 3) {
     throw(BadConf(ERS_HERE, "TPReplayApplication: too many planes configured for filtering!"));
