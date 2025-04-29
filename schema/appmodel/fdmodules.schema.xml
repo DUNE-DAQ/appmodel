@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="13" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20240703T164113"/>
+<info name="" type="" num-of-items="15" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20240703T164113"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -116,6 +116,30 @@
   <relationship name="uses" class-type="NetworkDevice" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="configuration" class-type="DPDKPortConfiguration" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
+
+ <class name="SocketReaderConf">
+  <superclass name="DataReaderConf"/>
+  <attribute name="socket_type" description="Socket type" type="enum" range="TCP,UDP" init-value="UDP" is-not-null="yes"/>
+  <attribute name="local_ip" description="Local IP address" type="string" init-value="127.0.0.1" is-not-null="yes"/>
+ </class>
+
+ <class name="SocketReaderModule">
+  <superclass name="DataReaderModule"/>
+ </class>
+
+ <class name="SocketReceiver">
+  <superclass name="NWDetDataReceiver"/>
+ </class> 
+
+ <class name="SocketWriterConf">
+  <superclass name="SocketDataWriterConf"/>
+  <attribute name="socket_type" description="Socket type" type="enum" range="TCP,UDP" init-value="UDP" is-not-null="yes"/>
+  <attribute name="remote_ip" description="Remote IP address" type="string" init-value="127.0.0.1" is-not-null="yes"/>
+ </class>
+
+ <class name="FakeSocketWriterModule">
+  <superclass name="SocketDataWriterModule"/>
+ </class>  
 
  <class name="FDDataHandlerModule">
   <superclass name="DataHandlerModule"/>

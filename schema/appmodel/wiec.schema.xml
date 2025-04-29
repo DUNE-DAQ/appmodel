@@ -80,12 +80,13 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="10" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240618T084639"/>
+<info name="" type="" num-of-items="11" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="dergonul" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20250310T162304"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
  <file path="schema/appmodel/application.schema.xml"/>
  <file path="schema/appmodel/fdmodules.schema.xml"/>
+ <file path="schema/appmodel/hermes.schema.xml"/>
 </include>
 
 
@@ -119,27 +120,13 @@
   <attribute name="pulse_channels" description="Array of up to 16 true/false values, for whether to send pulser to each corresponding channel per LArASIC." type="bool" is-multi-value="yes"/>
  </class>
 
- <class name="HermesDataSender">
+ <class name="FakeSocketDataSender">
   <superclass name="NWDetDataSender"/>
   <attribute name="link_id" type="u32" is-not-null="yes"/>
-  <attribute name="port" type="u32" init-value="17476" is-not-null="yes"/>
+  <attribute name="port" type="u32" init-value="1234" is-not-null="yes"/>
   <attribute name="control_host" type="string" init-value="localhost" is-not-null="yes"/>
  </class>
-
- <class name="HermesModule">
-  <superclass name="DaqModule"/>
-  <superclass name="IpbusDevice"/>
-  <relationship name="links" class-type="HermesDataSender" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="destination" class-type="NetworkInterface" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="HermesModuleConf">
-  <attribute name="ipbus_type" type="string" init-value="ipbusudp-2.0" is-not-null="yes"/>
-  <attribute name="ipbus_port" type="u32" init-value="50001" is-not-null="yes"/>
-  <attribute name="ipbus_timeout_ms" type="u32" init-value="1000" is-not-null="yes"/>
-  <relationship name="address_table" class-type="IpbusAddressTable" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
+ 
  <class name="WIBModule">
   <superclass name="DaqModule"/>
   <attribute name="wib_addr" type="string" init-value="tcp://192.168.121.1:1234" is-not-null="yes"/>
@@ -184,6 +171,6 @@
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, std::shared_ptr&lt;appmodel::ConfigurationHelper&gt;) const override" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;appmodel/ConfigurationHelper.hpp&quot;&#xA;END_HEADER_PROLOGUE"/>
   </method>
-</class>
+ </class>
 
 </oks-schema>

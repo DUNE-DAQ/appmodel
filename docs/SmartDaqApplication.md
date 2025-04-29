@@ -78,7 +78,7 @@ In addition to the fields from SmartDaqApplication, the DFOApplication class has
       }
     
     else if (descriptor->get_data_type() == "TriggerInhibit") {
-	busyOutObj = connObj;
+        busyOutObj = connObj;
         output_conns.push_back(&busyOutObj);
     }
   }

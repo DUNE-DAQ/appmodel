@@ -86,7 +86,7 @@ HSIEventToTCApplication::generate_modules(conffwk::Configuration* confdb,
         connObj.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
         connObj.set_obj("associated_service", &serviceObj);
 
-    	outObj = connObj;
+        outObj = connObj;
     }
   } 
 
