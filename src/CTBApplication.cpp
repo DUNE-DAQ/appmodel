@@ -152,9 +152,7 @@ CTBApplication::generate_modules(conffwk::Configuration* config,
     fh_output_objs.push_back(&fNet);
   }
 
-  std::vector<const conffwk::ConfigObject*> ctb_module_outputs;
-  
-
+  std::vector<conffwk::ConfigObject> ctb_module_outputs;
   auto sources = get_sources();
 
   for ( const auto & s : sources ) {
@@ -167,7 +165,7 @@ CTBApplication::generate_modules(conffwk::Configuration* config,
     // create DLH
     // ----------------------------    
     auto det_id = 1; // TODO Eric Flumerfelt <eflumerf@fnal.gov>, 08-Feb-2024: This is a magic number corresponding to kDAQ
-    std::string uid("DLH-" + std::to_string(id));
+    std::string uid("DLH-" + s.first);
     conffwk::ConfigObject dlhObj;
     TLOG() << "creating OKS configuration object for " + s.first + " Data Link Handler class " << dlhClass << ", id " << id;
     config->create(dbfile, dlhClass, uid, dlhObj);
@@ -175,7 +173,7 @@ CTBApplication::generate_modules(conffwk::Configuration* config,
     dlhObj.set_by_val<uint32_t>("detector_id", det_id);
     dlhObj.set_by_val<bool>("post_processing_enabled", false);
     dlhObj.set_obj("module_configuration", &dlhConf->config_object());
-
+    
     auto net_objc(fh_output_objs);
     
     // Time Sync network connection
@@ -195,7 +193,7 @@ CTBApplication::generate_modules(conffwk::Configuration* config,
 
     // create Queues from CTB to DLH
 
-    std::string dataQueueUid(dlhInputQDesc->get_uid_base() + std::to_string(id));
+    std::string dataQueueUid(dlhInputQDesc->get_uid_base() + s.first);
     conffwk::ConfigObject queueObj;
     config->create(dbfile, "QueueWithSourceId", dataQueueUid, queueObj);
     queueObj.set_by_val<std::string>("data_type", dlhInputQDesc->get_data_type());
@@ -203,7 +201,7 @@ CTBApplication::generate_modules(conffwk::Configuration* config,
     queueObj.set_by_val<uint32_t>("capacity", dlhInputQDesc->get_capacity());
     queueObj.set_by_val<uint32_t>("source_id", id);
 
-    ctb_module_outputs.push_back( &queueObj);
+    ctb_module_outputs.push_back(queueObj);
 
     // Create network connections to DLHs
     
@@ -231,8 +229,7 @@ CTBApplication::generate_modules(conffwk::Configuration* config,
   hsiNetObj.set_by_val<std::string>("data_type", hsiNetDesc->get_data_type());
   hsiNetObj.set_obj("associated_service", &hsiServiceObj);
 
-  ctb_module_outputs.push_back(&hsiNetObj);
-
+  ctb_module_outputs.push_back(hsiNetObj);
   
   auto board = get_board();
   
@@ -244,7 +241,13 @@ CTBApplication::generate_modules(conffwk::Configuration* config,
   config->create(dbfile, "CTBModule", module_name, module_obj);
   module_obj.set_obj("configuration", & ctb_conf -> config_object() );
   module_obj.set_obj("board", & board -> config_object() );
-  module_obj.set_objs("outputs", ctb_module_outputs);
+
+  std::vector<const conffwk::ConfigObject*> ctb_module_output_ptrs;
+  for ( const auto & o : ctb_module_outputs ) {
+    ctb_module_output_ptrs.push_back( & o );
+  }
+  
+  module_obj.set_objs("outputs", ctb_module_output_ptrs);
   
   auto module = config->get<appmodel::CTBModule>(module_obj);
   
