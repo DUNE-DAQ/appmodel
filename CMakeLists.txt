@@ -22,17 +22,17 @@ daq_add_dal_library(application.schema.xml hermes.schema.xml fdmodules.schema.xm
   TPWriterApplication.cpp FakeDataApplication.cpp FakeHSIApplication.cpp DTSHSIApplication.cpp TriggerApplication.cpp MLTApplication.cpp HSIEventToTCApplication.cpp WIECApplication.cpp DaphneApplication.cpp SocketSenderApplication.cpp
   LINK_LIBRARIES conffwk::conffwk fmt::fmt logging::logging oks::oks ers::ers )
 
-#daq_add_application(getAppsArguments get_apps_arguments.cxx
-#  LINK_LIBRARIES confmodel::confmodel appmodel_dal conffwk::conffwk)
+daq_add_application(getAppsArguments get_apps_arguments.cxx
+  LINK_LIBRARIES confmodel::confmodel appmodel_dal conffwk::conffwk)
 
-#daq_add_python_bindings(*.cpp LINK_LIBRARIES appmodel_dal confmodel::confmodel)
+daq_add_python_bindings(*.cpp LINK_LIBRARIES appmodel_dal confmodel::confmodel)
 
-#daq_add_application(generate_modules_test generate_modules_test.cxx
-# TEST LINK_LIBRARIES appmodel_dal confmodel::confmodel conffwk::conffwk
-# logging::logging)
+daq_add_application(generate_modules_test generate_modules_test.cxx
+ TEST LINK_LIBRARIES appmodel_dal confmodel::confmodel conffwk::conffwk
+ logging::logging)
 
-#daq_add_application(print_detailed_config_info print_detailed_config_info.cxx
-# TEST LINK_LIBRARIES appmodel_dal confmodel::confmodel conffwk::conffwk
-# logging::logging)
+daq_add_application(print_detailed_config_info print_detailed_config_info.cxx
+ TEST LINK_LIBRARIES appmodel_dal confmodel::confmodel conffwk::conffwk
+ logging::logging)
 
 daq_install()
