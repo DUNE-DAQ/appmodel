@@ -93,8 +93,8 @@ WIECApplication::generate_modules(conffwk::Configuration* config,
     for (const auto* sender : det_senders) {
 
       if ( sender->disabled(*session) ) {
-	TLOG() << "Skipping disabled sender: " << sender->UID();
-	continue;
+        TLOG() << "Skipping disabled sender: " << sender->UID();
+        continue;
       }
       
       // Check the sender type, must me a HermesSender
