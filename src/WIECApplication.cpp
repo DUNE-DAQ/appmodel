@@ -16,6 +16,8 @@
 
 #include "appmodel/NWDetDataReceiver.hpp"
 #include "confmodel/NetworkInterface.hpp"
+#include "confmodel/DetectorStream.hpp"
+#include "confmodel/GeoId.hpp"
 
 #include "appmodel/WIECApplication.hpp"
 
@@ -93,8 +95,8 @@ WIECApplication::generate_modules(conffwk::Configuration* config,
     for (const auto* sender : det_senders) {
 
       if ( sender->disabled(*session) ) {
-	TLOG() << "Skipping disabled sender: " << sender->UID();
-	continue;
+        TLOG() << "Skipping disabled sender: " << sender->UID();
+        continue;
       }
       
       // Check the sender type, must me a HermesSender
@@ -111,10 +113,32 @@ WIECApplication::generate_modules(conffwk::Configuration* config,
 
       // Create WIBModule
       if ( this->get_wib_module_conf() ) {
+
+        bool enable_fembs[4] = {false, false, false, false};
+
+        for ( const auto* sender : senders ){
+          for ( const auto* res : sender->get_contains() ) {
+            // Loop over streams for this sender
+            const auto* det_stream = res->cast<confmodel::DetectorStream>();
+            // Retrieve stream_id and calculate the femb_id
+            uint32_t stream_id = det_stream->get_geo_id()->get_stream_id();
+            uint32_t femb_id = (stream_id & 0xf) / 2 + 2*((stream_id >> 6) & 0xf);
+
+            // std::cout << std::format("stream {} -> femb {}", stream_id, femb_id) << std::endl;
+
+            // Enable the femb if any of the associated streams is enabld
+            // Senders in this senders list should be enabled, but better safe than sorry.
+            enable_fembs[femb_id] |= !det_stream->disabled(*session);
+          }
+        }
         conffwk::ConfigObject wib_obj;
         std::string wib_uid = fmt::format("wib-ctrl-{}-{}", this->UID(), ctrlhost);
         config->create(dbfile, "WIBModule", wib_uid, wib_obj);
         wib_obj.set_by_val<std::string>("wib_addr", fmt::format("{}://{}:{}", this->get_wib_module_conf()->get_communication_type(), ctrlhost, this->get_wib_module_conf()->get_communication_port()));
+        wib_obj.set_by_val<bool>("enabled_femb0", enable_fembs[0]);
+        wib_obj.set_by_val<bool>("enabled_femb1", enable_fembs[1]);
+        wib_obj.set_by_val<bool>("enabled_femb2", enable_fembs[2]);
+        wib_obj.set_by_val<bool>("enabled_femb3", enable_fembs[3]);
         wib_obj.set_obj("conf", &this->get_wib_module_conf()->get_settings()->config_object());
         modules.push_back(config->get<appmodel::WIBModule>(wib_obj));
       }
