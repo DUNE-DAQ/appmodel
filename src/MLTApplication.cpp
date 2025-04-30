@@ -43,6 +43,7 @@
 #include "appmodel/MLTConf.hpp"
 #include "appmodel/MLTModule.hpp"
 
+#include "appmodel/CTBApplication.hpp"
 #include "appmodel/FakeDataApplication.hpp"
 #include "appmodel/FakeDataProdConf.hpp"
 #include "appmodel/FakeHSIApplication.hpp"
@@ -392,8 +393,24 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
       hsEventSourceIdConf->set_by_val<std::string>("subsystem", dts_hsi_app->get_source_id()->get_subsystem());
       sourceIds.push_back(hsEventSourceIdConf);
     }
-  }
 
+    auto ctb_app = app->cast<appmodel::CTBApplication>();
+    if (ctb_app) {
+      auto sources = ctb_app->get_sources();
+      for ( const auto & s : sources ) {
+	auto src_id_conf_ptr = new conffwk::ConfigObject();
+	confdb->create(dbfile,
+		       "SourceIDConf",
+		       ctb_app->UID() + "-" + s.first,
+		       *src_id_conf_ptr);
+	src_id_conf_ptr->set_by_val<uint32_t>("sid", s.second->get_sid());
+	src_id_conf_ptr->set_by_val<std::string>("subsystem", s.second->get_subsystem());
+	sourceIds.push_back(src_id_conf_ptr);
+      } // loop over CTB sources
+    } // CTB app
+    
+  } // loop over applications
+  
   // Get mandatory links
   std::vector<const conffwk::ConfigObject*> mandatory_sids;
   const TCDataProcessor* tc_dp = tch_conf->get_data_processor()->cast<TCDataProcessor>();
