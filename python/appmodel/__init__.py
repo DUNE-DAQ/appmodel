@@ -17,7 +17,7 @@ __generate_class_map = {
     'MLTApplication': mlt_application_generate,
     'WIECApplication': wiec_application_generate,
     'DaphneApplication': daphne_application_generate,
-
+    'CTBApplication': ctb_application_generate,
 }
 
 class UnknownGeneratorException(Exception):
