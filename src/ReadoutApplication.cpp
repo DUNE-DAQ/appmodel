@@ -10,6 +10,7 @@
 
 #include "ModuleFactory.hpp"
 
+#include "appmodel/ConfigObjectFactory.hpp"
 #include "appmodel/DFApplication.hpp"
 #include "appmodel/ReadoutApplication.hpp"
 #include "conffwk/Configuration.hpp"
@@ -71,82 +72,6 @@ static ModuleFactory::Registrator __reg__("ReadoutApplication", [](const SmartDa
   return app->generate_modules(config, dbfile, session);
 });
 
-class ReadoutObjFactory {
-  public:
-
-  conffwk::Configuration* config;
-  std::string dbfile;
-  std::string app_uid;
-
-
-  conffwk::ConfigObject create(const std::string& class_name, const std::string& id) {
-    conffwk::ConfigObject cfg_obj;
-    config->create(this->dbfile, class_name, id, cfg_obj);
-    // config->create(this->dbfile, class_name, fmt::format("{}_{}", app_uid, id), cfg_obj);
-    return cfg_obj;
-  }
-
-  //---
-  conffwk::ConfigObject create_queue_obj(const QueueDescriptor* qdesc) {
-    // conffwk::ConfigObject queue_obj;
-
-    std::string queue_uid(qdesc->get_uid_base());
-    // config->create(this->dbfile, "Queue", queue_uid, queue_obj);
-    auto queue_obj = this->create("Queue", queue_uid);
-    queue_obj.set_by_val<std::string>("data_type", qdesc->get_data_type());
-    queue_obj.set_by_val<std::string>("queue_type", qdesc->get_queue_type());
-    queue_obj.set_by_val<uint32_t>("capacity", qdesc->get_capacity());
-
-    return queue_obj;
-  }
-
-  //---
-  conffwk::ConfigObject create_queue_sid_obj(const QueueDescriptor* qdesc, uint32_t src_id) {
-    // conffwk::ConfigObject queue_obj;
-
-    std::string queue_uid(fmt::format("{}{}", qdesc->get_uid_base(), src_id));
-    // config->create(this->dbfile, "QueueWithSourceId", queue_uid, queue_obj);
-    auto queue_obj = this->create("QueueWithSourceId", queue_uid);
-
-    queue_obj.set_by_val<std::string>("data_type", qdesc->get_data_type());
-    queue_obj.set_by_val<std::string>("queue_type", qdesc->get_queue_type());
-    queue_obj.set_by_val<uint32_t>("capacity", qdesc->get_capacity());
-    queue_obj.set_by_val<uint32_t>("source_id", src_id);
-
-    return queue_obj;
-  }
-
-  //---
-  conffwk::ConfigObject create_queue_sid_obj(const QueueDescriptor* qdesc, const confmodel::DetectorStream* stream) {
-    return this->create_queue_sid_obj(qdesc, stream->get_source_id());
-  }
-
-
-
-  //---
-  conffwk::ConfigObject create_net_obj(const NetworkConnectionDescriptor* ndesc, std::string uid) {
-    // conffwk::ConfigObject net_obj;
-
-    auto svc_obj = ndesc->get_associated_service()->config_object();
-    std::string net_id = ndesc->get_uid_base() + uid;
-    // config->create(this->dbfile, "NetworkConnection", net_id, net_obj);
-    auto net_obj = this->create("NetworkConnection", net_id);
-
-    net_obj.set_by_val<std::string>("data_type", ndesc->get_data_type());
-    net_obj.set_by_val<std::string>("connection_type", ndesc->get_connection_type());
-    net_obj.set_obj("associated_service", &svc_obj);
-
-    return net_obj;
-
-  }
-
-  conffwk::ConfigObject create_net_obj(const NetworkConnectionDescriptor* ndesc) {
-    return this->create_net_obj(ndesc, this->app_uid);
-  }
-
-
-};
-
 //-----------------------------------------------------------------------------
 std::vector<const confmodel::DaqModule*>
 ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::string& dbfile, const confmodel::Session* session) const
@@ -154,7 +79,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
 
   TLOG_DEBUG(6) << "Generating modules for application " << this->UID();
 
-  ReadoutObjFactory obj_fac{config, dbfile, this->UID()};
+  ConfigObjectFactory obj_fac{config, dbfile, this->UID()};
   //
   // Extract basic configuration objects
   //

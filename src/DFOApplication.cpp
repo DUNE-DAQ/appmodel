@@ -10,6 +10,7 @@
 
 #include "ModuleFactory.hpp"
 
+#include "appmodel/ConfigObjectFactory.hpp"
 #include "appmodel/DFApplication.hpp"
 #include "appmodel/DFOApplication.hpp"
 #include "appmodel/DFOConf.hpp"
@@ -48,10 +49,11 @@ DFOApplication::generate_modules(conffwk::Configuration* confdb,
 {
   std::vector<const confmodel::DaqModule*> modules;
 
+  const auto obj_fac = ConfigObjectFactory(confdb, dbfile, UID());
+
   std::string dfoUid("DFO-" + UID());
-  conffwk::ConfigObject dfoObj;
   TLOG_DEBUG(7) << "creating OKS configuration object for DFOModule class ";
-  confdb->create(dbfile, "DFOModule", dfoUid, dfoObj);
+  auto dfoObj = obj_fac.create("DFOModule", dfoUid);
 
   auto dfoConf = get_dfo();
   dfoObj.set_obj("configuration", &dfoConf->config_object());
@@ -70,13 +72,7 @@ DFOApplication::generate_modules(conffwk::Configuration* confdb,
     auto endpoint_class = rule->get_endpoint_class();
     auto descriptor = rule->get_descriptor();
 
-    conffwk::ConfigObject connObj;
-    auto serviceObj = descriptor->get_associated_service()->config_object();
-    std::string connUid(descriptor->get_uid_base());
-    confdb->create(dbfile, "NetworkConnection", connUid, connObj);
-    connObj.set_by_val<std::string>("data_type", descriptor->get_data_type());
-    connObj.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
-    connObj.set_obj("associated_service", &serviceObj);
+    auto connObj = obj_fac.create_net_obj(descriptor, "");
 
     if (descriptor->get_data_type() == "TriggerDecision") {
       if (endpoint_class == "DFOModule") {
@@ -118,15 +114,7 @@ DFOApplication::generate_modules(conffwk::Configuration* confdb,
       auto descriptor = rule->get_descriptor();
       auto data_type = descriptor->get_data_type();
       if (data_type == "TriggerDecision") {
-        std::string dreqNetUid(descriptor->get_uid_base() + dfapp->UID());
-        tdOutObjs.emplace_back();
-        confdb->create(dbfile, "NetworkConnection", dreqNetUid, tdOutObjs.back());
-
-        tdOutObjs.back().set_by_val<std::string>("data_type", descriptor->get_data_type());
-        tdOutObjs.back().set_by_val<std::string>("connection_type", descriptor->get_connection_type());
-
-        auto serviceObj = descriptor->get_associated_service()->config_object();
-        tdOutObjs.back().set_obj("associated_service", &serviceObj);
+        tdOutObjs.emplace_back(obj_fac.create_net_obj(descriptor, dfapp->UID()));
       } // If network rule has TriggerDecision type of data
     }   // Loop over Apps network rules
   }     // loop over Session specific Apps
