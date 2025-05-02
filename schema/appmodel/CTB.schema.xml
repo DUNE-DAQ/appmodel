@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="21" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250502T125039"/>
+<info name="" type="" num-of-items="23" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250502T135747"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -113,10 +113,17 @@
   <attribute name="pixelate" type="bool" is-not-null="yes"/>
  </class>
 
+ <class name="CTBCalibrationStream">
+  <attribute name="directory" type="string" is-not-null="yes"/>
+  <attribute name="update_period_s" type="u16" is-not-null="yes"/>
+ </class>
+
  <class name="CTBConf">
   <attribute name="hostname" description="IP address of the board" type="string" is-not-null="yes"/>
   <attribute name="control_connection_port" type="u16" is-not-null="yes"/>
   <attribute name="connection_timeout_ms" type="u16" is-not-null="yes"/>
+  <relationship name="calibration_stream" class-type="CTBCalibrationStream" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="trigger_report" class-type="CTBTriggerReport" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="CTBCountLLT">
@@ -152,8 +159,6 @@
 
  <class name="CTBModule" description="Top level configuration object for the CTBModule">
   <superclass name="DaqModule"/>
-  <attribute name="calibration_stream_output" description="CTB Calibration Stream Output Path" type="string" is-not-null="yes"/>
-  <attribute name="calibration_update" description="CTB Calibration Update Interval in minutes" type="u64" init-value="5" is-not-null="yes"/>
   <attribute name="run_trigger_output" description="CTB Trigger Output Path" type="string" init-value="/nfs/sw/trigger/counters" is-not-null="yes"/>
   <relationship name="configuration" class-type="CTBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="board" class-type="CTBoardConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="yes"/>
@@ -233,6 +238,10 @@
   <method name="get_ctb_json" description="obtain a jsonification specific for the CTB">
    <method-implementation language="c++" prototype="nlohmann::json get_ctb_json(const dunedaq::confmodel::Session&amp; session) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;END_HEADER_PROLOGUE"/>
   </method>
+ </class>
+
+ <class name="CTBTriggerReport">
+  <attribute name="directory" type="string" is-not-null="yes"/>
  </class>
 
  <class name="CTBoardConf">
