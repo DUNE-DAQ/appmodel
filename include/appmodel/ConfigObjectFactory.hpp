@@ -17,6 +17,7 @@
 
 #include "confmodel/DetectorStream.hpp"
 #include "confmodel/Service.hpp"
+#include "oks/file.hpp"
 
 #include <fmt/core.h>  // Replace with std::format when we switch to a newer compiler?
 
@@ -35,8 +36,15 @@ class ConfigObjectFactory {
     : m_config(config),
       m_dbfile(dbfile),
       m_app_uid(app_uid) {
+      
+      //FIXME: remove this hacky hack
+      oks::OksFile::set_nolock_mode(true);
   }
 
+  ~ConfigObjectFactory() {
+    //FIXME: remove this hacky hack
+    oks::OksFile::set_nolock_mode(false);
+  }
 
   [[nodiscard]] conffwk::ConfigObject create(const std::string& class_name,
                                              const std::string& id) const {
