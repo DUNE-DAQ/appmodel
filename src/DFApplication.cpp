@@ -19,7 +19,7 @@
 #include "appmodel/FilenameParams.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
-#include "appmodel/ConfigObjectFactory.hpp"
+#include "ConfigObjectFactory.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
 #include "appmodel/QueueDescriptor.hpp"
 #include "appmodel/ReadoutApplication.hpp"

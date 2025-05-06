@@ -10,7 +10,7 @@
 
 #include "ModuleFactory.hpp"
 
-#include "appmodel/ConfigObjectFactory.hpp"
+#include "ConfigObjectFactory.hpp"
 #include "appmodel/DTSHSIApplication.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"

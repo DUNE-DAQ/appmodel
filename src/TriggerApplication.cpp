@@ -18,7 +18,7 @@
 #include "confmodel/Service.hpp"
 #include "confmodel/Session.hpp"
 
-#include "appmodel/ConfigObjectFactory.hpp"
+#include "ConfigObjectFactory.hpp"
 #include "appmodel/DataSubscriberModule.hpp"
 #include "appmodel/DataReaderConf.hpp"
 #include "appmodel/DataRecorderConf.hpp"

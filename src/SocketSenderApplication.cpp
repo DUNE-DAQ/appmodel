@@ -10,7 +10,7 @@
 
 #include "ModuleFactory.hpp"
 
-#include "appmodel/ConfigObjectFactory.hpp"
+#include "ConfigObjectFactory.hpp"
 #include "appmodel/FakeSocketWriterModule.hpp"
 #include "appmodel/SocketSenderApplication.hpp"
 #include "appmodel/SocketWriterConf.hpp"

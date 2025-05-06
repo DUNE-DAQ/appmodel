@@ -10,7 +10,7 @@
 
 #include "ModuleFactory.hpp"
 
-#include "appmodel/ConfigObjectFactory.hpp"
+#include "ConfigObjectFactory.hpp"
 
 #include "conffwk/Configuration.hpp"
 

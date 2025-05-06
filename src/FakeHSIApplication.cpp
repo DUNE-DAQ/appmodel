@@ -10,7 +10,7 @@
 
 #include "ModuleFactory.hpp"
 
-#include "appmodel/ConfigObjectFactory.hpp"
+#include "ConfigObjectFactory.hpp"
 #include "appmodel/FakeHSIApplication.hpp"
 #include "appmodel/FakeHSIEventGeneratorModule.hpp"
 #include "appmodel/FakeHSIEventGeneratorConf.hpp"
