@@ -79,10 +79,12 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
 
   TLOG_DEBUG(6) << "Generating modules for application " << this->UID();
 
-  ConfigObjectFactory obj_fac{config, dbfile, this->UID()};
+  ConfigObjectFactory obj_fac(this);
+  
   //
   // Extract basic configuration objects
   //
+
   // Data reader
   auto reader_conf = get_data_reader();
   if (reader_conf == 0) {

@@ -15,6 +15,17 @@ ConfigObjectFactory::ConfigObjectFactory(conffwk::Configuration* config,
     oks::OksFile::set_nolock_mode(true);
 }
 
+
+
+ConfigObjectFactory::ConfigObjectFactory(const conffwk::DalObject* parent) :
+    m_config(&parent->configuration()),
+    m_dbfile(parent->config_object().contained_in()),
+    m_app_uid(parent->UID()) {
+
+    //FIXME: remove this hacky hack
+    oks::OksFile::set_nolock_mode(true);
+}
+
 ConfigObjectFactory::~ConfigObjectFactory() {
     //FIXME: remove this hacky hack
     oks::OksFile::set_nolock_mode(false);
@@ -74,10 +85,10 @@ return create_queue_sid_obj(qdesc, stream->get_source_id());
 */
 conffwk::ConfigObject
 ConfigObjectFactory::create_net_obj(const NetworkConnectionDescriptor* ndesc,
-         std::string uid) const {
+         std::string app_uid) const {
 
     auto svc_obj = ndesc->get_associated_service()->config_object();
-    std::string net_id = ndesc->get_uid_base() + uid;
+    std::string net_id = ndesc->get_uid_base() + app_uid;
     auto net_obj = create("NetworkConnection", net_id);
 
     net_obj.set_by_val<std::string>("data_type", ndesc->get_data_type());
