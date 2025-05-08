@@ -174,26 +174,11 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
         // std::string dreqNetUid(descriptor->get_uid_base() + )
         auto frag_conn = obj_fac.create_net_obj(descriptor, dfapp->UID());
 
-        // T1 conffwk::ConfigObject frag_conn;
-        // T1 confdb->create(dbfile, "NetworkConnection", dreqNetUid, frag_conn);
-
-        // T1 frag_conn.set_by_val<std::string>("data_type", descriptor->get_data_type());
-        // T1 frag_conn.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
-
-        // T1 auto serviceObj = descriptor->get_associated_service()->config_object();
-        // T1 frag_conn.set_obj("associated_service", &serviceObj);
         fragOutObjs.push_back(frag_conn);
       } // If network rule has TriggerDecision type of data
     }   // Loop over Apps network rules
   }     // loop over Session specific Apps
 
-  // Now create the Data Handler and its associated queue and network
-  // connections
-  // T2  conffwk::ConfigObject input_queue_obj;
-  // T2  conffwk::ConfigObject req_net_obj;
-  // T2  conffwk::ConfigObject tin_net_obj;
-  // T2  conffwk::ConfigObject tout_net_obj;
-  // T2  conffwk::ConfigObject tset_out_net_obj;
 
   if ( req_net_desc== nullptr) {
       throw (BadConf(ERS_HERE, "No network descriptor given to receive request and send data was set"));
@@ -221,27 +206,6 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
   }
 
 
-  // T2 std::string queue_uid(ti_inputq_desc->get_uid_base());
-  // T2 confdb->create(dbfile, "Queue", queue_uid, input_queue_obj);
-  // T2 input_queue_obj.set_by_val<std::string>("data_type", ti_inputq_desc->get_data_type());
-  // T2 input_queue_obj.set_by_val<std::string>("queue_type", ti_inputq_desc->get_queue_type());
-  // T2 input_queue_obj.set_by_val<uint32_t>("capacity", ti_inputq_desc->get_capacity());
-
-  
-  // T2 req_net_obj = create_network_connection(req_net_desc->get_uid_base()+UID(),
-  // T2                                          req_net_desc, confdb, dbfile);
-
-  // T2 tin_net_obj = create_network_connection(tin_net_desc->get_uid_base()+".*",
-  // T2                                         tin_net_desc, confdb, dbfile);
-
-  // T2 tout_net_obj = create_network_connection(tout_net_desc->get_uid_base()+UID(),
-  // T2                                         tout_net_desc, confdb, dbfile);
-
-  // T2 if (tset_out_net_desc) {
-  // T2   tset_out_net_obj = create_network_connection(tset_out_net_desc->get_uid_base()+UID(),
-  // T2                                                tset_out_net_desc, confdb, dbfile);
-  // T2 }
-
   // build up the full list of outputs
   std::vector<const conffwk::ConfigObject*> ti_output_objs;
   for (auto& fNet : fragOutObjs) {
@@ -252,14 +216,11 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
     ti_output_objs.push_back(&tset_out_net_obj);
   }
 
-  // T3 auto ti_conf_obj = ti_conf->config_object();
-  // T3 conffwk::ConfigObject ti_obj;
   if (get_source_id() == nullptr) {
     throw(BadConf(ERS_HERE, "No source_id associated with this TriggerApplication!"));
   }
   uint32_t source_id = get_source_id()->get_sid();
   std::string ti_uid(handler_name + "-" + std::to_string(source_id));
-  // T3 confdb->create(dbfile, ti_class, ti_uid, ti_obj);
   auto ti_obj = obj_fac.create(ti_class, ti_uid);
 
   ti_obj.set_by_val<uint32_t>("source_id", source_id);
@@ -284,9 +245,7 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
 
   std::string reader_uid("data-reader-"+UID());
   std::string reader_class = rdr_conf->get_template_for();
-  // T3 conffwk::ConfigObject reader_obj;
   TLOG_DEBUG(7) <<  "creating OKS configuration object for Data subscriber class " << reader_class;
-  // T3 confdb->create(dbfile, reader_class, reader_uid, reader_obj);
   auto reader_obj = obj_fac.create(reader_class, reader_uid);
   reader_obj.set_objs("inputs", {&tin_net_obj} );
   reader_obj.set_objs("outputs", {&input_queue_obj} );
