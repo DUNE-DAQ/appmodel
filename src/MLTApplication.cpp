@@ -81,6 +81,9 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
                                  const std::string& dbfile,
                                  const confmodel::Session* session) const
 {
+
+  TLOG() << "AAAAAA : Calling MLTApplication::generate_modules";
+
   std::vector<const confmodel::DaqModule*> modules;
 
   const auto obj_fac = ConfigObjectFactory(confdb, dbfile, UID());
