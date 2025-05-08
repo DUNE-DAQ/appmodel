@@ -88,11 +88,9 @@ TriggerApplication::generate_modules(conffwk::Configuration* confdb,
                                      const confmodel::Session* session) const
 {
 
-  TLOG() << "AAAAAA : Calling TriggerApplication::generate_modules";
-
   std::vector<const confmodel::DaqModule*> modules;
 
-  const auto obj_fac = ConfigObjectFactory(confdb, dbfile, UID());
+  const auto obj_fac = ConfigObjectFactory(this);
 
   auto ti_conf = get_trigger_inputs_handler();
   auto ti_class = ti_conf->get_template_for();

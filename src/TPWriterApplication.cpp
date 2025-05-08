@@ -52,7 +52,8 @@ TPStreamWriterApplication::generate_modules(conffwk::Configuration* confdb,
 {
   std::vector<const confmodel::DaqModule*> modules;
 
-  const auto obj_fac = ConfigObjectFactory(confdb, dbfile, UID());
+  const auto obj_fac = ConfigObjectFactory(this);
+
 
   auto tpwriterConf = get_tp_writer();
   if (tpwriterConf == 0) {

@@ -59,7 +59,8 @@ FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
 
   std::vector<const confmodel::DaqModule*> modules;
 
-  const auto obj_fac = ConfigObjectFactory(confdb, dbfile, UID());
+  const auto obj_fac = ConfigObjectFactory(this);
+
 
   // Process the queue rules looking for inputs to our DL/TP handler modules
   const QueueDescriptor* dlhReqInputQDesc = nullptr;

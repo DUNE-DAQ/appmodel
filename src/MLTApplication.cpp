@@ -86,7 +86,8 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
 
   std::vector<const confmodel::DaqModule*> modules;
 
-  const auto obj_fac = ConfigObjectFactory(confdb, dbfile, UID());
+  const auto obj_fac = ConfigObjectFactory(this);
+
 
   // auto mlt_conf = get_mlt_conf();
   // auto mlt_class = mlt_conf->get_template_for();

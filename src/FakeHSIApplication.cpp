@@ -53,7 +53,8 @@ FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
 {
   std::vector<const confmodel::DaqModule*> modules;
 
-  const auto obj_fac = ConfigObjectFactory(confdb, dbfile, UID());
+  const auto obj_fac = ConfigObjectFactory(this);
+
 
   auto dlhConf = get_link_handler();
   auto dlhClass = dlhConf->get_template_for();
