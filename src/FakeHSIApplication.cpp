@@ -148,8 +148,7 @@ FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
 
   // Time Sync network connection
   if (dlhConf->get_generate_timesync()) {
-    std::string tsStreamUid = std::to_string(id);
-    conffwk::ConfigObject tsNetObj = obj_fac.create_net_obj(tsNetDesc, tsStreamUid);
+    conffwk::ConfigObject tsNetObj = obj_fac.create_net_obj(tsNetDesc, std::to_string(id));
     fh_output_objs.push_back(&tsNetObj);
   }
   dlhObj.set_objs("outputs", fh_output_objs);
