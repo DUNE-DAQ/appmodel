@@ -438,7 +438,7 @@
  <class name="PDSRawDataProcessor">
   <superclass name="RawDataProcessor"/>
   <relationship name="processing_steps" class-type="ProcessingStep" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="intg_minima" description="integral higher than threshold value for each channle." class-type="IntegralThresholdList" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <attribute name="intg_minima" description="integral higher than threshold value for each channel." type="u32" is-multi-value="yes"/>
  </class>
 
 
