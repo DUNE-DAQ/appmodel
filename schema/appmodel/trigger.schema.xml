@@ -209,6 +209,50 @@
   <attribute name="sot_minimum_plane2" description="Minimum TP samples over threshold for plane 2." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
  </class>
 
+<!-- RMA -->
+<class name="IntegralThresholdList">
+  <attribute name="peak_intg_thrs_0" description="Integral value for PDS channel 0." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_1" description="Integral value for PDS channel 1." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_2" description="Integral value for PDS channel 2." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_3" description="Integral value for PDS channel 3." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_4" description="Integral value for PDS channel 4." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_5" description="Integral value for PDS channel 5." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_6" description="Integral value for PDS channel 6." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_7" description="Integral value for PDS channel 7." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_8" description="Integral value for PDS channel 8." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_9" description="Integral value for PDS channel 9." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_10" description="Integral value for PDS channel 10." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_11" description="Integral value for PDS channel 11." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_12" description="Integral value for PDS channel 12." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_13" description="Integral value for PDS channel 13." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_14" description="Integral value for PDS channel 14." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_15" description="Integral value for PDS channel 15." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_16" description="Integral value for PDS channel 16." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_17" description="Integral value for PDS channel 17." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_18" description="Integral value for PDS channel 18." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_19" description="Integral value for PDS channel 19." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_20" description="Integral value for PDS channel 20." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_21" description="Integral value for PDS channel 21." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_22" description="Integral value for PDS channel 22." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_23" description="Integral value for PDS channel 23." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_24" description="Integral value for PDS channel 24." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_25" description="Integral value for PDS channel 25." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_26" description="Integral value for PDS channel 26." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_27" description="Integral value for PDS channel 27." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_28" description="Integral value for PDS channel 28." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_29" description="Integral value for PDS channel 29." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_30" description="Integral value for PDS channel 30." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_31" description="Integral value for PDS channel 31." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_32" description="Integral value for PDS channel 32." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_33" description="Integral value for PDS channel 33." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_34" description="Integral value for PDS channel 34." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_35" description="Integral value for PDS channel 35." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_36" description="Integral value for PDS channel 36." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_37" description="Integral value for PDS channel 37." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_38" description="Integral value for PDS channel 38." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="peak_intg_thrs_39" description="Integral value for PDS channel 39." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+</class>
+
  <class name="StandaloneTCMakerConf" is-abstract="yes">
   <attribute name="template_for" type="class" init-value="StandaloneTCMakerModule" is-not-null="yes"/>
   <attribute name="timestamp_method" description="Option to pick source for timing (system / timesync)" type="enum" range="kTimeSync,kSystemClock" init-value="kTimeSync" is-not-null="yes"/>
@@ -389,6 +433,14 @@
   <relationship name="processing_steps" class-type="ProcessingStep" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="sot_minima" description="TP samples over threshold minimum requirement by plane." class-type="SamplesOverThresholdMinima" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
+
+<!-- RMA -->
+ <class name="PDSRawDataProcessor">
+  <superclass name="RawDataProcessor"/>
+  <relationship name="processing_steps" class-type="ProcessingStep" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="intg_minima" description="integral higher than threshold value for each channle." class-type="IntegralThresholdList" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
 
  <class name="TPDataProcessor">
   <superclass name="DataProcessor"/>
