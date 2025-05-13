@@ -8,7 +8,6 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
 
 #include "ConfigObjectFactory.hpp"
 #include "conffwk/Configuration.hpp"
@@ -19,6 +18,7 @@
 #include "confmodel/DetectorStream.hpp"
 #include "confmodel/GeoId.hpp"
 
+#include "appmodel/appmodelIssues.hpp"
 #include "appmodel/WIECApplication.hpp"
 
 #include "appmodel/WIBModule.hpp"
@@ -36,19 +36,8 @@
 #include <iostream>
 #include <fmt/core.h>
 
-using namespace dunedaq;
-using namespace dunedaq::appmodel;
-
-static ModuleFactory::Registrator
-__reg__("WIECApplication", [] (const SmartDaqApplication* smartApp,
-                             conffwk::Configuration* config,
-                             const std::string& dbfile,
-                             const confmodel::Session* session) -> ModuleFactory::ReturnType
-  {
-    auto app = smartApp->cast<WIECApplication>();
-    return app->generate_modules(config, dbfile, session);
-  }
-  );
+namespace dunedaq {
+namespace appmodel {
 
 std::vector<const confmodel::DaqModule*> 
 WIECApplication::generate_modules(conffwk::Configuration* config,
@@ -171,3 +160,6 @@ WIECApplication::generate_modules(conffwk::Configuration* config,
 
   return modules;
 }
+ 
+} // namespace appmodel  
+} // namespace dunedaq

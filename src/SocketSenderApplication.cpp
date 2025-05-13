@@ -8,9 +8,9 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
 
 #include "ConfigObjectFactory.hpp"
+#include "appmodel/appmodelIssues.hpp"
 #include "appmodel/FakeSocketWriterModule.hpp"
 #include "appmodel/SocketSenderApplication.hpp"
 #include "appmodel/SocketWriterConf.hpp"
@@ -21,17 +21,8 @@
 #include <string>
 #include <vector>
 
-using namespace dunedaq;
-using namespace dunedaq::appmodel;
-
-static ModuleFactory::Registrator __reg__("SocketSenderApplication",
-                                          [](const SmartDaqApplication* smartApp,
-                                             conffwk::Configuration* confdb,
-                                             const std::string& dbfile,
-                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
-                                            auto app = smartApp->cast<SocketSenderApplication>();
-                                            return app->generate_modules(confdb, dbfile, session);
-                                          });
+namespace dunedaq {
+namespace appmodel {
 
 std::vector<const confmodel::DaqModule*>
 SocketSenderApplication::generate_modules(conffwk::Configuration* confdb,
@@ -92,3 +83,6 @@ SocketSenderApplication::generate_modules(conffwk::Configuration* confdb,
   }
   return modules;
 }
+ 
+} // namespace appmodel  
+} // namespace dunedaq
