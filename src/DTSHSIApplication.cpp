@@ -26,7 +26,6 @@
 #include "confmodel/NetworkConnection.hpp"
 #include "confmodel/Service.hpp"
 #include "logging/Logging.hpp"
-#include "oks/kernel.hpp"
 #include "conffwk/Configuration.hpp"
 
 #include <iostream>
@@ -50,8 +49,9 @@ DTSHSIApplication::generate_modules(conffwk::Configuration* confdb,
                                      const std::string& dbfile,
                                      const confmodel::Session* /*session*/) const
 {
+  ConfigObjectFactory obj_fac(this);
+  
   std::vector<const confmodel::DaqModule*> modules;
-  ConfigObjectFactory obj_fac{confdb, dbfile, this->UID()};
 
   auto dlhConf = get_link_handler();
   auto dlhClass = dlhConf->get_template_for();

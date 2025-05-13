@@ -10,6 +10,7 @@
 
 #include "ModuleFactory.hpp"
 
+#include "ConfigObjectFactory.hpp"
 #include "conffwk/Configuration.hpp"
 #include "oks/kernel.hpp"
 #include "logging/Logging.hpp"
@@ -57,6 +58,8 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
                                     const std::string& dbfile,
                                     const confmodel::Session* session) const
 {
+  const auto obj_fac = ConfigObjectFactory(this);
+
   std::vector<const confmodel::DaqModule*> modules;
 
   auto daphne_conf = get_configuration();

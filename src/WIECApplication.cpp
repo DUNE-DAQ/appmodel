@@ -10,8 +10,8 @@
 
 #include "ModuleFactory.hpp"
 
+#include "ConfigObjectFactory.hpp"
 #include "conffwk/Configuration.hpp"
-#include "oks/kernel.hpp"
 #include "logging/Logging.hpp"
 
 #include "appmodel/NWDetDataReceiver.hpp"
@@ -55,6 +55,8 @@ WIECApplication::generate_modules(conffwk::Configuration* config,
                                             const std::string& dbfile,
                                             const confmodel::Session* session) const
 {
+  ConfigObjectFactory obj_fac(this);
+
   std::vector<const confmodel::DaqModule*> modules;
 
   std::map<std::string, std::vector<const appmodel::HermesDataSender*>> ctrlhost_sender_map;
