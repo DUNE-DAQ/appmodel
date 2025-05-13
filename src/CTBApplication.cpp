@@ -268,10 +268,10 @@ nlohmann::json CTBoardConf::get_ctb_json(const dunedaq::confmodel::Session& sess
 
   // constant block that we don't even want to configure
   auto & mask = hlt["command_mask"];
-  mask["12"]="0x0";
-  mask["13"]="0x0";
-  mask["14"]="0x0";
-  mask["15"]="0x0";
+  mask["C"]="0x0";
+  mask["D"]="0x0";
+  mask["E"]="0x0";
+  mask["F"]="0x0";
 
   auto hlts = get_HLTs();
 
