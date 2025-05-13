@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="23" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250502T135747"/>
+<info name="" type="" num-of-items="23" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250513T074108"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -147,7 +147,6 @@
  <class name="CTBMisc">
   <superclass name="ResourceSetAND"/>
   <attribute name="ch_status" type="bool" init-value="0" is-not-null="yes"/>
-  <attribute name="standalone_enable" type="bool" init-value="0" is-not-null="yes"/>
   <relationship name="randomtrigger_1" class-type="CTBRandomTrigger" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="randomtrigger_2" class-type="CTBRandomTrigger" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="pulser" class-type="CTBPulser" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>

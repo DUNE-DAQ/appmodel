@@ -304,8 +304,6 @@ nlohmann::json CTBoardConf::get_ctb_json(const dunedaq::confmodel::Session& sess
   //  ---- CRT ----
   
   auto & crt_block = subsystems["crt"] = get_crt() -> to_json(false, true);
-  nlohmann::json ret;
-  ret["ctb"] = json;
   std::list<nlohmann::json> json_crt_llts;
   auto crt_llts = get_crt_LLTs();
   for ( const auto & llt : crt_llts ) {
@@ -316,7 +314,10 @@ nlohmann::json CTBoardConf::get_ctb_json(const dunedaq::confmodel::Session& sess
   //  ---- PDS ----
   
   subsystems["pds"] = get_pds() -> to_json(false, true);
-    
+
+  nlohmann::json ret;
+  ret["ctb"] = json;
+  
   return ret;
 
 }
@@ -337,9 +338,8 @@ nlohmann::json CTBMisc::get_ctb_json(const dunedaq::confmodel::Session& session)
   else ret[ch_status_flag] = false;
 
   static std::string standalong_flag = "standalone_enable";
-  if ( get_standalone_enable() ) ret[standalong_flag] = true;
-  else ret[standalong_flag] = false;
-
+  ret[standalong_flag] = false;
+  
   return ret;
 
 }
