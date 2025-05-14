@@ -19,6 +19,7 @@
 #include "confmodel/DetectorStream.hpp"
 #include "confmodel/GeoId.hpp"
 
+#include "ConfigObjectFactory.hpp"
 #include "appmodel/WIECApplication.hpp"
 
 #include "appmodel/WIBModule.hpp"
@@ -55,6 +56,8 @@ WIECApplication::generate_modules(conffwk::Configuration* config,
                                             const std::string& dbfile,
                                             const confmodel::Session* session) const
 {
+  const auto obj_fac = ConfigObjectFactory(this);
+
   std::vector<const confmodel::DaqModule*> modules;
 
   std::map<std::string, std::vector<const appmodel::HermesDataSender*>> ctrlhost_sender_map;
