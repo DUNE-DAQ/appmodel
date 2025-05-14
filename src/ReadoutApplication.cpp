@@ -74,6 +74,32 @@ static ModuleFactory::Registrator __reg__("ReadoutApplication", [](const SmartDa
 });
 
 //-----------------------------------------------------------------------------
+
+const std::vector<const confmodel::ResourceBase*>&
+ReadoutApplication::get_contains() const {
+  if (m_contents.empty()) {
+    std::lock_guard scoped_lock(m_mutex);
+    check_init();
+    for (auto conn: m_detector_connections) {
+      m_contents.push_back(conn);
+    }
+  }
+  return m_contents;
+}
+
+bool ReadoutApplication::is_disabled(
+  const std::set<std::string>& disabled_resources) const {
+  if (disabled_resources.contains(UID())) {
+    return true;
+  }
+  for (auto conn: m_detector_connections) {
+    if (!conn->is_disabled(disabled_resources)) {
+      return false;
+    }
+  }
+  return true;
+}
+
 std::vector<const confmodel::DaqModule*>
 ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::string& dbfile, const confmodel::Session* session) const
 {
@@ -180,26 +206,26 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   // std::vector<const conffwk::ConfigObject*> d2d_conn_objs;
   uint16_t conn_idx = 0;
 
-  for (auto d2d_conn_res : get_contains()) {
+  for (auto d2d_conn : get_detector_connections()) {
 
     // Are we sure?
-    if (d2d_conn_res->disabled(*session)) {
-      TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn_res->UID();
+    if (d2d_conn->disabled(*session)) {
+      TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
       continue;
     }
 
     // d2d_conn_objs.push_back(&d2d_conn_res->config_object());
 
-    TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn_res->UID();
+    TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn->UID();
     // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader module
-    auto d2d_conn = d2d_conn_res->cast<confmodel::DetectorToDaqConnection>();
 
-    if (!d2d_conn) {
-      throw(BadConf(ERS_HERE, "ReadoutApplication contains something other than DetectorToDaqConnection"));
+    // Are these tests necessary? Schema does not allow 0 cardinality
+    // for these relationships!!  TODO
+    if (d2d_conn->get_senders() == nullptr) {
+      throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain senders"));
     }
-
-    if (d2d_conn->get_contains().empty()) {
-      throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain sebders or receivers"));
+    if (d2d_conn->get_receiver() == nullptr) {
+      throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain a receiver"));
     }
 
     // Loop over detector 2 daq connections to find senders and receivers
@@ -275,7 +301,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
 
     // Populate configuration and interfaces (leave output queues for later)
     reader_obj.set_obj("configuration", &reader_conf->config_object());
-    reader_obj.set_objs("connections", {&d2d_conn_res->config_object()});
+    reader_obj.set_objs("connections", {&d2d_conn->config_object()});
 
     // Create the raw data queues
     std::vector<const conffwk::ConfigObject*> data_queue_objs;

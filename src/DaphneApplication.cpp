@@ -18,6 +18,7 @@
 #include "confmodel/DetDataSender.hpp"
 #include "confmodel/GeoId.hpp"
 #include "confmodel/DetectorStream.hpp"
+#include "confmodel/DetSenderSet.hpp"
 
 #include "appmodel/FelixDataSender.hpp"
 #include "appmodel/DaphneConf.hpp"
@@ -83,7 +84,7 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
       throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain senders or receivers"));
     }
 
-    auto det_senders = d2d_conn->get_senders();
+    auto det_senders = d2d_conn->get_senders()->get_senders();
 
     // Loop over senders
     for (const auto* sender : det_senders) {
