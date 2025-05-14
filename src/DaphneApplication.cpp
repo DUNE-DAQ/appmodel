@@ -18,6 +18,7 @@
 #include "confmodel/DetectorStream.hpp"
 
 #include "ConfigObjectFactory.hpp"
+#include "appmodel/appmodelIssues.hpp"
 #include "appmodel/FelixDataSender.hpp"
 #include "appmodel/DaphneConf.hpp"
 #include "appmodel/DaphneV2BoardConf.hpp"
