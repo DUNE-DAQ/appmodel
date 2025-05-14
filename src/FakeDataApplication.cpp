@@ -10,6 +10,8 @@
 
 #include "ModuleFactory.hpp"
 
+#include "ConfigObjectFactory.hpp"
+
 #include "conffwk/Configuration.hpp"
 #include "oks/kernel.hpp"
 
@@ -57,6 +59,9 @@ FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
 
   std::vector<const confmodel::DaqModule*> modules;
 
+  const auto obj_fac = ConfigObjectFactory(this);
+
+
   // Process the queue rules looking for inputs to our DL/TP handler modules
   const QueueDescriptor* dlhReqInputQDesc = nullptr;
   const QueueDescriptor* faOutputQDesc = nullptr;
@@ -99,15 +104,9 @@ FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
   // Create here the Queue on which all data fragments are forwarded to the fragment aggregator
   // and a container for the queues of data request to TP handler and DLH
 
-  conffwk::ConfigObject faQueueObj;
   std::vector<const confmodel::Connection*> faOutputQueues;
 
-  std::string taFragQueueUid(faOutputQDesc->get_uid_base() + UID());
-  confdb->create(dbfile, "Queue", taFragQueueUid, faQueueObj);
-  faQueueObj.set_by_val<std::string>("data_type", faOutputQDesc->get_data_type());
-  faQueueObj.set_by_val<std::string>("queue_type", faOutputQDesc->get_queue_type());
-  faQueueObj.set_by_val<uint32_t>("capacity", faOutputQDesc->get_capacity());
-
+  conffwk::ConfigObject faQueueObj = obj_fac.create_queue_obj(faOutputQDesc, UID());
 
   // Create a FakeDataProdModule for each stream of this Readout Group
   for (auto fdpConf : get_contains()) {
@@ -123,31 +122,20 @@ FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
 
     auto id = stream->get_source_id();
     std::string uid("FakeDataProdModule-" + std::to_string(id));
-    conffwk::ConfigObject dlhObj;
     TLOG_DEBUG(7) << "creating OKS configuration object for FakeDataProdModule";
-    confdb->create(dbfile, "FakeDataProdModule", uid, dlhObj);
+    conffwk::ConfigObject dlhObj = obj_fac.create("FakeDataProdModule", uid);
     dlhObj.set_obj("configuration", &stream->config_object());
 
     // Time Sync network connection
-    std::string tsStreamUid = tsNetDesc->get_uid_base() + std::to_string(id);
-    auto tsServiceObj = tsNetDesc->get_associated_service()->config_object();
-    conffwk::ConfigObject tsNetObj;
-    confdb->create(dbfile, "NetworkConnection", tsStreamUid, tsNetObj);
-    tsNetObj.set_by_val<std::string>("connection_type", tsNetDesc->get_connection_type());
-    tsNetObj.set_by_val<std::string>("data_type", tsNetDesc->get_data_type());
-    tsNetObj.set_obj("associated_service", &tsServiceObj);
+    auto tsNetObj = obj_fac.create_net_obj(tsNetDesc, std::to_string(id));
 
     dlhObj.set_objs("outputs", { &faQueueObj, &tsNetObj });
 
-    std::string reqQueueUid(dlhReqInputQDesc->get_uid_base() + std::to_string(id));
-    conffwk::ConfigObject reqQueueObj;
-    confdb->create(dbfile, "QueueWithSourceId", reqQueueUid, reqQueueObj);
-    reqQueueObj.set_by_val<std::string>("data_type", dlhReqInputQDesc->get_data_type());
-    reqQueueObj.set_by_val<std::string>("queue_type", dlhReqInputQDesc->get_queue_type());
-    reqQueueObj.set_by_val<uint32_t>("capacity", dlhReqInputQDesc->get_capacity());
-    reqQueueObj.set_by_val<uint32_t>("source_id", stream->get_source_id());
+    auto reqQueueObj = obj_fac.create_queue_sid_obj(dlhReqInputQDesc, id);
+
     // Add the requessts queue dal pointer to the outputs of the FragmentAggregatorModule
-    faOutputQueues.push_back(confdb->get<confmodel::Connection>(reqQueueUid));
+    faOutputQueues.push_back(confdb->get<confmodel::Connection>(
+                               dlhReqInputQDesc->get_uid_base() + std::to_string(id)));
 
     dlhObj.set_objs("inputs", { &reqQueueObj });
 
@@ -156,18 +144,11 @@ FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
 
   // Finally create Fragment Aggregator
   std::string faUid("fragmentaggregator-" + UID());
-  conffwk::ConfigObject faObj;
   TLOG_DEBUG(7) << "creating OKS configuration object for Fragment Aggregator class ";
-  confdb->create(dbfile, "FragmentAggregatorModule", faUid, faObj);
+  conffwk::ConfigObject faObj = obj_fac.create("FragmentAggregatorModule", faUid);
 
   // Add network connection to TRBs
-  auto faServiceObj = faNetDesc->get_associated_service()->config_object();
-  std::string faNetUid = faNetDesc->get_uid_base() + UID();
-  conffwk::ConfigObject faNetObj;
-  confdb->create(dbfile, "NetworkConnection", faNetUid, faNetObj);
-  faNetObj.set_by_val<std::string>("connection_type", faNetDesc->get_connection_type());
-  faNetObj.set_by_val<std::string>("data_type", faNetDesc->get_data_type());
-  faNetObj.set_obj("associated_service", &faServiceObj);
+  conffwk::ConfigObject faNetObj = obj_fac.create_net_obj(faNetDesc, UID());
 
   // Add output queueus of data requests
   std::vector<const conffwk::ConfigObject*> qObjs;

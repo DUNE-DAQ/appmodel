@@ -19,7 +19,7 @@ find_package(Boost COMPONENTS unit_test_framework program_options REQUIRED)
 daq_oks_codegen(application.schema.xml hermes.schema.xml fdmodules.schema.xml trigger.schema.xml wiec.schema.xml PDS.schema.xml
   NAMESPACE dunedaq::appmodel DEP_PKGS confmodel)
 
-daq_add_library(ReadoutApplication.cpp SmartDaqApplication.cpp
+daq_add_library(ConfigObjectFactory.cpp ReadoutApplication.cpp SmartDaqApplication.cpp
         DFApplication.cpp DFOApplication.cpp TPWriterApplication.cpp FakeDataApplication.cpp FakeHSIApplication.cpp DTSHSIApplication.cpp TriggerApplication.cpp MLTApplication.cpp HSIEventToTCApplication.cpp WIECApplication.cpp DaphneApplication.cpp SocketSenderApplication.cpp
         LINK_LIBRARIES conffwk::conffwk fmt::fmt
         logging::logging confmodel::confmodel oks::oks ers::ers)

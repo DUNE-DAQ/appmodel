@@ -10,6 +10,7 @@
 
 #include "ModuleFactory.hpp"
 
+#include "ConfigObjectFactory.hpp"
 #include "appmodel/FakeHSIApplication.hpp"
 #include "appmodel/FakeHSIEventGeneratorModule.hpp"
 #include "appmodel/FakeHSIEventGeneratorConf.hpp"
@@ -51,6 +52,9 @@ FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
                                      const confmodel::Session* session) const
 {
   std::vector<const confmodel::DaqModule*> modules;
+
+  const auto obj_fac = ConfigObjectFactory(this);
+
 
   auto dlhConf = get_link_handler();
   auto dlhClass = dlhConf->get_template_for();
@@ -108,9 +112,8 @@ FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
 
   auto det_id = 1; // TODO Eric Flumerfelt <eflumerf@fnal.gov>, 08-Feb-2024: This is a magic number corresponding to kDAQ
   std::string uid("DLH-" + std::to_string(id));
-  conffwk::ConfigObject dlhObj;
   TLOG_DEBUG(7) << "creating OKS configuration object for Data Link Handler class " << dlhClass << ", id " << id;
-  confdb->create(dbfile, dlhClass, uid, dlhObj);
+  conffwk::ConfigObject dlhObj = obj_fac.create(dlhClass, uid);
   dlhObj.set_by_val<uint32_t>("source_id", id);
   dlhObj.set_by_val<uint32_t>("detector_id", det_id);
   dlhObj.set_by_val<bool>("post_processing_enabled", false);
@@ -130,15 +133,8 @@ FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
       auto descriptor = rule->get_descriptor();
       auto data_type = descriptor->get_data_type();
       if (data_type == "Fragment") {
-        std::string dreqNetUid(descriptor->get_uid_base() + dfapp->UID());
-        conffwk::ConfigObject frag_conn;
-        confdb->create(dbfile, "NetworkConnection", dreqNetUid, frag_conn);
-
-        frag_conn.set_by_val<std::string>("data_type", descriptor->get_data_type());
-        frag_conn.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
-
-        auto serviceObj = descriptor->get_associated_service()->config_object();
-        frag_conn.set_obj("associated_service", &serviceObj);
+        conffwk::ConfigObject frag_conn =
+          obj_fac.create_net_obj(descriptor, dfapp->UID());
         fragOutObjs.push_back(frag_conn);
       } // If network rule has TriggerDecision type of data
     }   // Loop over Apps network rules
@@ -152,48 +148,24 @@ FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
 
   // Time Sync network connection
   if (dlhConf->get_generate_timesync()) {
-    std::string tsStreamUid = tsNetDesc->get_uid_base() + std::to_string(id);
-    auto tsServiceObj = tsNetDesc->get_associated_service()->config_object();
-    conffwk::ConfigObject tsNetObj;
-    confdb->create(dbfile, "NetworkConnection", tsStreamUid, tsNetObj);
-    tsNetObj.set_by_val<std::string>("connection_type", tsNetDesc->get_connection_type());
-    tsNetObj.set_by_val<std::string>("data_type", tsNetDesc->get_data_type());
-    tsNetObj.set_obj("associated_service", &tsServiceObj);
+    conffwk::ConfigObject tsNetObj = obj_fac.create_net_obj(tsNetDesc, std::to_string(id));
     fh_output_objs.push_back(&tsNetObj);
   }
   dlhObj.set_objs("outputs", fh_output_objs);
 
-  std::string dataQueueUid(dlhInputQDesc->get_uid_base() + std::to_string(id));
-  conffwk::ConfigObject queueObj;
-  confdb->create(dbfile, "QueueWithSourceId", dataQueueUid, queueObj);
-  queueObj.set_by_val<std::string>("data_type", dlhInputQDesc->get_data_type());
-  queueObj.set_by_val<std::string>("queue_type", dlhInputQDesc->get_queue_type());
-  queueObj.set_by_val<uint32_t>("capacity", dlhInputQDesc->get_capacity());
-  queueObj.set_by_val<uint32_t>("source_id", id);
-
-  auto faServiceObj = dlhReqInputNetDesc->get_associated_service()->config_object();
-  std::string faNetUid = dlhReqInputNetDesc->get_uid_base() + UID();
-  conffwk::ConfigObject faNetObj;
-  confdb->create(dbfile, "NetworkConnection", faNetUid, faNetObj);
-  faNetObj.set_by_val<std::string>("connection_type", dlhReqInputNetDesc->get_connection_type());
-  faNetObj.set_by_val<std::string>("data_type", dlhReqInputNetDesc->get_data_type());
-  faNetObj.set_obj("associated_service", &faServiceObj);
+  conffwk::ConfigObject queueObj = obj_fac.create_queue_sid_obj(dlhInputQDesc, id);
+  conffwk::ConfigObject faNetObj = obj_fac.create_net_obj(dlhReqInputNetDesc, UID());
 
   dlhObj.set_objs("inputs", { &queueObj, &faNetObj });
 
   modules.push_back(confdb->get<DataHandlerModule>(uid));
 
   auto hsiServiceObj = hsiNetDesc->get_associated_service()->config_object();
-  std::string hsiNetUid = hsiNetDesc->get_uid_base();
-  conffwk::ConfigObject hsiNetObj;
-  confdb->create(dbfile, "NetworkConnection", hsiNetUid, hsiNetObj);
-  hsiNetObj.set_by_val<std::string>("connection_type", hsiNetDesc->get_connection_type());
-  hsiNetObj.set_by_val<std::string>("data_type", hsiNetDesc->get_data_type());
-  hsiNetObj.set_obj("associated_service", &hsiServiceObj);
+  conffwk::ConfigObject hsiNetObj = obj_fac.create_net_obj(hsiNetDesc, "");
   
   std::string genuid("FakeHSI-" + std::to_string(id));
-  conffwk::ConfigObject fakehsiObj;
-  confdb->create(dbfile, "FakeHSIEventGeneratorModule", genuid, fakehsiObj);
+  conffwk::ConfigObject fakehsiObj =
+    obj_fac.create("FakeHSIEventGeneratorModule", genuid);
   fakehsiObj.set_obj("configuration", &rdrConf->config_object());
   fakehsiObj.set_objs("outputs", { &queueObj, &hsiNetObj });
 
