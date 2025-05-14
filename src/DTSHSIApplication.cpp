@@ -51,7 +51,7 @@ DTSHSIApplication::generate_modules(conffwk::Configuration* confdb,
                                      const confmodel::Session* /*session*/) const
 {
   std::vector<const confmodel::DaqModule*> modules;
-  ConfigObjectFactory obj_fac{confdb, dbfile, this->UID()};
+  ConfigObjectFactory obj_fac(this);
 
   auto dlhConf = get_link_handler();
   auto dlhClass = dlhConf->get_template_for();

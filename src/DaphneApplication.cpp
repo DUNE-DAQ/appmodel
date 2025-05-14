@@ -19,6 +19,7 @@
 #include "confmodel/GeoId.hpp"
 #include "confmodel/DetectorStream.hpp"
 
+#include "ConfigObjectFactory.hpp"
 #include "appmodel/FelixDataSender.hpp"
 #include "appmodel/DaphneConf.hpp"
 #include "appmodel/DaphneV2BoardConf.hpp"
@@ -57,6 +58,8 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
                                     const std::string& dbfile,
                                     const confmodel::Session* session) const
 {
+  const auto obj_fac = ConfigObjectFactory(this);
+
   std::vector<const confmodel::DaqModule*> modules;
 
   auto daphne_conf = get_configuration();
