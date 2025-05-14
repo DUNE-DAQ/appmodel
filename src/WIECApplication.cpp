@@ -9,7 +9,6 @@
  */
 
 
-#include "ConfigObjectFactory.hpp"
 #include "conffwk/Configuration.hpp"
 #include "logging/Logging.hpp"
 
@@ -19,6 +18,7 @@
 #include "confmodel/GeoId.hpp"
 
 #include "appmodel/appmodelIssues.hpp"
+#include "ConfigObjectFactory.hpp"
 #include "appmodel/WIECApplication.hpp"
 
 #include "appmodel/WIBModule.hpp"

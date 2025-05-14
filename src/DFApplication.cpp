@@ -9,6 +9,7 @@
  */
 
 
+#include "ConfigObjectFactory.hpp"
 #include "appmodel/DFApplication.hpp"
 #include "appmodel/DataStoreConf.hpp"
 #include "appmodel/DataWriterConf.hpp"
@@ -18,7 +19,6 @@
 #include "appmodel/FilenameParams.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
-#include "ConfigObjectFactory.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
 #include "appmodel/QueueDescriptor.hpp"
 #include "appmodel/ReadoutApplication.hpp"

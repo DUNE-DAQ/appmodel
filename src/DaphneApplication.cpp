@@ -8,7 +8,6 @@
  * received with this code.
  */
 
-#include "ConfigObjectFactory.hpp"
 #include "conffwk/Configuration.hpp"
 #include "oks/kernel.hpp"
 #include "logging/Logging.hpp"
@@ -18,7 +17,7 @@
 #include "confmodel/GeoId.hpp"
 #include "confmodel/DetectorStream.hpp"
 
-#include "appmodel/appmodelIssues.hpp"
+#include "ConfigObjectFactory.hpp"
 #include "appmodel/FelixDataSender.hpp"
 #include "appmodel/DaphneConf.hpp"
 #include "appmodel/DaphneV2BoardConf.hpp"
