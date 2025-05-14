@@ -33,6 +33,11 @@
 #include "appmodel/CTBSubsystem.hpp"
 #include "appmodel/CTBCRTSubsystem.hpp"
 #include "appmodel/CTBPDSSubsystem.hpp"
+#include "appmodel/CTBStatisticsSocket.hpp"
+#include "appmodel/CTBSocket.hpp"
+#include "appmodel/CTBReceiverSocket.hpp"
+#include "appmodel/CTBMonitorSocket.hpp"
+
 
 #include "appmodel/DataHandlerConf.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
@@ -258,10 +263,10 @@ CTBApplication::generate_modules(conffwk::Configuration* config,
 
 
 
-nlohmann::json CTBoardConf::get_ctb_json(const dunedaq::confmodel::Session& session) const {
+nlohmann::json CTBoardConf::get_ctb_json(const dunedaq::confmodel::Session& session, std::optional<std::string> socket_host) const {
 
   nlohmann::json json;
-  json["sockets"] = get_sockets() -> to_json(false, true);
+  json["sockets"] = get_sockets() -> get_ctb_json( socket_host ); 
   json["misc"] = get_misc() -> get_ctb_json(session);
 
   nlohmann::json hlt;
@@ -345,8 +350,6 @@ nlohmann::json CTBMisc::get_ctb_json(const dunedaq::confmodel::Session& session)
 }
 
 
-
-
 nlohmann::json CTBTrigger::get_ctb_json(const dunedaq::confmodel::Session& session) const {
 
   auto json = this -> to_json(false, true);
@@ -363,5 +366,26 @@ nlohmann::json CTBTrigger::get_ctb_json(const dunedaq::confmodel::Session& sessi
   return json;
 
 }
+
+nlohmann::json CTBSockets::get_ctb_json(std::optional<std::string> socket_host) const {
+
+  nlohmann::json json;
+  json["receiver"] = get_receiver() -> get_ctb_json(socket_host);
+  json["monitor"] = get_monitor() -> get_ctb_json(socket_host);
+  json["statistics"] = get_statistics() -> to_json(false, true);
+  return json;
+
+}
+
+nlohmann::json CTBSocket::get_ctb_json(std::optional<std::string> socket_host) const {
+
+  auto json = to_json(false, true);
+  if ( socket_host ) {
+    json["host"] = socket_host.value();
+  }
+  return json;
+
+}
+
 
 

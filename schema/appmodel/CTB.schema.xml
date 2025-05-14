@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="23" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250513T094021"/>
+<info name="" type="" num-of-items="24" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250514T084320"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -164,9 +164,9 @@
  </class>
 
  <class name="CTBMonitorSocket" description="Socket to send a copy of the CTB data. Not implemented yet">
-  <attribute name="host" type="string" init-value="localhost" is-not-null="yes"/>
-  <attribute name="port" type="u64" init-value="8993" is-not-null="yes"/>
+  <superclass name="CTBSocket"/>
   <attribute name="enable" type="bool" init-value="0" is-not-null="yes"/>
+  <attribute name="port" type="u64" init-value="8993" is-not-null="yes"/>
  </class>
 
  <class name="CTBPDSLLT">
@@ -198,19 +198,30 @@
  </class>
 
  <class name="CTBReceiverSocket" description="Settings to configure the conditions for the data transmission socket">
+  <superclass name="CTBSocket"/>
   <attribute name="rollover" type="u64" init-value="125000" is-not-null="yes"/>
-  <attribute name="host" type="string" init-value="localhost" is-not-null="yes"/>
   <attribute name="port" type="u64" init-value="8992" is-not-null="yes"/>
  </class>
 
- <class name="CTBSockets">
+ <class name="CTBSocket">
   <superclass name="Jsonable"/>
+  <attribute name="host" type="string" init-value="localhost" is-not-null="yes"/>
+  <method name="get_ctb_json" description="">
+   <method-implementation language="C++" prototype="nlohmann::json get_ctb_json( std::optional&lt;std::string&gt; socket_host = std::nullopt ) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;#include &lt;optional&gt;&#xA;END_HEADER_PROLOGUE"/>
+  </method>
+ </class>
+
+ <class name="CTBSockets">
   <relationship name="receiver" class-type="CTBReceiverSocket" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
   <relationship name="monitor" class-type="CTBMonitorSocket" low-cc="zero" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
   <relationship name="statistics" class-type="CTBStatisticsSocket" low-cc="zero" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <method name="get_ctb_json" description="">
+   <method-implementation language="C++" prototype="nlohmann::json get_ctb_json(std::optional&lt;std::string&gt; socket_host = std::nullopt) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;#include &lt;optional&gt;&#xA;END_HEADER_PROLOGUE"/>
+  </method>
  </class>
 
  <class name="CTBStatisticsSocket" description="Socket to send periodic trigger statistics. Not implemented yet">
+  <superclass name="Jsonable"/>
   <attribute name="port" type="u64" init-value="8994" is-not-null="yes"/>
   <attribute name="updt_period" type="u32" init-value="1" is-not-null="yes"/>
   <attribute name="enable" type="bool" init-value="0" is-not-null="yes"/>
@@ -254,7 +265,7 @@
   <relationship name="crt_LLTs" class-type="CTBCountLLT" low-cc="many" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="pds" class-type="CTBPDSSubsystem" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="get_ctb_json" description="create the json configuration for the board">
-   <method-implementation language="C++" prototype="nlohmann::json get_ctb_json(const dunedaq::confmodel::Session&amp; session) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;END_HEADER_PROLOGUE"/>
+   <method-implementation language="C++" prototype="nlohmann::json get_ctb_json(const dunedaq::confmodel::Session&amp; session, std::optional&lt;std::string&gt; socket_host = std::nullopt ) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;#include &lt;optional&gt;&#xA;END_HEADER_PROLOGUE"/>
   </method>
  </class>
 
