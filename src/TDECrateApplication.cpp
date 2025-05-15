@@ -1,7 +1,7 @@
 /**
  * @file generate_modules.cpp
  *
- * Implementation of TDECApplication's generate_modules dal method
+ * Implementation of TDECrateApplication's generate_modules dal method
  *
  * This is part of the DUNE DAQ Software Suite, copyright 2023.
  * Licensing/copyright details are in the COPYING file that you should have
@@ -20,7 +20,7 @@
 #include "confmodel/DetectorToDaqConnection.hpp"
 
 
-#include "appmodel/TDECApplication.hpp"
+#include "appmodel/TDECrateApplication.hpp"
 #include "appmodel/TdeAmcDetDataSender.hpp"
 #include "appmodel/TDEAMCModule.hpp"
 #include "appmodel/TDEAMCModuleConf.hpp"
@@ -34,18 +34,18 @@ using namespace dunedaq;
 using namespace dunedaq::appmodel;
 
 static ModuleFactory::Registrator
-__reg__("TDECApplication", [] (const SmartDaqApplication* smartApp,
+__reg__("TDECrateApplication", [] (const SmartDaqApplication* smartApp,
                              conffwk::Configuration* config,
                              const std::string& dbfile,
                              const confmodel::Session* session) -> ModuleFactory::ReturnType
   {
-    auto app = smartApp->cast<TDECApplication>();
+    auto app = smartApp->cast<TDECrateApplication>();
     return app->generate_modules(config, dbfile, session);
   }
   );
 
 std::vector<const confmodel::DaqModule*> 
-TDECApplication::generate_modules(conffwk::Configuration* config,
+TDECrateApplication::generate_modules(conffwk::Configuration* config,
                                 const std::string& dbfile,
                                 const confmodel::Session* session) const
 {

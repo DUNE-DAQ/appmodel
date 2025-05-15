@@ -97,7 +97,7 @@
  <class name="TDEAMCModuleConf">
  </class>
 
- <class name="TDECApplication">
+ <class name="TDECrateApplication">
   <superclass name="SmartDaqApplication"/>
   <superclass name="ResourceSetAND"/>
   <relationship name="tde_amc_module_conf" class-type="TDEAMCModuleConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
