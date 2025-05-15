@@ -8,7 +8,6 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
 
 #include "ConfigObjectFactory.hpp"
 
@@ -38,17 +37,8 @@
 #include <string>
 #include <vector>
 
-using namespace dunedaq;
-using namespace dunedaq::appmodel;
-
-static ModuleFactory::Registrator __reg__("FakeDataApplication",
-                                          [](const SmartDaqApplication* smartApp,
-                                             conffwk::Configuration* confdb,
-                                             const std::string& dbfile,
-                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
-                                            auto app = smartApp->cast<FakeDataApplication>();
-                                            return app->generate_modules(confdb, dbfile, session);
-                                          });
+namespace dunedaq {
+namespace appmodel {
 
 std::vector<const confmodel::DaqModule*>
 FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
@@ -163,3 +153,6 @@ FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
   // oks::OksFile::set_nolock_mode(false);
   return modules;
 }
+
+} // namespace appmodel  
+} // namespace dunedaq

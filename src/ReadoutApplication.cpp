@@ -8,7 +8,6 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
 
 #include "ConfigObjectFactory.hpp"
 #include "appmodel/DFApplication.hpp"
@@ -66,11 +65,6 @@
 
 namespace dunedaq {
 namespace appmodel {
-
-static ModuleFactory::Registrator __reg__("ReadoutApplication", [](const SmartDaqApplication* smartApp, conffwk::Configuration* config, const std::string& dbfile, const confmodel::Session* session) -> ModuleFactory::ReturnType {
-  auto app = smartApp->cast<ReadoutApplication>();
-  return app->generate_modules(config, dbfile, session);
-});
 
 //-----------------------------------------------------------------------------
 std::vector<const confmodel::DaqModule*>
@@ -451,6 +445,5 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   return modules;
 }
 
-  
-}
-}
+} // namespace appmodel  
+} // namespace dunedaq
