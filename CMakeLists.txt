@@ -16,11 +16,13 @@ find_package(fmt REQUIRED)
 
 find_package(Boost COMPONENTS unit_test_framework program_options REQUIRED)
 
-daq_add_dal_library(application.schema.xml hermes.schema.xml fdmodules.schema.xml trigger.schema.xml wiec.schema.xml PDS.schema.xml tde.schema.xml
-  NAMESPACE dunedaq::appmodel DEP_PKGS confmodel
-  SOURCES ReadoutApplication.cpp SmartDaqApplication.cpp DFApplication.cpp DFOApplication.cpp
-  TPWriterApplication.cpp FakeDataApplication.cpp FakeHSIApplication.cpp DTSHSIApplication.cpp TriggerApplication.cpp MLTApplication.cpp HSIEventToTCApplication.cpp WIECApplication.cpp DaphneApplication.cpp SocketSenderApplication.cpp TDECrateApplication.cpp
-  LINK_LIBRARIES conffwk::conffwk fmt::fmt logging::logging oks::oks ers::ers )
+daq_oks_codegen(application.schema.xml hermes.schema.xml fdmodules.schema.xml trigger.schema.xml wiec.schema.xml PDS.schema.xml tde.schema.xml
+  NAMESPACE dunedaq::appmodel DEP_PKGS confmodel)
+
+daq_add_library(ConfigObjectFactory.cpp ReadoutApplication.cpp SmartDaqApplication.cpp
+        DFApplication.cpp DFOApplication.cpp TPWriterApplication.cpp FakeDataApplication.cpp FakeHSIApplication.cpp DTSHSIApplication.cpp TriggerApplication.cpp MLTApplication.cpp HSIEventToTCApplication.cpp WIECApplication.cpp DaphneApplication.cpp SocketSenderApplication.cpp TDECrateApplication.cpp
+        LINK_LIBRARIES conffwk::conffwk fmt::fmt
+        logging::logging confmodel::confmodel oks::oks ers::ers)
 
 daq_add_application(getAppsArguments get_apps_arguments.cxx
   LINK_LIBRARIES confmodel::confmodel appmodel conffwk::conffwk)

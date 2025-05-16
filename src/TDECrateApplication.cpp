@@ -7,8 +7,6 @@
  * Licensing/copyright details are in the COPYING file that you should have
  * received with this code.
  */
-#include "ModuleFactory.hpp"
-
 #include "conffwk/Configuration.hpp"
 #include "oks/kernel.hpp"
 #include "logging/Logging.hpp"
@@ -19,7 +17,8 @@
 #include "confmodel/GeoId.hpp"
 #include "confmodel/DetectorToDaqConnection.hpp"
 
-
+#include "appmodel/appmodelIssues.hpp"
+#include "ConfigObjectFactory.hpp"
 #include "appmodel/TDECrateApplication.hpp"
 #include "appmodel/TdeAmcDetDataSender.hpp"
 #include "appmodel/TDEAMCModule.hpp"
@@ -30,25 +29,16 @@
 #include <iostream>
 #include <fmt/core.h>
 
-using namespace dunedaq;
-using namespace dunedaq::appmodel;
-
-static ModuleFactory::Registrator
-__reg__("TDECrateApplication", [] (const SmartDaqApplication* smartApp,
-                             conffwk::Configuration* config,
-                             const std::string& dbfile,
-                             const confmodel::Session* session) -> ModuleFactory::ReturnType
-  {
-    auto app = smartApp->cast<TDECrateApplication>();
-    return app->generate_modules(config, dbfile, session);
-  }
-  );
+namespace dunedaq {
+namespace appmodel {
 
 std::vector<const confmodel::DaqModule*> 
 TDECrateApplication::generate_modules(conffwk::Configuration* config,
                                 const std::string& dbfile,
                                 const confmodel::Session* session) const
 {
+  ConfigObjectFactory obj_fac(this);
+
   std::vector<const confmodel::DaqModule*> modules;
 
   std::map<std::string, std::vector<const appmodel::TdeAmcDetDataSender*>> ctrlhost_sender_map;
@@ -103,3 +93,6 @@ TDECrateApplication::generate_modules(conffwk::Configuration* config,
   }
   return modules;
 }
+
+} // namespace appmodel  
+} // namespace dunedaq
