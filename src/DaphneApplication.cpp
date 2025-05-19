@@ -8,8 +8,6 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
-
 #include "conffwk/Configuration.hpp"
 #include "oks/kernel.hpp"
 #include "logging/Logging.hpp"
@@ -19,6 +17,8 @@
 #include "confmodel/GeoId.hpp"
 #include "confmodel/DetectorStream.hpp"
 
+#include "ConfigObjectFactory.hpp"
+#include "appmodel/appmodelIssues.hpp"
 #include "appmodel/FelixDataSender.hpp"
 #include "appmodel/DaphneConf.hpp"
 #include "appmodel/DaphneV2BoardConf.hpp"
@@ -38,25 +38,16 @@
 #include <fmt/core.h>
 #include <set>
 
-using namespace dunedaq;
-using namespace dunedaq::appmodel;
-
-static ModuleFactory::Registrator
-__reg__("DaphneApplication", [] (const SmartDaqApplication* smartApp,
-                             conffwk::Configuration* config,
-                             const std::string& dbfile,
-                             const confmodel::Session* session) -> ModuleFactory::ReturnType
-  {
-    auto app = smartApp->cast<DaphneApplication>();
-    return app->generate_modules(config, dbfile, session);
-  }
-  );
-
+namespace dunedaq {
+namespace appmodel {
+  
 std::vector<const confmodel::DaqModule*> 
 DaphneApplication::generate_modules(conffwk::Configuration* config,
                                     const std::string& dbfile,
                                     const confmodel::Session* session) const
 {
+  const auto obj_fac = ConfigObjectFactory(this);
+
   std::vector<const confmodel::DaqModule*> modules;
 
   auto daphne_conf = get_configuration();
@@ -354,5 +345,6 @@ DaphneV2LNA::get_reg52() const {
 
   return reg52.to_ulong();
 }
-
  
+} // namespace appmodel  
+} // namespace dunedaq

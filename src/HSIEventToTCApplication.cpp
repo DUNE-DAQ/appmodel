@@ -8,8 +8,8 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
 
+#include "ConfigObjectFactory.hpp"
 #include "conffwk/Configuration.hpp"
 #include "oks/kernel.hpp"
 #include "confmodel/Connection.hpp"
@@ -28,19 +28,8 @@
 #include <string>
 #include <vector>
 
-using namespace dunedaq;
-using namespace dunedaq::appmodel;
-
-static ModuleFactory::Registrator
-__reg__("HSIEventToTCApplication", [] (const SmartDaqApplication* smartApp,
-                             conffwk::Configuration* confdb,
-                             const std::string& dbfile,
-                             const confmodel::Session* session) -> ModuleFactory::ReturnType
-  {
-    auto app = smartApp->cast<HSIEventToTCApplication>();
-    return app->generate_modules(confdb, dbfile, session);
-  }
-  );
+namespace dunedaq {
+namespace appmodel {
 
 std::vector<const confmodel::DaqModule*> 
 HSIEventToTCApplication::generate_modules(conffwk::Configuration* confdb,
@@ -49,11 +38,12 @@ HSIEventToTCApplication::generate_modules(conffwk::Configuration* confdb,
 {
   std::vector<const confmodel::DaqModule*> modules;
 
+  const auto obj_fac = ConfigObjectFactory(this);
+
 
   std::string hstcUid("module-" + UID());
-  conffwk::ConfigObject hstcObj;
   TLOG_DEBUG(7) << "creating OKS configuration object for the DataSubscriberModule class ";
-  confdb->create(dbfile, "DataSubscriberModule", hstcUid, hstcObj);
+  conffwk::ConfigObject hstcObj = obj_fac.create("DataSubscriberModule", hstcUid);
 
   auto hstcConf = get_hsevent_to_tc_conf();
   hstcObj.set_obj("configuration", &hstcConf->config_object());
@@ -69,24 +59,11 @@ HSIEventToTCApplication::generate_modules(conffwk::Configuration* confdb,
     auto endpoint_class = rule->get_endpoint_class();
     auto descriptor = rule->get_descriptor();
 
-    conffwk::ConfigObject connObj;
-    auto serviceObj = descriptor->get_associated_service()->config_object();
-    std::string connUid(descriptor->get_uid_base());
     if (descriptor->get_data_type() == "HSIEvent") {
-        confdb->create(dbfile, "NetworkConnection", connUid, connObj);
-        connObj.set_by_val<std::string>("data_type", descriptor->get_data_type());
-        connObj.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
-        connObj.set_obj("associated_service", &serviceObj);
-
-        inObj = connObj;
+      inObj = obj_fac.create_net_obj(descriptor, "");
     } 
     else if (descriptor->get_data_type() == "TriggerCandidate") {
-        confdb->create(dbfile, "NetworkConnection", connUid+UID(), connObj);
-        connObj.set_by_val<std::string>("data_type", descriptor->get_data_type());
-        connObj.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
-        connObj.set_obj("associated_service", &serviceObj);
-
-        outObj = connObj;
+      outObj = obj_fac.create_net_obj(descriptor, UID());
     }
   } 
 
@@ -105,3 +82,6 @@ HSIEventToTCApplication::generate_modules(conffwk::Configuration* confdb,
 
   return modules;
 }
+ 
+} // namespace appmodel  
+} // namespace dunedaq
