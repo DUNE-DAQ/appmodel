@@ -8,8 +8,9 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
 
+#include "ConfigObjectFactory.hpp"
+#include "appmodel/appmodelIssues.hpp"
 #include "appmodel/FakeSocketWriterModule.hpp"
 #include "appmodel/SocketSenderApplication.hpp"
 #include "appmodel/SocketWriterConf.hpp"
@@ -20,17 +21,8 @@
 #include <string>
 #include <vector>
 
-using namespace dunedaq;
-using namespace dunedaq::appmodel;
-
-static ModuleFactory::Registrator __reg__("SocketSenderApplication",
-                                          [](const SmartDaqApplication* smartApp,
-                                             conffwk::Configuration* confdb,
-                                             const std::string& dbfile,
-                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
-                                            auto app = smartApp->cast<SocketSenderApplication>();
-                                            return app->generate_modules(confdb, dbfile, session);
-                                          });
+namespace dunedaq {
+namespace appmodel {
 
 std::vector<const confmodel::DaqModule*>
 SocketSenderApplication::generate_modules(conffwk::Configuration* confdb,
@@ -38,6 +30,9 @@ SocketSenderApplication::generate_modules(conffwk::Configuration* confdb,
                                           const confmodel::Session* session) const
 {
   std::vector<const confmodel::DaqModule*> modules;
+
+  const auto obj_fac = ConfigObjectFactory(this);
+
 
   //
   // Extract basic configuration objects
@@ -74,12 +69,11 @@ SocketSenderApplication::generate_modules(conffwk::Configuration* confdb,
     // Create the FakeSocketWriterModule object
     uint16_t conn_idx = 0;
     std::string writer_uid(fmt::format("socketdatawriter-{}-{}", this->UID(), std::to_string(conn_idx++)));
-    conffwk::ConfigObject writer_obj;
 
     TLOG_DEBUG(6) << fmt::format(
       "Creating OKS configuration object for socket data writer class {} with id {}", writer_class, writer_uid);
 
-    confdb->create(dbfile, writer_class, writer_uid, writer_obj);
+    auto writer_obj = obj_fac.create(writer_class, writer_uid);
 
     // Populate configuration and interfaces
     writer_obj.set_obj("configuration", &writer_conf->config_object());
@@ -89,3 +83,6 @@ SocketSenderApplication::generate_modules(conffwk::Configuration* confdb,
   }
   return modules;
 }
+ 
+} // namespace appmodel  
+} // namespace dunedaq
