@@ -8,8 +8,8 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
 
+#include "ConfigObjectFactory.hpp"
 #include "appmodel/DFApplication.hpp"
 #include "appmodel/ReadoutApplication.hpp"
 #include "conffwk/Configuration.hpp"
@@ -25,6 +25,7 @@
 #include "appmodel/FelixDataReceiver.hpp"
 #include "appmodel/FelixDataSender.hpp"
 
+#include "appmodel/SocketReceiver.hpp"
 #include "confmodel/QueueWithSourceId.hpp"
 
 #include "confmodel/Connection.hpp"
@@ -65,87 +66,6 @@
 namespace dunedaq {
 namespace appmodel {
 
-static ModuleFactory::Registrator __reg__("ReadoutApplication", [](const SmartDaqApplication* smartApp, conffwk::Configuration* config, const std::string& dbfile, const confmodel::Session* session) -> ModuleFactory::ReturnType {
-  auto app = smartApp->cast<ReadoutApplication>();
-  return app->generate_modules(config, dbfile, session);
-});
-
-class ReadoutObjFactory {
-  public:
-
-  conffwk::Configuration* config;
-  std::string dbfile;
-  std::string app_uid;
-
-
-  conffwk::ConfigObject create(const std::string& class_name, const std::string& id) {
-    conffwk::ConfigObject cfg_obj;
-    config->create(this->dbfile, class_name, id, cfg_obj);
-    // config->create(this->dbfile, class_name, fmt::format("{}_{}", app_uid, id), cfg_obj);
-    return cfg_obj;
-  }
-
-  //---
-  conffwk::ConfigObject create_queue_obj(const QueueDescriptor* qdesc) {
-    // conffwk::ConfigObject queue_obj;
-
-    std::string queue_uid(qdesc->get_uid_base());
-    // config->create(this->dbfile, "Queue", queue_uid, queue_obj);
-    auto queue_obj = this->create("Queue", queue_uid);
-    queue_obj.set_by_val<std::string>("data_type", qdesc->get_data_type());
-    queue_obj.set_by_val<std::string>("queue_type", qdesc->get_queue_type());
-    queue_obj.set_by_val<uint32_t>("capacity", qdesc->get_capacity());
-
-    return queue_obj;
-  }
-
-  //---
-  conffwk::ConfigObject create_queue_sid_obj(const QueueDescriptor* qdesc, uint32_t src_id) {
-    // conffwk::ConfigObject queue_obj;
-
-    std::string queue_uid(fmt::format("{}{}", qdesc->get_uid_base(), src_id));
-    // config->create(this->dbfile, "QueueWithSourceId", queue_uid, queue_obj);
-    auto queue_obj = this->create("QueueWithSourceId", queue_uid);
-
-    queue_obj.set_by_val<std::string>("data_type", qdesc->get_data_type());
-    queue_obj.set_by_val<std::string>("queue_type", qdesc->get_queue_type());
-    queue_obj.set_by_val<uint32_t>("capacity", qdesc->get_capacity());
-    queue_obj.set_by_val<uint32_t>("source_id", src_id);
-
-    return queue_obj;
-  }
-
-  //---
-  conffwk::ConfigObject create_queue_sid_obj(const QueueDescriptor* qdesc, const confmodel::DetectorStream* stream) {
-    return this->create_queue_sid_obj(qdesc, stream->get_source_id());
-  }
-
-
-
-  //---
-  conffwk::ConfigObject create_net_obj(const NetworkConnectionDescriptor* ndesc, std::string uid) {
-    // conffwk::ConfigObject net_obj;
-
-    auto svc_obj = ndesc->get_associated_service()->config_object();
-    std::string net_id = ndesc->get_uid_base() + uid;
-    // config->create(this->dbfile, "NetworkConnection", net_id, net_obj);
-    auto net_obj = this->create("NetworkConnection", net_id);
-
-    net_obj.set_by_val<std::string>("data_type", ndesc->get_data_type());
-    net_obj.set_by_val<std::string>("connection_type", ndesc->get_connection_type());
-    net_obj.set_obj("associated_service", &svc_obj);
-
-    return net_obj;
-
-  }
-
-  conffwk::ConfigObject create_net_obj(const NetworkConnectionDescriptor* ndesc) {
-    return this->create_net_obj(ndesc, this->app_uid);
-  }
-
-
-};
-
 //-----------------------------------------------------------------------------
 std::vector<const confmodel::DaqModule*>
 ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::string& dbfile, const confmodel::Session* session) const
@@ -153,10 +73,12 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
 
   TLOG_DEBUG(6) << "Generating modules for application " << this->UID();
 
-  ReadoutObjFactory obj_fac{config, dbfile, this->UID()};
+  ConfigObjectFactory obj_fac(this);
+  
   //
   // Extract basic configuration objects
   //
+
   // Data reader
   auto reader_conf = get_data_reader();
   if (reader_conf == 0) {
@@ -296,9 +218,10 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
 
     // Here I want to resolve the type of connection (network, felix, or?)
     // Rules of engagement: if the receiver interface is network or felix, the receivers should be castable to the counterpart
-    if (reader_class == "DPDKReaderModule") {
-      if (!det_receiver->cast<appmodel::DPDKReceiver>()) {
-        throw(BadConf(ERS_HERE, fmt::format("DPDKReaderModule requires NWDetDataReceiver, found {} of class {}", det_receiver->UID(), det_receiver->class_name())));
+    if (reader_class == "DPDKReaderModule" || reader_class == "SocketReaderModule") {
+      if ((reader_class == "DPDKReaderModule" && !det_receiver->cast<appmodel::DPDKReceiver>()) ||
+          (reader_class == "SocketReaderModule" && !det_receiver->cast<appmodel::SocketReceiver>())) {
+        throw(BadConf(ERS_HERE, fmt::format("{} requires NWDetDataReceiver, found {} of class {}", reader_class, det_receiver->UID(), det_receiver->class_name())));
       }
 
       bool all_nw_senders = true;
@@ -522,6 +445,5 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   return modules;
 }
 
-  
-}
-}
+} // namespace appmodel  
+} // namespace dunedaq

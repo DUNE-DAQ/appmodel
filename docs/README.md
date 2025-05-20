@@ -22,6 +22,7 @@ know how to connect the modules internally and to network endpoints.
  specific subclass using a 'magic' map of class names to generate functions.
 
 Readout, HSI, Hermes andDataflow and Trigger applications extend from **SmartDaqApplication**
+
 ## ReadoutApplication
 
  ![ReadoutApplication schema class diagram not including classes whose
