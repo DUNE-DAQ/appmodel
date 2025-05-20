@@ -1,5 +1,5 @@
 /**
- * @file generate_modules.cpp
+ * @file TDECrateApplication.cpp
  *
  * Implementation of TDECrateApplication's generate_modules dal method
  *

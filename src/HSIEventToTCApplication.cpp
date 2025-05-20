@@ -1,5 +1,5 @@
 /**
- * @file DFO.cpp
+ * @file DFOApplication.cpp
  *
  * Implementation of DFOApplication's generate_modules dal method
  *

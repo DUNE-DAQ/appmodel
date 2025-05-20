@@ -1,5 +1,5 @@
 /**
- * @file DFO.cpp
+ * @file TPStreamWriterApplication.cpp
  *
  * Implementation of TPStreamWriterApplication's generate_modules dal method
  *
