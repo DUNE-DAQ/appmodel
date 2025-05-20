@@ -40,12 +40,12 @@ namespace dunedaq {
 namespace appmodel {
 
 std::vector<const confmodel::DaqModule*> 
-WIECApplication::generate_modules(conffwk::Configuration* config,
-                                            const std::string& dbfile,
-                                            const confmodel::Session* session) const
+WIECApplication::generate_modules(const confmodel::Session* session) const
 {
   ConfigObjectFactory obj_fac(this);
-
+  conffwk::Configuration* config = &this->configuration();
+  const std::string& dbfile = this->config_object().contained_in();
+  
   std::vector<const confmodel::DaqModule*> modules;
 
   std::map<std::string, std::vector<const appmodel::HermesDataSender*>> ctrlhost_sender_map;
