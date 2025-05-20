@@ -8,8 +8,8 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
 
+#include "ConfigObjectFactory.hpp"
 #include "appmodel/DFApplication.hpp"
 #include "appmodel/CTBApplication.hpp"
 #include "appmodel/DataStoreConf.hpp"
@@ -40,35 +40,8 @@
 #include <string>
 #include <vector>
 
-using namespace dunedaq;
-using namespace dunedaq::appmodel;
-
-static ModuleFactory::Registrator __reg__("DFApplication",
-                                          [](const SmartDaqApplication* smartApp,
-                                             conffwk::Configuration* confdb,
-                                             const std::string& dbfile,
-                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
-                                            auto app = smartApp->cast<DFApplication>();
-                                            return app->generate_modules(confdb, dbfile, session);
-                                          });
-
-inline void
-fill_queue_object_from_desc(const QueueDescriptor* qDesc, conffwk::ConfigObject& qObj)
-{
-  qObj.set_by_val<std::string>("data_type", qDesc->get_data_type());
-  qObj.set_by_val<std::string>("queue_type", qDesc->get_queue_type());
-  qObj.set_by_val<uint32_t>("capacity", qDesc->get_capacity());
-}
-
-inline void
-fill_netconn_object_from_desc(const NetworkConnectionDescriptor* netDesc, conffwk::ConfigObject& netObj)
-{
-  netObj.set_by_val<std::string>("data_type", netDesc->get_data_type());
-  netObj.set_by_val<std::string>("connection_type", netDesc->get_connection_type());
-
-  auto serviceObj = netDesc->get_associated_service()->config_object();
-  netObj.set_obj("associated_service", &serviceObj);
-}
+namespace dunedaq {
+namespace appmodel {
 
 
 inline void
@@ -82,8 +55,7 @@ fill_sourceid_object_from_app(const SmartDaqApplication* smartapp,
 
 
 inline void
-fill_sourceid_object_from_app(conffwk::Configuration* confdb,
-                              const std::string& dbfile,
+fill_sourceid_object_from_app(const ConfigObjectFactory& obj_fac,
                               const ReadoutApplication* roapp,
                               const conffwk::ConfigObject* netConn,
                               conffwk::ConfigObject& sidNetObj,
@@ -115,9 +87,8 @@ fill_sourceid_object_from_app(conffwk::Configuration* confdb,
   }
 
   for (auto& source_id : app_source_ids) {
-    auto stream_sid_obj = std::make_shared<conffwk::ConfigObject>();
     std::string streamSidUid(roapp->UID() + "SourceIDConf" + std::to_string(source_id));
-    confdb->create(dbfile, "SourceIDConf", streamSidUid, *stream_sid_obj);
+    auto stream_sid_obj = std::make_shared<conffwk::ConfigObject>(obj_fac.create("SourceIDConf", streamSidUid));
     stream_sid_obj->set_by_val<uint32_t>("sid", source_id);
     stream_sid_obj->set_by_val<std::string>("subsystem", "Detector_Readout");
     sidObjs.push_back(stream_sid_obj);
@@ -129,9 +100,8 @@ fill_sourceid_object_from_app(conffwk::Configuration* confdb,
     source_id_objs.push_back(sidObjs.back().get());
   }
   /*
-  auto trig_sid_obj = std::make_shared<conffwk::ConfigObject>();
   std::string trgSidUid(roapp->UID() + "TRGSourceIDConf" + std::to_string(roapp->get_tp_source_id()));
-  confdb->create(dbfile, "SourceIDConf", trgSidUid, *trig_sid_obj);
+  auto trig_sid_obj = std::make_shared<conffwk::ConfigObject>(obj_fac.create("SourceIDConf", trgSidUid));
   trig_sid_obj->set_by_val<uint32_t>("sid", roapp->get_tp_source_id());
   trig_sid_obj->set_by_val<std::string>("subsystem", "Trigger");
   source_id_objs.push_back(sidObjs.back().get());
@@ -141,8 +111,7 @@ fill_sourceid_object_from_app(conffwk::Configuration* confdb,
 }
 
 inline void
-fill_sourceid_object_from_app(conffwk::Configuration* confdb,
-                              const std::string& dbfile,
+fill_sourceid_object_from_app(const ConfigObjectFactory& obj_fac,
                               const FakeDataApplication* fdapp,
                               const conffwk::ConfigObject* netConn,
                               conffwk::ConfigObject& sidNetObj,
@@ -167,9 +136,8 @@ fill_sourceid_object_from_app(conffwk::Configuration* confdb,
   }
 
   for (auto& source_id : app_source_ids) {
-    auto stream_sid_obj = std::make_shared<conffwk::ConfigObject>();
     std::string streamSidUid(fdapp->UID() + "SourceIDConf" + std::to_string(source_id));
-    confdb->create(dbfile, "SourceIDConf", streamSidUid, *stream_sid_obj);
+    auto stream_sid_obj = std::make_shared<conffwk::ConfigObject>(obj_fac.create("SourceIDConf", streamSidUid));
     stream_sid_obj->set_by_val<uint32_t>("sid", source_id);
     stream_sid_obj->set_by_val<std::string>("subsystem", "Detector_Readout");
     sidObjs.push_back(stream_sid_obj);
@@ -185,6 +153,9 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
                                 const confmodel::Session* session) const
 {
   std::vector<const confmodel::DaqModule*> modules;
+
+  const auto obj_fac = ConfigObjectFactory(this);
+
 
   // Containers for module specific config objects for output/input
   // Prepare TRB output objects
@@ -205,10 +176,8 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
     throw(BadConf(ERS_HERE, "Could not find queue descriptor rule for TriggerRecords!"));
   }
   // Create queue connection config object
-  conffwk::ConfigObject trQueueObj;
-  std::string trQueueUid(trQDesc->get_uid_base() + UID());
-  confdb->create(dbfile, "Queue", trQueueUid, trQueueObj);
-  fill_queue_object_from_desc(trQDesc, trQueueObj);
+  auto trQueueObj = obj_fac.create_queue_obj(trQDesc, UID());
+
   // Place trigger record queue object into vector of output objs of TRB module
   trbOutputObjs.push_back(&trQueueObj);
 
@@ -240,18 +209,9 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
     throw(BadConf(ERS_HERE, "Could not retrieve SourceIDConf"));
   }
   // Create network connection config object
-  conffwk::ConfigObject fragNetObj;
-  conffwk::ConfigObject trigdecNetObj;
-  conffwk::ConfigObject tokenNetObj;
-  std::string fragNetUid = fragNetDesc->get_uid_base() + UID();
-  std::string trigdecNetUid = trigdecNetDesc->get_uid_base() + UID();
-  std::string tokenNetUid = tokenNetDesc->get_uid_base();
-  confdb->create(dbfile, "NetworkConnection", fragNetUid, fragNetObj);
-  confdb->create(dbfile, "NetworkConnection", trigdecNetUid, trigdecNetObj);
-  confdb->create(dbfile, "NetworkConnection", tokenNetUid, tokenNetObj);
-  fill_netconn_object_from_desc(fragNetDesc, fragNetObj);
-  fill_netconn_object_from_desc(trigdecNetDesc, trigdecNetObj);
-  fill_netconn_object_from_desc(tokenNetDesc, tokenNetObj);
+  auto fragNetObj = obj_fac.create_net_obj(fragNetDesc, UID());
+  auto trigdecNetObj =  obj_fac.create_net_obj(trigdecNetDesc, UID());
+  auto tokenNetObj = obj_fac.create_net_obj(tokenNetDesc, "");
 
   // Process special Network rules!
   // Looking for DataRequest rules from ReadoutAppplications in current Session
@@ -289,7 +249,7 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
 	    dreqNetObjs.emplace_back();
 	    confdb->create(dbfile, "NetworkConnection", dreqNetUid, dreqNetObjs.back());
 	    fill_netconn_object_from_desc(descriptor, dreqNetObjs.back());
-
+	    
 	    std::string sidToNetUid(descriptor->get_uid_base() + smartapp->UID() + "_" + s.first);
 	    sidNetObjs.emplace_back();
 	    confdb->create(dbfile, "SourceIDToNetworkConnection", sidToNetUid, sidNetObjs.back());
@@ -297,18 +257,16 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
 	    sidNetObjs.back().set_objs("source_ids", { & s.second->config_object() });
 	  } // loop over CTB sources
 	} else {
-	  std::string dreqNetUid(descriptor->get_uid_base() + smartapp->UID());
-	  dreqNetObjs.emplace_back();
-	  confdb->create(dbfile, "NetworkConnection", dreqNetUid, dreqNetObjs.back());
-	  fill_netconn_object_from_desc(descriptor, dreqNetObjs.back());
-	  
+
+	  dreqNetObjs.emplace_back(obj_fac.create_net_obj(descriptor, smartapp->UID()));
+
 	  std::string sidToNetUid(descriptor->get_uid_base() + smartapp->UID() + "-sids");
-	  sidNetObjs.emplace_back();
-	  confdb->create(dbfile, "SourceIDToNetworkConnection", sidToNetUid, sidNetObjs.back());
+	  sidNetObjs.emplace_back(
+				  obj_fac.create("SourceIDToNetworkConnection", sidToNetUid));
 	  if (roapp != nullptr) {
-	    fill_sourceid_object_from_app(confdb, dbfile, roapp, &dreqNetObjs.back(), sidNetObjs.back(), sidObjs);
+	    fill_sourceid_object_from_app(obj_fac, roapp, &dreqNetObjs.back(), sidNetObjs.back(), sidObjs);
 	  } else if (fdapp != nullptr) {
-	    fill_sourceid_object_from_app(confdb, dbfile, fdapp, &dreqNetObjs.back(), sidNetObjs.back(), sidObjs);
+	    fill_sourceid_object_from_app(obj_fac, fdapp, &dreqNetObjs.back(), sidNetObjs.back(), sidObjs);
 	  } else {
 	    fill_sourceid_object_from_app(smartapp, &dreqNetObjs.back(), sidNetObjs.back());
 	  }
@@ -336,9 +294,8 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
   auto trbConfObj = trbConf->config_object();
   trbConfObj.set_by_val<uint32_t>("source_id", get_source_id()->get_sid());
   // Prepare TRB Module Object and assign its Config Object.
-  conffwk::ConfigObject trbObj;
   std::string trbUid(UID() + "-trb");
-  confdb->create(dbfile, "TRBModule", trbUid, trbObj);
+  conffwk::ConfigObject trbObj = obj_fac.create("TRBModule", trbUid);
   trbObj.set_obj("configuration", &trbConfObj);
   trbObj.set_objs("inputs", { &trigdecNetObj, &fragNetObj });
   trbObj.set_objs("outputs", trbOutputObjs);
@@ -358,9 +315,8 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
     auto dwrConfObj = dwrConf->config_object();
 
     // Prepare DataWriterModule Module Object and assign its Config Object.
-    conffwk::ConfigObject dwrObj;
     std::string dwrUid(fmt::format("{}-dw-{}", UID(), dw_idx));
-    confdb->create(dbfile, "DataWriterModule", dwrUid, dwrObj);
+    conffwk::ConfigObject dwrObj = obj_fac.create("DataWriterModule", dwrUid);
     dwrObj.set_by_val("writer_identifier", fmt::format("{}_dw_{}", UID(), dw_idx));
     dwrObj.set_obj("configuration", &dwrConfObj);
     dwrObj.set_objs("inputs", { &trQueueObj });
@@ -372,3 +328,6 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
 
   return modules;
 }
+
+} // namespace appmodel  
+} // namespace dunedaq
