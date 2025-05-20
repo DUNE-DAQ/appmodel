@@ -13,16 +13,7 @@
 #include "confmodel/DaqModule.hpp"
 #include "confmodel/Session.hpp"
 
-#include "appmodel/DFApplication.hpp"
-#include "appmodel/DFOApplication.hpp"
-#include "appmodel/ReadoutApplication.hpp"
-#include "appmodel/TriggerApplication.hpp"
-#include "appmodel/FakeHSIApplication.hpp"
-#include "appmodel/TPStreamWriterApplication.hpp"
-#include "appmodel/HSIEventToTCApplication.hpp"
-#include "appmodel/MLTApplication.hpp"
-#include "appmodel/WIECApplication.hpp"
-#include "appmodel/DaphneApplication.hpp"
+#include "appmodel/SmartDaqApplication.hpp"
 
 #include <sstream>
 
@@ -38,21 +29,39 @@ namespace dunedaq::appmodel::python {
     const std::string class_name;
   };
 
-  template <typename ApplicationType>
+  // template <typename ApplicationType>
+  // std::vector<ObjectLocator>
+  // application_generate_template(const conffwk::Configuration& confdb,
+  //                               const std::string& dbfile,
+  //                               const std::string& app_id,
+  //                               const std::string& session_id)
+  // {
+  //   auto app =
+  //     const_cast<conffwk::Configuration&>(confdb).get<SmartDaqApplication>(app_id);
+  //   auto session =
+  //     const_cast<conffwk::Configuration&>(confdb).get<confmodel::Session>(session_id);
+
+  //   std::vector<ObjectLocator> mods;
+  //   for (auto mod : app->generate_modules(
+  //          const_cast<conffwk::Configuration*>(&confdb), dbfile, session)) {
+  //     mods.push_back({mod->UID(),mod->class_name()});
+  //   }
+  //   return mods;
+  // }
+
   std::vector<ObjectLocator>
-  application_generate_template(const conffwk::Configuration& confdb,
+  smart_dap_application_generate_modules(const conffwk::Configuration& confdb,
                                 const std::string& dbfile,
                                 const std::string& app_id,
                                 const std::string& session_id)
   {
     auto app =
-      const_cast<conffwk::Configuration&>(confdb).get<ApplicationType>(app_id);
+      const_cast<conffwk::Configuration&>(confdb).get<appmodel::SmartDaqApplication>(app_id);
     auto session =
       const_cast<conffwk::Configuration&>(confdb).get<confmodel::Session>(session_id);
 
     std::vector<ObjectLocator> mods;
-    for (auto mod : app->generate_modules(
-           const_cast<conffwk::Configuration*>(&confdb), dbfile, session)) {
+    for (auto mod : app->generate_modules(const_cast<conffwk::Configuration*>(&confdb), dbfile, session)) {
       mods.push_back({mod->UID(),mod->class_name()});
     }
     return mods;
@@ -75,17 +84,7 @@ register_dal_methods(py::module& m)
     .def_readonly("class_name", &ObjectLocator::class_name)
     ;
 
-  m.def("readout_application_generate", &application_generate_template<ReadoutApplication>, "Generate DaqModules required by ReadoutApplication");
-  m.def("df_application_generate", &application_generate_template<DFApplication>, "Generate DaqModules required by DFApplication");
-  m.def("dfo_application_generate", &application_generate_template<DFOApplication>, "Generate DaqModules required by DFOApplication");
-  m.def("tpwriter_application_generate", &application_generate_template<TPStreamWriterApplication>, "Generate DaqModules required by TPStreamWriterApplication");
-  m.def("trigger_application_generate", &application_generate_template<TriggerApplication>, "Generate DaqModules required by TriggerApplication");
-  m.def("fakehsi_application_generate", &application_generate_template<FakeHSIApplication>, "Generate DaqModules required by FakeHSIApplication");
-  m.def("hsieventtotc_application_generate", &application_generate_template<HSIEventToTCApplication>, "Generate DaqModules required by HSIEventToTCApplication");
-  m.def("mlt_application_generate", &application_generate_template<MLTApplication>, "Generate DaqModules required by MLTApplication");
-  m.def("wiec_application_generate", &application_generate_template<WIECApplication>, "Generate DaqModules required by WIECApplication");
-  m.def("daphne_application_generate", &application_generate_template<DaphneApplication>, "Generate DaqModules required by DaphneApplication");
-  
+  m.def("smart_dap_application_generate_modules", &smart_dap_application_generate_modules, "Generate DaqModules");
   m.def("smart_daq_application_construct_commandline_parameters", &smart_daq_application_construct_commandline_parameters, "Get a version of the command line agruments parsed");
 }
 
