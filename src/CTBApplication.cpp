@@ -8,8 +8,6 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
-
 #include "conffwk/Configuration.hpp"
 #include "oks/kernel.hpp"
 #include "logging/Logging.hpp"
@@ -17,6 +15,7 @@
 #include "confmodel/DetectorToDaqConnection.hpp"
 #include "confmodel/DetDataSender.hpp"
 
+#include "appmodel/appmodelIssues.hpp"
 #include "appmodel/CTBApplication.hpp"
 #include "appmodel/CTBoardConf.hpp"
 #include "appmodel/CTBConf.hpp"
@@ -58,16 +57,6 @@
 using namespace dunedaq;
 using namespace dunedaq::appmodel;
 
-static ModuleFactory::Registrator
-__reg__("CTBApplication", [] (const SmartDaqApplication* smartApp,
-                             conffwk::Configuration* config,
-                             const std::string& dbfile,
-                             const confmodel::Session* session) -> ModuleFactory::ReturnType
-  {
-    auto app = smartApp->cast<CTBApplication>();
-    return app->generate_modules(config, dbfile, session);
-  }
-  );
 
 std::vector<const confmodel::DaqModule*> 
 CTBApplication::generate_modules(conffwk::Configuration* config,

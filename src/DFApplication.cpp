@@ -246,13 +246,10 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
 	  auto sources = ctbapp->get_sources();
 	  for ( const auto & s : sources ) {
 	    std::string dreqNetUid(descriptor->get_uid_base() + smartapp->UID()+ '_' + s.first);
-	    dreqNetObjs.emplace_back();
-	    confdb->create(dbfile, "NetworkConnection", dreqNetUid, dreqNetObjs.back());
-	    fill_netconn_object_from_desc(descriptor, dreqNetObjs.back());
-	    
+	    dreqNetObjs.emplace_back( obj_fac.create_net_obj(descriptor, dreqNetUid) );
+
 	    std::string sidToNetUid(descriptor->get_uid_base() + smartapp->UID() + "_" + s.first);
-	    sidNetObjs.emplace_back();
-	    confdb->create(dbfile, "SourceIDToNetworkConnection", sidToNetUid, sidNetObjs.back());
+	    sidNetObjs.emplace_back( obj_fac.create("SourceIDToNetworkConnection", sidToNetUid ) );
 	    sidNetObjs.back().set_obj("netconn", & dreqNetObjs.back());
 	    sidNetObjs.back().set_objs("source_ids", { & s.second->config_object() });
 	  } // loop over CTB sources
