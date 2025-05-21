@@ -193,7 +193,7 @@ CTBApplication::generate_modules(conffwk::Configuration* config,
   }  // loop over CTB sources
    
 
-  conffwk::ConfigObject hsiNetObj = obj_fac.create_net_obj(hsiNetDesc);
+  conffwk::ConfigObject hsiNetObj = obj_fac.create_net_obj(hsiNetDesc, "");
   ctb_module_outputs.push_back(hsiNetObj);
   
   auto board = get_board();
