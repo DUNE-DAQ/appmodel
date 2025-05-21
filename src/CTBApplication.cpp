@@ -15,6 +15,7 @@
 #include "confmodel/DetectorToDaqConnection.hpp"
 #include "confmodel/DetDataSender.hpp"
 
+#include "ConfigObjectFactory.hpp"
 #include "appmodel/appmodelIssues.hpp"
 #include "appmodel/CTBApplication.hpp"
 #include "appmodel/CTBoardConf.hpp"
@@ -65,6 +66,8 @@ CTBApplication::generate_modules(conffwk::Configuration* config,
 {
   std::vector<const confmodel::DaqModule*> modules;
 
+  const auto obj_fac = ConfigObjectFactory(this);
+  
   auto dlhConf = get_link_handler();
   auto dlhClass = dlhConf->get_template_for();
 
@@ -128,13 +131,7 @@ CTBApplication::generate_modules(conffwk::Configuration* config,
       auto data_type = descriptor->get_data_type();
       if (data_type == "Fragment") {
 	std::string dreqNetUid(descriptor->get_uid_base() + dfapp->UID());
-	conffwk::ConfigObject frag_conn;
-	config->create(dbfile, "NetworkConnection", dreqNetUid, frag_conn);
-	frag_conn.set_by_val<std::string>("data_type", descriptor->get_data_type());
-	frag_conn.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
-	
-	auto serviceObj = descriptor->get_associated_service()->config_object();
-	frag_conn.set_obj("associated_service", &serviceObj);
+	conffwk::ConfigObject frag_conn = obj_fac.create_net_obj(descriptor, dreqNetUid);
 	fragOutObjs.push_back(frag_conn);
       } // If network rule has TriggerDecision type of data
     }   // Loop over Apps network rules
@@ -159,10 +156,9 @@ CTBApplication::generate_modules(conffwk::Configuration* config,
     // create DLH
     // ----------------------------    
     auto det_id = 1; // TODO Eric Flumerfelt <eflumerf@fnal.gov>, 08-Feb-2024: This is a magic number corresponding to kDAQ
-    std::string uid("DLH-" + s.first);
-    conffwk::ConfigObject dlhObj;
     TLOG() << "creating OKS configuration object for " + s.first + " Data Link Handler class " << dlhClass << ", id " << id;
-    config->create(dbfile, dlhClass, uid, dlhObj);
+    std::string uid("DLH-" + s.first);
+    conffwk::ConfigObject dlhObj = obj_fac.create( dlhClass, uid );
     dlhObj.set_by_val<uint32_t>("source_id", id);
     dlhObj.set_by_val<uint32_t>("detector_id", det_id);
     dlhObj.set_by_val<bool>("post_processing_enabled", false);
@@ -173,69 +169,39 @@ CTBApplication::generate_modules(conffwk::Configuration* config,
     // Time Sync network connection
     if (dlhConf->get_generate_timesync()) {
       std::string tsStreamUid = tsNetDesc->get_uid_base() + std::to_string(id);
-      auto tsServiceObj = tsNetDesc->get_associated_service()->config_object();
-      conffwk::ConfigObject tsNetObj;
-      config->create(dbfile, "NetworkConnection", tsStreamUid, tsNetObj);
-      tsNetObj.set_by_val<std::string>("connection_type", tsNetDesc->get_connection_type());
-      tsNetObj.set_by_val<std::string>("data_type", tsNetDesc->get_data_type());
-      tsNetObj.set_obj("associated_service", &tsServiceObj);
-
+      conffwk::ConfigObject tsNetObj = obj_fac.create_net_obj(tsNetDesc, tsStreamUid);
       net_objc.push_back(&tsNetObj);
     }
 
     dlhObj.set_objs("outputs", net_objc);
 
     // create Queues from CTB to DLH
-
     std::string dataQueueUid(dlhInputQDesc->get_uid_base() + s.first);
-    conffwk::ConfigObject queueObj;
-    config->create(dbfile, "QueueWithSourceId", dataQueueUid, queueObj);
-    queueObj.set_by_val<std::string>("data_type", dlhInputQDesc->get_data_type());
-    queueObj.set_by_val<std::string>("queue_type", dlhInputQDesc->get_queue_type());
-    queueObj.set_by_val<uint32_t>("capacity", dlhInputQDesc->get_capacity());
-    queueObj.set_by_val<uint32_t>("source_id", id);
-
+    conffwk::ConfigObject queueObj = obj_fac.create_queue_sid_obj(dlhInputQDesc, id); 
+    queueObj.rename(dataQueueUid);
+    
     ctb_module_outputs.push_back(queueObj);
 
     // Create network connections to DLHs
-    
-    auto faServiceObj = dlhReqInputNetDesc->get_associated_service()->config_object();
     std::string faNetUid = dlhReqInputNetDesc->get_uid_base() + UID() + '_' + s.first;
-    conffwk::ConfigObject faNetObj;
-    config->create(dbfile, "NetworkConnection", faNetUid, faNetObj);
-    faNetObj.set_by_val<std::string>("connection_type", dlhReqInputNetDesc->get_connection_type());
-    faNetObj.set_by_val<std::string>("data_type", dlhReqInputNetDesc->get_data_type());
-    faNetObj.set_obj("associated_service", &faServiceObj);
+    conffwk::ConfigObject faNetObj = obj_fac.create_net_obj(dlhReqInputNetDesc, faNetUid);
 
     dlhObj.set_objs("inputs", { &queueObj, &faNetObj });
 
     modules.push_back(config->get<DataHandlerModule>(uid));
-
     
   }  // loop over CTB sources
    
-  
-  auto hsiServiceObj = hsiNetDesc->get_associated_service()->config_object();
-  std::string hsiNetUid = hsiNetDesc->get_uid_base();
-  conffwk::ConfigObject hsiNetObj;
-  config->create(dbfile, "NetworkConnection", hsiNetUid, hsiNetObj);
-  hsiNetObj.set_by_val<std::string>("connection_type", hsiNetDesc->get_connection_type());
-  hsiNetObj.set_by_val<std::string>("data_type", hsiNetDesc->get_data_type());
-  hsiNetObj.set_obj("associated_service", &hsiServiceObj);
 
+  conffwk::ConfigObject hsiNetObj = obj_fac.create_net_obj(hsiNetDesc);
   ctb_module_outputs.push_back(hsiNetObj);
   
   auto board = get_board();
   
-  auto json = board -> get_ctb_json(*session);
-  std::cout << json << std::endl;
-
-  conffwk::ConfigObject module_obj;
-  std::string module_name = "ctb-module";
-  config->create(dbfile, "CTBModule", module_name, module_obj);
+  conffwk::ConfigObject module_obj = obj_fac.create( "CTBModule", "ctb-module");
   module_obj.set_obj("configuration", & ctb_conf -> config_object() );
   module_obj.set_obj("board", & board -> config_object() );
-
+  
   std::vector<const conffwk::ConfigObject*> ctb_module_output_ptrs;
   for ( const auto & o : ctb_module_outputs ) {
     ctb_module_output_ptrs.push_back( & o );
