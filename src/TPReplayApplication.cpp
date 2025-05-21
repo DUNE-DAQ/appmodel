@@ -8,8 +8,6 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
-
 #include "conffwk/Configuration.hpp"
 
 #include "confmodel/Connection.hpp"
@@ -27,11 +25,11 @@
 #include "appmodel/QueueDescriptor.hpp"
 #include "appmodel/SourceIDConf.hpp"
 #include "appmodel/TCDataProcessor.hpp"
-#include "appmodel/TPStreamConf.hpp"
-#include "appmodel/TriggerApplication.hpp"
+#include "appmodel/TPReplayApplication.hpp"
 #include "appmodel/TPReplayModule.hpp"
 #include "appmodel/TPReplayModuleConf.hpp"
-#include "appmodel/TPReplayApplication.hpp"
+#include "appmodel/TPStreamConf.hpp"
+#include "appmodel/TriggerApplication.hpp"
 #include "appmodel/appmodelIssues.hpp"
 
 #include "logging/Logging.hpp"
@@ -41,22 +39,13 @@
 #include <string>
 #include <vector>
 
-using namespace dunedaq;
-using namespace dunedaq::appmodel;
-
-static ModuleFactory::Registrator __reg__("TPReplayApplication",
-                                          [](const SmartDaqApplication* smartApp,
-                                             conffwk::Configuration* confdb,
-                                             const std::string& dbfile,
-                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
-                                            auto app = smartApp->cast<TPReplayApplication>();
-                                            return app->generate_modules(confdb, dbfile, session);
-                                          });
+namespace dunedaq {
+namespace appmodel {
 
 std::vector<const confmodel::DaqModule*>
 TPReplayApplication::generate_modules(conffwk::Configuration* confdb,
-                                           const std::string& dbfile,
-                                           const confmodel::Session* /*session*/) const
+                                      const std::string& dbfile,
+                                      const confmodel::Session* /*session*/) const
 {
 
   /***** MODULES *****/
@@ -219,3 +208,6 @@ TPReplayApplication::generate_modules(conffwk::Configuration* confdb,
 
   return modules;
 }
+
+} // namespace appmodel
+} // namespace dunedaq

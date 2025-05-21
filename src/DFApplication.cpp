@@ -58,37 +58,46 @@ fill_sourceid_object_from_app(const SmartDaqApplication* smartapp,
 }
 
 inline void
-fill_sourceid_object_from_app(conffwk::Configuration* confdb,
-                              const std::string& dbfile,
+fill_sourceid_object_from_app(const ConfigObjectFactory& obj_fac,
                               const TPReplayApplication* rapp,
-                              std::vector<conffwk::ConfigObject>* dreqNetObjs,
-                              std::vector<conffwk::ConfigObject>* sidNetObjs,
-                              std::vector<std::shared_ptr<conffwk::ConfigObject>> sidObjs,
-                              const NetworkConnectionDescriptor* descriptor,
+                              std::vector<conffwk::ConfigObject>* netConn,
+                              std::vector<conffwk::ConfigObject>* sidNetObj,
+			      std::vector<std::shared_ptr<conffwk::ConfigObject>> sidObjs,
+			      const NetworkConnectionDescriptor* descriptor,
                               std::string smartapp_uid)
 {
+  std::vector<const conffwk::ConfigObject*> source_id_objs;
+
   for (auto tp_sid : rapp->get_tp_source_ids()) {
+    // get name extension
     std::string name = tp_sid->UID();
     size_t pos = name.find_last_of('-');
     std::string ext;
     if (pos != std::string::npos) {
       ext = name.substr(pos);
     }
-    std::string dreqNetUid(descriptor->get_uid_base() + smartapp_uid + ext);
-    dreqNetObjs->emplace_back();
-    confdb->create(dbfile, "NetworkConnection", dreqNetUid, dreqNetObjs->back());
-    fill_netconn_object_from_desc(descriptor, dreqNetObjs->back());
-    std::string sidToNetUid(descriptor->get_uid_base() + smartapp_uid + ext + "-sids");
-    sidNetObjs->emplace_back();
-    confdb->create(dbfile, "SourceIDToNetworkConnection", sidToNetUid, sidNetObjs->back());
-    sidNetObjs->back().set_obj("netconn", &dreqNetObjs->back());
-    std::vector<const conffwk::ConfigObject*> source_id_objs;
+
+    // set Network connections
+    std::string dreqNetUid(smartapp_uid + ext);
+    netConn->emplace_back(
+      obj_fac.create_net_obj(descriptor, dreqNetUid));
+    netConn->back().set_by_val<std::string>("data_type", descriptor->get_data_type());
+    netConn->back().set_by_val<std::string>("connection_type", descriptor->get_connection_type());
+    auto serviceObj = descriptor->get_associated_service()->config_object();
+    netConn->back().set_obj("associated_service", &serviceObj);
+
+    // set SourceID to Network connections
+    std::string sidToNetUid(smartapp_uid + ext + "-sids");
+    sidNetObj->emplace_back(
+      obj_fac.create("SourceIDToNetworkConnection", sidToNetUid));
+    sidNetObj->back().set_obj("netconn", &netConn->back());
+
+    // set SourceID objs
     sidObjs.push_back(std::make_shared<conffwk::ConfigObject>(tp_sid->config_object()));
-    source_id_objs.push_back(sidObjs.back().get());
-    sidNetObjs->back().set_objs("source_ids", source_id_objs);
+    sidNetObj->back().set_objs("source_ids", { sidObjs.back().get() });
   }
 }
-
+    
 inline void
 fill_sourceid_object_from_app(const ConfigObjectFactory& obj_fac,
                               const ReadoutApplication* roapp,
@@ -275,10 +284,9 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
       if (data_type == "DataRequest") {
 
         if (rapp != nullptr) {
-          fill_sourceid_object_from_app(
-            confdb, dbfile, rapp, &dreqNetObjs, &sidNetObjs, sidObjs, descriptor, smartapp->UID());
+          fill_sourceid_object_from_app(obj_fac, rapp, &dreqNetObjs, &sidNetObjs, sidObjs, descriptor, smartapp->UID());
 	} else {
-	  
+
           dreqNetObjs.emplace_back(
             obj_fac.create_net_obj(descriptor, smartapp->UID()));
 
@@ -290,11 +298,11 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
             fill_sourceid_object_from_app(obj_fac, roapp, &dreqNetObjs.back(), sidNetObjs.back(), sidObjs);
           } else if (fdapp != nullptr) {
             fill_sourceid_object_from_app(obj_fac, fdapp, &dreqNetObjs.back(), sidNetObjs.back(), sidObjs);
-          } else {
+	  } else {
             fill_sourceid_object_from_app(smartapp, &dreqNetObjs.back(), sidNetObjs.back());
-        }
+          }
 
-        }   // Not TPReplay
+	}   // App type loop
       }     // If network rule has DataRequest type of data
     }       // Loop over Apps network rules
   }         // loop over Session specific Apps
