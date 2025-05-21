@@ -8,8 +8,8 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
 
+#include "ConfigObjectFactory.hpp"
 #include "conffwk/Configuration.hpp"
 #include "oks/kernel.hpp"
 #include "confmodel/Connection.hpp"
@@ -30,19 +30,8 @@
 #include <iostream>
 #include <fmt/core.h>
 
-using namespace dunedaq;
-using namespace dunedaq::appmodel;
-
-static ModuleFactory::Registrator
-__reg__("TPStreamWriterApplication", [] (const SmartDaqApplication* smartApp,
-                             conffwk::Configuration* confdb,
-                             const std::string& dbfile,
-                             const confmodel::Session* session) -> ModuleFactory::ReturnType
-  {
-    auto app = smartApp->cast<TPStreamWriterApplication>();
-    return app->generate_modules(confdb, dbfile, session);
-  }
-  );
+namespace dunedaq {
+namespace appmodel {
 
 std::vector<const confmodel::DaqModule*> 
 TPStreamWriterApplication::generate_modules(conffwk::Configuration* confdb,
@@ -50,6 +39,9 @@ TPStreamWriterApplication::generate_modules(conffwk::Configuration* confdb,
                                             const confmodel::Session* /*session*/) const
 {
   std::vector<const confmodel::DaqModule*> modules;
+
+  const auto obj_fac = ConfigObjectFactory(this);
+
 
   auto tpwriterConf = get_tp_writer();
   if (tpwriterConf == 0) {
@@ -69,15 +61,8 @@ TPStreamWriterApplication::generate_modules(conffwk::Configuration* confdb,
       throw (BadConf(ERS_HERE, "No network descriptor given to receive TPSets"));
   }
   // Create Network Connection
-  conffwk::ConfigObject tset_in_net_obj;
-  auto tset_in_service_obj = tset_in_net_desc->get_associated_service()->config_object();
-  std::string tset_stream_uid(tset_in_net_desc->get_uid_base()+".*");
-  confdb->create(dbfile, "NetworkConnection", tset_stream_uid, tset_in_net_obj);
-  tset_in_net_obj.set_by_val<std::string>("data_type", tset_in_net_desc->get_data_type());
-  tset_in_net_obj.set_by_val<std::string>("connection_type", tset_in_net_desc->get_connection_type());
-  tset_in_net_obj.set_obj("associated_service", &tset_in_service_obj);
+  conffwk::ConfigObject tset_in_net_obj = obj_fac.create_net_obj(tset_in_net_desc, ".*");
 
-  conffwk::ConfigObject tpwrObj;
 
   auto source_id = get_source_id();
   if (source_id == nullptr) {
@@ -86,7 +71,7 @@ TPStreamWriterApplication::generate_modules(conffwk::Configuration* confdb,
 
   uint tpw_idx = 0;
   std::string tpwrUid("tpwriter-"+std::to_string(source_id->get_sid()));
-  confdb->create(dbfile, "TPStreamWriterModule", tpwrUid, tpwrObj);
+  conffwk::ConfigObject tpwrObj = obj_fac.create("TPStreamWriterModule", tpwrUid);
   tpwrObj.set_by_val<uint32_t>("source_id", source_id->get_sid());
   tpwrObj.set_by_val("writer_identifier", fmt::format("{}_tpw_{}", UID(), tpw_idx));
   tpwrObj.set_obj("configuration", &tpwriterConf->config_object());
@@ -96,3 +81,6 @@ TPStreamWriterApplication::generate_modules(conffwk::Configuration* confdb,
 
   return modules;
 }
+ 
+} // namespace appmodel  
+} // namespace dunedaq
