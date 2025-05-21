@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="11" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="dergonul" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20250310T162304"/>
+<info name="" type="" num-of-items="8" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20250521T102616"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -126,7 +126,7 @@
   <attribute name="port" type="u32" init-value="1234" is-not-null="yes"/>
   <attribute name="control_host" type="string" init-value="localhost" is-not-null="yes"/>
  </class>
- 
+
  <class name="WIBModule">
   <superclass name="DaqModule"/>
   <attribute name="wib_addr" type="string" init-value="tcp://192.168.121.1:1234" is-not-null="yes"/>
@@ -135,7 +135,6 @@
   <attribute name="enabled_femb2" description="Enable FEMB 2" type="bool" init-value="true" is-not-null="yes"/>
   <attribute name="enabled_femb3" description="Enable FEMB 3" type="bool" init-value="true" is-not-null="yes"/>
   <relationship name="conf" class-type="WIBSettings" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-
  </class>
 
  <class name="WIBModuleConf">
@@ -173,8 +172,15 @@
   <superclass name="ResourceSet"/>
   <relationship name="wib_module_conf" class-type="WIBModuleConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="hermes_module_conf" class-type="HermesModuleConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="detector_connections" class-type="DetectorToDaqConnection" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const " body=""/>
+  </method>
+  <method name="get_contains" description="">
+   <method-implementation language="c++" prototype="virtual const std::vector&lt;const ResourceBase*&gt;&amp; get_contains() const override" body="BEGIN_PRIVATE_SECTION&#xA;mutable std::vector&lt;const ResourceBase*&gt; m_contents;&#xA;END_PRIVATE_SECTION"/>
+  </method>
+  <method name="is_disabled" description="">
+   <method-implementation language="c++" prototype="virtual bool is_disabled(const std::set&lt;std::string&gt;&amp;) const override" body=""/>
   </method>
  </class>
 

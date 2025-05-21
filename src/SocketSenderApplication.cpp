@@ -15,6 +15,8 @@
 #include "appmodel/SocketSenderApplication.hpp"
 #include "appmodel/SocketWriterConf.hpp"
 
+#include "confmodel/DetectorToDaqConnection.hpp"
+
 #include "logging/Logging.hpp"
 #include <fmt/core.h>
 
@@ -32,6 +34,33 @@ static ModuleFactory::Registrator __reg__("SocketSenderApplication",
                                             auto app = smartApp->cast<SocketSenderApplication>();
                                             return app->generate_modules(confdb, dbfile, session);
                                           });
+
+//-----------------------------------------------------------------------------
+
+const std::vector<const confmodel::ResourceBase*>&
+SocketSenderApplication::get_contains() const {
+  if (m_contents.empty()) {
+    std::lock_guard scoped_lock(m_mutex);
+    check_init();
+    for (auto conn: m_detector_connections) {
+      m_contents.push_back(conn);
+    }
+  }
+  return m_contents;
+}
+
+bool SocketSenderApplication::is_disabled(
+  const std::set<std::string>& disabled_resources) const {
+  if (disabled_resources.contains(UID())) {
+    return true;
+  }
+  for (auto conn: m_detector_connections) {
+    if (!conn->is_disabled(disabled_resources)) {
+      return false;
+    }
+  }
+  return true;
+}
 
 std::vector<const confmodel::DaqModule*>
 SocketSenderApplication::generate_modules(conffwk::Configuration* confdb,
@@ -56,7 +85,7 @@ SocketSenderApplication::generate_modules(conffwk::Configuration* confdb,
     std::string writer_class = writer_conf->get_template_for();
 
     std::vector<const conffwk::ConfigObject*> d2d_conn_objs;
-    for (auto d2d_conn_res : get_contains()) {
+    for (auto d2d_conn_res : get_detector_connections()) {
       // Are we sure?
       if (d2d_conn_res->disabled(*session)) {
         TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn_res->UID();

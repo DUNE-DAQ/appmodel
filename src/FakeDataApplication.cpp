@@ -1,7 +1,7 @@
 /**
- * @file generate_modules.cpp
+ * @file FakeDataApplication.cpp
  *
- * Implementation of FakeDataApplication's generate_modules dal method
+ * Implementation of FakeDataApplication's dal methods
  *
  * This is part of the DUNE DAQ Software Suite, copyright 2023.
  * Licensing/copyright details are in the COPYING file that you should have
@@ -49,6 +49,33 @@ static ModuleFactory::Registrator __reg__("FakeDataApplication",
                                             auto app = smartApp->cast<FakeDataApplication>();
                                             return app->generate_modules(confdb, dbfile, session);
                                           });
+
+//-----------------------------------------------------------------------------
+
+const std::vector<const confmodel::ResourceBase*>&
+FakeDataApplication::get_contains() const {
+  if (m_contents.empty()) {
+    std::lock_guard scoped_lock(m_mutex);
+    check_init();
+    for (auto conn: m_producers) {
+      m_contents.push_back(conn);
+    }
+  }
+  return m_contents;
+}
+
+bool FakeDataApplication::is_disabled(
+  const std::set<std::string>& disabled_resources) const {
+  if (disabled_resources.contains(UID())) {
+    return true;
+  }
+  for (auto conn: m_producers) {
+    if (!conn->is_disabled(disabled_resources)) {
+      return false;
+    }
+  }
+  return true;
+}
 
 std::vector<const confmodel::DaqModule*>
 FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
@@ -109,7 +136,7 @@ FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
   conffwk::ConfigObject faQueueObj = obj_fac.create_queue_obj(faOutputQDesc, UID());
 
   // Create a FakeDataProdModule for each stream of this Readout Group
-  for (auto fdpConf : get_contains()) {
+  for (auto fdpConf : get_producers()) {
     if (fdpConf->disabled(*session)) {
       TLOG_DEBUG(7) << "Ignoring disabled FakeDataProdConf " << fdpConf->UID();
       continue;

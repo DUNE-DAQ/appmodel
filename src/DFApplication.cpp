@@ -73,7 +73,7 @@ fill_sourceid_object_from_app(const ConfigObjectFactory& obj_fac,
   std::vector<const conffwk::ConfigObject*> source_id_objs;
   std::vector<uint32_t> app_source_ids;
 
-  for (auto d2d_conn_res : roapp->get_contains()) {
+  for (auto d2d_conn_res : roapp->get_detector_connections()) {
 
     // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader
     // module
@@ -129,15 +129,10 @@ fill_sourceid_object_from_app(const ConfigObjectFactory& obj_fac,
   std::vector<const conffwk::ConfigObject*> source_id_objs;
   std::vector<uint32_t> app_source_ids;
 
-  for (auto fdp_res : fdapp->get_contains()) {
+  for (auto fdpc : fdapp->get_producers()) {
 
     // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader
     // module
-    auto fdpc = fdp_res->cast<appmodel::FakeDataProdConf>();
-
-    if (!fdpc) {
-      continue;
-    }
 
     app_source_ids.push_back(fdpc->get_source_id());
   }

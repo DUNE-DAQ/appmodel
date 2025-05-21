@@ -53,6 +53,33 @@ __reg__("DaphneApplication", [] (const SmartDaqApplication* smartApp,
   }
   );
 
+//-----------------------------------------------------------------------------
+
+const std::vector<const confmodel::ResourceBase*>&
+DaphneApplication::get_contains() const {
+  if (m_contents.empty()) {
+    std::lock_guard scoped_lock(m_mutex);
+    check_init();
+    for (auto conn: m_detector_connections) {
+      m_contents.push_back(conn);
+    }
+  }
+  return m_contents;
+}
+
+bool DaphneApplication::is_disabled(
+  const std::set<std::string>& disabled_resources) const {
+  if (disabled_resources.contains(UID())) {
+    return true;
+  }
+  for (auto conn: m_detector_connections) {
+    if (!conn->is_disabled(disabled_resources)) {
+      return false;
+    }
+  }
+  return true;
+}
+
 std::vector<const confmodel::DaqModule*> 
 DaphneApplication::generate_modules(conffwk::Configuration* config,
                                     const std::string& dbfile,
@@ -64,21 +91,16 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
 
   std::map<std::string, const confmodel::GeoId*> geo_ids;
   
-  for (auto d2d_conn_res : get_contains()) {
+  for (auto d2d_conn : get_detector_connections()) {
 
     // A Resource can be disabled and still its application can be enabled because the application can have multile resources, so we need to check which resources are enabled
-    if (d2d_conn_res->disabled(*session)) {
-      TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn_res->UID();
+    if (d2d_conn->disabled(*session)) {
+      TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
       continue;
     }
 
-    TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn_res->UID();
+    TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn->UID();
     // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader module
-    auto d2d_conn = d2d_conn_res->cast<confmodel::DetectorToDaqConnection>();
-
-    if (!d2d_conn) {
-      throw(BadConf(ERS_HERE, "DaphneApplication contains something other than DetectorToDaqConnection"));
-    }
 
     if (d2d_conn->get_contains().empty()) {
       throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain senders or receivers"));
@@ -106,7 +128,7 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
 
       // from the felix sender we get the DetStream and then the GeoID
 
-      auto streams = felix_sender -> get_contains();
+      auto streams = felix_sender -> get_streams();
 
       for ( const auto * det_s : streams ) {
 
@@ -116,8 +138,7 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
 	}
 
 	if (!geo_ids.contains(ip)) {
-	  const auto * temp_stream = det_s->cast<confmodel::DetectorStream>();
-	  geo_ids[ip] = temp_stream->get_geo_id();
+	  geo_ids[ip] = det_s->get_geo_id();
 	} 
 	 
       } // loop over DetStreams
