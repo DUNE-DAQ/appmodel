@@ -90,7 +90,6 @@
 
  <class name="CTBApplication" description="Application that controls the CTB">
   <superclass name="SmartDaqApplication"/>
-  <superclass name="Resource"/>
   <superclass name="ResourceSetAND"/>
   <relationship name="generator" class-type="CTBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="board" class-type="CTBoardConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
