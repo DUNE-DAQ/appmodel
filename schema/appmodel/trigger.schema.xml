@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="47" oks-format="schema" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231211T133151" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20250521T101959"/>
+<info name="" type="" num-of-items="47" oks-format="schema" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231211T133151" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20250523T112537"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -132,7 +132,7 @@
  </class>
 
  <class name="HSIEventToTCApplication">
-  <superclass name="Resource"/>
+  <superclass name="ResourceBase"/>
   <superclass name="SmartDaqApplication"/>
   <relationship name="hsevent_to_tc_conf" class-type="HSI2TCTranslatorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate daq module dal objects for HSIEventToTCApplication on the fly">
@@ -389,6 +389,7 @@
 
  <class name="TriggerApplication">
   <superclass name="SmartDaqApplication"/>
+  <superclass name="ResourceBase"/>
   <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
   <attribute name="tx_generation_disabled" description="Disable TA/TC generation as a post-processing task -- only to be done by the experts for e.g. TP performance studies" type="bool" init-value="false"/>
   <relationship name="data_subscriber" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>

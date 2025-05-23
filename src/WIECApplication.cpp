@@ -55,7 +55,7 @@ __reg__("WIECApplication", [] (const SmartDaqApplication* smartApp,
 //-----------------------------------------------------------------------------
 
 const std::vector<const confmodel::ResourceBase*>&
-WIECApplication::get_contains() const {
+WIECApplication::get_resources() const {
   if (m_contents.empty()) {
     std::lock_guard scoped_lock(m_mutex);
     check_init();
@@ -64,19 +64,6 @@ WIECApplication::get_contains() const {
     }
   }
   return m_contents;
-}
-
-bool WIECApplication::is_disabled(
-  const std::set<std::string>& disabled_resources) const {
-  if (disabled_resources.contains(UID())) {
-    return true;
-  }
-  for (auto conn: m_detector_connections) {
-    if (!conn->is_disabled(disabled_resources)) {
-      return false;
-    }
-  }
-  return true;
 }
 
 
@@ -104,7 +91,7 @@ WIECApplication::generate_modules(conffwk::Configuration* config,
     TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn->UID();
 
     // Is this check necessary?
-    if (d2d_conn->get_contains().empty()) {
+    if (d2d_conn->get_resources().empty()) {
       throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain senders or receivers"));
     }
 

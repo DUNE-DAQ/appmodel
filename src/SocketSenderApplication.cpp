@@ -38,7 +38,7 @@ static ModuleFactory::Registrator __reg__("SocketSenderApplication",
 //-----------------------------------------------------------------------------
 
 const std::vector<const confmodel::ResourceBase*>&
-SocketSenderApplication::get_contains() const {
+SocketSenderApplication::get_resources() const {
   if (m_contents.empty()) {
     std::lock_guard scoped_lock(m_mutex);
     check_init();
@@ -47,19 +47,6 @@ SocketSenderApplication::get_contains() const {
     }
   }
   return m_contents;
-}
-
-bool SocketSenderApplication::is_disabled(
-  const std::set<std::string>& disabled_resources) const {
-  if (disabled_resources.contains(UID())) {
-    return true;
-  }
-  for (auto conn: m_detector_connections) {
-    if (!conn->is_disabled(disabled_resources)) {
-      return false;
-    }
-  }
-  return true;
 }
 
 std::vector<const confmodel::DaqModule*>

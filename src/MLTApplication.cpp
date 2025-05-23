@@ -252,7 +252,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
           continue;
         }
 
-        if (d2d_conn->get_contains().empty()) {
+        if (d2d_conn->get_resources().empty()) {
           throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain interfaces"));
         }
 

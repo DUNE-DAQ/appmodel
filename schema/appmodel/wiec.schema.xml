@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="8" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20250521T102616"/>
+<info name="" type="" num-of-items="8" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20250522T162650"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -169,18 +169,15 @@
 
  <class name="WIECApplication" description="Application describing the controller of a detector unit using WIBs inside a WIEC.">
   <superclass name="SmartDaqApplication"/>
-  <superclass name="ResourceSet"/>
+  <superclass name="ResourceSetDisableAND"/>
   <relationship name="wib_module_conf" class-type="WIBModuleConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="hermes_module_conf" class-type="HermesModuleConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="detector_connections" class-type="DetectorToDaqConnection" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const " body=""/>
   </method>
-  <method name="get_contains" description="">
-   <method-implementation language="c++" prototype="virtual const std::vector&lt;const ResourceBase*&gt;&amp; get_contains() const override" body="BEGIN_PRIVATE_SECTION&#xA;mutable std::vector&lt;const ResourceBase*&gt; m_contents;&#xA;END_PRIVATE_SECTION"/>
-  </method>
-  <method name="is_disabled" description="">
-   <method-implementation language="c++" prototype="virtual bool is_disabled(const std::set&lt;std::string&gt;&amp;) const override" body=""/>
+  <method name="get_resources" description="">
+   <method-implementation language="c++" prototype="virtual const std::vector&lt;const ResourceBase*&gt;&amp; get_resources() const override" body="BEGIN_PRIVATE_SECTION&#xA;mutable std::vector&lt;const ResourceBase*&gt; m_contents;&#xA;END_PRIVATE_SECTION"/>
   </method>
  </class>
 

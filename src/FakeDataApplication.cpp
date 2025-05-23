@@ -53,7 +53,7 @@ static ModuleFactory::Registrator __reg__("FakeDataApplication",
 //-----------------------------------------------------------------------------
 
 const std::vector<const confmodel::ResourceBase*>&
-FakeDataApplication::get_contains() const {
+FakeDataApplication::get_resources() const {
   if (m_contents.empty()) {
     std::lock_guard scoped_lock(m_mutex);
     check_init();
@@ -62,19 +62,6 @@ FakeDataApplication::get_contains() const {
     }
   }
   return m_contents;
-}
-
-bool FakeDataApplication::is_disabled(
-  const std::set<std::string>& disabled_resources) const {
-  if (disabled_resources.contains(UID())) {
-    return true;
-  }
-  for (auto conn: m_producers) {
-    if (!conn->is_disabled(disabled_resources)) {
-      return false;
-    }
-  }
-  return true;
 }
 
 std::vector<const confmodel::DaqModule*>

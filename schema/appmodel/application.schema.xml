@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="54" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20250521T103543"/>
+<info name="" type="" num-of-items="54" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20250523T134751"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -88,8 +88,8 @@
 
 
  <class name="DFApplication">
-  <superclass name="Resource"/>
   <superclass name="SmartDaqApplication"/>
+  <superclass name="ResourceBase"/>
   <relationship name="trb" description="Configuration of the TRB to be generated my get_modules()" class-type="TRBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_writers" class-type="DataWriterConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="uses" class-type="DFHWConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -124,8 +124,8 @@
  </class>
 
  <class name="DTSHSIApplication">
-  <superclass name="Resource"/>
   <superclass name="SmartDaqApplication"/>
+  <superclass name="ResourceBase"/>
   <relationship name="link_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="generator" class-type="HSIReadoutConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
@@ -210,18 +210,15 @@
  </class>
 
  <class name="FakeDataApplication">
-  <superclass name="ResourceSet"/>
+  <superclass name="ResourceSetDisableAND"/>
   <superclass name="SmartDaqApplication"/>
   <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
   <relationship name="producers" description="List of configurations of fake data producer modules to be used by this application" class-type="FakeDataProdConf" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
   <method name="generate_modules" description="Generate daq module dal objects for streams of the FakeDataApplication on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const " body=""/>
   </method>
-  <method name="is_disabled" description="">
-   <method-implementation language="c++" prototype="virtual bool is_disabled(const std::set&lt;std::string&gt;&amp;) const override" body=""/>
-  </method>
-  <method name="get_contains" description="">
-   <method-implementation language="c++" prototype="virtual const std::vector&lt;const ResourceBase*&gt;&amp; get_contains() const override" body="BEGIN_PRIVATE_SECTION&#xA;mutable std::vector&lt;const ResourceBase*&gt; m_contents;&#xA;END_PRIVATE_SECTION"/>
+  <method name="get_resources" description="">
+   <method-implementation language="c++" prototype="virtual const std::vector&lt;const ResourceBase*&gt;&amp; get_resources() const override" body="BEGIN_PRIVATE_SECTION&#xA;mutable std::vector&lt;const ResourceBase*&gt; m_contents;&#xA;END_PRIVATE_SECTION"/>
   </method>
  </class>
 
@@ -241,8 +238,8 @@
  </class>
 
  <class name="FakeHSIApplication">
-  <superclass name="Resource"/>
   <superclass name="SmartDaqApplication"/>
+  <superclass name="ResourceBase"/>
   <relationship name="link_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="generator" class-type="FakeHSIEventGeneratorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
@@ -363,8 +360,8 @@
  </class>
 
  <class name="ReadoutApplication">
-  <superclass name="ResourceSet"/>
   <superclass name="SmartDaqApplication"/>
+  <superclass name="ResourceSetDisableAND"/>
   <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
   <attribute name="tp_generation_enabled" type="bool" init-value="true"/>
   <attribute name="ta_generation_enabled" type="bool" init-value="true"/>
@@ -378,11 +375,8 @@
   <method name="generate_modules" description="Generate daq module dal objects for streams of thie ReadoutApplication on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
   </method>
-  <method name="get_contains" description="">
-   <method-implementation language="c++" prototype="virtual const std::vector&lt;const ResourceBase*&gt;&amp; get_contains() const override" body="BEGIN_PRIVATE_SECTION&#xA;mutable std::vector&lt;const ResourceBase*&gt; m_contents;&#xA;END_PRIVATE_SECTION"/>
-  </method>
-  <method name="is_disabled" description="">
-   <method-implementation language="c++" prototype="virtual bool is_disabled(const std::set&lt;std::string&gt;&amp;) const override" body=""/>
+  <method name="get_resources" description="">
+   <method-implementation language="c++" prototype="virtual const std::vector&lt;const ResourceBase*&gt;&amp; get_resources() const override" body="BEGIN_PRIVATE_SECTION&#xA;mutable std::vector&lt;const ResourceBase*&gt; m_contents;&#xA;END_PRIVATE_SECTION"/>
   </method>
  </class>
 
@@ -433,7 +427,7 @@
  </class>
 
  <class name="SocketSenderApplication">
-  <superclass name="ResourceSet"/>
+  <superclass name="ResourceSetDisableAND"/>
   <superclass name="SmartDaqApplication"/>
   <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
   <relationship name="data_writers" class-type="SocketDataWriterConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -441,11 +435,8 @@
   <method name="generate_modules" description="Generate daq module dal objects for streams of the SocketSenderApplication on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
   </method>
-  <method name="is_disabled" description="">
-   <method-implementation language="c++" prototype="virtual bool is_disabled(const std::set&lt;std::string&gt;&amp;) const override" body=""/>
-  </method>
-  <method name="get_contains" description="">
-   <method-implementation language="c++" prototype="virtual const std::vector&lt;const ResourceBase*&gt;&amp; get_contains() const override" body="BEGIN_PRIVATE_SECTION&#xA;mutable std::vector&lt;const ResourceBase*&gt; m_contents;&#xA;END_PRIVATE_SECTION"/>
+  <method name="get_resources" description="">
+   <method-implementation language="c++" prototype="virtual const std::vector&lt;const ResourceBase*&gt;&amp; get_resources() const override" body="BEGIN_PRIVATE_SECTION&#xA;mutable std::vector&lt;const ResourceBase*&gt; m_contents;&#xA;END_PRIVATE_SECTION"/>
   </method>
  </class>
 
@@ -471,8 +462,8 @@
  </class>
 
  <class name="TPStreamWriterApplication">
-  <superclass name="Resource"/>
   <superclass name="SmartDaqApplication"/>
+  <superclass name="ResourceBase"/>
   <relationship name="tp_writer" class-type="TPStreamWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate dal objects for streams of thie ReadoutApplication on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
