@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="24" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250523T102933"/>
+<info name="" type="" num-of-items="24" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250523T150632"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -146,12 +146,16 @@
  <class name="CTBMisc">
   <superclass name="ResourceSetAND"/>
   <attribute name="ch_status" type="bool" init-value="0" is-not-null="yes"/>
-  <relationship name="randomtrigger_1" class-type="CTBRandomTrigger" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="randomtrigger_2" class-type="CTBRandomTrigger" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="pulser" class-type="CTBPulser" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="timing" class-type="CTBTiming" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="get_ctb_json" description="">
    <method-implementation language="C++" prototype="nlohmann::json get_ctb_json(const dunedaq::confmodel::Session&amp; session) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;END_HEADER_PROLOGUE"/>
+  </method>
+  <method name="get_randomtrigger_1" description="">
+   <method-implementation language="C++" prototype="const CTBRandomTrigger &amp; get_randomtrigger_1() const" body=""/>
+  </method>
+  <method name="get_randomtrigger_2" description="">
+   <method-implementation language="C++" prototype="const CTBRandomTrigger &amp; get_randomtrigger_2() const" body=""/>
   </method>
  </class>
 
@@ -259,12 +263,14 @@
   <relationship name="misc" class-type="CTBMisc" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="beam" class-type="CTBSubsystem" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="beam_LLTs" class-type="CTBLLT" low-cc="many" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="HLTs" class-type="CTBHLT" low-cc="many" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="crt" class-type="CTBCRTSubsystem" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="crt_LLTs" class-type="CTBCountLLT" low-cc="many" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="pds" class-type="CTBPDSSubsystem" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="get_ctb_json" description="create the json configuration for the board">
    <method-implementation language="C++" prototype="nlohmann::json get_ctb_json(const dunedaq::confmodel::Session&amp; session, std::optional&lt;std::string&gt; socket_host = std::nullopt ) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;#include &lt;optional&gt;&#xA;END_HEADER_PROLOGUE"/>
+  </method>
+  <method name="get_HLTs" description="">
+   <method-implementation language="C++" prototype="std::vector&lt;const CTBHLT*&gt; get_HLTs() const" body=""/>
   </method>
  </class>
 

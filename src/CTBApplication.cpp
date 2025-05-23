@@ -216,6 +216,23 @@ CTBApplication::generate_modules(const confmodel::Session* session) const
 
 
 
+std::vector<const CTBHLT*> CTBoardConf::get_HLTs() const {
+
+  std::vector<const CTBHLT*> ret;
+  
+  auto vec = get_contains();
+
+  for ( auto & t : vec ) {
+    auto hlt = t->cast<CTBHLT>();
+    if ( hlt ) {
+      ret.push_back(hlt);
+    }
+  }
+
+  return ret;
+}
+
+
 nlohmann::json CTBoardConf::get_ctb_json(const dunedaq::confmodel::Session& session, std::optional<std::string> socket_host) const {
 
   nlohmann::json json;
@@ -281,13 +298,40 @@ nlohmann::json CTBoardConf::get_ctb_json(const dunedaq::confmodel::Session& sess
 }
 
 
+const CTBRandomTrigger & CTBMisc::get_randomtrigger_1() const {
+
+  auto vec = get_contains();
+  for ( auto & t : vec) {
+    if ( t->UID().find("HLT") != std::string::npos ) {
+      auto ret = t->cast<CTBRandomTrigger>();
+      return *ret;
+    }
+  }
+
+  throw BadConf(ERS_HERE, "Missing HLT_0");
+}
+
+const CTBRandomTrigger & CTBMisc::get_randomtrigger_2() const {
+
+  auto vec = get_contains();
+  for ( auto & t : vec) {
+    if ( t->UID().find("LLT") != std::string::npos ) {
+      auto ret = t->cast<CTBRandomTrigger>();
+      return *ret;
+    }
+  }
+
+  throw BadConf(ERS_HERE, "Missing LLT_0");
+}
+
+
 
 
 nlohmann::json CTBMisc::get_ctb_json(const dunedaq::confmodel::Session& session) const {
 
   nlohmann::json ret;
-  ret["randomtrigger_1"] = get_randomtrigger_1() -> get_ctb_json(session);
-  ret["randomtrigger_2"] = get_randomtrigger_2() -> get_ctb_json(session);
+  ret["randomtrigger_1"] = get_randomtrigger_1().get_ctb_json(session);
+  ret["randomtrigger_2"] = get_randomtrigger_2().get_ctb_json(session);
   ret["pulser"] = get_pulser() -> to_json(false, true);
   ret["timing"] = get_timing() ->  to_json(false, true);
 
