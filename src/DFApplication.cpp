@@ -148,14 +148,12 @@ fill_sourceid_object_from_app(const ConfigObjectFactory& obj_fac,
 }
 
 std::vector<const confmodel::DaqModule*>
-DFApplication::generate_modules(conffwk::Configuration* confdb,
-                                const std::string& dbfile,
-                                const confmodel::Session* session) const
+DFApplication::generate_modules(const confmodel::Session* session) const
 {
+
+  ConfigObjectFactory obj_fac(this);
+
   std::vector<const confmodel::DaqModule*> modules;
-
-  const auto obj_fac = ConfigObjectFactory(this);
-
 
   // Containers for module specific config objects for output/input
   // Prepare TRB output objects
@@ -298,7 +296,7 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
   trbObj.set_objs("outputs", trbOutputObjs);
   trbObj.set_objs("request_connections", trbSidNetObjs);
   // Push TRB Module Object from confdb
-  modules.push_back(confdb->get<TRBModule>(trbUid));
+  modules.push_back(obj_fac.get_dal<TRBModule>(trbUid));
 
   // Get DataWriterModule Config Object (only one for now, maybe more later?)
   auto dwrConfs = get_data_writers();
@@ -319,7 +317,7 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
     dwrObj.set_objs("inputs", { &trQueueObj });
     dwrObj.set_objs("outputs", { &tokenNetObj });
     // Push DataWriterModule Module Object from confdb
-    modules.push_back(confdb->get<DataWriterModule>(dwrUid));
+    modules.push_back(obj_fac.get_dal<DataWriterModule>(dwrUid));
     ++dw_idx;
   }
 
