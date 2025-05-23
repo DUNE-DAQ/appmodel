@@ -60,9 +60,7 @@ using namespace dunedaq::appmodel;
 
 
 std::vector<const confmodel::DaqModule*> 
-CTBApplication::generate_modules(conffwk::Configuration* config,
-				 const std::string& dbfile,
-				 const confmodel::Session* session) const
+CTBApplication::generate_modules(const confmodel::Session* session) const
 {
   std::vector<const confmodel::DaqModule*> modules;
 
@@ -188,7 +186,7 @@ CTBApplication::generate_modules(conffwk::Configuration* config,
 
     dlhObj.set_objs("inputs", { &queueObj, &faNetObj });
 
-    modules.push_back(config->get<DataHandlerModule>(uid));
+    modules.push_back(obj_fac.get_dal<appmodel::DataHandlerModule>(uid));
     
   }  // loop over CTB sources
    
@@ -209,7 +207,7 @@ CTBApplication::generate_modules(conffwk::Configuration* config,
   
   module_obj.set_objs("outputs", ctb_module_output_ptrs);
   
-  auto module = config->get<appmodel::CTBModule>(module_obj);
+  auto module = obj_fac.get_dal<appmodel::CTBModule>(module_obj.UID());
   
   modules.push_back(module);
   

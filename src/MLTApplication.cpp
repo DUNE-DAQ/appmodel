@@ -351,11 +351,8 @@ MLTApplication::generate_modules(const confmodel::Session* session) const
     if (ctb_app) {
       auto sources = ctb_app->get_sources();
       for ( const auto & s : sources ) {
-	auto src_id_conf_ptr = new conffwk::ConfigObject();
-	confdb->create(dbfile,
-		       "SourceIDConf",
-		       ctb_app->UID() + "-" + s.first,
-		       *src_id_conf_ptr);
+	auto src_id_conf_ptr = new conffwk::ConfigObject( obj_fac.create("SourceIDConf",
+									 ctb_app->UID() + "-" + s.first ) );
 	src_id_conf_ptr->set_by_val<uint32_t>("sid", s.second->get_sid());
 	src_id_conf_ptr->set_by_val<std::string>("subsystem", s.second->get_subsystem());
 	sourceIds.push_back(src_id_conf_ptr);
