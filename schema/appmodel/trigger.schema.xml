@@ -305,10 +305,14 @@
   <attribute name="buffer_timeout" description="Timeout (buffer) to wait for new overlapping TCs before sending TD, in ms" type="u32" init-value="100" is-not-null="yes"/>
   <attribute name="td_readout_limit" description="Maximum allowed time length (in ticks) for a readout window of a single TD" type="u32" init-value="1000000" is-not-null="yes"/>
   <attribute name="ignore_tc" description="Optional list of TC types to be ignored in MLT" type="u32" is-multi-value="yes"/>
-  <attribute name="trigger_bitwords" description="Optional dictionary of bitwords to use when forming trigger decisions in MLT (currently not used)" type="string" is-multi-value="yes"/>
+  <relationship name="trigger_bitwords" description="Optional dictionary of bitwords to use when forming trigger decisions in MLT" class-type="TriggerBitword"  low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="roi_group_conf" description="The configuration (table) for ROI readout (currently not used)" class-type="ROIGroupConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="tc_readout_map" description="The readout windows assigned to TDs in MLT, based on TC type." class-type="TCReadoutMap" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="mandatory_links" description="Source Ids that will always be included in a trigger decision." class-type="SourceIDConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="TriggerBitword">
+   <attribute name="bitword" description="Trigger Bitword in string format" type="string" is-multi-value="yes"/>
  </class>
 
  <class name="TCMakerADCSimpleWindowAlgorithm">
