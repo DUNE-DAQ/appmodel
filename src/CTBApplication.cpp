@@ -64,7 +64,7 @@ CTBApplication::generate_modules(const confmodel::Session* session) const
 {
   std::vector<const confmodel::DaqModule*> modules;
 
-  const auto obj_fac = ConfigObjectFactory(this);
+  ConfigObjectFactory obj_fac(this);
   
   auto dlhConf = get_link_handler();
   auto dlhClass = dlhConf->get_template_for();
