@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="49" oks-format="schema" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231211T133151" last-modified-by="thea" last-modified-on="np04-srv-011.cern.ch" last-modification-time="20250507T132921"/>
+<info name="" type="" num-of-items="50" oks-format="schema" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231211T133151" last-modified-by="ramarine" last-modified-on="np04-srv-017.cern.ch" last-modification-time="20250523T091603"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -166,6 +166,24 @@
  <class name="MLTModule">
   <superclass name="DaqModule"/>
   <relationship name="configuration" class-type="MLTConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="PDSChannelThreshold" description="A class which controls the threshold value of a channel. ">
+  <attribute name="channel_id" description="id of channel of the PDS" type="u32" range="0..39" is-not-null="yes"/>
+  <attribute name="threshold" type="u32" init-value="0" is-not-null="yes"/>
+ </class>
+
+ <class name="PDSRawDataProcessor" description="A class which contains info about PDS. For example here you can add threshold for specific channels.">
+  <superclass name="RawDataProcessor"/>
+  <attribute name="intg_minima" description="integral higher than threshold value for each channel." type="u32" is-multi-value="yes" init-value="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"/>
+  <attribute name="CustomChannels" description="Are there any channels for which we set custom gain/threshold etc values?" type="bool" init-value="false" is-not-null="yes"/>
+  <relationship name="channels_with_threshold" class-type="PDSChannelThreshold" low-cc="zero" high-cc="many" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <method name="GetCustomChannelNumber" description="returns the size of how many channels have custom thresholds. In more concrete terms, it counts how many object of PDSChannelThreshold the PDSRawDataProcessor has.  ">
+   <method-implementation language="c++" prototype="size_t GetCustomChannelNumber() const" body="return m_channels_with_threshold.size();&#xA;"/>
+  </method>
+  <method name="GetCustomChannel" description="This returns a PDSChannelThreshold and it can be used in a loop to access all the PDSChannelThrsholds objects defined in the PDSRawDataProcessor.">
+   <method-implementation language="c++" prototype="const PDSChannelThreshold&amp; GetCustomChannel(size_t index) const" body="return *m_channels_with_threshold.at(index);"/>
+  </method>
  </class>
 
  <class name="ProcessingStep" description="Base class for TPG processors.">
@@ -384,14 +402,6 @@
   <relationship name="processing_steps" class-type="ProcessingStep" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="sot_minima" description="TP samples over threshold minimum requirement by plane." class-type="SamplesOverThresholdMinima" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
-
-
- <class name="PDSRawDataProcessor">
-  <superclass name="RawDataProcessor"/>
-  <relationship name="processing_steps" class-type="ProcessingStep" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <attribute name="intg_minima" description="integral higher than threshold value for each channel." type="u32" is-multi-value="yes"/>
- </class>
-
 
  <class name="TPDataProcessor">
   <superclass name="DataProcessor"/>
