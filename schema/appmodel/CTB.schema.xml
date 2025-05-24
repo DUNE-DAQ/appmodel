@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="23" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250524T135905"/>
+<info name="" type="" num-of-items="23" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250524T141851"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -256,7 +256,6 @@
  <class name="CTBoardConf">
   <superclass name="ResourceSetAND"/>
   <relationship name="sockets" class-type="CTBSockets" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
-  <relationship name="misc" class-type="CTBMisc" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="beam" class-type="CTBSubsystem" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="CRT" class-type="CTBCRTSubsystem" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="pds" class-type="CTBPDSSubsystem" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -271,6 +270,9 @@
   </method>
   <method name="get_beam_LLTs" description="">
    <method-implementation language="C++" prototype="std::vector&lt;const CTBLLT*&gt; get_beam_LLTs() const" body=""/>
+  </method>
+  <method name="get_misc" description="">
+   <method-implementation language="C++" prototype="const CTBMisc &amp; get_misc() const" body=""/>
   </method>
  </class>
 

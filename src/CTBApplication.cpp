@@ -215,6 +215,20 @@ CTBApplication::generate_modules(const confmodel::Session* session) const
 }
 
 
+const CTBMisc & CTBoardConf::get_misc() const {
+
+  auto vec = get_contains();
+  for ( auto & t : vec) {
+    auto misc = t->cast<CTBMisc>();
+    if ( misc ) {
+      return *misc;
+    }
+  }
+
+  throw BadConf(ERS_HERE, "Missing Misc");
+
+}
+
 
 std::vector<const CTBHLT*> CTBoardConf::get_HLTs() const {
 
@@ -272,7 +286,7 @@ nlohmann::json CTBoardConf::get_ctb_json(const dunedaq::confmodel::Session& sess
 
   nlohmann::json json;
   json["sockets"] = get_sockets() -> get_ctb_json( socket_host ); 
-  json["misc"] = get_misc() -> get_ctb_json(session);
+  json["misc"] = get_misc().get_ctb_json(session);
 
   nlohmann::json hlt;
 
