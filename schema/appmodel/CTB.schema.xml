@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="24" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250523T150632"/>
+<info name="" type="" num-of-items="23" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250524T135905"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -101,10 +101,6 @@
   <method name="get_sources" description="The CTB HSI has two sources, one for HLT and one for LLT. &#xA;This methods gets the right information in a way that makes easy to loop over the information">
    <method-implementation language="C++" prototype="std::vector&lt;std::pair&lt;std::string, const appmodel::SourceIDConf*&gt;&gt; get_sources() const" body="return {{ &quot;HLT&quot;,  get_source_id() }, &#xA;             { &quot;LLT&quot;, get_LLT_source() }};"/>
   </method>
- </class>
-
- <class name="CTBBeamLLT">
-  <superclass name="CTBLLT"/>
  </class>
 
  <class name="CTBCRTSubsystem">
@@ -262,15 +258,19 @@
   <relationship name="sockets" class-type="CTBSockets" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
   <relationship name="misc" class-type="CTBMisc" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="beam" class-type="CTBSubsystem" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="beam_LLTs" class-type="CTBLLT" low-cc="many" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="crt" class-type="CTBCRTSubsystem" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="crt_LLTs" class-type="CTBCountLLT" low-cc="many" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="CRT" class-type="CTBCRTSubsystem" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="pds" class-type="CTBPDSSubsystem" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="get_ctb_json" description="create the json configuration for the board">
    <method-implementation language="C++" prototype="nlohmann::json get_ctb_json(const dunedaq::confmodel::Session&amp; session, std::optional&lt;std::string&gt; socket_host = std::nullopt ) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;#include &lt;optional&gt;&#xA;END_HEADER_PROLOGUE"/>
   </method>
   <method name="get_HLTs" description="">
    <method-implementation language="C++" prototype="std::vector&lt;const CTBHLT*&gt; get_HLTs() const" body=""/>
+  </method>
+  <method name="get_CRT_LLTs" description="">
+   <method-implementation language="C++" prototype="std::vector&lt;const CTBCountLLT*&gt; get_CRT_LLTs() const" body=""/>
+  </method>
+  <method name="get_beam_LLTs" description="">
+   <method-implementation language="C++" prototype="std::vector&lt;const CTBLLT*&gt; get_beam_LLTs() const" body=""/>
   </method>
  </class>
 

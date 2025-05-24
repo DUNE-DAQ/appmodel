@@ -233,6 +233,41 @@ std::vector<const CTBHLT*> CTBoardConf::get_HLTs() const {
 }
 
 
+std::vector<const CTBCountLLT*> CTBoardConf::get_CRT_LLTs() const {
+
+  std::vector<const CTBCountLLT*> ret;
+  
+  auto vec = get_contains();
+
+  for ( auto & t : vec ) {
+    auto llt = t->cast<CTBCountLLT>();
+    if ( llt ) {
+      ret.push_back(llt);
+    }
+  }
+
+  return ret;
+}
+
+
+std::vector<const CTBLLT*> CTBoardConf::get_beam_LLTs() const {
+
+  std::vector<const CTBLLT*> ret;
+  
+  auto vec = get_contains();
+
+  for ( auto & t : vec ) {
+    auto llt = t->cast<CTBLLT>();
+    auto count_llt = t->cast<CTBCountLLT>();
+    if ( (!count_llt) && (llt) ) {
+      ret.push_back(llt);
+    }
+  }
+
+  return ret;
+}
+
+
 nlohmann::json CTBoardConf::get_ctb_json(const dunedaq::confmodel::Session& session, std::optional<std::string> socket_host) const {
 
   nlohmann::json json;
@@ -278,9 +313,9 @@ nlohmann::json CTBoardConf::get_ctb_json(const dunedaq::confmodel::Session& sess
 
   //  ---- CRT ----
   
-  auto & crt_block = subsystems["crt"] = get_crt() -> to_json(false, true);
+  auto & crt_block = subsystems["crt"] = get_CRT() -> to_json(false, true);
   std::list<nlohmann::json> json_crt_llts;
-  auto crt_llts = get_crt_LLTs();
+  auto crt_llts = get_CRT_LLTs();
   for ( const auto & llt : crt_llts ) {
     json_crt_llts.push_back(llt->get_ctb_json(session));
   }
