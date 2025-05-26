@@ -12,7 +12,7 @@
 #include "ConfigObjectFactory.hpp"
 
 #include "appmodel/appmodelIssues.hpp"
-#include "appmodel/FakeSocketWriterModule.hpp"
+#include "appmodel/SocketWriterModule.hpp"
 #include "appmodel/SocketSenderApplication.hpp"
 #include "appmodel/SocketWriterConf.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
@@ -117,10 +117,10 @@ SocketSenderApplication::generate_modules(conffwk::Configuration* config,
       //
 
       //
-      // Instantiate DataWriterModule of type FakeSocketWriterModule
+      // Instantiate DataWriterModule of type SocketWriterModule
       //
 
-      // Create the FakeSocketWriterModule object
+      // Create the SocketWriterModule object
       std::string writer_uid(fmt::format("socketdatawriter-{}-{}", this->UID(), std::to_string(conn_idx++)));
       TLOG_DEBUG(6) << fmt::format(
         "Creating OKS configuration object for socket data writer class {} with id {}", writer_class, writer_uid);
