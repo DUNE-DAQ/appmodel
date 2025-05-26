@@ -31,37 +31,6 @@
 namespace dunedaq {
 namespace appmodel {
 
-class SocketSenderObjFactory {
-  public:
-
-  conffwk::Configuration* config;
-  std::string dbfile;
-  std::string app_uid;
-
-
-  conffwk::ConfigObject create(const std::string& class_name, const std::string& id) {
-    conffwk::ConfigObject cfg_obj;
-    config->create(this->dbfile, class_name, id, cfg_obj);
-    return cfg_obj;
-  }
-
-  conffwk::ConfigObject create_queue_sid_obj(const QueueDescriptor* qdesc, uint32_t src_id) {
-    std::string queue_uid(fmt::format("{}{}", qdesc->get_uid_base(), src_id));
-    auto queue_obj = this->create("QueueWithSourceId", queue_uid);
-
-    queue_obj.set_by_val<std::string>("data_type", qdesc->get_data_type());
-    queue_obj.set_by_val<std::string>("queue_type", qdesc->get_queue_type());
-    queue_obj.set_by_val<uint32_t>("capacity", qdesc->get_capacity());
-    queue_obj.set_by_val<uint32_t>("source_id", src_id);
-
-    return queue_obj;
-  }
-
-  conffwk::ConfigObject create_queue_sid_obj(const QueueDescriptor* qdesc, const confmodel::DetectorStream* stream) {
-    return this->create_queue_sid_obj(qdesc, stream->get_source_id());
-  }
-};
-
 std::vector<const confmodel::DaqModule*>
 SocketSenderApplication::generate_modules(conffwk::Configuration* config,
                                           const std::string& dbfile,
