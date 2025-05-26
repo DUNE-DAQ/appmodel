@@ -9,20 +9,18 @@
  */
 
 
-<<<<<<< Updated upstream
 #include "ConfigObjectFactory.hpp"
-#include "appmodel/appmodelIssues.hpp"
-=======
-#include "confmodel/Connection.hpp"
-#include "confmodel/DetectorStream.hpp"
-#include "confmodel/DetectorToDaqConnection.hpp"
 
->>>>>>> Stashed changes
+#include "appmodel/appmodelIssues.hpp"
 #include "appmodel/FakeSocketWriterModule.hpp"
 #include "appmodel/SocketSenderApplication.hpp"
 #include "appmodel/SocketWriterConf.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
 #include "appmodel/QueueDescriptor.hpp"
+
+#include "confmodel/Connection.hpp"
+#include "confmodel/DetectorStream.hpp"
+#include "confmodel/DetectorToDaqConnection.hpp"
 
 #include "logging/Logging.hpp"
 #include <fmt/core.h>
@@ -30,22 +28,8 @@
 #include <string>
 #include <vector>
 
-<<<<<<< Updated upstream
 namespace dunedaq {
 namespace appmodel {
-=======
-using namespace dunedaq;
-using namespace dunedaq::appmodel;
-
-static ModuleFactory::Registrator __reg__("SocketSenderApplication",
-                                          [](const SmartDaqApplication* smartApp,
-                                             conffwk::Configuration* config,
-                                             const std::string& dbfile,
-                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
-                                            auto app = smartApp->cast<SocketSenderApplication>();
-                                            return app->generate_modules(config, dbfile, session);
-                                          });
->>>>>>> Stashed changes
 
 class SocketSenderObjFactory {
   public:
@@ -88,12 +72,7 @@ SocketSenderApplication::generate_modules(conffwk::Configuration* config,
   
   std::vector<const confmodel::DaqModule*> modules;
 
-<<<<<<< Updated upstream
   const auto obj_fac = ConfigObjectFactory(this);
-
-=======
-  SocketSenderObjFactory obj_fac{config, dbfile, this->UID()};
->>>>>>> Stashed changes
 
   //
   // Extract basic configuration objects
@@ -198,33 +177,6 @@ SocketSenderApplication::generate_modules(conffwk::Configuration* config,
 
       modules.push_back(config->get<confmodel::DaqModule>(writer_obj.UID()));      
     }
-<<<<<<< Updated upstream
-
-    //-----------------------------------------------------------------
-    //
-    // Create DataWriterModule object
-    //
-
-    //
-    // Instantiate DataWriterModule of type FakeSocketWriterModule
-    //
-
-    // Create the FakeSocketWriterModule object
-    uint16_t conn_idx = 0;
-    std::string writer_uid(fmt::format("socketdatawriter-{}-{}", this->UID(), std::to_string(conn_idx++)));
-
-    TLOG_DEBUG(6) << fmt::format(
-      "Creating OKS configuration object for socket data writer class {} with id {}", writer_class, writer_uid);
-
-    auto writer_obj = obj_fac.create(writer_class, writer_uid);
-
-    // Populate configuration and interfaces
-    writer_obj.set_obj("configuration", &writer_conf->config_object());
-    writer_obj.set_objs("connections", d2d_conn_objs);
-
-    modules.push_back(confdb->get<confmodel::DaqModule>(writer_uid));
-=======
->>>>>>> Stashed changes
   }
   
   return modules;
