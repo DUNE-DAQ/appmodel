@@ -20,42 +20,37 @@
 // #include "confmodel/DetectorStream.hpp"
 #include "confmodel/DetectorStream.hpp"
 #include "confmodel/DetectorToDaqConnection.hpp"
-
 #include "confmodel/ResourceSet.hpp"
 #include "confmodel/Service.hpp"
 #include "confmodel/Session.hpp"
 
-#include "appmodel/NetworkConnectionRule.hpp"
-#include "appmodel/QueueConnectionRule.hpp"
-
-#include "appmodel/NetworkConnectionDescriptor.hpp"
-#include "appmodel/QueueDescriptor.hpp"
-
-#include "appmodel/SourceIDConf.hpp"
-
+#include "appmodel/DTSHSIApplication.hpp"
+#include "appmodel/DFApplication.hpp"
+#include "appmodel/DataHandlerConf.hpp"
+#include "appmodel/DataHandlerModule.hpp"
 #include "appmodel/DataReaderConf.hpp"
 #include "appmodel/DataRecorderConf.hpp"
 #include "appmodel/DataSubscriberModule.hpp"
-
-#include "appmodel/DataHandlerConf.hpp"
-#include "appmodel/DataHandlerModule.hpp"
-#include "appmodel/TCDataProcessor.hpp"
-
-#include "appmodel/MLTConf.hpp"
-#include "appmodel/MLTModule.hpp"
-
 #include "appmodel/FakeDataApplication.hpp"
 #include "appmodel/FakeDataProdConf.hpp"
 #include "appmodel/FakeHSIApplication.hpp"
-#include "appmodel/DTSHSIApplication.hpp"
 #include "appmodel/MLTApplication.hpp"
+#include "appmodel/MLTConf.hpp"
+#include "appmodel/MLTModule.hpp"
+#include "appmodel/NetworkConnectionDescriptor.hpp"
+#include "appmodel/NetworkConnectionRule.hpp"
+#include "appmodel/QueueConnectionRule.hpp"
+#include "appmodel/QueueDescriptor.hpp"
 #include "appmodel/ReadoutApplication.hpp"
-#include "appmodel/TriggerApplication.hpp"
-#include "appmodel/appmodelIssues.hpp"
-#include "appmodel/DFApplication.hpp"
-
+#include "appmodel/SourceIDConf.hpp"
 #include "appmodel/StandaloneTCMakerConf.hpp"
 #include "appmodel/StandaloneTCMakerModule.hpp"
+#include "appmodel/TCDataProcessor.hpp"
+#include "appmodel/TPStreamConf.hpp"
+#include "appmodel/TriggerApplication.hpp"
+#include "appmodel/TPReplayModuleConf.hpp"
+#include "appmodel/TPReplayApplication.hpp"
+#include "appmodel/appmodelIssues.hpp"
 
 #include "logging/Logging.hpp"
 
@@ -282,6 +277,13 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
         // *tpSourceIdConf); tpSourceIdConf->set_by_val<uint32_t>("sid", ro_app->get_tp_source_id());
         // tpSourceIdConf->set_by_val<std::string>("subsystem", "Trigger");
         // sourceIds.push_back(tpSourceIdConf);
+      }
+    }
+
+    auto tpreplay_app = app->cast<appmodel::TPReplayApplication>();
+    if (tpreplay_app != nullptr) {
+      for (auto sid : tpreplay_app->get_tp_source_ids()) {
+        sourceIds.push_back(&(sid->config_object()));
       }
     }
 
