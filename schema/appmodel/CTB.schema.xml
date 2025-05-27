@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="23" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250524T141851"/>
+<info name="" type="" num-of-items="23" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250526T104120"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -259,6 +259,7 @@
   <relationship name="beam" class-type="CTBSubsystem" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="CRT" class-type="CTBCRTSubsystem" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="pds" class-type="CTBPDSSubsystem" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="geo_id" class-type="GeoId" low-cc="one" high-cc="one" is-composite="no" is-exclusive="yes" is-dependent="no"/>
   <method name="get_ctb_json" description="create the json configuration for the board">
    <method-implementation language="C++" prototype="nlohmann::json get_ctb_json(const dunedaq::confmodel::Session&amp; session, std::optional&lt;std::string&gt; socket_host = std::nullopt ) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;#include &lt;optional&gt;&#xA;END_HEADER_PROLOGUE"/>
   </method>
