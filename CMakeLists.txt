@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(appmodel VERSION 3.2.0)
+project(appmodel VERSION 3.3.0)
 
 find_package(daq-cmake REQUIRED)
 
@@ -16,7 +16,7 @@ find_package(fmt REQUIRED)
 
 find_package(Boost COMPONENTS unit_test_framework program_options REQUIRED)
 
-daq_oks_codegen(application.schema.xml hermes.schema.xml fdmodules.schema.xml trigger.schema.xml wiec.schema.xml PDS.schema.xml
+daq_oks_codegen(application.schema.xml hermes.schema.xml fdmodules.schema.xml trigger.schema.xml wiec.schema.xml PDS.schema.xml tde.schema.xml
   NAMESPACE dunedaq::appmodel DEP_PKGS confmodel)
 
 daq_add_library(ConfigObjectFactory.cpp ReadoutApplication.cpp SmartDaqApplication.cpp

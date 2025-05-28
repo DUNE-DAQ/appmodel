@@ -8,7 +8,6 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
 
 #include "ConfigObjectFactory.hpp"
 #include "conffwk/Configuration.hpp"
@@ -29,29 +28,16 @@
 #include <string>
 #include <vector>
 
-using namespace dunedaq;
-using namespace dunedaq::appmodel;
-
-static ModuleFactory::Registrator
-__reg__("HSIEventToTCApplication", [] (const SmartDaqApplication* smartApp,
-                             conffwk::Configuration* confdb,
-                             const std::string& dbfile,
-                             const confmodel::Session* session) -> ModuleFactory::ReturnType
-  {
-    auto app = smartApp->cast<HSIEventToTCApplication>();
-    return app->generate_modules(confdb, dbfile, session);
-  }
-  );
+namespace dunedaq {
+namespace appmodel {
 
 std::vector<const confmodel::DaqModule*> 
-HSIEventToTCApplication::generate_modules(conffwk::Configuration* confdb,
-                                     const std::string& dbfile,
-                                     const confmodel::Session* /*session*/) const
+HSIEventToTCApplication::generate_modules(const confmodel::Session* /*session*/) const
 {
+
+  ConfigObjectFactory obj_fac(this);
+  
   std::vector<const confmodel::DaqModule*> modules;
-
-  const auto obj_fac = ConfigObjectFactory(this);
-
 
   std::string hstcUid("module-" + UID());
   TLOG_DEBUG(7) << "creating OKS configuration object for the DataSubscriberModule class ";
@@ -90,7 +76,10 @@ HSIEventToTCApplication::generate_modules(conffwk::Configuration* confdb,
   hstcObj.set_objs("outputs", {&outObj});
 
   // Add to our list of modules to return
-  modules.push_back(confdb->get<DataSubscriberModule>(hstcUid));
+  modules.push_back(obj_fac.get_dal<DataSubscriberModule>(hstcUid));
 
   return modules;
 }
+ 
+} // namespace appmodel  
+} // namespace dunedaq

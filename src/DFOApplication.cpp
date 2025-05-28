@@ -8,7 +8,6 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
 
 #include "ConfigObjectFactory.hpp"
 #include "appmodel/DFApplication.hpp"
@@ -30,26 +29,15 @@
 #include <string>
 #include <vector>
 
-using namespace dunedaq;
-using namespace dunedaq::appmodel;
-
-static ModuleFactory::Registrator __reg__("DFOApplication",
-                                          [](const SmartDaqApplication* smartApp,
-                                             conffwk::Configuration* confdb,
-                                             const std::string& dbfile,
-                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
-                                            auto app = smartApp->cast<DFOApplication>();
-                                            return app->generate_modules(confdb, dbfile, session);
-                                          });
+namespace dunedaq {
+namespace appmodel {
 
 std::vector<const confmodel::DaqModule*>
-DFOApplication::generate_modules(conffwk::Configuration* confdb,
-                                 const std::string& dbfile,
-                                 const confmodel::Session* session) const
+DFOApplication::generate_modules(const confmodel::Session* session) const
 {
   std::vector<const confmodel::DaqModule*> modules;
 
-  const auto obj_fac = ConfigObjectFactory(this);
+  ConfigObjectFactory obj_fac(this);
 
 
   std::string dfoUid("DFO-" + UID());
@@ -128,7 +116,10 @@ DFOApplication::generate_modules(conffwk::Configuration* confdb,
   dfoObj.set_objs("outputs", output_conns);
 
   // Add to our list of modules to return
-  modules.push_back(confdb->get<DFOModule>(dfoUid));
+  modules.push_back(obj_fac.get_dal<DFOModule>(dfoUid));
 
   return modules;
 }
+
+} // namespace appmodel  
+} // namespace dunedaq

@@ -174,7 +174,7 @@
   <relationship name="hermes_module_conf" class-type="HermesModuleConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="detector_connections" class-type="DetectorToDaqConnection" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
-   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const " body=""/>
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(const confmodel::Session*) const override" body=""/>
   </method>
   <method name="get_resources" description="">
    <method-implementation language="c++" prototype="virtual const std::vector&lt;const ResourceBase*&gt;&amp; get_resources() const override" body="BEGIN_PRIVATE_SECTION&#xA;mutable std::vector&lt;const ResourceBase*&gt; m_contents;&#xA;END_PRIVATE_SECTION"/>

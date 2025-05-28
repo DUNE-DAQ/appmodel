@@ -8,11 +8,9 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
 
 #include "ConfigObjectFactory.hpp"
 #include "conffwk/Configuration.hpp"
-#include "oks/kernel.hpp"
 #include "logging/Logging.hpp"
 
 #include "appmodel/NWDetDataReceiver.hpp"
@@ -20,6 +18,8 @@
 #include "confmodel/DetectorStream.hpp"
 #include "confmodel/GeoId.hpp"
 
+#include "appmodel/appmodelIssues.hpp"
+#include "ConfigObjectFactory.hpp"
 #include "appmodel/WIECApplication.hpp"
 
 #include "appmodel/WIBModule.hpp"
@@ -38,19 +38,8 @@
 #include <iostream>
 #include <fmt/core.h>
 
-using namespace dunedaq;
-using namespace dunedaq::appmodel;
-
-static ModuleFactory::Registrator
-__reg__("WIECApplication", [] (const SmartDaqApplication* smartApp,
-                             conffwk::Configuration* config,
-                             const std::string& dbfile,
-                             const confmodel::Session* session) -> ModuleFactory::ReturnType
-  {
-    auto app = smartApp->cast<WIECApplication>();
-    return app->generate_modules(config, dbfile, session);
-  }
-  );
+namespace dunedaq {
+namespace appmodel {
 
 //-----------------------------------------------------------------------------
 
@@ -68,12 +57,12 @@ WIECApplication::get_resources() const {
 
 
 std::vector<const confmodel::DaqModule*> 
-WIECApplication::generate_modules(conffwk::Configuration* config,
-                                            const std::string& dbfile,
-                                            const confmodel::Session* session) const
+WIECApplication::generate_modules(const confmodel::Session* session) const
 {
   ConfigObjectFactory obj_fac(this);
-
+  conffwk::Configuration* config = &this->configuration();
+  const std::string& dbfile = this->config_object().contained_in();
+  
   std::vector<const confmodel::DaqModule*> modules;
 
   std::map<std::string, std::vector<const appmodel::HermesDataSender*>> ctrlhost_sender_map;
@@ -180,3 +169,6 @@ WIECApplication::generate_modules(conffwk::Configuration* config,
 
   return modules;
 }
+ 
+} // namespace appmodel  
+} // namespace dunedaq

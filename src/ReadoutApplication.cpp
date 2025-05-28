@@ -8,7 +8,6 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
 
 #include "ConfigObjectFactory.hpp"
 #include "appmodel/DFApplication.hpp"
@@ -68,11 +67,6 @@
 namespace dunedaq {
 namespace appmodel {
 
-static ModuleFactory::Registrator __reg__("ReadoutApplication", [](const SmartDaqApplication* smartApp, conffwk::Configuration* config, const std::string& dbfile, const confmodel::Session* session) -> ModuleFactory::ReturnType {
-  auto app = smartApp->cast<ReadoutApplication>();
-  return app->generate_modules(config, dbfile, session);
-});
-
 //-----------------------------------------------------------------------------
 
 const std::vector<const confmodel::ResourceBase*>&
@@ -88,13 +82,14 @@ ReadoutApplication::get_resources() const {
 }
 
 std::vector<const confmodel::DaqModule*>
-ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::string& dbfile, const confmodel::Session* session) const
+ReadoutApplication::generate_modules(const confmodel::Session* session) const
 {
 
   TLOG_DEBUG(6) << "Generating modules for application " << this->UID();
 
   ConfigObjectFactory obj_fac(this);
-  
+  // conffwk::Configuration& confdb = this->configuration();
+
   //
   // Extract basic configuration objects
   //
@@ -281,14 +276,14 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
     // Create data queues
     for (auto ds : enabled_det_streams) {
       conffwk::ConfigObject queue_obj = obj_fac.create_queue_sid_obj(dlh_input_qdesc, ds);
-      const auto* data_queue = config->get<confmodel::Connection>(queue_obj.UID());
+      const auto* data_queue = obj_fac.get_dal<confmodel::Connection>(queue_obj.UID());
       data_queue_objs.push_back(&data_queue->config_object());
       data_queues_by_sid[ds->get_source_id()] = data_queue;
     }
 
     reader_obj.set_objs("outputs", data_queue_objs);
 
-    modules.push_back(config->get<confmodel::DaqModule>(reader_obj.UID()));
+    modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(reader_obj.UID()));
 
   }
 
@@ -319,10 +314,10 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
       tp_queue_obj.set_by_val<uint32_t>("recv_timeout_ms", 50);
       tp_queue_obj.set_by_val<uint32_t>("send_timeout_ms", 1);
 
-      tp_queues.push_back(config->get<confmodel::Connection>(tp_queue_obj.UID()));
+      tp_queues.push_back(obj_fac.get_dal<confmodel::Connection>(tp_queue_obj.UID()));
       // Create tp data requests queue from Fragment Aggregator
       tpreq_queue_obj = obj_fac.create_queue_sid_obj(dlh_reqinput_qdesc, sid->get_sid());
-      req_queues.push_back(config->get<confmodel::Connection>(tpreq_queue_obj.UID()));
+      req_queues.push_back(obj_fac.get_dal<confmodel::Connection>(tpreq_queue_obj.UID()));
 
       // Create the tp(set) publishing service
       conffwk::ConfigObject tp_net_obj = obj_fac.create_net_obj(tp_net_desc, tp_uid);
@@ -333,7 +328,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
       // Register queues with tp hankder
       tph_obj.set_objs("inputs", { &tp_queue_obj, &tpreq_queue_obj });
       tph_obj.set_objs("outputs", { &tp_net_obj, &ta_net_obj, &frag_queue_obj });
-      modules.push_back(config->get<confmodel::DaqModule>(tph_obj.UID()));
+      modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(tph_obj.UID()));
     }
   }
 
@@ -373,7 +368,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
 
 
     // Add the requessts queue dal pointer to the outputs of the FragmentAggregatorModule
-    req_queues.push_back(config->get<confmodel::Connection>(req_queue_obj.UID()));
+    req_queues.push_back(obj_fac.get_dal<confmodel::Connection>(req_queue_obj.UID()));
     dlh_ins.push_back(&req_queue_obj);
     dlh_outs.push_back(&frag_queue_obj);
 
@@ -391,7 +386,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
     dlh_obj.set_objs("inputs", dlh_ins);
     dlh_obj.set_objs("outputs", dlh_outs);
 
-    modules.push_back(config->get<confmodel::DaqModule>(dlh_obj.UID()));
+    modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(dlh_obj.UID()));
   }
 
 
@@ -418,7 +413,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
       if (data_type == "Fragment") {
         std::string dreqNetUid(descriptor->get_uid_base() + dfapp->UID());
         // conffwk::ConfigObject frag_conn;
-        // config->create(dbfile, "NetworkConnection", dreqNetUid, frag_conn);
+        // confdb.create(dbfile, "NetworkConnection", dreqNetUid, frag_conn);
         auto frag_conn = obj_fac.create("NetworkConnection", dreqNetUid);
 
         frag_conn.set_by_val<std::string>("data_type", descriptor->get_data_type());
@@ -444,11 +439,10 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   frag_aggr.set_objs("inputs", { &fa_net_obj, &frag_queue_obj });
   frag_aggr.set_objs("outputs", fa_output_objs);
 
-  modules.push_back(config->get<confmodel::DaqModule>(frag_aggr.UID()));
+  modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(frag_aggr.UID()));
 
   return modules;
 }
 
-  
-}
-}
+} // namespace appmodel  
+} // namespace dunedaq

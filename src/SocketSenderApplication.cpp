@@ -8,9 +8,9 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
 
 #include "ConfigObjectFactory.hpp"
+#include "appmodel/appmodelIssues.hpp"
 #include "appmodel/FakeSocketWriterModule.hpp"
 #include "appmodel/SocketSenderApplication.hpp"
 #include "appmodel/SocketWriterConf.hpp"
@@ -23,17 +23,8 @@
 #include <string>
 #include <vector>
 
-using namespace dunedaq;
-using namespace dunedaq::appmodel;
-
-static ModuleFactory::Registrator __reg__("SocketSenderApplication",
-                                          [](const SmartDaqApplication* smartApp,
-                                             conffwk::Configuration* confdb,
-                                             const std::string& dbfile,
-                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
-                                            auto app = smartApp->cast<SocketSenderApplication>();
-                                            return app->generate_modules(confdb, dbfile, session);
-                                          });
+namespace dunedaq {
+namespace appmodel {
 
 //-----------------------------------------------------------------------------
 
@@ -50,14 +41,11 @@ SocketSenderApplication::get_resources() const {
 }
 
 std::vector<const confmodel::DaqModule*>
-SocketSenderApplication::generate_modules(conffwk::Configuration* confdb,
-                                          const std::string& dbfile,
-                                          const confmodel::Session* session) const
+SocketSenderApplication::generate_modules(const confmodel::Session* session) const
 {
+  ConfigObjectFactory obj_fac(this);
+
   std::vector<const confmodel::DaqModule*> modules;
-
-  const auto obj_fac = ConfigObjectFactory(this);
-
 
   //
   // Extract basic configuration objects
@@ -104,7 +92,10 @@ SocketSenderApplication::generate_modules(conffwk::Configuration* confdb,
     writer_obj.set_obj("configuration", &writer_conf->config_object());
     writer_obj.set_objs("connections", d2d_conn_objs);
 
-    modules.push_back(confdb->get<confmodel::DaqModule>(writer_uid));
+    modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(writer_uid));
   }
   return modules;
 }
+ 
+} // namespace appmodel  
+} // namespace dunedaq

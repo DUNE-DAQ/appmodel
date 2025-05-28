@@ -8,7 +8,6 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
 
 #include "ConfigObjectFactory.hpp"
 #include "conffwk/Configuration.hpp"
@@ -31,28 +30,15 @@
 #include <iostream>
 #include <fmt/core.h>
 
-using namespace dunedaq;
-using namespace dunedaq::appmodel;
-
-static ModuleFactory::Registrator
-__reg__("TPStreamWriterApplication", [] (const SmartDaqApplication* smartApp,
-                             conffwk::Configuration* confdb,
-                             const std::string& dbfile,
-                             const confmodel::Session* session) -> ModuleFactory::ReturnType
-  {
-    auto app = smartApp->cast<TPStreamWriterApplication>();
-    return app->generate_modules(confdb, dbfile, session);
-  }
-  );
+namespace dunedaq {
+namespace appmodel {
 
 std::vector<const confmodel::DaqModule*> 
-TPStreamWriterApplication::generate_modules(conffwk::Configuration* confdb,
-                                            const std::string& dbfile,
-                                            const confmodel::Session* /*session*/) const
+TPStreamWriterApplication::generate_modules(const confmodel::Session* /*session*/) const
 {
   std::vector<const confmodel::DaqModule*> modules;
 
-  const auto obj_fac = ConfigObjectFactory(this);
+  ConfigObjectFactory obj_fac(this);
 
 
   auto tpwriterConf = get_tp_writer();
@@ -89,7 +75,10 @@ TPStreamWriterApplication::generate_modules(conffwk::Configuration* confdb,
   tpwrObj.set_obj("configuration", &tpwriterConf->config_object());
   tpwrObj.set_objs("inputs", {&tset_in_net_obj} );
 
-  modules.push_back(confdb->get<TPStreamWriterModule>(tpwrUid));
+  modules.push_back(obj_fac.get_dal<TPStreamWriterModule>(tpwrUid));
 
   return modules;
 }
+ 
+} // namespace appmodel  
+} // namespace dunedaq
