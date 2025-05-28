@@ -42,11 +42,13 @@ namespace dunedaq {
 namespace appmodel {
   
 std::vector<const confmodel::DaqModule*> 
-DaphneApplication::generate_modules(conffwk::Configuration* config,
-                                    const std::string& dbfile,
-                                    const confmodel::Session* session) const
+DaphneApplication::generate_modules(
+                                    const confmodel::Session* session
+                                  ) const
 {
-  const auto obj_fac = ConfigObjectFactory(this);
+  ConfigObjectFactory obj_fac(this);
+  conffwk::Configuration* config = &this->configuration();
+  const std::string& dbfile = this->config_object().contained_in();
 
   std::vector<const confmodel::DaqModule*> modules;
 
@@ -138,7 +140,7 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
       channel_obj.set_by_val<uint8_t>("gain", raw_gains[i]);
       channel_obj.set_by_val<uint16_t>("offset", raw_offsets[i]);
       channel_obj.set_by_val<uint16_t>("trim", raw_trims[i]);
-      auto ch = config->get<appmodel::DaphneV2Channel>(channel_obj);
+      auto ch = obj_fac.get_dal<appmodel::DaphneV2Channel>(channel_obj);
       channels.push_back(& ch -> config_object());
     }
     
@@ -170,7 +172,7 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
       adc_obj.set_by_val<bool>("low_resolution",  raw_adc_res[i] > 0);
       adc_obj.set_by_val<bool>("output_offset_binary",  raw_adc_format[i] > 0 );
       adc_obj.set_by_val<bool>("MSB_first",  raw_adc_SB[i] > 0);
-      auto adc = config->get<appmodel::DaphneV2ADC>(adc_obj);
+      auto adc = obj_fac.get_dal<appmodel::DaphneV2ADC>(adc_obj);
       
       // create the lna
       conffwk::ConfigObject lna_obj;
@@ -179,7 +181,7 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
       lna_obj.set_by_val<uint8_t>("clamp",  raw_lna_clamps[i]);
       lna_obj.set_by_val<uint8_t>("gain",  raw_lna_gains[i]);
       lna_obj.set_by_val<bool>("integrator_disable",  raw_lna_integrators[i]>0);
-      auto lna = config->get<appmodel::DaphneV2LNA>(lna_obj);
+      auto lna = obj_fac.get_dal<appmodel::DaphneV2LNA>(lna_obj);
       
       // create the pga
       conffwk::ConfigObject pga_obj;
@@ -188,7 +190,7 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
       pga_obj.set_by_val<uint8_t>("lpf_cut_frequency",  raw_pga_cuts[i]);
       pga_obj.set_by_val<bool>("gain",  raw_pga_gains[i]>0);
       pga_obj.set_by_val<bool>("integrator_disable",  raw_pga_integrators[i]>0);
-      auto pga = config->get<appmodel::DaphneV2PGA>(pga_obj);
+      auto pga = obj_fac.get_dal<appmodel::DaphneV2PGA>(pga_obj);
       
       // finally create the afe
       conffwk::ConfigObject afe_obj;
@@ -200,7 +202,7 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
       afe_obj.set_obj("adc", & adc -> config_object() );
       afe_obj.set_obj("lna", & lna -> config_object() );
       afe_obj.set_obj("pga", & pga -> config_object() );
-      auto afe = config->get<appmodel::DaphneV2AFE>(afe_obj);
+      auto afe = obj_fac.get_dal<appmodel::DaphneV2AFE>(afe_obj);
       afes.push_back( & afe-> config_object());
     }
     
@@ -223,7 +225,7 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
     board_obj.set_objs("active_afes", afes);
     board_obj.set_obj("default_channel", & daphne_conf->get_default_v2_settings()->get_default_channel()->config_object());
     board_obj.set_obj("default_afe", & daphne_conf->get_default_v2_settings()->get_default_afe()->config_object());
-    auto conf = config->get<appmodel::DaphneV2BoardConf>(board_obj);
+    auto conf = obj_fac.get_dal<appmodel::DaphneV2BoardConf>(board_obj);
     
     conffwk::ConfigObject module_obj;
     std::string module_name = fmt::format("controller-{}", slot);
@@ -232,7 +234,7 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
     module_obj.set_obj("daphne_conf", & daphne_conf -> config_object() );
     module_obj.set_obj("board_conf", & conf -> config_object() );
     
-    auto module = config->get<appmodel::DaphneV2ControllerModule>(module_obj);
+    auto module = obj_fac.get_dal<appmodel::DaphneV2ControllerModule>(module_obj);
     modules.push_back(module);
     
   } // ips
