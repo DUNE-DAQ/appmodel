@@ -208,19 +208,19 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
 
     // Are these tests necessary? Schema does not allow 0 cardinality
     // for these relationships!!  TODO
-    if (d2d_conn->get_senders() == nullptr) {
+    if (d2d_conn->get_senders().empty()) {
       throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain senders"));
     }
     if (d2d_conn->get_receiver() == nullptr) {
       throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain a receiver"));
     }
 
-    // Loop over detector 2 daq connections to find senders and receivers
-    auto det_senders = d2d_conn->get_senders()->get_senders();
+    // Find senders and receiver
+    auto det_senders = d2d_conn->get_senders();
     auto det_receiver = d2d_conn->get_receiver();
 
     std::vector<const confmodel::DetectorStream*> enabled_det_streams;
-    // Loop over senders
+    // Loop over streams
     for (auto stream : d2d_conn->get_streams()) {
 
       // Are we sure?
@@ -229,44 +229,28 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
         continue;
       }
 
-      // loop over streams
       all_enabled_det_streams.push_back(stream);
       enabled_det_streams.push_back(stream);
     }
 
 
-
     // Here I want to resolve the type of connection (network, felix, or?)
     // Rules of engagement: if the receiver interface is network or felix, the receivers should be castable to the counterpart
     if (reader_class == "DPDKReaderModule" || reader_class == "SocketReaderModule") {
+      if (!d2d_conn->castable("NetworkDetectorToDaqConnection")) {
+        throw(BadConf(ERS_HERE, fmt::format("{} requires NetworkDetectorToDaqConnection, found {} of class {}", reader_class, d2d_conn->UID(), d2d_conn->class_name())));
+      }
       if ((reader_class == "DPDKReaderModule" && !det_receiver->cast<appmodel::DPDKReceiver>()) ||
           (reader_class == "SocketReaderModule" && !det_receiver->cast<appmodel::SocketReceiver>())) {
         throw(BadConf(ERS_HERE, fmt::format("{} requires NWDetDataReceiver, found {} of class {}", reader_class, det_receiver->UID(), det_receiver->class_name())));
       }
-
-      bool all_nw_senders = true;
-      for (auto s : det_senders) {
-        all_nw_senders &= (s->cast<appmodel::NWDetDataSender>() != nullptr);
-      }
-
-      // Ensure that all senders are compatible with receiver
-      if (!all_nw_senders) {
-        throw(BadConf(ERS_HERE, "Non-network DetDataSener found with NWreceiver"));
-      }
     }
     else if (reader_class == "FelixReaderModule") {
+      if (!d2d_conn->castable("FelixDetectorToDaqConnection")) {
+        throw(BadConf(ERS_HERE, fmt::format("{} requires FelixDetectorToDaqConnection, found {} of class {}", reader_class, d2d_conn->UID(), d2d_conn->class_name())));
+      }
       if (!det_receiver->cast<appmodel::FelixDataReceiver>()) {
         throw(BadConf(ERS_HERE, fmt::format("FelixReaderModule requires FelixDataReceiver, found {} of class {}", det_receiver->UID(), det_receiver->class_name())));
-      }
-
-      bool all_flx_senders = true;
-      for (auto s : det_senders) {
-        all_flx_senders &= (s->cast<appmodel::FelixDataSender>() != nullptr);
-      }
-
-      // Ensure that all senders are compatible with receiver
-      if (!all_flx_senders) {
-        throw(BadConf(ERS_HERE, "Non-felix DetDataSener found with FelixDataReceiver"));
       }
     }
   // }

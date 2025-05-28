@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="54" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20250523T134751"/>
+<info name="" type="" num-of-items="55" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20250527T103435"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -345,6 +345,18 @@
  <class name="NetworkConnectionRule">
   <attribute name="endpoint_class" type="class" init-value="DaqModule"/>
   <relationship name="descriptor" class-type="NetworkConnectionDescriptor" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="NetworkDetectorToDaqConnection">
+  <superclass name="DetectorToDaqConnection"/>
+  <relationship name="net_senders" description="A collection of Network detector sending objects" class-type="NWDetDataSender" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <relationship name="net_receiver" class-type="NWDetDataReceiver" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <method name="get_senders" description="get our list of NWDetSender objects as a vector of DetDataSenders">
+   <method-implementation language="c++" prototype="std::vector&lt;const confmodel::DetDataSender*&gt; get_senders() const override" body=""/>
+  </method>
+  <method name="get_receiver" description="get our net_receiver as a generic DetDataReceiver">
+   <method-implementation language="c++" prototype="const confmodel::DetDataReceiver* get_receiver() const override" body=""/>
+  </method>
  </class>
 
  <class name="QueueConnectionRule">

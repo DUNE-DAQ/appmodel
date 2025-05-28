@@ -14,11 +14,8 @@
 #include "oks/kernel.hpp"
 #include "logging/Logging.hpp"
 
-#include "confmodel/DetectorToDaqConnection.hpp"
-#include "confmodel/DetDataSender.hpp"
 #include "confmodel/GeoId.hpp"
 #include "confmodel/DetectorStream.hpp"
-#include "confmodel/DetSenderSet.hpp"
 
 #include "appmodel/FelixDataSender.hpp"
 #include "appmodel/DaphneConf.hpp"
@@ -30,6 +27,8 @@
 #include "appmodel/DaphneV2LNA.hpp"
 #include "appmodel/DaphneV2ControllerModule.hpp"
 #include "appmodel/DaphneApplication.hpp"
+#include "appmodel/FelixDetectorToDaqConnection.hpp"
+#include "appmodel/FelixDataSender.hpp"
 
 
 #include <string>
@@ -89,26 +88,19 @@ DaphneApplication::generate_modules(conffwk::Configuration* config,
     TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn->UID();
     // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader module
 
+    // Redundant? Schema forbids 0 connections
     if (d2d_conn->get_resources().empty()) {
       throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain senders or receivers"));
     }
 
-    auto det_senders = d2d_conn->get_senders()->get_senders();
+    auto det_senders = d2d_conn->get_felix_senders();
 
     // Loop over senders
-    for (const auto* sender : det_senders) {
+    for (const auto* felix_sender : det_senders) {
 
-      if ( sender->disabled(*session) ) {
-        TLOG() << "Skipping disabled sender: " << sender->UID();
+      if ( felix_sender->disabled(*session) ) {
+        TLOG() << "Skipping disabled sender: " << felix_sender->UID();
         continue;
-      }
-      // Check the sender type, must me a FelixDataSender
-      const auto* felix_sender = sender->cast<appmodel::FelixDataSender>();
-      if (!felix_sender ) {
-        //throw(BadConf(ERS_HERE, fmt::format("DataSender {} is not a appmodel::HermesDataSender", sender->UID())));
-        continue;
-        // MaR: I don't think we should throw here because there can be other connections other than felix
-        // MaR: should we be worried that we assume that a Felix connection is a Daphne?
       }
 
       auto ip = felix_sender -> get_control_host();

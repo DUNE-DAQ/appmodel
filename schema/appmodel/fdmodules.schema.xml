@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="15" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20240703T164113"/>
+<info name="" type="" num-of-items="22" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20250528T111729"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -117,30 +117,6 @@
   <relationship name="configuration" class-type="DPDKPortConfiguration" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="SocketReaderConf">
-  <superclass name="DataReaderConf"/>
-  <attribute name="socket_type" description="Socket type" type="enum" range="TCP,UDP" init-value="UDP" is-not-null="yes"/>
-  <attribute name="local_ip" description="Local IP address" type="string" init-value="127.0.0.1" is-not-null="yes"/>
- </class>
-
- <class name="SocketReaderModule">
-  <superclass name="DataReaderModule"/>
- </class>
-
- <class name="SocketReceiver">
-  <superclass name="NWDetDataReceiver"/>
- </class> 
-
- <class name="SocketWriterConf">
-  <superclass name="SocketDataWriterConf"/>
-  <attribute name="socket_type" description="Socket type" type="enum" range="TCP,UDP" init-value="UDP" is-not-null="yes"/>
-  <attribute name="remote_ip" description="Remote IP address" type="string" init-value="127.0.0.1" is-not-null="yes"/>
- </class>
-
- <class name="FakeSocketWriterModule">
-  <superclass name="SocketDataWriterModule"/>
- </class>  
-
  <class name="FDDataHandlerModule">
   <superclass name="DataHandlerModule"/>
  </class>
@@ -154,7 +130,11 @@
  </class>
 
  <class name="FakeDataSender">
-  <superclass name="DetDataSender"/>
+  <superclass name="NWDetDataSender"/>
+ </class>
+
+ <class name="FakeSocketWriterModule">
+  <superclass name="SocketDataWriterModule"/>
  </class>
 
  <class name="FelixCardControllerModule">
@@ -164,15 +144,15 @@
   <relationship name="controls" class-type="DetectorToDaqConnection" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
+ <class name="FelixDataReceiver">
+  <superclass name="DetDataReceiver"/>
+ </class>
+
  <class name="FelixDataSender">
   <superclass name="DetDataSender"/>
   <attribute name="protocol" type="enum" range="full,half"/>
   <attribute name="link" description="Link within SLR" type="u8" range="0..5" init-value="0" is-not-null="yes"/>
   <attribute name="control_host" type="string" init-value="localhost" is-not-null="yes"/>
-</class>
-
-<class name="FelixDataReceiver">
-  <superclass name="DetDataReceiver"/>
  </class>
 
  <class name="FelixInterface" description="Specialization of ReadoutInterface for the FLX card. ">
@@ -190,7 +170,7 @@
   <attribute name="numa_id" description="CMEM_RCC NUMA region selector" type="u8" init-value="0" is-not-null="yes"/>
  </class>
 
-  <class name="FelixReaderConf">
+ <class name="FelixReaderConf">
   <superclass name="DataReaderConf"/>
  </class>
 
@@ -213,6 +193,26 @@
   <attribute name="expected_packet_size" type="u32" init-value="7243" is-not-null="yes"/>
   <attribute name="expected_seq_id_step" type="u32" init-value="1"/>
   <attribute name="expected_timestamp_step" type="s32" init-value="-999" is-not-null="yes"/>
+ </class>
+
+ <class name="SocketReaderConf">
+  <superclass name="DataReaderConf"/>
+  <attribute name="socket_type" description="Socket type" type="enum" range="TCP,UDP" init-value="UDP" is-not-null="yes"/>
+  <attribute name="local_ip" description="Local IP address" type="string" init-value="127.0.0.1" is-not-null="yes"/>
+ </class>
+
+ <class name="SocketReaderModule">
+  <superclass name="DataReaderModule"/>
+ </class>
+
+ <class name="SocketReceiver">
+  <superclass name="NWDetDataReceiver"/>
+ </class>
+
+ <class name="SocketWriterConf">
+  <superclass name="SocketDataWriterConf"/>
+  <attribute name="socket_type" description="Socket type" type="enum" range="TCP,UDP" init-value="UDP" is-not-null="yes"/>
+  <attribute name="remote_ip" description="Remote IP address" type="string" init-value="127.0.0.1" is-not-null="yes"/>
  </class>
 
 </oks-schema>

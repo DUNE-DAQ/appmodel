@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="11" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20250522T152033"/>
+<info name="" type="" num-of-items="12" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20250527T155933"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -92,7 +92,7 @@
   <superclass name="SmartDaqApplication"/>
   <superclass name="ResourceSetDisableAND"/>
   <relationship name="configuration" class-type="DaphneConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="detector_connections" description="List of detector components controlled by this application" class-type="DetectorToDaqConnection" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
+  <relationship name="detector_connections" description="List of detector components controlled by this application" class-type="FelixDetectorToDaqConnection" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const " body=""/>
   </method>
@@ -195,6 +195,18 @@
   <attribute name="gain" description="rue=30 dB, false=24 dB" type="bool" init-value="false" is-not-null="yes"/>
   <method name="get_reg51" description="create registry 51 from the configuration">
    <method-implementation language="c++" prototype="uint16_t get_reg51() const" body=""/>
+  </method>
+ </class>
+
+ <class name="FelixDetectorToDaqConnection">
+  <superclass name="DetectorToDaqConnection"/>
+  <relationship name="felix_receiver" class-type="FelixDataReceiver" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <relationship name="felix_senders" class-type="FelixDataSender" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <method name="get_receiver" description="">
+   <method-implementation language="c++" prototype="const confmodel::DetDataReceiver* get_receiver() const override" body=""/>
+  </method>
+  <method name="get_senders" description="">
+   <method-implementation language="c++" prototype="std::vector&lt;const confmodel::DetDataSender*&gt; get_senders() const override" body=""/>
   </method>
  </class>
 

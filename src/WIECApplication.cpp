@@ -95,7 +95,7 @@ WIECApplication::generate_modules(conffwk::Configuration* config,
       throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain senders or receivers"));
     }
 
-    auto det_senders = d2d_conn->get_senders()->get_senders();
+    auto det_senders = d2d_conn->get_senders();
     auto det_receiver = d2d_conn->get_receiver();
 
     // Ensure that receiver is a nw_receiver
