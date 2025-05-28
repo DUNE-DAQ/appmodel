@@ -29,26 +29,6 @@ namespace dunedaq::appmodel::python {
     const std::string class_name;
   };
 
-  // template <typename ApplicationType>
-  // std::vector<ObjectLocator>
-  // application_generate_template(const conffwk::Configuration& confdb,
-  //                               const std::string& dbfile,
-  //                               const std::string& app_id,
-  //                               const std::string& session_id)
-  // {
-  //   auto app =
-  //     const_cast<conffwk::Configuration&>(confdb).get<SmartDaqApplication>(app_id);
-  //   auto session =
-  //     const_cast<conffwk::Configuration&>(confdb).get<confmodel::Session>(session_id);
-
-  //   std::vector<ObjectLocator> mods;
-  //   for (auto mod : app->generate_modules(
-  //          const_cast<conffwk::Configuration*>(&confdb), dbfile, session)) {
-  //     mods.push_back({mod->UID(),mod->class_name()});
-  //   }
-  //   return mods;
-  // }
-
   std::vector<ObjectLocator>
   smart_dap_application_generate_modules(const conffwk::Configuration& confdb, const std::string& app_id, const std::string& session_id)
   {
