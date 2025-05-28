@@ -1,5 +1,5 @@
 /**
- * @file generate_modules.cpp
+ * @file TriggerApplication.cpp
  *
  * Implementation of TriggerApplication's generate_modules dal method
  *
