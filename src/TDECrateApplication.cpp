@@ -33,9 +33,7 @@ namespace dunedaq {
 namespace appmodel {
 
 std::vector<const confmodel::DaqModule*> 
-TDECrateApplication::generate_modules(conffwk::Configuration* config,
-                                const std::string& dbfile,
-                                const confmodel::Session* session) const
+TDECrateApplication::generate_modules(const confmodel::Session* session) const
 {
   ConfigObjectFactory obj_fac(this);
 
@@ -83,11 +81,11 @@ TDECrateApplication::generate_modules(conffwk::Configuration* config,
 
     for( const auto& [ctrlhost, senders] : ctrlhost_sender_map ) {
       if ( this->get_tde_amc_module_conf() ) {
-        conffwk::ConfigObject tde_obj;
-        std::string tde_uid = fmt::format("tde-ctrl-{}-{}", this->UID(), ctrlhost);
-        config->create(dbfile, "TDEAMCModule", tde_uid, tde_obj);
+        conffwk::ConfigObject tde_obj = obj_fac.create( "TDEAMCModule", fmt::format("tde-ctrl-{}-{}", this->UID(), ctrlhost));
+        // std::string tde_uid = fmt::format("tde-ctrl-{}-{}", this->UID(), ctrlhost);
+        // config->create(dbfile, "TDEAMCModule", tde_uid, tde_obj);
         tde_obj.set_obj("amc", &(senders[0]->config_object()) ); // for now just allow one AMC per module
-        modules.push_back(config->get<appmodel::TDEAMCModule>(tde_obj));
+        modules.push_back(obj_fac.get_dal<appmodel::TDEAMCModule>(tde_obj));
       }
     }
   }
