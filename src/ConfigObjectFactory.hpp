@@ -67,12 +67,12 @@ public:
   create_net_obj(const NetworkConnectionDescriptor* ndesc) const;
 
   template<class T>
-  const T* get_dal(std::string uid){
+  const T* get_dal(std::string uid) const {
     return m_config->get<T>(uid);
   }
 
   template<class T>
-  const T* get_dal(conffwk::ConfigObject& obj){
+  const T* get_dal(conffwk::ConfigObject& obj) const {
     return m_config->get<T>(obj);
   }
 };
