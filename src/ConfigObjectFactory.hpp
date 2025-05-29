@@ -65,6 +65,16 @@ public:
 
   [[nodiscard]] conffwk::ConfigObject
   create_net_obj(const NetworkConnectionDescriptor* ndesc) const;
+
+  template<class T>
+  const T* get_dal(std::string uid){
+    return m_config->get<T>(uid);
+  }
+
+  template<class T>
+  const T* get_dal(conffwk::ConfigObject& obj){
+    return m_config->get<T>(obj);
+  }
 };
 
 } // namespace dunedaq::appmodel

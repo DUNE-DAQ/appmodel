@@ -1,5 +1,5 @@
 /**
- * @file generate_modules.cpp
+ * @file MLTApplication.cpp
  *
  * Implementation of MLTApplication's generate_modules dal method
  *
@@ -67,17 +67,12 @@ namespace appmodel {
 
 
 std::vector<const confmodel::DaqModule*>
-MLTApplication::generate_modules(conffwk::Configuration* confdb,
-                                 const std::string& dbfile,
-                                 const confmodel::Session* session) const
+MLTApplication::generate_modules(const confmodel::Session* session) const
 {
-
-  TLOG() << "AAAAAA : Calling MLTApplication::generate_modules";
 
   std::vector<const confmodel::DaqModule*> modules;
 
-  const auto obj_fac = ConfigObjectFactory(this);
-
+  ConfigObjectFactory obj_fac(this);
 
   // auto mlt_conf = get_mlt_conf();
   // auto mlt_class = mlt_conf->get_template_for();
@@ -202,7 +197,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
     generated_tc_conns.push_back(tc_net_gen);
 
     gen_obj.set_objs("outputs", { &generated_tc_conns.back() });
-    modules.push_back(confdb->get<StandaloneTCMakerModule>(gen_conf->UID()));
+    modules.push_back(obj_fac.get_dal<StandaloneTCMakerModule>(gen_conf->UID()));
   }
 
   /**************************************************************
@@ -221,7 +216,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
   reader_obj.set_objs("outputs", { &input_queue_obj });
   reader_obj.set_obj("configuration", &rdr_conf->config_object());
 
-  modules.push_back(confdb->get<DataSubscriberModule>(reader_uid));
+  modules.push_back(obj_fac.get_dal<DataSubscriberModule>(reader_uid));
 
   /**************************************************************
    * Create the readout map
@@ -407,7 +402,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
   ti_obj.set_objs("outputs", ti_output_objs);
 
   // Add to our list of modules to return
-  modules.push_back(confdb->get<DataHandlerModule>(ti_uid));
+  modules.push_back(obj_fac.get_dal<DataHandlerModule>(ti_uid));
 
   /**************************************************************
    * Instantiate the MLTModule module
@@ -418,7 +413,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
   mlt_obj.set_obj("configuration", &(mlt_conf->config_object()));
   mlt_obj.set_objs("inputs", { &output_queue_obj, &ti_net_obj });
   mlt_obj.set_objs("outputs", { &td_net_obj });
-  modules.push_back(confdb->get<MLTModule>(mlt_conf->UID()));
+  modules.push_back(obj_fac.get_dal<MLTModule>(mlt_conf->UID()));
 
   return modules;
 }

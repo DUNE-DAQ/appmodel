@@ -1,5 +1,5 @@
 /**
- * @file DFO.cpp
+ * @file DFOApplication.cpp
  *
  * Implementation of DFOApplication's generate_modules dal method
  *
@@ -32,14 +32,12 @@ namespace dunedaq {
 namespace appmodel {
 
 std::vector<const confmodel::DaqModule*> 
-HSIEventToTCApplication::generate_modules(conffwk::Configuration* confdb,
-                                     const std::string& dbfile,
-                                     const confmodel::Session* /*session*/) const
+HSIEventToTCApplication::generate_modules(const confmodel::Session* /*session*/) const
 {
+
+  ConfigObjectFactory obj_fac(this);
+  
   std::vector<const confmodel::DaqModule*> modules;
-
-  const auto obj_fac = ConfigObjectFactory(this);
-
 
   std::string hstcUid("module-" + UID());
   TLOG_DEBUG(7) << "creating OKS configuration object for the DataSubscriberModule class ";
@@ -78,7 +76,7 @@ HSIEventToTCApplication::generate_modules(conffwk::Configuration* confdb,
   hstcObj.set_objs("outputs", {&outObj});
 
   // Add to our list of modules to return
-  modules.push_back(confdb->get<DataSubscriberModule>(hstcUid));
+  modules.push_back(obj_fac.get_dal<DataSubscriberModule>(hstcUid));
 
   return modules;
 }
