@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="22" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20250528T111729"/>
+<info name="" type="" num-of-items="22" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20250528T132244"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -126,7 +126,7 @@
  </class>
 
  <class name="FakeDataReceiver">
-  <superclass name="DetDataReceiver"/>
+  <superclass name="NWDetDataReceiver"/>
  </class>
 
  <class name="FakeDataSender">
