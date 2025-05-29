@@ -19,6 +19,10 @@ namespace dunedaq::appmodel {
 std::vector<const dunedaq::confmodel::DetDataSender*> 
 FelixDetectorToDaqConnection::get_senders() const {
   std::vector<const dunedaq::confmodel::DetDataSender*> senders;
+   if (m_felix_senders.empty()) {
+    std::lock_guard scoped_lock(m_mutex);
+    check_init();
+  }
   for (auto sender: m_felix_senders) {
     senders.push_back(
       dynamic_cast<const dunedaq::confmodel::DetDataSender*>(sender));
@@ -28,6 +32,10 @@ FelixDetectorToDaqConnection::get_senders() const {
 
 const confmodel::DetDataReceiver*
 FelixDetectorToDaqConnection::get_receiver() const {
+   if (m_felix_senders.empty()) {
+    std::lock_guard scoped_lock(m_mutex);
+    check_init();
+  }
   return (m_felix_receiver);
 }
 

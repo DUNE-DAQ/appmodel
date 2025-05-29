@@ -189,17 +189,12 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
   uint16_t conn_idx = 0;
 
   for (auto d2d_conn : get_detector_connections()) {
-
-    // Are we sure?
     if (d2d_conn->disabled(*session)) {
       TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
       continue;
     }
 
-    // d2d_conn_objs.push_back(&d2d_conn_res->config_object());
-
     TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn->UID();
-    // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader module
 
     // Are these tests necessary? Schema does not allow 0 cardinality
     // for these relationships!!  TODO

@@ -19,15 +19,24 @@ namespace dunedaq::appmodel {
 std::vector<const dunedaq::confmodel::DetDataSender*> 
 NetworkDetectorToDaqConnection::get_senders() const {
   std::vector<const dunedaq::confmodel::DetDataSender*> senders;
+   if (m_net_senders.empty()) {
+    std::lock_guard scoped_lock(m_mutex);
+    check_init();
+  }
   for (auto sender: m_net_senders) {
     senders.push_back(
       dynamic_cast<const dunedaq::confmodel::DetDataSender*>(sender));
   }
+  TLOG_DEBUG(6) << "Found " << senders.size() << " senders\n";
   return senders;
 }
 
 const confmodel::DetDataReceiver*
 NetworkDetectorToDaqConnection::get_receiver() const {
+   if (m_net_senders.empty()) {
+    std::lock_guard scoped_lock(m_mutex);
+    check_init();
+  }
   return (m_net_receiver);
 }
 
