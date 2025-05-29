@@ -1,5 +1,5 @@
 /**
- * @file DFO.cpp
+ * @file FakeHSIApplication.cpp
  *
  * Implementation of FakeHSIApplication's generate_modules dal method
  *
