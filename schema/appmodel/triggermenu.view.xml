@@ -1,0 +1,520 @@
+<?xml version="1.0" encoding="ASCII"?>
+
+<!-- oks-data version 2.2 -->
+
+
+<!DOCTYPE oks-data [
+  <!ELEMENT oks-data (info, (include)?, (comments)?, (obj)+)>
+  <!ELEMENT info EMPTY>
+  <!ATTLIST info
+      name CDATA #IMPLIED
+      type CDATA #IMPLIED
+      num-of-items CDATA #REQUIRED
+      oks-format CDATA #FIXED "data"
+      oks-version CDATA #REQUIRED
+      created-by CDATA #IMPLIED
+      created-on CDATA #IMPLIED
+      creation-time CDATA #IMPLIED
+      last-modified-by CDATA #IMPLIED
+      last-modified-on CDATA #IMPLIED
+      last-modification-time CDATA #IMPLIED
+  >
+  <!ELEMENT include (file)*>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+      path CDATA #REQUIRED
+  >
+  <!ELEMENT comments (comment)*>
+  <!ELEMENT comment EMPTY>
+  <!ATTLIST comment
+      creation-time CDATA #REQUIRED
+      created-by CDATA #REQUIRED
+      created-on CDATA #REQUIRED
+      author CDATA #REQUIRED
+      text CDATA #REQUIRED
+  >
+  <!ELEMENT obj (attr | rel)*>
+  <!ATTLIST obj
+      class CDATA #REQUIRED
+      id CDATA #REQUIRED
+  >
+  <!ELEMENT attr (data)*>
+  <!ATTLIST attr
+      name CDATA #REQUIRED
+      type (bool|s8|u8|s16|u16|s32|u32|s64|u64|float|double|date|time|string|uid|enum|class|-) "-"
+      val CDATA ""
+  >
+  <!ELEMENT data EMPTY>
+  <!ATTLIST data
+      val CDATA #REQUIRED
+  >
+  <!ELEMENT rel (ref)*>
+  <!ATTLIST rel
+      name CDATA #REQUIRED
+      class CDATA ""
+      id CDATA ""
+  >
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref
+      class CDATA #REQUIRED
+      id CDATA #REQUIRED
+  >
+]>
+
+<oks-data>
+
+<info name="" type="" num-of-items="73" oks-format="data" oks-version="oks-08-03-04-11-g3f5bde7 built &quot;Feb 21 2023&quot;" created-by="glehmann" created-on="np04-srv-024.cern.ch" creation-time="20250428T151919" last-modified-by="glehmann" last-modified-on="np04-srv-024.cern.ch" last-modification-time="20250428T151919"/>
+
+<obj class="ALink" id="DetTriggerChain-2-TADataProcessor-via-tc_maker">
+ <attr name="Name" type="string" val="tc_maker"/>
+ <rel name="From" class="Class" id="DetTriggerChain"/>
+ <rel name="To" class="Class" id="TADataProcessor"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DetTriggerChain-2-TADataProcessor-via-tc_maker"/>
+  <ref class="Point" id="2 DetTriggerChain-2-TADataProcessor-via-tc_maker"/>
+  <ref class="Point" id="3 DetTriggerChain-2-TADataProcessor-via-tc_maker"/>
+  <ref class="Point" id="4 DetTriggerChain-2-TADataProcessor-via-tc_maker"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="DetTriggerChain-2-TriggerItem-via-trigger_items">
+ <attr name="Name" type="string" val="trigger_items"/>
+ <rel name="From" class="Class" id="DetTriggerChain"/>
+ <rel name="To" class="Class" id="TriggerItem"/>
+ <rel name="Points">
+  <ref class="Point" id="1 DetTriggerChain-2-TriggerItem-via-trigger_items"/>
+  <ref class="Point" id="2 DetTriggerChain-2-TriggerItem-via-trigger_items"/>
+  <ref class="Point" id="3 DetTriggerChain-2-TriggerItem-via-trigger_items"/>
+  <ref class="Point" id="4 DetTriggerChain-2-TriggerItem-via-trigger_items"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="EventTriggerChain-2-RoIWindow-via-rois">
+ <attr name="Name" type="string" val="rois"/>
+ <rel name="From" class="Class" id="EventTriggerChain"/>
+ <rel name="To" class="Class" id="RoIWindow"/>
+ <rel name="Points">
+  <ref class="Point" id="1 EventTriggerChain-2-RoIWindow-via-rois"/>
+  <ref class="Point" id="2 EventTriggerChain-2-RoIWindow-via-rois"/>
+  <ref class="Point" id="3 EventTriggerChain-2-RoIWindow-via-rois"/>
+  <ref class="Point" id="4 EventTriggerChain-2-RoIWindow-via-rois"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="RoIWindow-2-DetectorUnit-via-det_units">
+ <attr name="Name" type="string" val="det_units"/>
+ <rel name="From" class="Class" id="RoIWindow"/>
+ <rel name="To" class="Class" id="DetectorUnit"/>
+ <rel name="Points">
+  <ref class="Point" id="1 RoIWindow-2-DetectorUnit-via-det_units"/>
+  <ref class="Point" id="2 RoIWindow-2-DetectorUnit-via-det_units"/>
+  <ref class="Point" id="3 RoIWindow-2-DetectorUnit-via-det_units"/>
+  <ref class="Point" id="4 RoIWindow-2-DetectorUnit-via-det_units"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="TCDataProcessor-2-ROIGroupConf-via-roi_group_conf">
+ <attr name="Name" type="string" val="roi_group_conf"/>
+ <rel name="From" class="Class" id="TCDataProcessor"/>
+ <rel name="To" class="Class" id="ROIGroupConf"/>
+ <rel name="Points">
+  <ref class="Point" id="1 TCDataProcessor-2-ROIGroupConf-via-roi_group_conf"/>
+  <ref class="Point" id="2 TCDataProcessor-2-ROIGroupConf-via-roi_group_conf"/>
+  <ref class="Point" id="3 TCDataProcessor-2-ROIGroupConf-via-roi_group_conf"/>
+  <ref class="Point" id="4 TCDataProcessor-2-ROIGroupConf-via-roi_group_conf"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="TriggerItem-2-DetectorUnit-via-det_units">
+ <attr name="Name" type="string" val="det_units"/>
+ <rel name="From" class="Class" id="TriggerItem"/>
+ <rel name="To" class="Class" id="DetectorUnit"/>
+ <rel name="Points">
+  <ref class="Point" id="1 TriggerItem-2-DetectorUnit-via-det_units"/>
+  <ref class="Point" id="2 TriggerItem-2-DetectorUnit-via-det_units"/>
+  <ref class="Point" id="3 TriggerItem-2-DetectorUnit-via-det_units"/>
+  <ref class="Point" id="4 TriggerItem-2-DetectorUnit-via-det_units"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="TriggerItem-2-RawDataProcessor-via-tp_maker">
+ <attr name="Name" type="string" val="tp_maker"/>
+ <rel name="From" class="Class" id="TriggerItem"/>
+ <rel name="To" class="Class" id="RawDataProcessor"/>
+ <rel name="Points">
+  <ref class="Point" id="1 TriggerItem-2-RawDataProcessor-via-tp_maker"/>
+  <ref class="Point" id="2 TriggerItem-2-RawDataProcessor-via-tp_maker"/>
+  <ref class="Point" id="3 TriggerItem-2-RawDataProcessor-via-tp_maker"/>
+  <ref class="Point" id="4 TriggerItem-2-RawDataProcessor-via-tp_maker"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="TriggerItem-2-TPDataProcessor-via-ta_maker">
+ <attr name="Name" type="string" val="ta_maker"/>
+ <rel name="From" class="Class" id="TriggerItem"/>
+ <rel name="To" class="Class" id="TPDataProcessor"/>
+ <rel name="Points">
+  <ref class="Point" id="1 TriggerItem-2-TPDataProcessor-via-ta_maker"/>
+  <ref class="Point" id="2 TriggerItem-2-TPDataProcessor-via-ta_maker"/>
+  <ref class="Point" id="3 TriggerItem-2-TPDataProcessor-via-ta_maker"/>
+  <ref class="Point" id="4 TriggerItem-2-TPDataProcessor-via-ta_maker"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="TriggerMenu-2-TCDataProcessor-via-td_maker">
+ <attr name="Name" type="string" val="td_maker"/>
+ <rel name="From" class="Class" id="TriggerMenu"/>
+ <rel name="To" class="Class" id="TCDataProcessor"/>
+ <rel name="Points">
+  <ref class="Point" id="1 TriggerMenu-2-TCDataProcessor-via-td_maker"/>
+  <ref class="Point" id="2 TriggerMenu-2-TCDataProcessor-via-td_maker"/>
+  <ref class="Point" id="3 TriggerMenu-2-TCDataProcessor-via-td_maker"/>
+  <ref class="Point" id="4 TriggerMenu-2-TCDataProcessor-via-td_maker"/>
+ </rel>
+</obj>
+
+<obj class="ALink" id="TriggerMenu-2-TriggerChain-via-trigger_chains">
+ <attr name="Name" type="string" val="trigger_chains"/>
+ <rel name="From" class="Class" id="TriggerMenu"/>
+ <rel name="To" class="Class" id="TriggerChain"/>
+ <rel name="Points">
+  <ref class="Point" id="1 TriggerMenu-2-TriggerChain-via-trigger_chains"/>
+  <ref class="Point" id="2 TriggerMenu-2-TriggerChain-via-trigger_chains"/>
+  <ref class="Point" id="3 TriggerMenu-2-TriggerChain-via-trigger_chains"/>
+  <ref class="Point" id="4 TriggerMenu-2-TriggerChain-via-trigger_chains"/>
+ </rel>
+</obj>
+
+<obj class="Class" id="DetTriggerChain">
+ <attr name="x" type="s16" val="520"/>
+ <attr name="y" type="s16" val="268"/>
+</obj>
+
+<obj class="Class" id="DetectorUnit">
+ <attr name="x" type="s16" val="259"/>
+ <attr name="y" type="s16" val="448"/>
+</obj>
+
+<obj class="Class" id="EventTriggerChain">
+ <attr name="x" type="s16" val="41"/>
+ <attr name="y" type="s16" val="269"/>
+</obj>
+
+<obj class="Class" id="ROIGroupConf">
+ <attr name="x" type="s16" val="1051"/>
+ <attr name="y" type="s16" val="133"/>
+</obj>
+
+<obj class="Class" id="RawDataProcessor">
+ <attr name="x" type="s16" val="642"/>
+ <attr name="y" type="s16" val="519"/>
+</obj>
+
+<obj class="Class" id="RoIWindow">
+ <attr name="x" type="s16" val="11"/>
+ <attr name="y" type="s16" val="451"/>
+</obj>
+
+<obj class="Class" id="TADataProcessor">
+ <attr name="x" type="s16" val="706"/>
+ <attr name="y" type="s16" val="258"/>
+</obj>
+
+<obj class="Class" id="TCDataProcessor">
+ <attr name="x" type="s16" val="634"/>
+ <attr name="y" type="s16" val="5"/>
+</obj>
+
+<obj class="Class" id="TPDataProcessor">
+ <attr name="x" type="s16" val="672"/>
+ <attr name="y" type="s16" val="449"/>
+</obj>
+
+<obj class="Class" id="TriggerChain">
+ <attr name="x" type="s16" val="346"/>
+ <attr name="y" type="s16" val="158"/>
+</obj>
+
+<obj class="Class" id="TriggerItem">
+ <attr name="x" type="s16" val="509"/>
+ <attr name="y" type="s16" val="461"/>
+</obj>
+
+<obj class="Class" id="TriggerMenu">
+ <attr name="x" type="s16" val="357"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="GLink" id="TriggerChain-2-DetTriggerChain">
+ <rel name="From" class="Class" id="TriggerChain"/>
+ <rel name="To" class="Class" id="DetTriggerChain"/>
+ <rel name="Points">
+  <ref class="Point" id="1 TriggerChain-2-DetTriggerChain"/>
+  <ref class="Point" id="2 TriggerChain-2-DetTriggerChain"/>
+  <ref class="Point" id="3 TriggerChain-2-DetTriggerChain"/>
+  <ref class="Point" id="4 TriggerChain-2-DetTriggerChain"/>
+ </rel>
+</obj>
+
+<obj class="GLink" id="TriggerChain-2-EventTriggerChain">
+ <rel name="From" class="Class" id="TriggerChain"/>
+ <rel name="To" class="Class" id="EventTriggerChain"/>
+ <rel name="Points">
+  <ref class="Point" id="1 TriggerChain-2-EventTriggerChain"/>
+  <ref class="Point" id="2 TriggerChain-2-EventTriggerChain"/>
+  <ref class="Point" id="3 TriggerChain-2-EventTriggerChain"/>
+  <ref class="Point" id="4 TriggerChain-2-EventTriggerChain"/>
+ </rel>
+</obj>
+
+<obj class="Point" id="1 DetTriggerChain-2-TADataProcessor-via-tc_maker">
+ <attr name="x" type="s16" val="75"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 DetTriggerChain-2-TriggerItem-via-trigger_items">
+ <attr name="x" type="s16" val="36"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 EventTriggerChain-2-RoIWindow-via-rois">
+ <attr name="x" type="s16" val="52"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 RoIWindow-2-DetectorUnit-via-det_units">
+ <attr name="x" type="s16" val="123"/>
+ <attr name="y" type="s16" val="51"/>
+</obj>
+
+<obj class="Point" id="1 TCDataProcessor-2-ROIGroupConf-via-roi_group_conf">
+ <attr name="x" type="s16" val="164"/>
+ <attr name="y" type="s16" val="119"/>
+</obj>
+
+<obj class="Point" id="1 TriggerChain-2-DetTriggerChain">
+ <attr name="x" type="s16" val="85"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 TriggerChain-2-EventTriggerChain">
+ <attr name="x" type="s16" val="85"/>
+ <attr name="y" type="s16" val="38"/>
+</obj>
+
+<obj class="Point" id="1 TriggerItem-2-DetectorUnit-via-det_units">
+ <attr name="x" type="s16" val="19"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 TriggerItem-2-RawDataProcessor-via-tp_maker">
+ <attr name="x" type="s16" val="53"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 TriggerItem-2-TPDataProcessor-via-ta_maker">
+ <attr name="x" type="s16" val="53"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 TriggerMenu-2-TCDataProcessor-via-td_maker">
+ <attr name="x" type="s16" val="60"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="1 TriggerMenu-2-TriggerChain-via-trigger_chains">
+ <attr name="x" type="s16" val="60"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="2 DetTriggerChain-2-TADataProcessor-via-tc_maker">
+ <attr name="x" type="s16" val="75"/>
+ <attr name="y" type="s16" val="285"/>
+</obj>
+
+<obj class="Point" id="2 DetTriggerChain-2-TriggerItem-via-trigger_items">
+ <attr name="x" type="s16" val="36"/>
+ <attr name="y" type="s16" val="361"/>
+</obj>
+
+<obj class="Point" id="2 EventTriggerChain-2-RoIWindow-via-rois">
+ <attr name="x" type="s16" val="52"/>
+ <attr name="y" type="s16" val="484"/>
+</obj>
+
+<obj class="Point" id="2 RoIWindow-2-DetectorUnit-via-det_units">
+ <attr name="x" type="s16" val="123"/>
+ <attr name="y" type="s16" val="482"/>
+</obj>
+
+<obj class="Point" id="2 TCDataProcessor-2-ROIGroupConf-via-roi_group_conf">
+ <attr name="x" type="s16" val="164"/>
+ <attr name="y" type="s16" val="69"/>
+</obj>
+
+<obj class="Point" id="2 TriggerChain-2-DetTriggerChain">
+ <attr name="x" type="s16" val="85"/>
+ <attr name="y" type="s16" val="244"/>
+</obj>
+
+<obj class="Point" id="2 TriggerChain-2-EventTriggerChain">
+ <attr name="x" type="s16" val="85"/>
+ <attr name="y" type="s16" val="244"/>
+</obj>
+
+<obj class="Point" id="2 TriggerItem-2-DetectorUnit-via-det_units">
+ <attr name="x" type="s16" val="19"/>
+ <attr name="y" type="s16" val="475"/>
+</obj>
+
+<obj class="Point" id="2 TriggerItem-2-RawDataProcessor-via-tp_maker">
+ <attr name="x" type="s16" val="53"/>
+ <attr name="y" type="s16" val="528"/>
+</obj>
+
+<obj class="Point" id="2 TriggerItem-2-TPDataProcessor-via-ta_maker">
+ <attr name="x" type="s16" val="53"/>
+ <attr name="y" type="s16" val="475"/>
+</obj>
+
+<obj class="Point" id="2 TriggerMenu-2-TCDataProcessor-via-td_maker">
+ <attr name="x" type="s16" val="60"/>
+ <attr name="y" type="s16" val="21"/>
+</obj>
+
+<obj class="Point" id="2 TriggerMenu-2-TriggerChain-via-trigger_chains">
+ <attr name="x" type="s16" val="60"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="3 DetTriggerChain-2-TADataProcessor-via-tc_maker">
+ <attr name="x" type="s16" val="39"/>
+ <attr name="y" type="s16" val="285"/>
+</obj>
+
+<obj class="Point" id="3 DetTriggerChain-2-TriggerItem-via-trigger_items">
+ <attr name="x" type="s16" val="47"/>
+ <attr name="y" type="s16" val="361"/>
+</obj>
+
+<obj class="Point" id="3 EventTriggerChain-2-RoIWindow-via-rois">
+ <attr name="x" type="s16" val="41"/>
+ <attr name="y" type="s16" val="484"/>
+</obj>
+
+<obj class="Point" id="3 RoIWindow-2-DetectorUnit-via-det_units">
+ <attr name="x" type="s16" val="42"/>
+ <attr name="y" type="s16" val="482"/>
+</obj>
+
+<obj class="Point" id="3 TCDataProcessor-2-ROIGroupConf-via-roi_group_conf">
+ <attr name="x" type="s16" val="62"/>
+ <attr name="y" type="s16" val="69"/>
+</obj>
+
+<obj class="Point" id="3 TriggerChain-2-DetTriggerChain">
+ <attr name="x" type="s16" val="25"/>
+ <attr name="y" type="s16" val="244"/>
+</obj>
+
+<obj class="Point" id="3 TriggerChain-2-EventTriggerChain">
+ <attr name="x" type="s16" val="28"/>
+ <attr name="y" type="s16" val="244"/>
+</obj>
+
+<obj class="Point" id="3 TriggerItem-2-DetectorUnit-via-det_units">
+ <attr name="x" type="s16" val="42"/>
+ <attr name="y" type="s16" val="475"/>
+</obj>
+
+<obj class="Point" id="3 TriggerItem-2-RawDataProcessor-via-tp_maker">
+ <attr name="x" type="s16" val="37"/>
+ <attr name="y" type="s16" val="528"/>
+</obj>
+
+<obj class="Point" id="3 TriggerItem-2-TPDataProcessor-via-ta_maker">
+ <attr name="x" type="s16" val="39"/>
+ <attr name="y" type="s16" val="475"/>
+</obj>
+
+<obj class="Point" id="3 TriggerMenu-2-TCDataProcessor-via-td_maker">
+ <attr name="x" type="s16" val="54"/>
+ <attr name="y" type="s16" val="21"/>
+</obj>
+
+<obj class="Point" id="3 TriggerMenu-2-TriggerChain-via-trigger_chains">
+ <attr name="x" type="s16" val="58"/>
+ <attr name="y" type="s16" val="24"/>
+</obj>
+
+<obj class="Point" id="4 DetTriggerChain-2-TADataProcessor-via-tc_maker">
+ <attr name="x" type="s16" val="39"/>
+ <attr name="y" type="s16" val="12"/>
+</obj>
+
+<obj class="Point" id="4 DetTriggerChain-2-TriggerItem-via-trigger_items">
+ <attr name="x" type="s16" val="47"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 EventTriggerChain-2-RoIWindow-via-rois">
+ <attr name="x" type="s16" val="41"/>
+ <attr name="y" type="s16" val="17"/>
+</obj>
+
+<obj class="Point" id="4 RoIWindow-2-DetectorUnit-via-det_units">
+ <attr name="x" type="s16" val="42"/>
+ <attr name="y" type="s16" val="17"/>
+</obj>
+
+<obj class="Point" id="4 TCDataProcessor-2-ROIGroupConf-via-roi_group_conf">
+ <attr name="x" type="s16" val="62"/>
+ <attr name="y" type="s16" val="26"/>
+</obj>
+
+<obj class="Point" id="4 TriggerChain-2-DetTriggerChain">
+ <attr name="x" type="s16" val="25"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 TriggerChain-2-EventTriggerChain">
+ <attr name="x" type="s16" val="28"/>
+ <attr name="y" type="s16" val="8"/>
+</obj>
+
+<obj class="Point" id="4 TriggerItem-2-DetectorUnit-via-det_units">
+ <attr name="x" type="s16" val="42"/>
+ <attr name="y" type="s16" val="17"/>
+</obj>
+
+<obj class="Point" id="4 TriggerItem-2-RawDataProcessor-via-tp_maker">
+ <attr name="x" type="s16" val="37"/>
+ <attr name="y" type="s16" val="17"/>
+</obj>
+
+<obj class="Point" id="4 TriggerItem-2-TPDataProcessor-via-ta_maker">
+ <attr name="x" type="s16" val="39"/>
+ <attr name="y" type="s16" val="12"/>
+</obj>
+
+<obj class="Point" id="4 TriggerMenu-2-TCDataProcessor-via-td_maker">
+ <attr name="x" type="s16" val="54"/>
+ <attr name="y" type="s16" val="39"/>
+</obj>
+
+<obj class="Point" id="4 TriggerMenu-2-TriggerChain-via-trigger_chains">
+ <attr name="x" type="s16" val="58"/>
+ <attr name="y" type="s16" val="12"/>
+</obj>
+
+<obj class="View" id="Unknown">
+ <attr name="drawing area x margin" type="u16" val="6"/>
+ <attr name="drawing area y margin" type="u16" val="4"/>
+ <attr name="font x margin" type="u16" val="3"/>
+ <attr name="font y margin" type="u16" val="2"/>
+ <attr name="font name" type="string" val="-adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1"/>
+ <attr name="aggregation sign size" type="u16" val="18"/>
+ <attr name="generalization sign size" type="u16" val="16"/>
+</obj>
+
+</oks-data>

@@ -88,37 +88,6 @@
 </include>
 
 
- <class name="AVXAbsRunSumProcessor" description="TPG absolute running sum signal processor. Outputs a scaled running sum from the absolute value of the input signal.">
-  <superclass name="AVXRunSumProcessor"/>
- </class>
-
- <class name="AVXFrugalPedestalSubtractProcessor" description="TPG frugal pedestal subtraction signal processor. Frugally updates the pedestal estimation and outputs the difference with the input signal.">
-  <superclass name="ProcessingStep"/>
-  <attribute name="accum_limit" description="Accumulation limit to increment/decrement the estimated pedestal value." type="u8" init-value="10" is-not-null="yes"/>
- </class>
-
- <class name="AVXFixedPedestalSubtractProcessor" description="TPG fixed pedestal subtraction signal processor. Gets an initial estimate on the pedestal then keeps fixed.">
-  <superclass name="AVXFrugalPedestalSubtractProcessor"/>
-  <attribute name="start_period" description="Number of time ticks to use for the initial pedestal estimate." type="u16" init-value="1000" is-not-null="yes"/>
- </class>
-
- <class name="AVXRunSumProcessor" description="TPG running sum signal processor. Outputs a scaled running sum from the input signal.">
-  <superclass name="ProcessingStep"/>
-  <attribute name="memory_factor_plane0" description="Running sum memory factor for plane 0. Gets divided by 10." type="u8" range="0..10" init-value="8" is-not-null="yes"/>
-  <attribute name="memory_factor_plane1" description="Running sum memory factor for plane 1. Gets divided by 10." type="u8" range="0..10" init-value="8" is-not-null="yes"/>
-  <attribute name="memory_factor_plane2" description="Running sum memory factor for plane 2. Gets divided by 10." type="u8" range="0..10" init-value="8" is-not-null="yes"/>
-  <attribute name="scale_factor_plane0" description="Running sum scale factor for plane 0. Gets divided by 10." type="u8" range="1..10" init-value="10" is-not-null="yes"/>
-  <attribute name="scale_factor_plane1" description="Running sum scale factor for plane 1. Gets divided by 10." type="u8" range="1..10" init-value="10" is-not-null="yes"/>
-  <attribute name="scale_factor_plane2" description="Running sum scale factor for plane 2. Gets divided by 10." type="u8" range="1..10" init-value="10" is-not-null="yes"/>
- </class>
-
- <class name="AVXThresholdProcessor" description="TPG threshold signal processor. Filters the input signal by passing values that are above threshold and suppresing otherwise.">
-  <superclass name="ProcessingStep"/>
-  <attribute name="plane0" description="Threshold for plane 0." type="u16" init-value="100" is-not-null="yes"/>
-  <attribute name="plane1" description="Threshold for plane 1." type="u16" init-value="100" is-not-null="yes"/>
-  <attribute name="plane2" description="Threshold for plane 2." type="u16" init-value="100" is-not-null="yes"/>
- </class>
-
  <class name="DataSubscriberModule">
   <superclass name="DaqModule"/>
   <relationship name="configuration" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -140,13 +109,6 @@
   </method>
  </class>
 
- <class name="HSISignalWindow">
-  <attribute name="signal_type" description="HSI signal bit to convert into a TC" type="u32" init-value="0" is-not-null="yes"/>
-  <attribute name="tc_type_name" description="TC type (as string) to generate for a given HSI bit" type="string" init-value="kTiming" is-not-null="yes"/>
-  <attribute name="time_before" description="Time, in ticks, before the HSI timestamp, for the TriggerCandidate start_time" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="time_after" description="Time, in ticks, after the HSI timestamp, for the TriggerCandidate end_time" type="u32" init-value="20000" is-not-null="yes"/>
- </class>
-
  <class name="MLTApplication">
   <superclass name="TriggerApplication"/>
   <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
@@ -155,13 +117,6 @@
   <method name="generate_modules" description="Generate daq module dal objects for MLTApplication on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
   </method>
- </class>
-
-
- <class name="SubdetectorReadoutWindowMap">
-  <attribute name="subdetector" description="Name of the subdetector as defined in dunedaq::detdataformats::DetID, e.g. kHD_PDS" type="string" init-value="kUnknown" is-not-null="yes"/>
-  <attribute name="time_before" description="Time, in ticks, before the HSI timestamp, for the TriggerCandidate start_time" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="time_after"  description="Time, in ticks, after the HSI timestamp, for the TriggerCandidate end_time" type="u32" init-value="20000" is-not-null="yes"/>
  </class>
 
  <class name="MLTConf">
@@ -173,17 +128,6 @@
  <class name="MLTModule">
   <superclass name="DaqModule"/>
   <relationship name="configuration" class-type="MLTConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="ProcessingStep" description="Base class for TPG processors.">
-  <superclass name="Jsonable"/>
- </class>
-
- <class name="ROIGroupConf">
-  <attribute name="number_of_link_groups" description="Number of groups of links to readout" type="u32" init-value="1" is-not-null="yes"/>
-  <attribute name="probability" description="Probability to select this configuration [0 to 1] (currently not used)" type="float" init-value="0.1" is-not-null="yes"/>
-  <attribute name="time_window" description="Time window to read out pre/post decision, [clock ticks] (currently not used)" type="u32" init-value="1" is-not-null="yes"/>
-  <attribute name="groups_selection_mode" description="Whether to read out random groups or in sequence (currently not used)" type="enum" range="kRandom,kSequential" init-value="kRandom" is-not-null="yes"/>
  </class>
 
  <class name="RandomTCMakerConf">
@@ -199,14 +143,6 @@
   <relationship name="configuration" class-type="RandomTCMakerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="RawDataProcessor">
-  <superclass name="DataProcessor"/>
-  <attribute name="channel_mask" description="List of channels to be masked from TP generation" type="u32" is-multi-value="yes"/>
-  <attribute name="channel_map" type="string"/>
-  <relationship name="processing_steps" class-type="ProcessingStep" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="sot_minima" description="TP samples over threshold minimum requirement by plane." class-type="SamplesOverThresholdMinima" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
  <class name="StandaloneTCMakerConf" is-abstract="yes">
   <attribute name="template_for" type="class" init-value="StandaloneTCMakerModule" is-not-null="yes"/>
   <attribute name="timestamp_method" description="Option to pick source for timing (system / timesync)" type="enum" range="kTimeSync,kSystemClock" init-value="kTimeSync" is-not-null="yes"/>
@@ -215,177 +151,6 @@
 
  <class name="StandaloneTCMakerModule">
   <superclass name="DaqModule"/>
- </class>
-
- <class name="TAAlgorithm" description="Base class for TA algorithms">
-  <superclass name="Jsonable"/>
-  <attribute name="prescale" description="Prescale factor to apply to algorithm output" type="u32" init-value="1" is-not-null="yes"/>
-  <attribute name="max_samples_over_threshold" description="Maximum samples-over-threshold for TP to accept by TAM for processing" type="u32" init-value="10000" is-not-null="yes"/>
- </class>
-
- <class name="TADataProcessor">
-  <superclass name="DataProcessor"/>
-  <attribute name="print_ta_info" description="Whether to print TP information in the TA processor" type="bool" init-value="false"/>
-  <relationship name="algorithms" class-type="TCAlgorithm" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="TAMakerADCSimpleWindowAlgorithm">
-  <superclass name="TAAlgorithm"/>
-  <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="window_length" description="Window length (in ticks) for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
- </class>
-
- <class name="TAMakerBundleNAlgorithm">
-  <superclass name="TAAlgorithm"/>
-  <attribute name="bundle_size" description="Size of the bundle, in number of TPs" type="u32" init-value="1" is-not-null="yes"/>
- </class>
-
- <class name="TAMakerChannelAdjacencyAlgorithm">
-  <superclass name="TAAlgorithm"/>
-  <attribute name="window_length" description="Window length (in ticks) for the algorithm" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="adjacency_threshold" description="Threshold for the adjacency algorithm" type="u32" init-value="6" is-not-null="yes"/>
-  <attribute name="adjacency_tolerance" description="Tolerance for the number of allowed gaps for the adjacency algorithm" type="u32" init-value="4" is-not-null="yes"/>
- </class>
-
- <class name="TAMakerChannelDistanceAlgorithm">
-  <superclass name="TAAlgorithm"/>
-  <attribute name="window_length" description="Window length (in ticks) for the algorithm" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="min_tps" description="Minimum number of adjacent TPs to trigger on" type="u32" init-value="100" is-not-null="yes"/>
-  <attribute name="max_channel_distance" description="Maximum distance between TPs to satisfy Adjacency condition" type="u32" init-value="5" is-not-null="yes"/>
- </class>
-
- <class name="TAMakerDBSCANAlgorithm">
-  <superclass name="TAAlgorithm"/>
-  <attribute name="min_pts" description="Minimum number of points in a density unit" type="u32" init-value="5" is-not-null="yes"/>
-  <attribute name="eps" description="Kernel size for the DBSCAN algorithm" type="u32" init-value="10" is-not-null="yes"/>
- </class>
-
- <class name="TAMakerHorizontalMuonAlgorithm">
-  <superclass name="TAAlgorithm"/>
-  <attribute name="window_length" description="Window length (in ticks) for the algorithm" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="trigger_on_n_channels" description="Whether to trigger on N Channels" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="trigger_on_adjacency" description="Whether to trigger on adjacency" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="n_channels_threshold" description="Threshold for the N Channels algorithm" type="u32" init-value="8" is-not-null="yes"/>
-  <attribute name="adjacency_threshold" description="Threshold for the adjacency algorithm" type="u32" init-value="6" is-not-null="yes"/>
-  <attribute name="adjacency_tolerance" description="Tolerance for the number of allowed gaps for the adjacency algorithm" type="u32" init-value="4" is-not-null="yes"/>
- </class>
-
- <class name="TAMakerMichelElectronAlgorithm">
-  <superclass name="TAAlgorithm"/>
-  <attribute name="window_length" description="Window length (in ticks) for the algorithm" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="adjacency_threshold" description="Threshold for the adjacency algorithm" type="u32" init-value="6" is-not-null="yes"/>
-  <attribute name="adjacency_tolerance" description="Tolerance for the number of allowed gaps for the adjacency algorithm" type="u32" init-value="4" is-not-null="yes"/>
- </class>
-
- <class name="TAMakerPlaneCoincidenceAlgorithm">
-  <superclass name="TAAlgorithm"/>
-  <attribute name="window_length" description="Window length (in ticks) for the algorithm" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="adjacency_threshold" description="Threshold for the adjacency algorithm" type="u32" init-value="6" is-not-null="yes"/>
-  <attribute name="adjacency_tolerance" description="Tolerance for the number of allowed gaps for the adjacency algorithm" type="u32" init-value="4" is-not-null="yes"/>
- </class>
-
- <class name="TAMakerPrescaleAlgorithm">
-  <superclass name="TAAlgorithm"/>
- </class>
-
- <class name="TCAlgorithm" description="Base class for TC algorithms">
-  <superclass name="Jsonable"/>
-  <attribute name="prescale" description="Prescale factor to apply to algorithm output" type="u32" init-value="1" is-not-null="yes"/>
-  <attribute name="tc_type_name" description="The output TC type name this algorithm will output" type="string" init-value="kUnknown" is-not-null="yes"/>
- </class>
-
- <class name="TCDataProcessor" description="Post-processor for TCs generating the trigger decisions">
-  <superclass name="DataProcessor"/>
-  <attribute name="merge_overlapping_tcs" description="Option to turn off merging of overlapping TCs when forming TDs in MLT" type="bool" init-value="true" is-not-null="yes"/>
-  <attribute name="ignore_overlapping_tcs" description="Option to ignore consecutive overlapping TCs/pileup events. Cannot run with mlt_merge_overlapping_tcs" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="td_out_of_timeout" description="Option to drop TD if TC comes out of timeout window" type="bool" init-value="true" is-not-null="yes"/>
-  <attribute name="buffer_timeout" description="Timeout (buffer) to wait for new overlapping TCs before sending TD, in ms" type="u32" init-value="100" is-not-null="yes"/>
-  <attribute name="td_readout_limit" description="Maximum allowed time length (in ticks) for a readout window of a single TD" type="u32" init-value="1000000" is-not-null="yes"/>
-  <attribute name="ignore_tc" description="Optional list of TC types to be ignored in MLT" type="u32" is-multi-value="yes"/>
-  <attribute name="trigger_bitwords" description="Optional dictionary of bitwords to use when forming trigger decisions in MLT (currently not used)" type="string" is-multi-value="yes"/>
-  <relationship name="roi_group_conf" description="The configuration (table) for ROI readout (currently not used)" class-type="ROIGroupConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="tc_readout_map" description="The readout windows assigned to TDs in MLT, based on TC type." class-type="TCReadoutMap" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="mandatory_links" description="Source Ids that will always be included in a trigger decision." class-type="SourceIDConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="TCMakerADCSimpleWindowAlgorithm">
-  <superclass name="TCAlgorithm"/>
- </class>
-
- <class name="TCMakerBundleNAlgorithm">
-  <superclass name="TCAlgorithm"/>
-  <attribute name="bundle_size" description="Size of the bundle, in number of TAs" type="u32" init-value="1" is-not-null="yes"/>
- </class>
-
- <class name="TCMakerChannelAdjacencyAlgorithm">
-  <superclass name="TCAlgorithm"/>
-  <attribute name="window_length" description="Window length (in ticks) for the algorithm" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="trigger_on_n_channels" description="Whether to trigger on N Channels" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="n_channels_threshold" description="Threshold for the N Channels algorithm" type="u32" init-value="8" is-not-null="yes"/>
- </class>
-
- <class name="TCMakerChannelDistanceAlgorithm">
-  <superclass name="TCAlgorithm"/>
-  <attribute name="max_tp_count" description="Maximum number of TPs in the TC" type="u32" init-value="8" is-not-null="yes"/>
- </class>
-
- <class name="TCMakerDBSCANAlgorithm">
-  <superclass name="TCAlgorithm"/>
-  <attribute name="max_tp_count" description="Maximum number of TPs in the TC" type="u32" init-value="8" is-not-null="yes"/>
- </class>
-
- <class name="TCMakerHorizontalMuonAlgorithm">
-  <superclass name="TCAlgorithm"/>
-  <attribute name="window_length" description="Window length (in ticks) for the algorithm" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="trigger_on_n_channels" description="Whether to trigger on N Channels" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="n_channels_threshold" description="Threshold for the N Channels algorithm" type="u32" init-value="8" is-not-null="yes"/>
- </class>
-
- <class name="TCMakerMichelElectronAlgorithm">
-  <superclass name="TCAlgorithm"/>
-  <attribute name="window_length" description="Window length (in ticks) for the algorithm" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="trigger_on_n_channels" description="Whether to trigger on N Channels" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="n_channels_threshold" description="Threshold for the N Channels algorithm" type="u32" init-value="8" is-not-null="yes"/>
- </class>
-
- <class name="TCMakerPlaneCoincidenceAlgorithm">
-  <superclass name="TCAlgorithm"/>
-  <attribute name="window_length" description="Window length (in ticks) for the algorithm" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="trigger_on_adc" description="Whether to trigger on ADC integral" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="trigger_on_n_channels" description="Whether to trigger on N Channels" type="bool" init-value="false" is-not-null="yes"/>
-  <attribute name="adc_threshold" description="Threshold for the ADC integral algorithm" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="n_channels_threshold" description="Threshold for the N Channels algorithm" type="u32" init-value="8" is-not-null="yes"/>
- </class>
-
- <class name="TCMakerPrescaleAlgorithm">
-  <superclass name="TCAlgorithm"/>
- </class>
-
- <class name="TCReadoutMap">
-  <attribute name="tc_type_name" description="Enumerator name of the TC type, e.g. kTiming" type="string" init-value="kTiming" is-not-null="yes"/>
-  <attribute name="time_before" description="Time, in ticks, before the HSI timestamp, for the TriggerCandidate start_time" type="u32" init-value="1000" is-not-null="yes"/>
-  <attribute name="time_after" description="Time, in ticks, after the HSI timestamp, for the TriggerCandidate end_time" type="u32" init-value="1001" is-not-null="yes"/>
- </class>
-
- <class name="TPDataProcessor">
-  <superclass name="DataProcessor"/>
-  <attribute name="print_tp_info" description="Whether to print TP information in the TA processor" type="bool" init-value="false"/>
-  <relationship name="algorithms" class-type="TAAlgorithm" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="SamplesOverThresholdMinima">
-  <attribute name="sot_minimum_plane0" description="Minimum TP samples over threshold for plane 0." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
-  <attribute name="sot_minimum_plane1" description="Minimum TP samples over threshold for plane 1." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
-  <attribute name="sot_minimum_plane2" description="Minimum TP samples over threshold for plane 2." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
  </class>
 
  <class name="TriggerApplication">
