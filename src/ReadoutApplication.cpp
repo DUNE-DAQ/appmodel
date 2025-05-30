@@ -35,7 +35,7 @@
 #include "confmodel/ResourceSet.hpp"
 #include "confmodel/Service.hpp"
 
-#include "appmodel/SourceIDConf.hpp"
+#include "confmodel/SourceIDConf.hpp"
 #include "appmodel/DataReaderModule.hpp"
 #include "appmodel/DataReaderConf.hpp"
 #include "appmodel/DataRecorderModule.hpp"
@@ -50,7 +50,12 @@
 #include "appmodel/QueueDescriptor.hpp"
 #include "appmodel/RequestHandler.hpp"
 
-
+#include "appmodel/TriggerMenu.hpp"
+#include "appmodel/TriggerChain.hpp"
+#include "appmodel/DetTriggerChain.hpp"
+#include "appmodel/TriggerItem.hpp"
+#include "appmodel/RawDataProcessor.hpp"
+#include "appmodel/TPDataProcessor.hpp"
 
 #include "appmodel/appmodelIssues.hpp"
 
@@ -78,6 +83,28 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   //
   // Extract basic configuration objects
   //
+
+  // Trigger Menu information
+
+  auto det_unit_conf = get_det_unit();
+  auto trg_menu = session->get_trigger_menu();
+
+  RawDataProcessor* rdp = nullptr;
+  TPDataProcessor* tdp = nullptr;; 
+  for (auto ch : trg_menu->get_trigger_chains()) {
+     auto det_chain = ch->cast<DetTriggerChain>();
+     if (det_chain) {
+	     for (auto trg_item : det_chain->get_trigger_items()) {
+		// loop over det units to find the one of this readout app; check that there is not more than ONE RawDataProcessor in the configuration!
+
+	     }
+       
+
+     }
+  }
+
+
+ 
 
   // Data reader
   auto reader_conf = get_data_reader();

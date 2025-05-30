@@ -130,7 +130,7 @@
   <relationship name="tc_maker" class-type="TADataProcessor" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="DetectorUnit" description="Describes a modular unit of a detector, with its source ID, channel map and list of masked channels.">
+ <class name="DetectorUnitConf" description="Describes a modular unit of a detector, with its source ID, channel map and list of masked channels.">
   <attribute name="channel_map" description="name of the channel map to be used for decoding the detector." type="string" is-not-null="yes"/>
   <attribute name="masked_channels" description="list of channel IDs (offline) to be masked." type="u32" is-multi-value="yes"/>
   <relationship name="source_id" class-type="SourceIDConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -173,7 +173,7 @@
  <class name="RoIWindow" description="Describes a readout window time and geography wise.">
   <attribute name="time_width_us" description="Window width in microseconds." type="u32" init-value="3000" is-not-null="yes"/>
   <attribute name="time_offset_us" description="Offset with respect to the trigger timestamp. Can be negative!" type="s32" init-value="-500" is-not-null="yes"/>
-  <relationship name="det_units" class-type="DetectorUnit" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="det_units" class-type="DetectorUnitConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="SamplesOverThresholdMinima">
@@ -359,7 +359,7 @@
 
  <class name="TriggerItem" description="Describes the algorithms to be applied to a detector unit to generate TPs and TAs.">
   <superclass name="Resource"/>
-  <relationship name="det_units" class-type="DetectorUnit" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="det_units" class-type="DetectorUnitConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="tp_maker" class-type="RawDataProcessor" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="ta_maker" class-type="TPDataProcessor" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>

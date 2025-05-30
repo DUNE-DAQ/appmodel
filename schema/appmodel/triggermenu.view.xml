@@ -101,15 +101,15 @@
  </rel>
 </obj>
 
-<obj class="ALink" id="RoIWindow-2-DetectorUnit-via-det_units">
+<obj class="ALink" id="RoIWindow-2-DetectorUnitConf-via-det_units">
  <attr name="Name" type="string" val="det_units"/>
  <rel name="From" class="Class" id="RoIWindow"/>
- <rel name="To" class="Class" id="DetectorUnit"/>
+ <rel name="To" class="Class" id="DetectorUnitConf"/>
  <rel name="Points">
-  <ref class="Point" id="1 RoIWindow-2-DetectorUnit-via-det_units"/>
-  <ref class="Point" id="2 RoIWindow-2-DetectorUnit-via-det_units"/>
-  <ref class="Point" id="3 RoIWindow-2-DetectorUnit-via-det_units"/>
-  <ref class="Point" id="4 RoIWindow-2-DetectorUnit-via-det_units"/>
+  <ref class="Point" id="1 RoIWindow-2-DetectorUnitConf-via-det_units"/>
+  <ref class="Point" id="2 RoIWindow-2-DetectorUnitConf-via-det_units"/>
+  <ref class="Point" id="3 RoIWindow-2-DetectorUnitConf-via-det_units"/>
+  <ref class="Point" id="4 RoIWindow-2-DetectorUnitConf-via-det_units"/>
  </rel>
 </obj>
 
@@ -125,15 +125,15 @@
  </rel>
 </obj>
 
-<obj class="ALink" id="TriggerItem-2-DetectorUnit-via-det_units">
+<obj class="ALink" id="TriggerItem-2-DetectorUnitConf-via-det_units">
  <attr name="Name" type="string" val="det_units"/>
  <rel name="From" class="Class" id="TriggerItem"/>
- <rel name="To" class="Class" id="DetectorUnit"/>
+ <rel name="To" class="Class" id="DetectorUnitConf"/>
  <rel name="Points">
-  <ref class="Point" id="1 TriggerItem-2-DetectorUnit-via-det_units"/>
-  <ref class="Point" id="2 TriggerItem-2-DetectorUnit-via-det_units"/>
-  <ref class="Point" id="3 TriggerItem-2-DetectorUnit-via-det_units"/>
-  <ref class="Point" id="4 TriggerItem-2-DetectorUnit-via-det_units"/>
+  <ref class="Point" id="1 TriggerItem-2-DetectorUnitConf-via-det_units"/>
+  <ref class="Point" id="2 TriggerItem-2-DetectorUnitConf-via-det_units"/>
+  <ref class="Point" id="3 TriggerItem-2-DetectorUnitConf-via-det_units"/>
+  <ref class="Point" id="4 TriggerItem-2-DetectorUnitConf-via-det_units"/>
  </rel>
 </obj>
 
@@ -190,7 +190,7 @@
  <attr name="y" type="s16" val="268"/>
 </obj>
 
-<obj class="Class" id="DetectorUnit">
+<obj class="Class" id="DetectorUnitConf">
  <attr name="x" type="s16" val="259"/>
  <attr name="y" type="s16" val="448"/>
 </obj>
@@ -282,7 +282,7 @@
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 RoIWindow-2-DetectorUnit-via-det_units">
+<obj class="Point" id="1 RoIWindow-2-DetectorUnitConf-via-det_units">
  <attr name="x" type="s16" val="123"/>
  <attr name="y" type="s16" val="51"/>
 </obj>
@@ -302,7 +302,7 @@
  <attr name="y" type="s16" val="38"/>
 </obj>
 
-<obj class="Point" id="1 TriggerItem-2-DetectorUnit-via-det_units">
+<obj class="Point" id="1 TriggerItem-2-DetectorUnitConf-via-det_units">
  <attr name="x" type="s16" val="19"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
@@ -342,7 +342,7 @@
  <attr name="y" type="s16" val="484"/>
 </obj>
 
-<obj class="Point" id="2 RoIWindow-2-DetectorUnit-via-det_units">
+<obj class="Point" id="2 RoIWindow-2-DetectorUnitConf-via-det_units">
  <attr name="x" type="s16" val="123"/>
  <attr name="y" type="s16" val="482"/>
 </obj>
@@ -362,7 +362,7 @@
  <attr name="y" type="s16" val="244"/>
 </obj>
 
-<obj class="Point" id="2 TriggerItem-2-DetectorUnit-via-det_units">
+<obj class="Point" id="2 TriggerItem-2-DetectorUnitConf-via-det_units">
  <attr name="x" type="s16" val="19"/>
  <attr name="y" type="s16" val="475"/>
 </obj>
@@ -402,7 +402,7 @@
  <attr name="y" type="s16" val="484"/>
 </obj>
 
-<obj class="Point" id="3 RoIWindow-2-DetectorUnit-via-det_units">
+<obj class="Point" id="3 RoIWindow-2-DetectorUnitConf-via-det_units">
  <attr name="x" type="s16" val="42"/>
  <attr name="y" type="s16" val="482"/>
 </obj>
@@ -422,7 +422,7 @@
  <attr name="y" type="s16" val="244"/>
 </obj>
 
-<obj class="Point" id="3 TriggerItem-2-DetectorUnit-via-det_units">
+<obj class="Point" id="3 TriggerItem-2-DetectorUnitConf-via-det_units">
  <attr name="x" type="s16" val="42"/>
  <attr name="y" type="s16" val="475"/>
 </obj>
@@ -462,7 +462,7 @@
  <attr name="y" type="s16" val="17"/>
 </obj>
 
-<obj class="Point" id="4 RoIWindow-2-DetectorUnit-via-det_units">
+<obj class="Point" id="4 RoIWindow-2-DetectorUnitConf-via-det_units">
  <attr name="x" type="s16" val="42"/>
  <attr name="y" type="s16" val="17"/>
 </obj>
@@ -482,7 +482,7 @@
  <attr name="y" type="s16" val="8"/>
 </obj>
 
-<obj class="Point" id="4 TriggerItem-2-DetectorUnit-via-det_units">
+<obj class="Point" id="4 TriggerItem-2-DetectorUnitConf-via-det_units">
  <attr name="x" type="s16" val="42"/>
  <attr name="y" type="s16" val="17"/>
 </obj>
