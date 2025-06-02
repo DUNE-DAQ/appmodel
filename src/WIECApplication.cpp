@@ -30,7 +30,6 @@
 #include "appmodel/HermesModuleConf.hpp"
 #include "appmodel/IpbusAddressTable.hpp"
 #include "confmodel/DetectorToDaqConnection.hpp"
-#include "confmodel/DetSenderSet.hpp"
 
 
 #include <string>

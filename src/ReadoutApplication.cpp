@@ -15,7 +15,6 @@
 #include "conffwk/Configuration.hpp"
 #include "confmodel/DetDataReceiver.hpp"
 #include "confmodel/DetDataSender.hpp"
-#include "confmodel/DetSenderSet.hpp"
 #include "confmodel/DetectorStream.hpp"
 #include "confmodel/DetectorToDaqConnection.hpp"
 #include "confmodel/Session.hpp"
