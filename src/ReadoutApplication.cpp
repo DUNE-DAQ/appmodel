@@ -87,25 +87,49 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   // Trigger Menu information
 
   auto det_unit_conf = get_det_unit();
+  auto sid_obj_id = det_unit_conf->full_name();
   auto trg_menu = session->get_trigger_menu();
 
   RawDataProcessor* rdp = nullptr;
-  TPDataProcessor* tdp = nullptr;; 
+  std::set<const TPDataProcessor*> tdps;
+  bool det_unit_found = false;
+  bool tp_generation_enabled = true; 
   for (auto ch : trg_menu->get_trigger_chains()) {
      auto det_chain = ch->cast<DetTriggerChain>();
      if (det_chain) {
 	     for (auto trg_item : det_chain->get_trigger_items()) {
 		// loop over det units to find the one of this readout app; check that there is not more than ONE RawDataProcessor in the configuration!
-
-	     }
-       
-
+        for (auto det_unit : trg_item->get_det_units()) {
+          if (det_unit->get_source_id()->full_name() ==  sid_obj_id) {
+            // Ensure there is only one TP maker
+            if(!det_unit_found) {
+              rdp = trg_item->get_tp_maker();
+              det_unit_found = true;
+            }
+            else {
+              if (rdp->full_name() != trg_item->get_tp_maker()->full_name()) {
+                std::ostringstream s << "More than one TP maker is configured for the same ReadoutApplication: " <<  rdp->full_name() << ", " << trg_item->get_tp_maker()->full_name();
+                throw(BadConf(ERS_HERE, s.str()));
+              }
+            }
+            // Multiple TA makers are permitted
+            if (trg_item->get_use_separate_applications() == false) {
+              tdps.insert(trg_item->get_tp_maker());
+            }
+          }
+        }
+      }
      }
   }
-
-
+  if(!det_unit_found) {
+    tp_generation_enabled = false;
+    TLOG_DEBUG(0) << "The trigger configuration does not contain any settings for this ReadoutApplication. No TPs/TAs will be generated.";
+  }
+  std::vector<const conffwk::ConfigObject*> tp_processor_objs;
+  for (auto p : tdps) {
+    tp_processor_objs.push_back(p->config_object());
+  }
  
-
   // Data reader
   auto reader_conf = get_data_reader();
   if (reader_conf == 0) {
@@ -119,12 +143,12 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   auto dlh_class = dlh_conf->get_template_for();
 
   auto tph_conf = get_tp_handler();
-  if (tph_conf==nullptr && get_tp_generation_enabled()) {
+  if (tph_conf==nullptr && tp_generation_enabled) {
     throw(BadConf(ERS_HERE, "TP generation is enabled but there is no TP data handler configuration"));
   }
 
   std::string tph_class = "";
-  if (tph_conf != nullptr && get_tp_generation_enabled()) {
+  if (tph_conf != nullptr && tp_generation_enabled) {
     tph_class = tph_conf->get_template_for();
   }
 
@@ -321,7 +345,7 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
   // Prepare the tp handlers and related queues
   //
   std::vector<const confmodel::Connection*> tp_queues;
-  if (get_tp_generation_enabled()) {
+  if (tp_generation_enabled) {
 
     // Create TP handler object
     auto tph_conf_obj = tph_conf->config_object();
@@ -334,7 +358,8 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
       auto tph_obj = obj_fac.create(tph_class, tp_uid);
       tph_obj.set_by_val<uint32_t>("source_id", sid->get_sid());
       tph_obj.set_by_val<uint32_t>("detector_id", 1); // 1 == kDAQ
-      tph_obj.set_by_val<bool>("post_processing_enabled", get_ta_generation_enabled());
+      tph_obj.set_by_val<bool>("post_processing_enabled", !tp_processor_objs.empty());
+      tph_obj.set_objs("data_processors", tp_processor_objs);
       tph_obj.set_obj("module_configuration", &tph_conf_obj);
 
       // Create the TPs aggregator queue (from RawData Handlers to TP handlers)
@@ -381,9 +406,10 @@ ReadoutApplication::generate_modules(conffwk::Configuration* config, const std::
     auto dlh_obj = obj_fac.create(dlh_class, uid);
     dlh_obj.set_by_val<uint32_t>("source_id", sid);
     dlh_obj.set_by_val<uint32_t>("detector_id", ds->get_geo_id()->get_detector_id());
-    dlh_obj.set_by_val<bool>("post_processing_enabled", get_tp_generation_enabled());
+    dlh_obj.set_by_val<bool>("post_processing_enabled", tp_generation_enabled);
     dlh_obj.set_by_val<bool>("emulation_mode", emulation_mode);
     dlh_obj.set_obj("geo_id", &ds->get_geo_id()->config_object());
+    dlh_obj.set_objs("data_processors", {&rdp->config_object()})
     dlh_obj.set_obj("module_configuration", &dlh_conf->config_object());
 
     std::vector<const conffwk::ConfigObject*> dlh_ins, dlh_outs;
