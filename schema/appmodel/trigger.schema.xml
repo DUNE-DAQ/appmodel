@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="50" oks-format="schema" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231211T133151" last-modified-by="ramarine" last-modified-on="np04-srv-017.cern.ch" last-modification-time="20250524T163302"/>
+<info name="" type="" num-of-items="50" oks-format="schema" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231211T133151" last-modified-by="ramarine" last-modified-on="np04-srv-017.cern.ch" last-modification-time="20250530T145600"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -168,16 +168,15 @@
   <relationship name="configuration" class-type="MLTConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="PDSChannelThreshold" description="A class which controls the threshold value of a channel. ">
+ <class name="PDSChannelThreshold" description="Only build this if you want to set custom thresholds to any of the channels of a particular board. &#xA;A class which controls the threshold value of a channel. All attributes should be filled. The channel is anything in between 0 and 39. The board number is the board number defined ">
   <attribute name="channel_id" description="id of channel of the PDS" type="u32" range="0..39" is-not-null="yes"/>
   <attribute name="threshold" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="board_id" type="u32" is-not-null="yes"/>
  </class>
 
  <class name="PDSRawDataProcessor" description="A class which contains info about PDS. For example here you can add threshold for specific channels.">
   <superclass name="RawDataProcessor"/>
-  <attribute name="intg_minima" description="integral higher than threshold value for each channel." type="u32" is-multi-value="yes" init-value="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"/>
   <attribute name="pds_masked_channels" description="integral higher than threshold value for each channel." type="u32" range="0..39,999" is-multi-value="yes" init-value="999" is-not-null="yes"/>
-  <attribute name="CustomChannels" description="Are there any channels for which we set custom gain/threshold etc values?" type="bool" init-value="false" is-not-null="yes"/>
   <relationship name="channels_with_threshold" class-type="PDSChannelThreshold" low-cc="zero" high-cc="many" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
   <method name="GetCustomChannelNumber" description="returns the size of how many channels have custom thresholds. In more concrete terms, it counts how many object of PDSChannelThreshold the PDSRawDataProcessor has.  ">
    <method-implementation language="c++" prototype="size_t GetCustomChannelNumber() const" body="return m_channels_with_threshold.size();&#xA;"/>
