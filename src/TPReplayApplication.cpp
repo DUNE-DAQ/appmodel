@@ -43,15 +43,24 @@ namespace dunedaq {
 namespace appmodel {
 
 std::vector<const confmodel::DaqModule*>
-TPReplayApplication::generate_modules(conffwk::Configuration* confdb,
-                                      const std::string& dbfile,
-                                      const confmodel::Session* /*session*/) const
+TPReplayApplication::generate_modules(const confmodel::Session* session) const
 {
-
-  /***** MODULES *****/
+  throw(BadConf(ERS_HERE, "TPReplayApplication should not be in a configuration until it has been brought up to date to reflect the changes from PR 201, Simplified genmodules signature"));
 
   std::vector<const confmodel::DaqModule*> modules;
+  
+  // JCF, Jun-2-2025: TODO: bring code below in line with the simplified genmodules signature
 
+  // Normally I oppose commenting out large blocks of
+  // code or disabling them via preprocessor directives, but (1) I
+  // need to perform a test build of branches which will bring in
+  // changes from the patch/fddaq-v5.3.x branches into develop and (2)
+  // I anticipate the code below will be modified to handle the
+  // interface changes from appmodel PR #201 by Alessandro Thea and/or
+  // Michal Rigan on a timescale of days. Delete this comment when fixed. 
+  
+#if 0
+  
   /**************************************************************
    * Instantiate the Trigger Primitive Maker Module module
    **************************************************************/
@@ -205,7 +214,8 @@ TPReplayApplication::generate_modules(conffwk::Configuration* confdb,
   for (int i = 1; i <= total_planes; i++) {
     modules.push_back(confdb->get<confmodel::DaqModule>(TPHs_uids[i - 1]));
   }
-
+# endif  // Of #if 0
+    
   return modules;
 }
 
