@@ -1,5 +1,5 @@
 /**
- * @file DFO.cpp
+ * @file FakeHSIApplication.cpp
  *
  * Implementation of FakeHSIApplication's generate_modules dal method
  *
@@ -40,13 +40,11 @@ namespace dunedaq {
 namespace appmodel {
 
 std::vector<const confmodel::DaqModule*>
-FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
-                                     const std::string& dbfile,
-                                     const confmodel::Session* session) const
+FakeHSIApplication::generate_modules(const confmodel::Session* session) const
 {
   std::vector<const confmodel::DaqModule*> modules;
 
-  const auto obj_fac = ConfigObjectFactory(this);
+  ConfigObjectFactory obj_fac(this);
 
 
   auto dlhConf = get_link_handler();
@@ -151,7 +149,7 @@ FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
 
   dlhObj.set_objs("inputs", { &queueObj, &faNetObj });
 
-  modules.push_back(confdb->get<DataHandlerModule>(uid));
+  modules.push_back(obj_fac.get_dal<DataHandlerModule>(uid));
 
   auto hsiServiceObj = hsiNetDesc->get_associated_service()->config_object();
   conffwk::ConfigObject hsiNetObj = obj_fac.create_net_obj(hsiNetDesc, "");
@@ -162,7 +160,7 @@ FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
   fakehsiObj.set_obj("configuration", &rdrConf->config_object());
   fakehsiObj.set_objs("outputs", { &queueObj, &hsiNetObj });
 
-  modules.push_back(confdb->get<FakeHSIEventGeneratorModule>(genuid));
+  modules.push_back(obj_fac.get_dal<FakeHSIEventGeneratorModule>(genuid));
 
   return modules;
 }

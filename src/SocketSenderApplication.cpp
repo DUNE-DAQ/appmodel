@@ -25,14 +25,11 @@ namespace dunedaq {
 namespace appmodel {
 
 std::vector<const confmodel::DaqModule*>
-SocketSenderApplication::generate_modules(conffwk::Configuration* confdb,
-                                          const std::string& dbfile,
-                                          const confmodel::Session* session) const
+SocketSenderApplication::generate_modules(const confmodel::Session* session) const
 {
+  ConfigObjectFactory obj_fac(this);
+
   std::vector<const confmodel::DaqModule*> modules;
-
-  const auto obj_fac = ConfigObjectFactory(this);
-
 
   //
   // Extract basic configuration objects
@@ -79,7 +76,7 @@ SocketSenderApplication::generate_modules(conffwk::Configuration* confdb,
     writer_obj.set_obj("configuration", &writer_conf->config_object());
     writer_obj.set_objs("connections", d2d_conn_objs);
 
-    modules.push_back(confdb->get<confmodel::DaqModule>(writer_uid));
+    modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(writer_uid));
   }
   return modules;
 }

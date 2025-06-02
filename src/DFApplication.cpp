@@ -11,6 +11,7 @@
 
 #include "ConfigObjectFactory.hpp"
 #include "appmodel/DFApplication.hpp"
+#include "appmodel/CTBApplication.hpp"
 #include "appmodel/DataStoreConf.hpp"
 #include "appmodel/DataWriterConf.hpp"
 #include "appmodel/DataWriterModule.hpp"
@@ -48,6 +49,7 @@
 namespace dunedaq {
 namespace appmodel {
 
+
 inline void
 fill_sourceid_object_from_app(const SmartDaqApplication* smartapp,
                               const conffwk::ConfigObject* netConn,
@@ -56,6 +58,7 @@ fill_sourceid_object_from_app(const SmartDaqApplication* smartapp,
   sidNetObj.set_obj("netconn", netConn);
   sidNetObj.set_objs("source_ids", { &smartapp->get_source_id()->config_object() });
 }
+
 
 inline void
 fill_sourceid_object_from_app(const ConfigObjectFactory& obj_fac,
@@ -192,14 +195,12 @@ fill_sourceid_object_from_app(const ConfigObjectFactory& obj_fac,
 }
 
 std::vector<const confmodel::DaqModule*>
-DFApplication::generate_modules(conffwk::Configuration* confdb,
-                                const std::string& dbfile,
-                                const confmodel::Session* session) const
+DFApplication::generate_modules(const confmodel::Session* session) const
 {
+
+  ConfigObjectFactory obj_fac(this);
+
   std::vector<const confmodel::DaqModule*> modules;
-
-  const auto obj_fac = ConfigObjectFactory(this);
-
 
   // Containers for module specific config objects for output/input
   // Prepare TRB output objects
@@ -267,13 +268,18 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
     auto smartapp = app->cast<appmodel::SmartDaqApplication>();
     auto roapp = app->cast<appmodel::ReadoutApplication>();
     auto fdapp = app->cast<appmodel::FakeDataApplication>();
+    auto ctbapp = app->cast<appmodel::CTBApplication>();
     auto dfapp = app->cast<appmodel::DFApplication>();
     auto rapp = app->cast<appmodel::TPReplayApplication>();
     if (smartapp == nullptr || dfapp != nullptr) {
       continue;
     }
     auto src_id_check = smartapp->get_source_id();
-    if (roapp == nullptr && fdapp == nullptr && src_id_check == nullptr && rapp == nullptr) {
+    if (roapp == nullptr
+	&& fdapp == nullptr
+	&& src_id_check == nullptr
+	&& rapp == nullptr
+	&& ctbapp == nullptr) {
       continue;
     }
 
@@ -282,30 +288,40 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
       auto descriptor = rule->get_descriptor();
       auto data_type = descriptor->get_data_type();
       if (data_type == "DataRequest") {
-
-        if (rapp != nullptr) {
+	if (rapp != nullptr) {
           fill_sourceid_object_from_app(obj_fac, rapp, &dreqNetObjs, &sidNetObjs, sidObjs, descriptor, smartapp->UID());
+	}
+	// contrary to all the other applications
+	// the CTB has 2 network connections, so this logic has to be splitted
+	else if (ctbapp) {
+	  auto sources = ctbapp->get_sources();
+	  for ( const auto & s : sources ) {
+	    std::string dreqNetUid(descriptor->get_uid_base() + smartapp->UID()+ '_' + s.first);
+	    dreqNetObjs.emplace_back( obj_fac.create_net_obj(descriptor, dreqNetUid) );
+
+	    std::string sidToNetUid(descriptor->get_uid_base() + smartapp->UID() + "_" + s.first);
+	    sidNetObjs.emplace_back( obj_fac.create("SourceIDToNetworkConnection", sidToNetUid ) );
+	    sidNetObjs.back().set_obj("netconn", & dreqNetObjs.back());
+	    sidNetObjs.back().set_objs("source_ids", { & s.second->config_object() });
+	  } // loop over CTB sources
 	} else {
 
-          dreqNetObjs.emplace_back(
-            obj_fac.create_net_obj(descriptor, smartapp->UID()));
+	  dreqNetObjs.emplace_back(obj_fac.create_net_obj(descriptor, smartapp->UID()));
 
-          std::string sidToNetUid(descriptor->get_uid_base() + smartapp->UID() + "-sids");
-          sidNetObjs.emplace_back(
-            obj_fac.create("SourceIDToNetworkConnection", sidToNetUid));
-        
+	  std::string sidToNetUid(descriptor->get_uid_base() + smartapp->UID() + "-sids");
+	  sidNetObjs.emplace_back(
+				    obj_fac.create("SourceIDToNetworkConnection", sidToNetUid));
 	  if (roapp != nullptr) {
-            fill_sourceid_object_from_app(obj_fac, roapp, &dreqNetObjs.back(), sidNetObjs.back(), sidObjs);
-          } else if (fdapp != nullptr) {
-            fill_sourceid_object_from_app(obj_fac, fdapp, &dreqNetObjs.back(), sidNetObjs.back(), sidObjs);
+	    fill_sourceid_object_from_app(obj_fac, roapp, &dreqNetObjs.back(), sidNetObjs.back(), sidObjs);
+	  } else if (fdapp != nullptr) {
+	    fill_sourceid_object_from_app(obj_fac, fdapp, &dreqNetObjs.back(), sidNetObjs.back(), sidObjs);
 	  } else {
-            fill_sourceid_object_from_app(smartapp, &dreqNetObjs.back(), sidNetObjs.back());
-          }
-
-	}   // App type loop
-      }     // If network rule has DataRequest type of data
-    }       // Loop over Apps network rules
-  }         // loop over Session specific Apps
+	    fill_sourceid_object_from_app(smartapp, &dreqNetObjs.back(), sidNetObjs.back());
+	  }
+	} // else from if (ctbapp)
+      } // If network rule has DataRequest type of data
+    }   // Loop over Apps network rules
+  }     // loop over Session specific Apps
 
   // Get pointers to objects here, after vector has been filled so they don't move on us
   for (auto& obj : dreqNetObjs) {
@@ -333,7 +349,7 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
   trbObj.set_objs("outputs", trbOutputObjs);
   trbObj.set_objs("request_connections", trbSidNetObjs);
   // Push TRB Module Object from confdb
-  modules.push_back(confdb->get<TRBModule>(trbUid));
+  modules.push_back(obj_fac.get_dal<TRBModule>(trbUid));
 
   // Get DataWriterModule Config Object (only one for now, maybe more later?)
   auto dwrConfs = get_data_writers();
@@ -354,7 +370,7 @@ DFApplication::generate_modules(conffwk::Configuration* confdb,
     dwrObj.set_objs("inputs", { &trQueueObj });
     dwrObj.set_objs("outputs", { &tokenNetObj });
     // Push DataWriterModule Module Object from confdb
-    modules.push_back(confdb->get<DataWriterModule>(dwrUid));
+    modules.push_back(obj_fac.get_dal<DataWriterModule>(dwrUid));
     ++dw_idx;
   }
 

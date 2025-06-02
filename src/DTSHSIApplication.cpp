@@ -35,9 +35,7 @@ namespace dunedaq {
 namespace appmodel {
 
 std::vector<const confmodel::DaqModule*>
-DTSHSIApplication::generate_modules(conffwk::Configuration* confdb,
-                                     const std::string& dbfile,
-                                     const confmodel::Session* /*session*/) const
+DTSHSIApplication::generate_modules(const confmodel::Session* /*session*/) const
 {
   ConfigObjectFactory obj_fac(this);
   
@@ -119,7 +117,7 @@ DTSHSIApplication::generate_modules(conffwk::Configuration* confdb,
   conffwk::ConfigObject faNetObj = obj_fac.create_net_obj(dlhReqInputNetDesc, UID());
   dlhObj.set_objs("inputs", { &queueObj, &faNetObj });
 
-  modules.push_back(confdb->get<DataHandlerModule>(uid));
+  modules.push_back(obj_fac.get_dal<DataHandlerModule>(uid));
 
   auto hsiServiceObj = hsiNetDesc->get_associated_service()->config_object();
   conffwk::ConfigObject hsiNetObj = obj_fac.create_net_obj(hsiNetDesc, "");
@@ -129,7 +127,7 @@ DTSHSIApplication::generate_modules(conffwk::Configuration* confdb,
   hsiObj.set_obj("configuration", &rdrConf->config_object());
   hsiObj.set_objs("outputs", { &queueObj, &hsiNetObj });
 
-  modules.push_back(confdb->get<HSIReadout>(genuid));
+  modules.push_back(obj_fac.get_dal<HSIReadout>(genuid));
 
   return modules;
 }

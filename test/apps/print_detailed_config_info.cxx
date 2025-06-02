@@ -175,7 +175,7 @@ main(int argc, char* argv[])
       }
       std::vector<const confmodel::DaqModule*> modules;
       try {
-        modules = daqapp->generate_modules(confdb, dbfile, session);
+        modules = daqapp->generate_modules(session);
       } catch (appmodel::BadConf& exc) {
         std::cout << "Caught BadConf exception: " << exc << std::endl;
         exit(-1);
