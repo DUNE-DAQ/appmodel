@@ -88,6 +88,22 @@
 </include>
 
 
+ <class name="CRTBernReaderConf">
+  <superclass name="DataReaderConf"/>
+ </class>
+
+ <class name="CRTBernReaderModule">
+  <superclass name="DataReaderModule"/>
+ </class>
+
+ <class name="CRTGrenobleReaderConf">
+  <superclass name="DataReaderConf"/>
+ </class>
+
+ <class name="CRTGrenobleReaderModule">
+  <superclass name="DataReaderModule"/>
+ </class>
+
  <class name="DPDKPortConfiguration">
   <attribute name="flow_control" type="bool" init-value="1"/>
   <attribute name="promiscuous_mode" type="bool" init-value="0"/>
