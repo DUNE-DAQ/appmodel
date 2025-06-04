@@ -16,27 +16,23 @@ find_package(fmt REQUIRED)
 
 find_package(Boost COMPONENTS unit_test_framework program_options REQUIRED)
 
-daq_oks_codegen(application.schema.xml hermes.schema.xml fdmodules.schema.xml trigger.schema.xml wiec.schema.xml PDS.schema.xml tde.schema.xml CTB.schema.xml 
-  NAMESPACE dunedaq::appmodel DEP_PKGS confmodel)
-
-daq_add_library(ConfigObjectFactory.cpp SmartDaqApplication.cpp ReadoutApplication.cpp NP02ReadoutApplication.cpp
-        DFApplication.cpp DFOApplication.cpp TPWriterApplication.cpp FakeDataApplication.cpp FakeHSIApplication.cpp 
-        DTSHSIApplication.cpp TriggerApplication.cpp MLTApplication.cpp HSIEventToTCApplication.cpp WIECApplication.cpp 
-        DaphneApplication.cpp SocketSenderApplication.cpp TDECrateApplication.cpp CTBApplication.cpp
-        LINK_LIBRARIES conffwk::conffwk fmt::fmt
-        logging::logging confmodel::confmodel oks::oks ers::ers)
+daq_add_dal_library(application.schema.xml hermes.schema.xml fdmodules.schema.xml trigger.schema.xml wiec.schema.xml PDS.schema.xml tde.schema.xml CTB.schema.xml
+  NAMESPACE dunedaq::appmodel DEP_PKGS confmodel
+    SOURCES ConfigObjectFactory.cpp ReadoutApplication.cpp SmartDaqApplication.cpp NP02ReadoutApplication.cpp
+        DFApplication.cpp DFOApplication.cpp TPWriterApplication.cpp FakeDataApplication.cpp FakeHSIApplication.cpp DTSHSIApplication.cpp TriggerApplication.cpp MLTApplication.cpp HSIEventToTCApplication.cpp WIECApplication.cpp DaphneApplication.cpp SocketSenderApplication.cpp TDECrateApplication.cpp CTBApplication.cpp
+   LINK_LIBRARIES conffwk::conffwk fmt::fmt logging::logging oks::oks ers::ers )
 
 daq_add_application(getAppsArguments get_apps_arguments.cxx
-  LINK_LIBRARIES confmodel::confmodel appmodel conffwk::conffwk)
+  LINK_LIBRARIES confmodel::confmodel appmodel_dal conffwk::conffwk)
 
-daq_add_python_bindings(*.cpp LINK_LIBRARIES appmodel confmodel::confmodel)
+daq_add_python_bindings(*.cpp LINK_LIBRARIES appmodel_dal confmodel::confmodel)
 
 daq_add_application(generate_modules_test generate_modules_test.cxx
- TEST LINK_LIBRARIES appmodel confmodel::confmodel conffwk::conffwk
+ TEST LINK_LIBRARIES appmodel_dal confmodel::confmodel conffwk::conffwk
  logging::logging)
 
 daq_add_application(print_detailed_config_info print_detailed_config_info.cxx
- TEST LINK_LIBRARIES appmodel confmodel::confmodel conffwk::conffwk
+ TEST LINK_LIBRARIES appmodel_dal confmodel::confmodel conffwk::conffwk
  logging::logging)
 
 daq_install()
