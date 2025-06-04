@@ -1,5 +1,5 @@
 /**
- * @file generate_modules.cpp
+ * @file FakeDataApplication.cpp
  *
  * Implementation of FakeDataApplication's generate_modules dal method
  *
@@ -41,15 +41,13 @@ namespace dunedaq {
 namespace appmodel {
 
 std::vector<const confmodel::DaqModule*>
-FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
-                                      const std::string& dbfile,
-                                      const confmodel::Session* session) const
+FakeDataApplication::generate_modules(const confmodel::Session* session) const
 {
   // oks::OksFile::set_nolock_mode(true);
 
   std::vector<const confmodel::DaqModule*> modules;
 
-  const auto obj_fac = ConfigObjectFactory(this);
+  ConfigObjectFactory obj_fac(this);
 
 
   // Process the queue rules looking for inputs to our DL/TP handler modules
@@ -124,12 +122,12 @@ FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
     auto reqQueueObj = obj_fac.create_queue_sid_obj(dlhReqInputQDesc, id);
 
     // Add the requessts queue dal pointer to the outputs of the FragmentAggregatorModule
-    faOutputQueues.push_back(confdb->get<confmodel::Connection>(
+    faOutputQueues.push_back(obj_fac.get_dal<confmodel::Connection>(
                                dlhReqInputQDesc->get_uid_base() + std::to_string(id)));
 
     dlhObj.set_objs("inputs", { &reqQueueObj });
 
-    modules.push_back(confdb->get<FakeDataProdModule>(uid));
+    modules.push_back(obj_fac.get_dal<FakeDataProdModule>(uid));
   }
 
   // Finally create Fragment Aggregator
@@ -148,7 +146,7 @@ FakeDataApplication::generate_modules(conffwk::Configuration* confdb,
   faObj.set_objs("inputs", { &faNetObj, &faQueueObj });
   faObj.set_objs("outputs", qObjs);
 
-  modules.push_back(confdb->get<FragmentAggregatorModule>(faUid));
+  modules.push_back(obj_fac.get_dal<FragmentAggregatorModule>(faUid));
 
   // oks::OksFile::set_nolock_mode(false);
   return modules;
