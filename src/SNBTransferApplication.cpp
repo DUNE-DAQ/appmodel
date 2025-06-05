@@ -8,8 +8,7 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
-
+#include "ConfigObjectFactory.hpp"
 #include "appmodel/SNBTransferApplication.hpp"
 #include "appmodel/SNBTransferConf.hpp"
 #include "appmodel/SNBFileTransfer.hpp"
@@ -28,29 +27,19 @@
 #include <string>
 #include <vector>
 
-using namespace dunedaq;
-using namespace dunedaq::appmodel;
-
-static ModuleFactory::Registrator __reg__("SNBTransferApplication",
-                                          [](const SmartDaqApplication* smartApp,
-                                             conffwk::Configuration* confdb,
-                                             const std::string& dbfile,
-                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
-                                            auto app = smartApp->cast<SNBTransferApplication>();
-                                            return app->generate_modules(confdb, dbfile, session);
-                                          });
+namespace dunedaq {
+namespace appmodel {
 
 std::vector<const confmodel::DaqModule*>
-SNBTransferApplication::generate_modules(conffwk::Configuration* confdb,
-					 const std::string& dbfile,
-					 const confmodel::Session* /*session*/) const
+SNBTransferApplication::generate_modules(const confmodel::Session* /*session*/) const
 {
+  ConfigObjectFactory obj_fac(this);
+
   std::vector<const confmodel::DaqModule*> modules;
 
   std::string snbTransferUid("snb-sample-config-" + UID());
-  conffwk::ConfigObject snbTransferObj;
   TLOG_DEBUG(7) << "creating OKS configuration object for SNBTransferModule class ";
-  confdb->create(dbfile, "SNBFileTransfer", snbTransferUid, snbTransferObj);
+  auto snbTransferObj = obj_fac.create("SNBFileTransfer", snbTransferUid);
 
   auto snbTransferConf = get_snbt();
   snbTransferObj.set_obj("configuration", &snbTransferConf->config_object());
@@ -66,13 +55,7 @@ SNBTransferApplication::generate_modules(conffwk::Configuration* confdb,
     auto endpoint_class = rule->get_endpoint_class();
     auto descriptor = rule->get_descriptor();
 
-    conffwk::ConfigObject connObj;
-    auto serviceObj = descriptor->get_associated_service()->config_object();
-    std::string connUid(descriptor->get_uid_base() + UID());
-    confdb->create(dbfile, "NetworkConnection", connUid, connObj);
-    connObj.set_by_val<std::string>("data_type", descriptor->get_data_type());
-    connObj.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
-    connObj.set_obj("associated_service", &serviceObj);
+    auto connObj = obj_fac.create_net_obj(descriptor, "");
 
     if (descriptor->get_data_type() == "notification_t") {
       notificationInObj = connObj;
@@ -87,7 +70,10 @@ SNBTransferApplication::generate_modules(conffwk::Configuration* confdb,
   snbTransferObj.set_objs("inputs", input_conns);
 
   // Add to our list of modules to return
-  modules.push_back(confdb->get<SNBFileTransfer>(snbTransferUid));
+  modules.push_back(obj_fac.get_dal<SNBFileTransfer>(snbTransferUid));
 
   return modules;
 }
+
+} // namespace appmodel
+} // namespace dunedaq
