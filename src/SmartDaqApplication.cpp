@@ -1,21 +1,14 @@
-#include "ModuleFactory.hpp"
 #include "appmodel/SmartDaqApplication.hpp"
 #include "appmodel/appmodelIssues.hpp"
 #include "oks/kernel.hpp"
 #include "confmodel/util.hpp"
 
-using namespace dunedaq::appmodel;
+namespace dunedaq {
+namespace appmodel {
 
 std::vector<const dunedaq::confmodel::DaqModule*>
-SmartDaqApplication::generate_modules(conffwk::Configuration* confdb,
-                                      const std::string& dbfile,
-                                      const confmodel::Session* session) const {
-  oks::OksFile::set_nolock_mode(true);
-  return ModuleFactory::instance().generate(class_name(),
-                                            this,
-                                            confdb,
-                                            dbfile,
-                                            session);
+SmartDaqApplication::generate_modules(const confmodel::Session* session) const {
+    // TODO : add warining/assert/exception
 }
 
 const std::vector<std::string> SmartDaqApplication::construct_commandline_parameters(
@@ -23,3 +16,6 @@ const std::vector<std::string> SmartDaqApplication::construct_commandline_parame
     const dunedaq::confmodel::Session* session) const {
     return dunedaq::confmodel::construct_commandline_parameters_appfwk<dunedaq::appmodel::SmartDaqApplication>(this, confdb, session);
 }
+ 
+} // namespace appmodel  
+} // namespace dunedaq

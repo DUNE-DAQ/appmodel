@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="ASCII"?>
+
+<!-- oks-schema version 2.2 -->
+
+
+<!DOCTYPE oks-schema [
+  <!ELEMENT oks-schema (info, (include)?, (comments)?, (class)+)>
+  <!ELEMENT info EMPTY>
+  <!ATTLIST info
+      name CDATA #IMPLIED
+      type CDATA #IMPLIED
+      num-of-items CDATA #REQUIRED
+      oks-format CDATA #FIXED "schema"
+      oks-version CDATA #REQUIRED
+      created-by CDATA #IMPLIED
+      created-on CDATA #IMPLIED
+      creation-time CDATA #IMPLIED
+      last-modified-by CDATA #IMPLIED
+      last-modified-on CDATA #IMPLIED
+      last-modification-time CDATA #IMPLIED
+  >
+  <!ELEMENT include (file)+>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+      path CDATA #REQUIRED
+  >
+  <!ELEMENT comments (comment)+>
+  <!ELEMENT comment EMPTY>
+  <!ATTLIST comment
+      creation-time CDATA #REQUIRED
+      created-by CDATA #REQUIRED
+      created-on CDATA #REQUIRED
+      author CDATA #REQUIRED
+      text CDATA #REQUIRED
+  >
+  <!ELEMENT class (superclass | attribute | relationship | method)*>
+  <!ATTLIST class
+      name CDATA #REQUIRED
+      description CDATA ""
+      is-abstract (yes|no) "no"
+  >
+  <!ELEMENT superclass EMPTY>
+  <!ATTLIST superclass name CDATA #REQUIRED>
+  <!ELEMENT attribute EMPTY>
+  <!ATTLIST attribute
+      name CDATA #REQUIRED
+      description CDATA ""
+      type (bool|s8|u8|s16|u16|s32|u32|s64|u64|float|double|date|time|string|uid|enum|class) #REQUIRED
+      range CDATA ""
+      format (dec|hex|oct) "dec"
+      is-multi-value (yes|no) "no"
+      init-value CDATA ""
+      is-not-null (yes|no) "no"
+      ordered (yes|no) "no"
+  >
+  <!ELEMENT relationship EMPTY>
+  <!ATTLIST relationship
+      name CDATA #REQUIRED
+      description CDATA ""
+      class-type CDATA #REQUIRED
+      low-cc (zero|one) #REQUIRED
+      high-cc (one|many) #REQUIRED
+      is-composite (yes|no) #REQUIRED
+      is-exclusive (yes|no) #REQUIRED
+      is-dependent (yes|no) #REQUIRED
+      ordered (yes|no) "no"
+  >
+  <!ELEMENT method (method-implementation*)>
+  <!ATTLIST method
+      name CDATA #REQUIRED
+      description CDATA ""
+  >
+  <!ELEMENT method-implementation EMPTY>
+  <!ATTLIST method-implementation
+      language CDATA #REQUIRED
+      prototype CDATA #REQUIRED
+      body CDATA ""
+  >
+]>
+
+<oks-schema>
+
+<info name="" type="" num-of-items="23" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250526T104120"/>
+
+<include>
+ <file path="schema/confmodel/dunedaq.schema.xml"/>
+ <file path="schema/appmodel/application.schema.xml"/>
+</include>
+
+
+ <class name="CTBApplication" description="Application that controls the CTB">
+  <superclass name="SmartDaqApplication"/>
+  <superclass name="ResourceSetAND"/>
+  <relationship name="generator" class-type="CTBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="board" class-type="CTBoardConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="link_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="LLT_source" description="The source ID of the smart application itself will be used for HLT. &#xA;We need an additional source of the LLT, and this is that. " class-type="SourceIDConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(const confmodel::Session*) const override" body=""/>
+  </method>
+  <method name="get_sources" description="The CTB HSI has two sources, one for HLT and one for LLT. &#xA;This methods gets the right information in a way that makes easy to loop over the information">
+   <method-implementation language="C++" prototype="std::vector&lt;std::pair&lt;std::string, const appmodel::SourceIDConf*&gt;&gt; get_sources() const" body="return {{ &quot;HLT&quot;,  get_source_id() }, &#xA;             { &quot;LLT&quot;, get_LLT_source() }};"/>
+  </method>
+ </class>
+
+ <class name="CTBCRTSubsystem">
+  <superclass name="CTBSubsystem"/>
+  <attribute name="pixelate" type="bool" is-not-null="yes"/>
+ </class>
+
+ <class name="CTBCalibrationStream">
+  <attribute name="directory" type="string" is-not-null="yes"/>
+  <attribute name="update_period_s" type="u16" is-not-null="yes"/>
+ </class>
+
+ <class name="CTBConf">
+  <attribute name="hostname" description="IP address of the board" type="string" is-not-null="yes"/>
+  <attribute name="control_connection_port" type="u16" is-not-null="yes"/>
+  <attribute name="connection_timeout_ms" type="u16" is-not-null="yes"/>
+  <relationship name="calibration_stream" class-type="CTBCalibrationStream" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="trigger_report" class-type="CTBTriggerReport" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="CTBCountLLT">
+  <superclass name="CTBLLT"/>
+  <attribute name="count" type="string" init-value="0x0" is-not-null="yes"/>
+  <attribute name="type" type="string" init-value="0x1" is-not-null="yes"/>
+ </class>
+
+ <class name="CTBHLT">
+  <superclass name="CTBTrigger"/>
+  <attribute name="minc" type="string" init-value="0xFFFFFF" is-not-null="yes"/>
+  <attribute name="mexc" type="string" init-value="0x0" is-not-null="yes"/>
+  <attribute name="prescale" type="string" init-value="0x1" is-not-null="yes"/>
+ </class>
+
+ <class name="CTBLLT">
+  <superclass name="CTBTrigger"/>
+  <attribute name="mask" type="string" is-not-null="yes"/>
+ </class>
+
+ <class name="CTBMisc">
+  <superclass name="ResourceSetAND"/>
+  <attribute name="ch_status" type="bool" init-value="0" is-not-null="yes"/>
+  <relationship name="pulser" class-type="CTBPulser" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="timing" class-type="CTBTiming" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <method name="get_ctb_json" description="">
+   <method-implementation language="C++" prototype="nlohmann::json get_ctb_json(const dunedaq::confmodel::Session&amp; session) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;END_HEADER_PROLOGUE"/>
+  </method>
+  <method name="get_randomtrigger_1" description="">
+   <method-implementation language="C++" prototype="const CTBRandomTrigger &amp; get_randomtrigger_1() const" body=""/>
+  </method>
+  <method name="get_randomtrigger_2" description="">
+   <method-implementation language="C++" prototype="const CTBRandomTrigger &amp; get_randomtrigger_2() const" body=""/>
+  </method>
+ </class>
+
+ <class name="CTBModule" description="Top level configuration object for the CTBModule">
+  <superclass name="DaqModule"/>
+  <attribute name="run_trigger_output" description="CTB Trigger Output Path" type="string" init-value="/nfs/sw/trigger/counters" is-not-null="yes"/>
+  <relationship name="configuration" class-type="CTBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="board" class-type="CTBoardConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="yes"/>
+ </class>
+
+ <class name="CTBMonitorSocket" description="Socket to send a copy of the CTB data. Not implemented yet">
+  <superclass name="CTBSocket"/>
+  <attribute name="enable" type="bool" init-value="0" is-not-null="yes"/>
+  <attribute name="port" type="u64" init-value="8993" is-not-null="yes"/>
+ </class>
+
+ <class name="CTBPDSLLT">
+  <attribute name="id" type="string" is-not-null="yes"/>
+  <attribute name="description" type="string" init-value="Spare" is-not-null="yes"/>
+  <attribute name="enable" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="mask" type="string" init-value="0x0" is-not-null="yes"/>
+  <attribute name="type" type="string" init-value="0x0" is-not-null="yes"/>
+  <attribute name="count" type="string" init-value="0x0" is-not-null="yes"/>
+ </class>
+
+ <class name="CTBPDSSubsystem">
+  <superclass name="CTBSubsystem"/>
+  <attribute name="dac_thresholds" type="u32" is-multi-value="yes" is-not-null="yes"/>
+  <relationship name="triggers" class-type="CTBPDSLLT" low-cc="many" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="CTBPulser" description="Test pulser that is routed to the fiber and one of the NIM outputs (back panel)">
+  <superclass name="Jsonable"/>
+  <attribute name="enable" type="bool" init-value="false" is-not-null="yes"/>
+  <attribute name="frequency" type="u64" init-value="50" is-not-null="yes"/>
+ </class>
+
+ <class name="CTBRandomTrigger" description="Period of the trigger in clock ticks units">
+  <superclass name="CTBTrigger"/>
+  <attribute name="fixed_freq" type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="beam_mode" type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="period" type="u64" init-value="10000" is-not-null="yes"/>
+ </class>
+
+ <class name="CTBReceiverSocket" description="Settings to configure the conditions for the data transmission socket">
+  <superclass name="CTBSocket"/>
+  <attribute name="rollover" type="u64" init-value="125000" is-not-null="yes"/>
+  <attribute name="port" type="u64" init-value="8992" is-not-null="yes"/>
+ </class>
+
+ <class name="CTBSocket">
+  <superclass name="Jsonable"/>
+  <attribute name="host" type="string" init-value="localhost" is-not-null="yes"/>
+  <method name="get_ctb_json" description="">
+   <method-implementation language="C++" prototype="nlohmann::json get_ctb_json( std::optional&lt;std::string&gt; socket_host = std::nullopt ) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;#include &lt;optional&gt;&#xA;END_HEADER_PROLOGUE"/>
+  </method>
+ </class>
+
+ <class name="CTBSockets">
+  <relationship name="receiver" class-type="CTBReceiverSocket" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <relationship name="monitor" class-type="CTBMonitorSocket" low-cc="zero" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <relationship name="statistics" class-type="CTBStatisticsSocket" low-cc="zero" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <method name="get_ctb_json" description="">
+   <method-implementation language="C++" prototype="nlohmann::json get_ctb_json(std::optional&lt;std::string&gt; socket_host = std::nullopt) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;#include &lt;optional&gt;&#xA;END_HEADER_PROLOGUE"/>
+  </method>
+ </class>
+
+ <class name="CTBStatisticsSocket" description="Socket to send periodic trigger statistics. Not implemented yet">
+  <superclass name="Jsonable"/>
+  <attribute name="port" type="u64" init-value="8994" is-not-null="yes"/>
+  <attribute name="updt_period" type="u32" init-value="1" is-not-null="yes"/>
+  <attribute name="enable" type="bool" init-value="0" is-not-null="yes"/>
+ </class>
+
+ <class name="CTBSubsystem">
+  <superclass name="Jsonable"/>
+  <attribute name="channel_mask" type="string" is-not-null="yes"/>
+  <attribute name="reshape_length" type="u32" is-not-null="yes"/>
+  <attribute name="delays" type="u32" is-multi-value="yes" is-not-null="yes"/>
+ </class>
+
+ <class name="CTBTiming" description="Central Trigger Board Timing Configuration">
+  <superclass name="Jsonable"/>
+  <attribute name="address" type="string" init-value="0xF" is-not-null="yes"/>
+  <attribute name="triggers" type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="lockout" type="string" init-value="0x10" is-not-null="yes"/>
+ </class>
+
+ <class name="CTBTrigger">
+  <superclass name="Jsonable"/>
+  <superclass name="Resource"/>
+  <attribute name="description" type="string" is-not-null="yes"/>
+  <method name="get_ctb_json" description="obtain a jsonification specific for the CTB">
+   <method-implementation language="c++" prototype="nlohmann::json get_ctb_json(const dunedaq::confmodel::Session&amp; session) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;END_HEADER_PROLOGUE"/>
+  </method>
+ </class>
+
+ <class name="CTBTriggerReport">
+  <attribute name="directory" type="string" is-not-null="yes"/>
+ </class>
+
+ <class name="CTBoardConf">
+  <superclass name="ResourceSetAND"/>
+  <relationship name="sockets" class-type="CTBSockets" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <relationship name="beam" class-type="CTBSubsystem" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="CRT" class-type="CTBCRTSubsystem" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="pds" class-type="CTBPDSSubsystem" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="geo_id" class-type="GeoId" low-cc="one" high-cc="one" is-composite="no" is-exclusive="yes" is-dependent="no"/>
+  <method name="get_ctb_json" description="create the json configuration for the board">
+   <method-implementation language="C++" prototype="nlohmann::json get_ctb_json(const dunedaq::confmodel::Session&amp; session, std::optional&lt;std::string&gt; socket_host = std::nullopt ) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;#include &lt;optional&gt;&#xA;END_HEADER_PROLOGUE"/>
+  </method>
+  <method name="get_HLTs" description="">
+   <method-implementation language="C++" prototype="std::vector&lt;const CTBHLT*&gt; get_HLTs() const" body=""/>
+  </method>
+  <method name="get_CRT_LLTs" description="">
+   <method-implementation language="C++" prototype="std::vector&lt;const CTBCountLLT*&gt; get_CRT_LLTs() const" body=""/>
+  </method>
+  <method name="get_beam_LLTs" description="">
+   <method-implementation language="C++" prototype="std::vector&lt;const CTBLLT*&gt; get_beam_LLTs() const" body=""/>
+  </method>
+  <method name="get_misc" description="">
+   <method-implementation language="C++" prototype="const CTBMisc &amp; get_misc() const" body=""/>
+  </method>
+ </class>
+
+</oks-schema>

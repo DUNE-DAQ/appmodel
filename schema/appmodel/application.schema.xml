@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="47" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20240911T194242"/>
+<info name="" type="" num-of-items="52" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="dergonul" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20250304T155626"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -94,7 +94,7 @@
   <relationship name="data_writers" class-type="DataWriterConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="uses" class-type="DFHWConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
-   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(const confmodel::Session*) const override" body=""/>
   </method>
  </class>
 
@@ -106,7 +106,7 @@
   <superclass name="SmartDaqApplication"/>
   <relationship name="dfo" class-type="DFOConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
-   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(const confmodel::Session*) const override" body=""/>
   </method>
  </class>
 
@@ -223,6 +223,7 @@
   <attribute name="max_file_size" type="u64" init-value="0" is-not-null="yes"/>
   <attribute name="disable_unique_filename_suffix" type="bool" init-value="false"/>
   <attribute name="free_space_safety_factor" type="s32" init-value="0" is-not-null="yes"/>
+  <attribute name="compression_level" type="u8" init-value="0" is-not-null="yes"/>
   <relationship name="file_layout_params" class-type="HDF5FileLayoutParams" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="filename_params" class-type="FilenameParams" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
@@ -241,12 +242,22 @@
   <relationship name="configuration" class-type="DataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
+ <class name="SocketDataWriterConf">
+  <attribute name="template_for" description="OKS class of the SocketDataWriterModule that this config is a template for" type="class" init-value="SocketDataWriterModule" is-not-null="yes"/>
+ </class>
+
+ <class name="SocketDataWriterModule">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="SocketDataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="connections" class-type="DetectorToDaqConnection" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="no" is-dependent="no"/>
+ </class> 
+
  <class name="FakeDataApplication">
   <superclass name="ResourceSetAND"/>
   <superclass name="SmartDaqApplication"/>
   <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
   <method name="generate_modules" description="Generate daq module dal objects for streams of the FakeDataApplication on the fly">
-   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(const confmodel::Session*) const override" body=""/>
   </method>
  </class>
 
@@ -275,7 +286,7 @@
   <relationship name="link_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="generator" class-type="FakeHSIEventGeneratorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
-   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(const confmodel::Session*) const override" body=""/>
   </method>
  </class>
 
@@ -296,22 +307,22 @@
  <class name="HSIReadoutConf">
   <attribute name="connections_file" description="device connections file" type="string" init-value="${TIMING_SHARE}/config/etc/connections.xml"/>
   <attribute name="uhal_log_level" description="Log level for uhal" type="enum" range="fatal,error,warning,notice,info,debug" init-value="notice"/>
-  <attribute name="readout_period" description="Hardware device poll period [us]" type="u64" init-value="1000" />
-  <attribute name="hsi_device_name" type="string" init-value="Unknown" />
+  <attribute name="readout_period" description="Hardware device poll period [us]" type="u64" init-value="1000"/>
+  <attribute name="hsi_device_name" type="string" init-value="Unknown"/>
  </class>
-
+ 
  <class name="HSIReadout">
   <superclass name="HSIEventSender"/>
-  <relationship name="configuration" class-type="HSIReadoutConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no" />
+  <relationship name="configuration" class-type="HSIReadoutConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
-
+ 
  <class name="DTSHSIApplication">
-  <superclass name="Resource" />
-  <superclass name="SmartDaqApplication" />
-  <relationship name="link_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no" />
-  <relationship name="generator" class-type="HSIReadoutConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no" />
+  <superclass name="Resource"/>
+  <superclass name="SmartDaqApplication"/>
+  <relationship name="link_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="generator" class-type="HSIReadoutConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
-   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(const confmodel::Session*) const override" body=""/>
   </method>
  </class>
 
@@ -368,7 +379,7 @@
   <relationship name="uses" class-type="NetworkInterface" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="NWDetDataSender" is-abstract="yes">
+ <class name="NWDetDataSender">
   <superclass name="DetDataSender"/>
   <relationship name="uses" class-type="NetworkInterface" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
@@ -410,7 +421,14 @@
   <relationship name="data_reader" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_recorder" class-type="DataRecorderConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate daq module dal objects for streams of thie ReadoutApplication on the fly">
-   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
+   <method-implementation language="c++" prototype="virtual std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(const confmodel::Session*) const override" body=""/>
+  </method>
+ </class>
+
+ <class name="NP02ReadoutApplication">
+  <superclass name="ReadoutApplication"/>
+  <method name="generate_modules" description="Generate daq module dal objects for streams of thie ReadoutApplication on the fly">
+   <method-implementation language="c++" prototype="virtual std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(const confmodel::Session*) const override" body=""/>
   </method>
  </class>
 
@@ -443,10 +461,20 @@
   <relationship name="network_rules" class-type="NetworkConnectionRule" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="action_plans" class-type="ActionPlan" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="">
-   <method-implementation language="c++" prototype="virtual std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const" body=""/>
+   <method-implementation language="c++" prototype="virtual std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(const confmodel::Session*) const" body=""/>
   </method>
   <method name="construct_commandline_parameters" description="get the command line parameters for this application">
    <method-implementation language="c++" prototype=" const std::vector&lt;std::string&gt; construct_commandline_parameters(const conffwk::Configuration&amp; confdb, const dunedaq::confmodel::Session* session) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;confmodel/util.hpp&quot;&#xA;END_HEADER_PROLOGUE"/>
+  </method>
+ </class>
+
+ <class name="SocketSenderApplication">
+  <superclass name="ResourceSetAND"/>
+  <superclass name="SmartDaqApplication"/>
+  <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
+  <relationship name="data_writers" class-type="SocketDataWriterConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>  
+  <method name="generate_modules" description="Generate daq module dal objects for streams of the SocketSenderApplication on the fly">
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(const confmodel::Session*) const override" body=""/>
   </method>
  </class>
 
@@ -476,7 +504,7 @@
   <superclass name="SmartDaqApplication"/>
   <relationship name="tp_writer" class-type="TPStreamWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate dal objects for streams of thie ReadoutApplication on the fly">
-   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(conffwk::Configuration*, const std::string&amp;, const confmodel::Session*) const override" body=""/>
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(const confmodel::Session*) const override" body=""/>
   </method>
  </class>
 
