@@ -127,7 +127,7 @@ CRTReaderApplication::generate_modules(const confmodel::Session* session) const
     // Create data queues
     for (auto ds : enabled_det_streams) {
       conffwk::ConfigObject queue_obj = obj_fac.create_queue_sid_obj(dlh_input_qdesc, ds);
-      const auto* data_queue = config->get<confmodel::Connection>(queue_obj.UID());
+      const auto* data_queue = obj_fac.get_dal<confmodel::Connection>(queue_obj.UID());
       data_queue_objs.push_back(&data_queue->config_object());
       data_queues_by_sid[ds->get_source_id()] = data_queue;
     }
@@ -152,7 +152,7 @@ CRTReaderApplication::generate_modules(const confmodel::Session* session) const
     reader_obj.set_objs("connections", {&d2d_conn_res->config_object()});
     reader_obj.set_objs("outputs", data_queue_objs);
 
-    modules.push_back(config->get<confmodel::DaqModule>(reader_obj.UID()));    
+    modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(reader_obj.UID()));
 
     //-----------------------------------------------------------------
     //
@@ -181,7 +181,7 @@ CRTReaderApplication::generate_modules(const confmodel::Session* session) const
       writer_obj.set_objs("connections", {&d2d_conn_res->config_object()});
       writer_obj.set_objs("inputs", data_queue_objs);
 
-      modules.push_back(config->get<confmodel::DaqModule>(writer_obj.UID()));        
+      modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(writer_obj.UID()));
     }    
   
   }
