@@ -288,17 +288,16 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
   //
   // Prepare the tp handlers and related queues
   //
-  // std::vector<const confmodel::Connection*> tp_queues;
   std::vector<std::pair<int, const confmodel::Connection*>> tp_queues;
 
   if (get_tp_generation_enabled()) {
 
-    std::vector<int> det_ids;
-    //! get the unique detector ids from the enables streams.
+    std::vector<int> unique_stream_ids;
+    //! get the unique stream ids from the enabled streams. For TDE this is assumed to map to CRP number
     for (auto& [numa, ds] : all_enabled_det_streams) {
-      int id = ds->get_geo_id()->get_detector_id();
-      if (std::find(det_ids.begin(), det_ids.end(), id) == det_ids.end()) {
-          det_ids.push_back(id);
+      int id = ds->get_geo_id()->get_stream_id();
+      if (std::find(unique_stream_ids.begin(), unique_stream_ids.end(), id) == unique_stream_ids.end()) {
+          unique_stream_ids.push_back(id);
       }
     }
 
@@ -306,8 +305,8 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
     auto tph_conf_obj = tph_conf->config_object();
     auto tpsrc_ids = get_tp_source_ids();
 
-    if (tpsrc_ids.size() < det_ids.size()) {
-      throw(BadConf(ERS_HERE, "Not enough tp source ids for the number of detector elements being read out"));
+    if (tpsrc_ids.size() < unique_stream_ids.size()) {
+      throw(BadConf(ERS_HERE, fmt::format("Not enough tp handlers ({}) for the number of unique stream ids ({}) being read out", tpsrc_ids.size(), unique_stream_ids.size())));
     }
 
     for (size_t i = 0; i < tpsrc_ids.size(); ++i) {
@@ -315,14 +314,14 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
       /*
         When creating DLH, round robin assignment of the detector ID to still allow generic number of tp source IDs a user can assign
       */
-      int det_id = i % det_ids.size();
+      int stream_id = unique_stream_ids[i % unique_stream_ids.size()];
     // for (auto sid : tpsrc_ids) {
       conffwk::ConfigObject tp_queue_obj;
       conffwk::ConfigObject tpreq_queue_obj;
       std::string tp_uid("tphandler-" + std::to_string(sid->get_sid()));
       auto tph_obj = obj_fac.create(tph_class, tp_uid);
       tph_obj.set_by_val<uint32_t>("source_id", sid->get_sid());
-      tph_obj.set_by_val<uint32_t>("detector_id", det_id); // 1 == kDAQ //! change this to match the detector type
+      tph_obj.set_by_val<uint32_t>("detector_id", stream_id); // 1 == kDAQ //! change this to match the detector type
       tph_obj.set_by_val<bool>("post_processing_enabled", get_ta_generation_enabled());
       tph_obj.set_obj("module_configuration", &tph_conf_obj);
 
@@ -331,7 +330,7 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
       tp_queue_obj.set_by_val<uint32_t>("recv_timeout_ms", 50);
       tp_queue_obj.set_by_val<uint32_t>("send_timeout_ms", 1);
 
-      tp_queues.push_back(std::make_pair(det_id, obj_fac.get_dal<confmodel::Connection>(tp_queue_obj.UID())));
+      tp_queues.push_back(std::make_pair(stream_id, obj_fac.get_dal<confmodel::Connection>(tp_queue_obj.UID())));
       // Create tp data requests queue from Fragment Aggregator
       tpreq_queue_obj = obj_fac.create_queue_sid_obj(dlh_reqinput_qdesc, sid->get_sid());
       req_queues.push_back(obj_fac.get_dal<confmodel::Connection>(tpreq_queue_obj.UID()));
@@ -350,15 +349,10 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
   }
 
   // Add output queueus of tps
-  std::vector<std::pair<int, const conffwk::ConfigObject*>> tp_queue_objs;
+  std::vector<std::pair<uint32_t, const conffwk::ConfigObject*>> tp_queue_objs;
   for (auto q : tp_queues) {
     tp_queue_objs.push_back(std::make_pair(q.first, &q.second->config_object()));
   }
-
-  // std::vector<const conffwk::ConfigObject*> tp_queue_objs;
-  // for (auto q : tp_queues) {
-  //   tp_queue_objs.push_back(&q->config_object());
-  // }
 
   //-----------------------------------------------------------------
   //
@@ -395,15 +389,13 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
 
   auto emulation_mode = reader_conf->get_emulation_mode();
   for (auto& [numa, ds] : all_enabled_det_streams) {
-    int ds_det_id = ds->get_geo_id()->get_detector_id();
-
     uint32_t sid = ds->get_source_id();
     TLOG_DEBUG(6) << fmt::format("Processing stream {}, id {}, det id {}", ds->UID(), ds->get_source_id(), ds->get_geo_id()->get_detector_id());
     std::string uid(fmt::format("DLH-{}", sid));
     TLOG_DEBUG(6) << fmt::format("creating OKS configuration object for Data Link Handler class {}, if {}", dlh_class, sid);
     auto dlh_obj = obj_fac.create(dlh_class, uid);
     dlh_obj.set_by_val<uint32_t>("source_id", sid);
-    dlh_obj.set_by_val<uint32_t>("detector_id", ds_det_id);
+    dlh_obj.set_by_val<uint32_t>("detector_id", ds->get_geo_id()->get_detector_id());
     dlh_obj.set_by_val<bool>("post_processing_enabled", get_tp_generation_enabled());
     dlh_obj.set_by_val<bool>("emulation_mode", emulation_mode);
     dlh_obj.set_obj("geo_id", &ds->get_geo_id()->config_object());
@@ -431,14 +423,15 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
     }
 
     //! here, we want to select which tp queues to add to the output, to separate the two CRPs
-    for (auto& [tp_det_id, tpq] : tp_queue_objs) {
-      if (tp_det_id == ds_det_id) {
+    for (auto& [tp_stream_id, tpq] : tp_queue_objs) {
+      if (tp_stream_id == ds->get_geo_id()->get_stream_id()) {
         dlh_outs.push_back(tpq);
       }
     }
-    // for (auto tpq : tp_queue_objs) {
-    //   dlh_outs.push_back(tpq);
-    // }
+    std::cout << "dlh : " << dlh_obj << std::endl;
+    for (auto outs : dlh_outs) {
+        std::cout << "outs : " << outs << std::endl;
+    }
     dlh_obj.set_objs("inputs", dlh_ins);
     dlh_obj.set_objs("outputs", dlh_outs);
 
