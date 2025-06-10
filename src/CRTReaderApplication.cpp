@@ -34,9 +34,7 @@
 namespace dunedaq::appmodel {
 
 std::vector<const confmodel::DaqModule*>
-CRTReaderApplication::generate_modules(conffwk::Configuration* config,
-                                       const std::string& dbfile,
-                                       const confmodel::Session* session) const
+CRTReaderApplication::generate_modules(const confmodel::Session* session) const
 {
 
   TLOG_DEBUG(6) << "Generating modules for application " << this->UID();
