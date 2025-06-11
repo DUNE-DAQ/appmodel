@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="50" oks-format="schema" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231211T133151" last-modified-by="ramarine" last-modified-on="np04-srv-017.cern.ch" last-modification-time="20250530T145600"/>
+<info name="" type="" num-of-items="51" oks-format="schema" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231211T133151" last-modified-by="ramarine" last-modified-on="np04-srv-017.cern.ch" last-modification-time="20250602T135844"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -169,20 +169,33 @@
  </class>
 
  <class name="PDSChannelThreshold" description="Only build this if you want to set custom thresholds to any of the channels of a particular board. &#xA;A class which controls the threshold value of a channel. All attributes should be filled. The channel is anything in between 0 and 39. The board number is the board number defined ">
-  <attribute name="channel_id" description="id of channel of the PDS" type="u32" range="0..39" is-not-null="yes"/>
+  <attribute name="channel_id" description="id of channel of the PDS" type="u32" is-not-null="yes"/>
   <attribute name="threshold" type="u32" init-value="0" is-not-null="yes"/>
   <attribute name="board_id" type="u32" is-not-null="yes"/>
  </class>
 
+ <class name="PDSDaphneV2Board">
+  <attribute name="board_id" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="pds_masked_channels" description="simply pass the channels of this board which need to be masked" type="u32" range="0..39" is-multi-value="yes" is-not-null="false"/>
+  <attribute name="def_adc_thresh" type="u32" init-value="0" is-not-null="yes"/>
+ </class>
+
  <class name="PDSRawDataProcessor" description="A class which contains info about PDS. For example here you can add threshold for specific channels.">
   <superclass name="RawDataProcessor"/>
-  <attribute name="pds_masked_channels" description="integral higher than threshold value for each channel." type="u32" range="0..39,999" is-multi-value="yes" init-value="999" is-not-null="yes"/>
+  <attribute name="rawdataprocessor_id" type="u32" init-value="234" is-not-null="yes"/>
   <relationship name="channels_with_threshold" class-type="PDSChannelThreshold" low-cc="zero" high-cc="many" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <relationship name="daphne_v2_board" description="boards of daphne v2" class-type="PDSDaphneV2Board" low-cc="zero" high-cc="many" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
   <method name="GetCustomChannelNumber" description="returns the size of how many channels have custom thresholds. In more concrete terms, it counts how many object of PDSChannelThreshold the PDSRawDataProcessor has.  ">
-   <method-implementation language="c++" prototype="size_t GetCustomChannelNumber() const" body="return m_channels_with_threshold.size();&#xA;"/>
+   <method-implementation language="c++" prototype="size_t GetCustomChannelNumber() const" body="return m_channels_with_threshold.size();"/>
   </method>
   <method name="GetCustomChannel" description="This returns a PDSChannelThreshold and it can be used in a loop to access all the PDSChannelThrsholds objects defined in the PDSRawDataProcessor.">
    <method-implementation language="c++" prototype="const PDSChannelThreshold&amp; GetCustomChannel(size_t index) const" body="return *m_channels_with_threshold.at(index);"/>
+  </method>
+  <method name="GetBoard" description="This returns a PDSDaphneV2Board and it can be used in a loop to access all the PDSDaphneV2Board objects defined in the PDSRawDataProcessor.">
+   <method-implementation language="c++" prototype="const PDSDaphneV2Board&amp; GetBoard(size_t index) const" body="return *m_daphne_v2_board.at(index);"/>
+  </method>
+  <method name="GetNoOfBoards" description="This returns the number of boards declared in the PDSRawDataProcessor.">
+   <method-implementation language="c++" prototype="size_t GetNoOfBoards() const" body="return m_daphne_v2_board.size();"/>
   </method>
  </class>
 
