@@ -58,6 +58,13 @@
 using namespace dunedaq;
 using namespace dunedaq::appmodel;
 
+std::vector<const confmodel::ResourceBase*>
+CTBApplication::get_resources() const {
+  std::vector<const confmodel::ResourceBase*> resources;
+  resources.push_back(dynamic_cast<const confmodel::ResourceBase*>(get_board()));
+  return resources;
+}
+
 
 std::vector<const confmodel::DaqModule*> 
 CTBApplication::generate_modules(const confmodel::Session* session) const
@@ -215,70 +222,22 @@ CTBApplication::generate_modules(const confmodel::Session* session) const
 }
 
 
-const CTBMisc & CTBoardConf::get_misc() const {
 
-  auto vec = get_contains();
-  for ( auto & t : vec) {
-    auto misc = t->cast<CTBMisc>();
-    if ( misc ) {
-      return *misc;
-    }
-  }
+std::vector<const confmodel::ResourceBase*>
+CTBoardConf::get_resources() const {
+  std::vector<const confmodel::ResourceBase*> resources;
+  resources.push_back(get_misc());
 
-  throw BadConf(ERS_HERE, "Missing Misc");
+  auto hlts = get_HLTs();
+  resources.insert(resources.end(), hlts.begin(), hlts.end());
 
-}
+  auto crt_llts = get_CRT_LLTs();
+  resources.insert(resources.end(), crt_llts.begin(), crt_llts.end());
 
+  auto llts = get_beam_LLTs();
+  resources.insert(resources.end(), llts.begin(), llts.end());
 
-std::vector<const CTBHLT*> CTBoardConf::get_HLTs() const {
-
-  std::vector<const CTBHLT*> ret;
-  
-  auto vec = get_contains();
-
-  for ( auto & t : vec ) {
-    auto hlt = t->cast<CTBHLT>();
-    if ( hlt ) {
-      ret.push_back(hlt);
-    }
-  }
-
-  return ret;
-}
-
-
-std::vector<const CTBCountLLT*> CTBoardConf::get_CRT_LLTs() const {
-
-  std::vector<const CTBCountLLT*> ret;
-  
-  auto vec = get_contains();
-
-  for ( auto & t : vec ) {
-    auto llt = t->cast<CTBCountLLT>();
-    if ( llt ) {
-      ret.push_back(llt);
-    }
-  }
-
-  return ret;
-}
-
-
-std::vector<const CTBLLT*> CTBoardConf::get_beam_LLTs() const {
-
-  std::vector<const CTBLLT*> ret;
-  
-  auto vec = get_contains();
-
-  for ( auto & t : vec ) {
-    auto llt = t->cast<CTBLLT>();
-    auto count_llt = t->cast<CTBCountLLT>();
-    if ( (!count_llt) && (llt) ) {
-      ret.push_back(llt);
-    }
-  }
-
-  return ret;
+  return resources;
 }
 
 
@@ -286,7 +245,7 @@ nlohmann::json CTBoardConf::get_ctb_json(const dunedaq::confmodel::Session& sess
 
   nlohmann::json json;
   json["sockets"] = get_sockets() -> get_ctb_json( socket_host ); 
-  json["misc"] = get_misc().get_ctb_json(session);
+  json["misc"] = get_misc()->get_ctb_json(session);
 
   nlohmann::json hlt;
 
@@ -346,41 +305,20 @@ nlohmann::json CTBoardConf::get_ctb_json(const dunedaq::confmodel::Session& sess
 
 }
 
-
-const CTBRandomTrigger & CTBMisc::get_randomtrigger_1() const {
-
-  auto vec = get_contains();
-  for ( auto & t : vec) {
-    if ( t->UID().find("HLT") != std::string::npos ) {
-      auto ret = t->cast<CTBRandomTrigger>();
-      return *ret;
-    }
-  }
-
-  throw BadConf(ERS_HERE, "Missing HLT_0");
+std::vector<const confmodel::ResourceBase*> CTBMisc::get_resources() const {
+  std::vector<const confmodel::ResourceBase*> res;
+  res.push_back(get_HLT_trigger());
+  res.push_back(get_LLT_trigger());
+  return res;
 }
-
-const CTBRandomTrigger & CTBMisc::get_randomtrigger_2() const {
-
-  auto vec = get_contains();
-  for ( auto & t : vec) {
-    if ( t->UID().find("LLT") != std::string::npos ) {
-      auto ret = t->cast<CTBRandomTrigger>();
-      return *ret;
-    }
-  }
-
-  throw BadConf(ERS_HERE, "Missing LLT_0");
-}
-
 
 
 
 nlohmann::json CTBMisc::get_ctb_json(const dunedaq::confmodel::Session& session) const {
 
   nlohmann::json ret;
-  ret["randomtrigger_1"] = get_randomtrigger_1().get_ctb_json(session);
-  ret["randomtrigger_2"] = get_randomtrigger_2().get_ctb_json(session);
+  ret["randomtrigger_1"] = get_HLT_trigger()->get_ctb_json(session);
+  ret["randomtrigger_2"] = get_LLT_trigger()->get_ctb_json(session);
   ret["pulser"] = get_pulser() -> to_json(false, true);
   ret["timing"] = get_timing() ->  to_json(false, true);
 

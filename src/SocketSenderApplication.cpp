@@ -28,16 +28,9 @@ namespace appmodel {
 
 //-----------------------------------------------------------------------------
 
-const std::vector<const confmodel::ResourceBase*>&
+std::vector<const confmodel::ResourceBase*>
 SocketSenderApplication::get_resources() const {
-  if (m_contents.empty()) {
-    std::lock_guard scoped_lock(m_mutex);
-    check_init();
-    for (auto conn: m_detector_connections) {
-      m_contents.push_back(conn);
-    }
-  }
-  return m_contents;
+  return to_resources(get_detector_connections());
 }
 
 std::vector<const confmodel::DaqModule*>
