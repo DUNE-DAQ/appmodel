@@ -292,15 +292,6 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
 
   if (get_tp_generation_enabled()) {
 
-    std::vector<int> unique_stream_ids;
-    //! get the unique stream ids from the enabled streams. For TDE this is assumed to map to CRP number
-    for (auto& [numa, ds] : all_enabled_det_streams) {
-      int id = ds->get_geo_id()->get_stream_id();
-      if (std::find(unique_stream_ids.begin(), unique_stream_ids.end(), id) == unique_stream_ids.end()) {
-          unique_stream_ids.push_back(id);
-      }
-    }
-
     // Create TP handler object
     auto tph_conf_obj = tph_conf->config_object();
     auto tpsrc_ids = get_tp_source_ids();
@@ -309,14 +300,13 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
       throw(BadConf(ERS_HERE, fmt::format("number of TP source IDs must be a multiple of 3, current amount: {}", tpsrc_ids.size())));
     }
 
-    for (size_t i = 0; i < tpsrc_ids.size(); ++i) {
-      auto sid = tpsrc_ids[i];
+    for (auto sid : tpsrc_ids) {
       conffwk::ConfigObject tp_queue_obj;
       conffwk::ConfigObject tpreq_queue_obj;
       std::string tp_uid("tphandler-" + std::to_string(sid->get_sid()));
       auto tph_obj = obj_fac.create(tph_class, tp_uid);
       tph_obj.set_by_val<uint32_t>("source_id", sid->get_sid());
-      tph_obj.set_by_val<uint32_t>("detector_id", 1); // kDAQ
+      tph_obj.set_by_val<uint32_t>("detector_id", 1); // 1 == kDAQ
       tph_obj.set_by_val<bool>("post_processing_enabled", get_ta_generation_enabled());
       tph_obj.set_obj("module_configuration", &tph_conf_obj);
 
@@ -396,7 +386,6 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
     dlh_obj.set_obj("geo_id", &ds->get_geo_id()->config_object());
     dlh_obj.set_obj("module_configuration", &numa_dhlconf_map[numa]);
     std::vector<const conffwk::ConfigObject*> dlh_ins, dlh_outs;
-    dlh_outs.clear();
 
     // Add datalink-handler queue to the inputs
     dlh_ins.push_back(&data_queues_by_sid.at(sid)->config_object());
@@ -418,9 +407,8 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
       dlh_outs.push_back(&ts_net_obj);
     }
 
-    //! here, we want to select which tp queues to add to the output, to separate the two CRPs
+    // here, we want to select which tp queues to add to the output, to separate mutiple detector elements
     for (auto tpq : tp_queue_objs) {
-        //   if (tp_stream_id == ds->get_geo_id()->get_stream_id()) {
         if ((sid / 100) == (tpq.first / 10)) {
         dlh_outs.push_back(tpq.second);
       }
