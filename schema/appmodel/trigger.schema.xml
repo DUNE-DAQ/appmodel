@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="51" oks-format="schema" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231211T133151" last-modified-by="ramarine" last-modified-on="np04-srv-017.cern.ch" last-modification-time="20250613T092529"/>
+<info name="" type="" num-of-items="51" oks-format="schema" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231211T133151" last-modified-by="ramarine" last-modified-on="np04-srv-017.cern.ch" last-modification-time="20250616T173100"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -184,21 +184,6 @@
   <superclass name="RawDataProcessor"/>
   <attribute name="rawdataprocessor_id" type="u32" init-value="234" is-not-null="yes"/>
   <attribute name="default_adc_intg_thresh" type="u32" init-value="0" is-not-null="yes"/>
-  <attribute name="default_adc_peak_thresh" type="u32" is-multi-value="yes" init-value="0" is-not-null="yes"/>
-  <relationship name="channels_with_threshold" class-type="PDSChannelThreshold" low-cc="zero" high-cc="many" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
-  <relationship name="daphne_v2_board" description="boards of daphne v2" class-type="PDSDaphneV2Board" low-cc="zero" high-cc="many" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
-  <method name="GetCustomChannelNumber" description="returns the size of how many channels have custom thresholds. In more concrete terms, it counts how many object of PDSChannelThreshold the PDSRawDataProcessor has.  ">
-   <method-implementation language="c++" prototype="size_t GetCustomChannelNumber() const" body="return m_channels_with_threshold.size();"/>
-  </method>
-  <method name="GetCustomChannel" description="This returns a PDSChannelThreshold and it can be used in a loop to access all the PDSChannelThrsholds objects defined in the PDSRawDataProcessor.">
-   <method-implementation language="c++" prototype="const PDSChannelThreshold&amp; GetCustomChannel(size_t index) const" body="return *m_channels_with_threshold.at(index);"/>
-  </method>
-  <method name="GetBoard" description="This returns a PDSDaphneV2Board and it can be used in a loop to access all the PDSDaphneV2Board objects defined in the PDSRawDataProcessor.">
-   <method-implementation language="c++" prototype="const PDSDaphneV2Board&amp; GetBoard(size_t index) const" body="return *m_daphne_v2_board.at(index);"/>
-  </method>
-  <method name="GetNoOfBoards" description="This returns the number of boards declared in the PDSRawDataProcessor.">
-   <method-implementation language="c++" prototype="size_t GetNoOfBoards() const" body="return m_daphne_v2_board.size();"/>
-  </method>
  </class>
 
  <class name="ProcessingStep" description="Base class for TPG processors.">
