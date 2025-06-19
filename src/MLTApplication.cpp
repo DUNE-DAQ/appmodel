@@ -1,5 +1,5 @@
 /**
- * @file generate_modules.cpp
+ * @file MLTApplication.cpp
  *
  * Implementation of MLTApplication's generate_modules dal method
  *
@@ -8,7 +8,8 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
+
+#include "ConfigObjectFactory.hpp"
 
 #include "conffwk/Configuration.hpp"
 
@@ -43,6 +44,7 @@
 #include "appmodel/MLTConf.hpp"
 #include "appmodel/MLTModule.hpp"
 
+#include "appmodel/CTBApplication.hpp"
 #include "appmodel/FakeDataApplication.hpp"
 #include "appmodel/FakeDataProdConf.hpp"
 #include "appmodel/FakeHSIApplication.hpp"
@@ -61,50 +63,17 @@
 #include <string>
 #include <vector>
 
-using namespace dunedaq;
-using namespace dunedaq::appmodel;
+namespace dunedaq {
+namespace appmodel {
 
-static ModuleFactory::Registrator __reg__("MLTApplication",
-                                          [](const SmartDaqApplication* smartApp,
-                                             conffwk::Configuration* confdb,
-                                             const std::string& dbfile,
-                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
-                                            auto app = smartApp->cast<MLTApplication>();
-                                            return app->generate_modules(confdb, dbfile, session);
-                                          });
-
-/**
- * \brief Helper function that gets a network connection config
- *
- * \param idname Unique ID name of the config object
- * \param ntDesc Network connection descriptor object
- * \param confdb Global database configuration
- * \param dbfile Database file location
- *
- * \ret OKS configuration object for the network connection
- */
-conffwk::ConfigObject
-create_mlt_network_connection(std::string uid,
-                              const NetworkConnectionDescriptor* ntDesc,
-                              conffwk::Configuration* confdb,
-                              const std::string& dbfile)
-{
-  auto ntServiceObj = ntDesc->get_associated_service()->config_object();
-  conffwk::ConfigObject ntObj;
-  confdb->create(dbfile, "NetworkConnection", uid, ntObj);
-  ntObj.set_by_val<std::string>("data_type", ntDesc->get_data_type());
-  ntObj.set_by_val<std::string>("connection_type", ntDesc->get_connection_type());
-  ntObj.set_obj("associated_service", &ntServiceObj);
-
-  return ntObj;
-}
 
 std::vector<const confmodel::DaqModule*>
-MLTApplication::generate_modules(conffwk::Configuration* confdb,
-                                 const std::string& dbfile,
-                                 const confmodel::Session* session) const
+MLTApplication::generate_modules(const confmodel::Session* session) const
 {
+
   std::vector<const confmodel::DaqModule*> modules;
+
+  ConfigObjectFactory obj_fac(this);
 
   // auto mlt_conf = get_mlt_conf();
   // auto mlt_class = mlt_conf->get_template_for();
@@ -143,21 +112,8 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
   }
 
   // Create queues
-  conffwk::ConfigObject input_queue_obj;
-
-  std::string queue_uid(tc_inputq_desc->get_uid_base());
-  confdb->create(dbfile, "Queue", queue_uid, input_queue_obj);
-  input_queue_obj.set_by_val<std::string>("data_type", tc_inputq_desc->get_data_type());
-  input_queue_obj.set_by_val<std::string>("queue_type", tc_inputq_desc->get_queue_type());
-  input_queue_obj.set_by_val<uint32_t>("capacity", tc_inputq_desc->get_capacity());
-
-  conffwk::ConfigObject output_queue_obj;
-
-  queue_uid = td_outputq_desc->get_uid_base();
-  confdb->create(dbfile, "Queue", queue_uid, output_queue_obj);
-  output_queue_obj.set_by_val<std::string>("data_type", td_outputq_desc->get_data_type());
-  output_queue_obj.set_by_val<std::string>("queue_type", td_outputq_desc->get_queue_type());
-  output_queue_obj.set_by_val<uint32_t>("capacity", td_outputq_desc->get_capacity());
+  auto input_queue_obj = obj_fac.create_queue_obj(tc_inputq_desc);
+  auto output_queue_obj = obj_fac.create_queue_obj(td_outputq_desc);
 
   // Net descriptors
   const NetworkConnectionDescriptor* req_net_desc = nullptr;
@@ -204,23 +160,23 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
   // Network connection for input TriggerInhibit, input TCs
 
   conffwk::ConfigObject ti_net_obj =
-    create_mlt_network_connection(ti_net_desc->get_uid_base(), ti_net_desc, confdb, dbfile);
+    obj_fac.create_net_obj(ti_net_desc, "");
 
   conffwk::ConfigObject tc_net_obj =
-    create_mlt_network_connection(tc_net_desc->get_uid_base() + ".*", tc_net_desc, confdb, dbfile);
+    obj_fac.create_net_obj(tc_net_desc, ".*");
 
   // Network connection for output TriggerDecision
   conffwk::ConfigObject td_net_obj =
-    create_mlt_network_connection(td_net_desc->get_uid_base(), td_net_desc, confdb, dbfile);
+    obj_fac.create_net_obj(td_net_desc, "");
 
   // Network conection for the input Data Requests
   conffwk::ConfigObject dr_net_obj =
-    create_mlt_network_connection(req_net_desc->get_uid_base() + UID(), req_net_desc, confdb, dbfile);
+    obj_fac.create_net_obj(req_net_desc, UID());
 
   conffwk::ConfigObject timesync_net_obj;
   if (timesync_net_desc != nullptr) {
     timesync_net_obj =
-      create_mlt_network_connection(timesync_net_desc->get_uid_base() + ".*", timesync_net_desc, confdb, dbfile);
+      obj_fac.create_net_obj(timesync_net_desc, ".*");
   }
 
   /**************************************************************
@@ -231,19 +187,18 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
   std::vector<conffwk::ConfigObject> generated_tc_conns;
   generated_tc_conns.reserve(standalone_TC_maker_confs.size());
   for (auto gen_conf : standalone_TC_maker_confs) {
-    conffwk::ConfigObject gen_obj;
-    confdb->create(dbfile, gen_conf->get_template_for(), gen_conf->UID(), gen_obj);
+    conffwk::ConfigObject gen_obj = obj_fac.create(gen_conf->get_template_for(),
+                                                   gen_conf->UID());
     gen_obj.set_obj("configuration", &(gen_conf->config_object()));
     if (gen_conf->get_timestamp_method() == "kTimeSync" && !timesync_net_obj.is_null()) {
       gen_obj.set_objs("inputs", { &timesync_net_obj });
     }
 
-    auto tc_net_gen =
-      create_mlt_network_connection(tc_net_desc->get_uid_base() + gen_conf->UID(), tc_net_desc, confdb, dbfile);
+    auto tc_net_gen = obj_fac.create_net_obj(tc_net_desc, gen_conf->UID());
     generated_tc_conns.push_back(tc_net_gen);
 
     gen_obj.set_objs("outputs", { &generated_tc_conns.back() });
-    modules.push_back(confdb->get<StandaloneTCMakerModule>(gen_conf->UID()));
+    modules.push_back(obj_fac.get_dal<StandaloneTCMakerModule>(gen_conf->UID()));
   }
 
   /**************************************************************
@@ -256,14 +211,13 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
 
   std::string reader_uid("data-reader-" + UID());
   std::string reader_class = rdr_conf->get_template_for();
-  conffwk::ConfigObject reader_obj;
   TLOG_DEBUG(7) << "creating OKS configuration object for Data subscriber class " << reader_class;
-  confdb->create(dbfile, reader_class, reader_uid, reader_obj);
+  conffwk::ConfigObject reader_obj = obj_fac.create(reader_class, reader_uid);
   reader_obj.set_objs("inputs", { &tc_net_obj });
   reader_obj.set_objs("outputs", { &input_queue_obj });
   reader_obj.set_obj("configuration", &rdr_conf->config_object());
 
-  modules.push_back(confdb->get<DataSubscriberModule>(reader_uid));
+  modules.push_back(obj_fac.get_dal<DataSubscriberModule>(reader_uid));
 
   /**************************************************************
    * Create the readout map
@@ -306,9 +260,9 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
 
           // Create SourceIDConf object for the MLT
           auto id = stream->get_source_id();
-          conffwk::ConfigObject* sourceIdConf = new conffwk::ConfigObject();
           std::string sourceIdConfUID = "dro-mlt-stream-config-" + std::to_string(id);
-          confdb->create(dbfile, "SourceIDConf", sourceIdConfUID, *sourceIdConf);
+          conffwk::ConfigObject* sourceIdConf = new conffwk::ConfigObject(
+            obj_fac.create("SourceIDConf", sourceIdConfUID));
           sourceIdConf->set_by_val<uint32_t>("sid", id);
           // https://github.com/DUNE-DAQ/daqdataformats/blob/5b99506675a586c8a09123900e224f2371d96df9/include/daqdataformats/detail/SourceID.hxx#L108
           sourceIdConf->set_by_val<std::string>("subsystem", "Detector_Readout");
@@ -343,9 +297,9 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
 
         // Create SourceIDConf object for the MLT
         auto id = stream->get_source_id();
-        conffwk::ConfigObject* sourceIdConf = new conffwk::ConfigObject();
         std::string sourceIdConfUID = "dro-mlt-stream-config-" + std::to_string(id);
-        confdb->create(dbfile, "SourceIDConf", sourceIdConfUID, *sourceIdConf);
+        conffwk::ConfigObject* sourceIdConf = new conffwk::ConfigObject(
+          obj_fac.create("SourceIDConf", sourceIdConfUID));
         sourceIdConf->set_by_val<uint32_t>("sid", id);
         // https://github.com/DUNE-DAQ/daqdataformats/blob/5b99506675a586c8a09123900e224f2371d96df9/include/daqdataformats/detail/SourceID.hxx#L108
         sourceIdConf->set_by_val<std::string>("subsystem", "Detector_Readout");
@@ -357,11 +311,11 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
     // source somehow...
     auto trg_app = app->cast<appmodel::TriggerApplication>();
     if (trg_app != nullptr && trg_app->get_source_id() != nullptr) {
-      conffwk::ConfigObject* tcSourceIdConf = new conffwk::ConfigObject();
-      confdb->create(dbfile,
-                     "SourceIDConf",
-                     trg_app->UID() + "-" + std::to_string(trg_app->get_source_id()->get_sid()),
-                     *tcSourceIdConf);
+      conffwk::ConfigObject* tcSourceIdConf = new conffwk::ConfigObject(
+        obj_fac.create(
+          "SourceIDConf",
+          trg_app->UID() + "-" + std::to_string(trg_app->get_source_id()->get_sid())
+          ));
       tcSourceIdConf->set_by_val<uint32_t>("sid", trg_app->get_source_id()->get_sid());
       tcSourceIdConf->set_by_val<std::string>("subsystem", trg_app->get_source_id()->get_subsystem());
       sourceIds.push_back(tcSourceIdConf);
@@ -371,11 +325,10 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
     //
     auto hsi_app = app->cast<appmodel::FakeHSIApplication>();
     if (hsi_app != nullptr && hsi_app->get_source_id() != nullptr) {
-      conffwk::ConfigObject* hsEventSourceIdConf = new conffwk::ConfigObject();
-      confdb->create(dbfile,
-                     "SourceIDConf",
-                     hsi_app->UID() + "-" + std::to_string(hsi_app->get_source_id()->get_sid()),
-                     *hsEventSourceIdConf);
+      conffwk::ConfigObject* hsEventSourceIdConf = new conffwk::ConfigObject(
+        obj_fac.create(
+          "SourceIDConf",
+          hsi_app->UID() + "-" + std::to_string(hsi_app->get_source_id()->get_sid())));
       hsEventSourceIdConf->set_by_val<uint32_t>("sid", hsi_app->get_source_id()->get_sid());
       hsEventSourceIdConf->set_by_val<std::string>("subsystem", hsi_app->get_source_id()->get_subsystem());
       sourceIds.push_back(hsEventSourceIdConf);
@@ -383,17 +336,31 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
 
     auto dts_hsi_app = app->cast<appmodel::DTSHSIApplication>();
     if (dts_hsi_app != nullptr && dts_hsi_app->get_source_id() != nullptr) {
-      conffwk::ConfigObject* hsEventSourceIdConf = new conffwk::ConfigObject();
-      confdb->create(dbfile,
-                     "SourceIDConf",
-                     dts_hsi_app->UID() + "-" + std::to_string(dts_hsi_app->get_source_id()->get_sid()),
-                     *hsEventSourceIdConf);
+      conffwk::ConfigObject* hsEventSourceIdConf = new conffwk::ConfigObject(
+        obj_fac.create(
+          "SourceIDConf",
+          dts_hsi_app->UID() + "-" + std::to_string(dts_hsi_app->get_source_id()->get_sid())
+          )
+        );
       hsEventSourceIdConf->set_by_val<uint32_t>("sid", dts_hsi_app->get_source_id()->get_sid());
       hsEventSourceIdConf->set_by_val<std::string>("subsystem", dts_hsi_app->get_source_id()->get_subsystem());
       sourceIds.push_back(hsEventSourceIdConf);
     }
-  }
 
+    auto ctb_app = app->cast<appmodel::CTBApplication>();
+    if (ctb_app) {
+      auto sources = ctb_app->get_sources();
+      for ( const auto & s : sources ) {
+	auto src_id_conf_ptr = new conffwk::ConfigObject( obj_fac.create("SourceIDConf",
+									 ctb_app->UID() + "-" + s.first ) );
+	src_id_conf_ptr->set_by_val<uint32_t>("sid", s.second->get_sid());
+	src_id_conf_ptr->set_by_val<std::string>("subsystem", s.second->get_subsystem());
+	sourceIds.push_back(src_id_conf_ptr);
+      } // loop over CTB sources
+    } // CTB app
+    
+  } // loop over applications
+  
   // Get mandatory links
   std::vector<const conffwk::ConfigObject*> mandatory_sids;
   const TCDataProcessor* tc_dp = tch_conf->get_data_processor()->cast<TCDataProcessor>();
@@ -421,16 +388,7 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
       auto descriptor = rule->get_descriptor();
       auto data_type = descriptor->get_data_type();
       if (data_type == "Fragment") {
-        std::string dreqNetUid(descriptor->get_uid_base() + dfapp->UID());
-        conffwk::ConfigObject frag_conn;
-        confdb->create(dbfile, "NetworkConnection", dreqNetUid, frag_conn);
-
-        frag_conn.set_by_val<std::string>("data_type", descriptor->get_data_type());
-        frag_conn.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
-
-        auto serviceObj = descriptor->get_associated_service()->config_object();
-        frag_conn.set_obj("associated_service", &serviceObj);
-        fragOutObjs.push_back(frag_conn);
+        fragOutObjs.emplace_back(obj_fac.create_net_obj(descriptor, dfapp->UID()));
       } // If network rule has TriggerDecision type of data
     }   // Loop over Apps network rules
   }     // loop over Session specific Apps
@@ -443,13 +401,12 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
   ti_output_objs.push_back(&output_queue_obj);
 
   auto tch_conf_obj = tch_conf->config_object();
-  conffwk::ConfigObject ti_obj;
   if (get_source_id() == nullptr) {
     throw(BadConf(ERS_HERE, "No source_id associated with this TriggerApplication!"));
   }
   uint32_t source_id = get_source_id()->get_sid();
   std::string ti_uid(handler_name + "-" + std::to_string(source_id));
-  confdb->create(dbfile, tch_class, ti_uid, ti_obj);
+  conffwk::ConfigObject ti_obj = obj_fac.create(tch_class, ti_uid);
   ti_obj.set_by_val<uint32_t>("source_id", source_id);
   ti_obj.set_by_val<uint32_t>("detector_id", 1); // 1 == kDAQ
   ti_obj.set_obj("module_configuration", &tch_conf_obj);
@@ -459,18 +416,21 @@ MLTApplication::generate_modules(conffwk::Configuration* confdb,
   ti_obj.set_objs("outputs", ti_output_objs);
 
   // Add to our list of modules to return
-  modules.push_back(confdb->get<DataHandlerModule>(ti_uid));
+  modules.push_back(obj_fac.get_dal<DataHandlerModule>(ti_uid));
 
   /**************************************************************
    * Instantiate the MLTModule module
    **************************************************************/
 
-  conffwk::ConfigObject mlt_obj;
-  confdb->create(dbfile, mlt_conf->get_template_for(), mlt_conf->UID(), mlt_obj);
+  conffwk::ConfigObject mlt_obj = obj_fac.create(mlt_conf->get_template_for(),
+                                                 mlt_conf->UID());
   mlt_obj.set_obj("configuration", &(mlt_conf->config_object()));
   mlt_obj.set_objs("inputs", { &output_queue_obj, &ti_net_obj });
   mlt_obj.set_objs("outputs", { &td_net_obj });
-  modules.push_back(confdb->get<MLTModule>(mlt_conf->UID()));
+  modules.push_back(obj_fac.get_dal<MLTModule>(mlt_conf->UID()));
 
   return modules;
 }
+ 
+} // namespace appmodel  
+} // namespace dunedaq

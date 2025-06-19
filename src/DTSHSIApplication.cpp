@@ -8,8 +8,8 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
 
+#include "ConfigObjectFactory.hpp"
 #include "appmodel/DTSHSIApplication.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
@@ -25,30 +25,20 @@
 #include "confmodel/NetworkConnection.hpp"
 #include "confmodel/Service.hpp"
 #include "logging/Logging.hpp"
-#include "oks/kernel.hpp"
 #include "conffwk/Configuration.hpp"
 
 #include <iostream>
 #include <string>
 #include <vector>
 
-using namespace dunedaq;
-using namespace dunedaq::appmodel;
-
-static ModuleFactory::Registrator __reg__("DTSHSIApplication",
-                                          [](const SmartDaqApplication* smartApp,
-                                             conffwk::Configuration* confdb,
-                                             const std::string& dbfile,
-                                             const confmodel::Session* session) -> ModuleFactory::ReturnType {
-                                            auto app = smartApp->cast<DTSHSIApplication>();
-                                            return app->generate_modules(confdb, dbfile, session);
-                                          });
+namespace dunedaq {
+namespace appmodel {
 
 std::vector<const confmodel::DaqModule*>
-DTSHSIApplication::generate_modules(conffwk::Configuration* confdb,
-                                     const std::string& dbfile,
-                                     const confmodel::Session* /*session*/) const
+DTSHSIApplication::generate_modules(const confmodel::Session* /*session*/) const
 {
+  ConfigObjectFactory obj_fac(this);
+  
   std::vector<const confmodel::DaqModule*> modules;
 
   auto dlhConf = get_link_handler();
@@ -107,9 +97,8 @@ DTSHSIApplication::generate_modules(conffwk::Configuration* confdb,
 
   auto det_id = 1; // TODO Eric Flumerfelt <eflumerf@fnal.gov>, 08-Feb-2024: This is a magic number corresponding to kDAQ
   std::string uid("DLH-" + std::to_string(id));
-  conffwk::ConfigObject dlhObj;
   TLOG_DEBUG(7) << "creating OKS configuration object for Data Link Handler class " << dlhClass << ", id " << id;
-  confdb->create(dbfile, dlhClass, uid, dlhObj);
+  conffwk::ConfigObject dlhObj = obj_fac.create(dlhClass, uid);
   dlhObj.set_by_val<uint32_t>("source_id", id);
   dlhObj.set_by_val<uint32_t>("detector_id", det_id);
   dlhObj.set_by_val<bool>("post_processing_enabled", false);
@@ -117,53 +106,31 @@ DTSHSIApplication::generate_modules(conffwk::Configuration* confdb,
 
   // Time Sync network connection
   if (dlhConf->get_generate_timesync()) {
-    std::string tsStreamUid = tsNetDesc->get_uid_base() + std::to_string(id);
     auto tsServiceObj = tsNetDesc->get_associated_service()->config_object();
-    conffwk::ConfigObject tsNetObj;
-    confdb->create(dbfile, "NetworkConnection", tsStreamUid, tsNetObj);
-    tsNetObj.set_by_val<std::string>("connection_type", tsNetDesc->get_connection_type());
-    tsNetObj.set_by_val<std::string>("data_type", tsNetDesc->get_data_type());
-    tsNetObj.set_obj("associated_service", &tsServiceObj);
+    auto tsNetObj = obj_fac.create_net_obj(tsNetDesc, std::to_string(id));
 
     dlhObj.set_objs("outputs", { &tsNetObj });
   } else {
     dlhObj.set_objs("outputs", {});
   }
-  std::string dataQueueUid(dlhInputQDesc->get_uid_base() + std::to_string(id));
-  conffwk::ConfigObject queueObj;
-  confdb->create(dbfile, "QueueWithSourceId", dataQueueUid, queueObj);
-  queueObj.set_by_val<std::string>("data_type", dlhInputQDesc->get_data_type());
-  queueObj.set_by_val<std::string>("queue_type", dlhInputQDesc->get_queue_type());
-  queueObj.set_by_val<uint32_t>("capacity", dlhInputQDesc->get_capacity());
-  queueObj.set_by_val<uint32_t>("source_id", id);
-
-  auto faServiceObj = dlhReqInputNetDesc->get_associated_service()->config_object();
-  std::string faNetUid = dlhReqInputNetDesc->get_uid_base() + UID();
-  conffwk::ConfigObject faNetObj;
-  confdb->create(dbfile, "NetworkConnection", faNetUid, faNetObj);
-  faNetObj.set_by_val<std::string>("connection_type", dlhReqInputNetDesc->get_connection_type());
-  faNetObj.set_by_val<std::string>("data_type", dlhReqInputNetDesc->get_data_type());
-  faNetObj.set_obj("associated_service", &faServiceObj);
-
+  conffwk::ConfigObject queueObj = obj_fac.create_queue_sid_obj(dlhInputQDesc,id);
+  conffwk::ConfigObject faNetObj = obj_fac.create_net_obj(dlhReqInputNetDesc, UID());
   dlhObj.set_objs("inputs", { &queueObj, &faNetObj });
 
-  modules.push_back(confdb->get<DataHandlerModule>(uid));
+  modules.push_back(obj_fac.get_dal<DataHandlerModule>(uid));
 
   auto hsiServiceObj = hsiNetDesc->get_associated_service()->config_object();
-  std::string hsiNetUid = hsiNetDesc->get_uid_base();
-  conffwk::ConfigObject hsiNetObj;
-  confdb->create(dbfile, "NetworkConnection", hsiNetUid, hsiNetObj);
-  hsiNetObj.set_by_val<std::string>("connection_type", hsiNetDesc->get_connection_type());
-  hsiNetObj.set_by_val<std::string>("data_type", hsiNetDesc->get_data_type());
-  hsiNetObj.set_obj("associated_service", &hsiServiceObj);
+  conffwk::ConfigObject hsiNetObj = obj_fac.create_net_obj(hsiNetDesc, "");
   
   std::string genuid("HSI-" + std::to_string(id));
-  conffwk::ConfigObject hsiObj;
-  confdb->create(dbfile, "HSIReadout", genuid, hsiObj);
+  conffwk::ConfigObject hsiObj = obj_fac.create("HSIReadout", genuid);
   hsiObj.set_obj("configuration", &rdrConf->config_object());
   hsiObj.set_objs("outputs", { &queueObj, &hsiNetObj });
 
-  modules.push_back(confdb->get<HSIReadout>(genuid));
+  modules.push_back(obj_fac.get_dal<HSIReadout>(genuid));
 
   return modules;
 }
+ 
+} // namespace appmodel  
+} // namespace dunedaq
