@@ -175,6 +175,14 @@
   <relationship name="configuration" class-type="MLTConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
+ <class name="PDSRawDataProcessor" description="A class which contains info about PDS. For example here you can add threshold for specific channels.">
+  <superclass name="RawDataProcessor"/>
+  <attribute name="rawdataprocessor_id" type="u32" init-value="234" is-not-null="yes"/>
+  <attribute name="default_adc_intg_thresh" type="u32" init-value="0" is-not-null="yes"/>
+  <relationship name="processing_steps" class-type="ProcessingStep" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="sot_minima" description="TP samples over threshold minimum requirement by plane." class-type="SamplesOverThresholdMinima" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
  <class name="ProcessingStep" description="Base class for TPG processors.">
   <superclass name="Jsonable"/>
  </class>
@@ -192,6 +200,12 @@
   <attribute name="trigger_rate_hz" description="Trigger rate (in Hz) for the RandomTCMaker to produce the TCs" type="float" init-value="1" is-not-null="yes"/>
   <attribute name="time_distribution" description="Type of distribution used for random timestamps (uniform or poisson)" type="enum" range="kUniform,kPoisson" init-value="kUniform" is-not-null="yes"/>
   <relationship name="tc_readout" description="Configuration for the TC output type and the TC window size" class-type="TCReadoutMap" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="TPCRawDataProcessor">
+  <superclass name="RawDataProcessor"/>
+  <relationship name="processing_steps" class-type="ProcessingStep" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="sot_minima" description="TP samples over threshold minimum requirement by plane." class-type="SamplesOverThresholdMinima" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="RandomTCMakerModule">
