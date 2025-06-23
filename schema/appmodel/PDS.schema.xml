@@ -80,11 +80,12 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="12" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20250527T155933"/>
+<info name="" type="" num-of-items="11" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20250623T091030"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
  <file path="schema/appmodel/application.schema.xml"/>
+ <file path="schema/appmodel/fdmodules.schema.xml"/>
 </include>
 
 
@@ -195,18 +196,6 @@
   <attribute name="gain" description="rue=30 dB, false=24 dB" type="bool" init-value="false" is-not-null="yes"/>
   <method name="get_reg51" description="create registry 51 from the configuration">
    <method-implementation language="c++" prototype="uint16_t get_reg51() const" body=""/>
-  </method>
- </class>
-
- <class name="FelixDetectorToDaqConnection">
-  <superclass name="DetectorToDaqConnection"/>
-  <relationship name="felix_receiver" class-type="FelixDataReceiver" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
-  <relationship name="felix_senders" class-type="FelixDataSender" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
-  <method name="get_receiver" description="">
-   <method-implementation language="c++" prototype="const confmodel::DetDataReceiver* get_receiver() const override" body=""/>
-  </method>
-  <method name="get_senders" description="">
-   <method-implementation language="c++" prototype="std::vector&lt;const confmodel::DetDataSender*&gt; get_senders() const override" body=""/>
   </method>
  </class>
 

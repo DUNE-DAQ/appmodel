@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="22" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20250528T132244"/>
+<info name="" type="" num-of-items="23" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20250623T091044"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -153,6 +153,18 @@
   <attribute name="protocol" type="enum" range="full,half"/>
   <attribute name="link" description="Link within SLR" type="u8" range="0..5" init-value="0" is-not-null="yes"/>
   <attribute name="control_host" type="string" init-value="localhost" is-not-null="yes"/>
+ </class>
+
+ <class name="FelixDetectorToDaqConnection">
+  <superclass name="DetectorToDaqConnection"/>
+  <relationship name="felix_receiver" class-type="FelixDataReceiver" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <relationship name="felix_senders" class-type="FelixDataSender" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <method name="get_receiver" description="">
+   <method-implementation language="c++" prototype="const confmodel::DetDataReceiver* get_receiver() const override" body=""/>
+  </method>
+  <method name="get_senders" description="">
+   <method-implementation language="c++" prototype="std::vector&lt;const confmodel::DetDataSender*&gt; get_senders() const override" body=""/>
+  </method>
  </class>
 
  <class name="FelixInterface" description="Specialization of ReadoutInterface for the FLX card. ">
