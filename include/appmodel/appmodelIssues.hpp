@@ -20,7 +20,11 @@ namespace dunedaq {
         MissingDaphne,
         "Daphne " << id << " has active channels but its turned off",
         ((size_t)id))
-
+  
+  ERS_DECLARE_ISSUE(appmodel,
+        UnimplementedMethodCalled,
+        "Method '" << method_name << "' was called but is not implemented in this class",
+        ((std::string)method_name))
 
 }
 
