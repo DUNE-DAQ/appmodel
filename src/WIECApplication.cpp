@@ -42,7 +42,7 @@ namespace appmodel {
 
 //-----------------------------------------------------------------------------
 
-std::vector<const confmodel::ResourceBase*>
+std::vector<const confmodel::Resource*>
 WIECApplication::get_resources() const {
   return to_resources(get_detector_connections());
 }
@@ -64,7 +64,7 @@ WIECApplication::generate_modules(const confmodel::Session* session) const
   for (auto d2d_conn : get_detector_connections()) {
 
     // Are we sure?
-    if (d2d_conn->disabled(*session)) {
+    if (d2d_conn->is_disabled(*session)) {
       TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
       continue;
     }
@@ -89,7 +89,7 @@ WIECApplication::generate_modules(const confmodel::Session* session) const
     // Loop over senders
     for (const auto* sender : det_senders) {
 
-      if ( sender->disabled(*session) ) {
+      if ( sender->is_disabled(*session) ) {
         TLOG() << "Skipping disabled sender: " << sender->UID();
         continue;
       }
@@ -122,7 +122,7 @@ WIECApplication::generate_modules(const confmodel::Session* session) const
 
             // Enable the femb if any of the associated streams is enabld
             // Senders in this senders list should be enabled, but better safe than sorry.
-            enable_fembs[femb_id] |= !det_stream->disabled(*session);
+            enable_fembs[femb_id] |= !det_stream->is_disabled(*session);
           }
         }
         std::string wib_uid = fmt::format("wib-ctrl-{}-{}", this->UID(), ctrlhost);

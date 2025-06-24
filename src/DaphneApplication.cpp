@@ -41,7 +41,7 @@
 namespace dunedaq {
 namespace appmodel {
   
-std::vector<const confmodel::ResourceBase*>
+std::vector<const confmodel::Resource*>
 DaphneApplication::get_resources() const {
   return to_resources(get_detector_connections());
 }
@@ -61,7 +61,7 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
   for (auto d2d_conn : get_detector_connections()) {
 
     // A Resource can be disabled and still its application can be enabled because the application can have multile resources, so we need to check which resources are enabled
-    if (d2d_conn->disabled(*session)) {
+    if (d2d_conn->is_disabled(*session)) {
       TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
       continue;
     }
@@ -79,7 +79,7 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
     // Loop over senders
     for (const auto* felix_sender : det_senders) {
 
-      if ( felix_sender->disabled(*session) ) {
+      if ( felix_sender->is_disabled(*session) ) {
         TLOG() << "Skipping disabled sender: " << felix_sender->UID();
         continue;
       }
@@ -92,7 +92,7 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
 
       for ( const auto * det_s : streams ) {
 
-	if ( det_s->disabled(*session) ) {
+	if ( det_s->is_disabled(*session) ) {
 	  TLOG() << "Skipping disabled DetStream: " << det_s->UID();
 	  continue;
 	}

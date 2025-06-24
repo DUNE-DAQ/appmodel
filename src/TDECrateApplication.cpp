@@ -32,7 +32,7 @@
 namespace dunedaq {
 namespace appmodel {
 
-std::vector<const confmodel::ResourceBase*>
+std::vector<const confmodel::Resource*>
 TDECrateApplication::get_resources() const {
   return to_resources(get_detector_connections());
 }
@@ -48,7 +48,7 @@ TDECrateApplication::generate_modules(const confmodel::Session* session) const
 
   for (auto d2d_conn : get_detector_connections()) {
         // Are we sure?
-    if (d2d_conn->disabled(*session)) {
+    if (d2d_conn->is_disabled(*session)) {
       TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
       continue;
     }
@@ -65,7 +65,7 @@ TDECrateApplication::generate_modules(const confmodel::Session* session) const
     // Loop over senders
     for (const auto* sender : det_senders) {
 
-      if ( sender->disabled(*session) ) {
+      if ( sender->is_disabled(*session) ) {
         TLOG() << "Skipping disabled sender: " << sender->UID();
         continue;
       }

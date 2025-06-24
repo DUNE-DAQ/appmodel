@@ -68,7 +68,7 @@ namespace appmodel {
 
 //-----------------------------------------------------------------------------
 
-std::vector<const confmodel::ResourceBase*>
+std::vector<const confmodel::Resource*>
 ReadoutApplication::get_resources() const {
   return to_resources(get_detector_connections());
 }
@@ -181,7 +181,7 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
   uint16_t conn_idx = 0;
 
   for (auto d2d_conn : get_detector_connections()) {
-    if (d2d_conn->disabled(*session)) {
+    if (d2d_conn->is_disabled(*session)) {
       TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
       continue;
     }
@@ -206,7 +206,7 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
     for (auto stream : d2d_conn->get_streams()) {
 
       // Are we sure?
-      if (stream->disabled(*session)) {
+      if (stream->is_disabled(*session)) {
         TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
         continue;
       }

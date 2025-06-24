@@ -233,7 +233,7 @@ MLTApplication::generate_modules(const confmodel::Session* session) const
       auto connections = ro_app->get_detector_connections();
       // Interate over all the readout groups
       for (auto d2d_conn : connections) {
-        if (d2d_conn->disabled(*session)) {
+        if (d2d_conn->is_disabled(*session)) {
           TLOG_DEBUG(7) << "Ignoring disabled Detector2DaqConnection " << d2d_conn->UID();
           continue;
         }
@@ -247,7 +247,7 @@ MLTApplication::generate_modules(const confmodel::Session* session) const
           if (stream == nullptr) {
             throw(BadConf(ERS_HERE, "ReadoutInterface contains something other than DetectorStream"));
           }
-          if (stream->disabled(*session)) {
+          if (stream->is_disabled(*session)) {
             TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
             continue;
           }
@@ -282,7 +282,7 @@ MLTApplication::generate_modules(const confmodel::Session* session) const
       // Interate over all the FakeDataProd modules
       for (auto stream : producers) {
 
-        if (stream->disabled(*session)) {
+        if (stream->is_disabled(*session)) {
           TLOG_DEBUG(7) << "Ignoring disabled FakeDataProdConf " << stream->UID();
           continue;
         }

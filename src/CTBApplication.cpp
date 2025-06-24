@@ -58,10 +58,10 @@
 using namespace dunedaq;
 using namespace dunedaq::appmodel;
 
-std::vector<const confmodel::ResourceBase*>
+std::vector<const confmodel::Resource*>
 CTBApplication::get_resources() const {
-  std::vector<const confmodel::ResourceBase*> resources;
-  resources.push_back(dynamic_cast<const confmodel::ResourceBase*>(get_board()));
+  std::vector<const confmodel::Resource*> resources;
+  resources.push_back(dynamic_cast<const confmodel::Resource*>(get_board()));
   return resources;
 }
 
@@ -223,9 +223,9 @@ CTBApplication::generate_modules(const confmodel::Session* session) const
 
 
 
-std::vector<const confmodel::ResourceBase*>
+std::vector<const confmodel::Resource*>
 CTBoardConf::get_resources() const {
-  std::vector<const confmodel::ResourceBase*> resources;
+  std::vector<const confmodel::Resource*> resources;
   resources.push_back(get_misc());
 
   auto hlts = get_HLTs();
@@ -305,8 +305,8 @@ nlohmann::json CTBoardConf::get_ctb_json(const dunedaq::confmodel::Session& sess
 
 }
 
-std::vector<const confmodel::ResourceBase*> CTBMisc::get_resources() const {
-  std::vector<const confmodel::ResourceBase*> res;
+std::vector<const confmodel::Resource*> CTBMisc::get_resources() const {
+  std::vector<const confmodel::Resource*> res;
   res.push_back(get_HLT_trigger());
   res.push_back(get_LLT_trigger());
   return res;
@@ -338,7 +338,7 @@ nlohmann::json CTBTrigger::get_ctb_json(const dunedaq::confmodel::Session& sessi
 
   auto json = this -> to_json(false, true);
   static std::string enable_tag = "enable";
-  if ( this -> disabled(session) ) {
+  if ( this -> is_disabled(session) ) {
     json[enable_tag] = false;
   }
   else {

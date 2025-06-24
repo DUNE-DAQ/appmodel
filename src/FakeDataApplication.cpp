@@ -42,7 +42,7 @@ namespace appmodel {
 
 //-----------------------------------------------------------------------------
 
-std::vector<const confmodel::ResourceBase*>
+std::vector<const confmodel::Resource*>
 FakeDataApplication::get_resources() const {
   return to_resources(get_producers());
 }
@@ -105,7 +105,7 @@ FakeDataApplication::generate_modules(const confmodel::Session* session) const
 
   // Create a FakeDataProdModule for each stream of this Readout Group
   for (auto fdpConf : get_producers()) {
-    if (fdpConf->disabled(*session)) {
+    if (fdpConf->is_disabled(*session)) {
       TLOG_DEBUG(7) << "Ignoring disabled FakeDataProdConf " << fdpConf->UID();
       continue;
     }

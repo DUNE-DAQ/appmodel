@@ -180,7 +180,7 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
     uint16_t receiver_numa = 0;
 
     // Are we sure?
-    if (d2d_conn->disabled(*session)) {
+    if (d2d_conn->is_disabled(*session)) {
       TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
       continue;
     }
@@ -231,7 +231,7 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
     for (auto stream : d2d_conn->get_streams()) {
 
       // Are we sure?
-      if (stream->disabled(*session)) {
+      if (stream->is_disabled(*session)) {
         TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
         continue;
       }

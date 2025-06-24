@@ -28,7 +28,7 @@ namespace appmodel {
 
 //-----------------------------------------------------------------------------
 
-std::vector<const confmodel::ResourceBase*>
+std::vector<const confmodel::Resource*>
 SocketSenderApplication::get_resources() const {
   return to_resources(get_detector_connections());
 }
@@ -55,7 +55,7 @@ SocketSenderApplication::generate_modules(const confmodel::Session* session) con
     std::vector<const conffwk::ConfigObject*> d2d_conn_objs;
     for (auto d2d_conn_res : get_detector_connections()) {
       // Are we sure?
-      if (d2d_conn_res->disabled(*session)) {
+      if (d2d_conn_res->is_disabled(*session)) {
         TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn_res->UID();
         continue;
       }

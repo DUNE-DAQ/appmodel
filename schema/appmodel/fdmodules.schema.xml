@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="23" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20250623T091044"/>
+<info name="" type="" num-of-items="23" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20250623T154337"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -157,8 +157,8 @@
 
  <class name="FelixDetectorToDaqConnection">
   <superclass name="DetectorToDaqConnection"/>
-  <relationship name="felix_receiver" class-type="FelixDataReceiver" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
-  <relationship name="felix_senders" class-type="FelixDataSender" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <relationship name="felix_receiver" class-type="FelixDataReceiver" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="felix_senders" class-type="FelixDataSender" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="get_receiver" description="">
    <method-implementation language="c++" prototype="const confmodel::DetDataReceiver* get_receiver() const override" body=""/>
   </method>
