@@ -59,7 +59,7 @@ using namespace dunedaq;
 using namespace dunedaq::appmodel;
 
 std::vector<const confmodel::Resource*>
-CTBApplication::get_resources() const {
+CTBApplication::contained_resources() const {
   std::vector<const confmodel::Resource*> resources;
   resources.push_back(dynamic_cast<const confmodel::Resource*>(get_board()));
   return resources;
@@ -123,7 +123,7 @@ CTBApplication::generate_modules(const confmodel::Session* session) const
 
   // Process special Network rules!
   // Looking for Fragment rules from DFAppplications in current Session
-  auto sessionApps = session->get_enabled_applications();
+  auto sessionApps = session->enabled_applications();
   std::vector<conffwk::ConfigObject> fragOutObjs;
   for (auto app : sessionApps) {
     auto dfapp = app->cast<appmodel::DFApplication>();
@@ -224,7 +224,7 @@ CTBApplication::generate_modules(const confmodel::Session* session) const
 
 
 std::vector<const confmodel::Resource*>
-CTBoardConf::get_resources() const {
+CTBoardConf::contained_resources() const {
   std::vector<const confmodel::Resource*> resources;
   resources.push_back(get_misc());
 
@@ -305,7 +305,7 @@ nlohmann::json CTBoardConf::get_ctb_json(const dunedaq::confmodel::Session& sess
 
 }
 
-std::vector<const confmodel::Resource*> CTBMisc::get_resources() const {
+std::vector<const confmodel::Resource*> CTBMisc::contained_resources() const {
   std::vector<const confmodel::Resource*> res;
   res.push_back(get_HLT_trigger());
   res.push_back(get_LLT_trigger());

@@ -190,16 +190,16 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
     TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn->UID();
     // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader module
 
-    if (d2d_conn->get_senders().empty()) {
+    if (d2d_conn->senders().empty()) {
       throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain sebders or receivers"));
     }
-    if (d2d_conn->get_receiver() == nullptr) {
+    if (d2d_conn->receiver() == nullptr) {
       throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain a receiver"));
     }
 
     // Loop over detector 2 daq connections to find senders and receivers
-    auto det_senders = d2d_conn->get_senders();
-    auto det_receiver = d2d_conn->get_receiver();
+    auto det_senders = d2d_conn->senders();
+    auto det_receiver = d2d_conn->receiver();
 
 
     // Here I want to resolve the type of connection (network, felix, or?)
@@ -420,7 +420,7 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
 
   // Process special Network rules!
   // Looking for Fragment rules from DFAppplications in current Session
-  auto sessionApps = session->get_enabled_applications();
+  auto sessionApps = session->enabled_applications();
   std::vector<conffwk::ConfigObject> fragOutObjs;
   for (auto app : sessionApps) {
     auto dfapp = app->cast<appmodel::DFApplication>();

@@ -33,7 +33,7 @@ namespace dunedaq {
 namespace appmodel {
 
 std::vector<const confmodel::Resource*>
-TDECrateApplication::get_resources() const {
+TDECrateApplication::contained_resources() const {
   return to_resources(get_detector_connections());
 }
 
@@ -56,7 +56,7 @@ TDECrateApplication::generate_modules(const confmodel::Session* session) const
     TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn->UID();
     // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader module
 
-    auto det_senders = d2d_conn->get_senders();
+    auto det_senders = d2d_conn->senders();
     // Should not be necessary, schema doesn't allow 0 senders
     if (det_senders.empty()) {
       throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain senders"));

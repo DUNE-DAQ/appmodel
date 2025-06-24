@@ -223,7 +223,7 @@ MLTApplication::generate_modules(const confmodel::Session* session) const
    * Create the readout map
    **************************************************************/
 
-  std::vector<const dunedaq::confmodel::Application*> apps = session->get_enabled_applications();
+  std::vector<const dunedaq::confmodel::Application*> apps = session->enabled_applications();
 
   std::vector<const conffwk::ConfigObject*> sourceIds;
 
@@ -238,7 +238,7 @@ MLTApplication::generate_modules(const confmodel::Session* session) const
           continue;
         }
 
-        if (d2d_conn->get_resources().empty()) {
+        if (d2d_conn->contained_resources().empty()) {
           throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain interfaces"));
         }
 
@@ -368,7 +368,7 @@ MLTApplication::generate_modules(const confmodel::Session* session) const
 
   // Process special Network rules!
   // Looking for Fragment rules from DFAppplications in current Session
-  auto sessionApps = session->get_enabled_applications();
+  auto sessionApps = session->enabled_applications();
   std::vector<conffwk::ConfigObject> fragOutObjs;
   for (auto app : sessionApps) {
     auto dfapp = app->cast<appmodel::DFApplication>();

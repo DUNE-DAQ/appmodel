@@ -217,8 +217,8 @@
   <method name="generate_modules" description="Generate daq module dal objects for streams of the FakeDataApplication on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(const confmodel::Session*) const override" body=""/>
   </method>
-  <method name="get_resources" description="">
-   <method-implementation language="c++" prototype="virtual std::vector&lt;const Resource*&gt; get_resources() const override" body=""/>
+  <method name="contained_resources" description="">
+   <method-implementation language="c++" prototype="virtual std::vector&lt;const Resource*&gt; contained_resources() const override" body=""/>
   </method>
  </class>
 
@@ -358,11 +358,11 @@
   <superclass name="DetectorToDaqConnection"/>
   <relationship name="net_senders" description="A collection of Network detector sending objects" class-type="NWDetDataSender" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="net_receiver" class-type="NWDetDataReceiver" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <method name="get_senders" description="get our list of NWDetSender objects as a vector of DetDataSenders">
-   <method-implementation language="c++" prototype="std::vector&lt;const confmodel::DetDataSender*&gt; get_senders() const override" body=""/>
+  <method name="senders" description="get our list of NWDetSender objects as a vector of DetDataSenders">
+   <method-implementation language="c++" prototype="std::vector&lt;const confmodel::DetDataSender*&gt; senders() const override" body=""/>
   </method>
-  <method name="get_receiver" description="get our net_receiver as a generic DetDataReceiver">
-   <method-implementation language="c++" prototype="const confmodel::DetDataReceiver* get_receiver() const override" body=""/>
+  <method name="receiver" description="get our net_receiver as a generic DetDataReceiver">
+   <method-implementation language="c++" prototype="const confmodel::DetDataReceiver* receiver() const override" body=""/>
   </method>
  </class>
 
@@ -394,8 +394,8 @@
   <method name="generate_modules" description="Generate daq module dal objects for streams of thie ReadoutApplication on the fly">
    <method-implementation language="c++" prototype="virtual std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(const confmodel::Session*) const override" body=""/>
   </method>
-  <method name="get_resources" description="">
-   <method-implementation language="c++" prototype="virtual std::vector&lt;const Resource*&gt; get_resources() const override" body=""/>
+  <method name="contained_resources" description="">
+   <method-implementation language="c++" prototype="virtual std::vector&lt;const Resource*&gt; contained_resources() const override" body=""/>
   </method>
  </class>
 
@@ -454,8 +454,8 @@
   <method name="generate_modules" description="Generate daq module dal objects for streams of the SocketSenderApplication on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(const confmodel::Session*) const override" body=""/>
   </method>
-  <method name="get_resources" description="">
-   <method-implementation language="c++" prototype="virtual std::vector&lt;const Resource*&gt; get_resources() const override" body=""/>
+  <method name="contained_resources" description="">
+   <method-implementation language="c++" prototype="virtual std::vector&lt;const Resource*&gt; contained_resources() const override" body=""/>
   </method>
  </class>
 

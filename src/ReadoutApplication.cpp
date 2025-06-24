@@ -69,7 +69,7 @@ namespace appmodel {
 //-----------------------------------------------------------------------------
 
 std::vector<const confmodel::Resource*>
-ReadoutApplication::get_resources() const {
+ReadoutApplication::contained_resources() const {
   return to_resources(get_detector_connections());
 }
 
@@ -190,16 +190,16 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
 
     // Are these tests necessary? Schema does not allow 0 cardinality
     // for these relationships!!  TODO
-    if (d2d_conn->get_senders().empty()) {
+    if (d2d_conn->senders().empty()) {
       throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain senders"));
     }
-    if (d2d_conn->get_receiver() == nullptr) {
+    if (d2d_conn->receiver() == nullptr) {
       throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain a receiver"));
     }
 
     // Find senders and receiver
-    auto det_senders = d2d_conn->get_senders();
-    auto det_receiver = d2d_conn->get_receiver();
+    auto det_senders = d2d_conn->senders();
+    auto det_receiver = d2d_conn->receiver();
 
     std::vector<const confmodel::DetectorStream*> enabled_det_streams;
     // Loop over streams
@@ -386,7 +386,7 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
 
   // Process special Network rules!
   // Looking for Fragment rules from DFAppplications in current Session
-  auto sessionApps = session->get_enabled_applications();
+  auto sessionApps = session->enabled_applications();
   std::vector<conffwk::ConfigObject> fragOutObjs;
   for (auto app : sessionApps) {
     auto dfapp = app->cast<appmodel::DFApplication>();

@@ -29,7 +29,7 @@ namespace appmodel {
 //-----------------------------------------------------------------------------
 
 std::vector<const confmodel::Resource*>
-SocketSenderApplication::get_resources() const {
+SocketSenderApplication::contained_resources() const {
   return to_resources(get_detector_connections());
 }
 

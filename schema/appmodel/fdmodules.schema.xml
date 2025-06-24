@@ -159,11 +159,11 @@
   <superclass name="DetectorToDaqConnection"/>
   <relationship name="felix_receiver" class-type="FelixDataReceiver" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="felix_senders" class-type="FelixDataSender" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <method name="get_receiver" description="">
-   <method-implementation language="c++" prototype="const confmodel::DetDataReceiver* get_receiver() const override" body=""/>
+  <method name="receiver" description="">
+   <method-implementation language="c++" prototype="const confmodel::DetDataReceiver* receiver() const override" body=""/>
   </method>
-  <method name="get_senders" description="">
-   <method-implementation language="c++" prototype="std::vector&lt;const confmodel::DetDataSender*&gt; get_senders() const override" body=""/>
+  <method name="senders" description="">
+   <method-implementation language="c++" prototype="std::vector&lt;const confmodel::DetDataSender*&gt; senders() const override" body=""/>
   </method>
  </class>
 

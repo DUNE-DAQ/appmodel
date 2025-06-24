@@ -43,7 +43,7 @@ namespace appmodel {
 //-----------------------------------------------------------------------------
 
 std::vector<const confmodel::Resource*>
-FakeDataApplication::get_resources() const {
+FakeDataApplication::contained_resources() const {
   return to_resources(get_producers());
 }
 
