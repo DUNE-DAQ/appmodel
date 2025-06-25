@@ -177,7 +177,6 @@
 
  <class name="PDSRawDataProcessor" description="A class which contains info about PDS. For example here you can add threshold for specific channels.">
   <superclass name="RawDataProcessor"/>
-  <attribute name="rawdataprocessor_id" type="u32" init-value="234" is-not-null="yes"/>
   <attribute name="default_adc_intg_thresh" type="u32" init-value="0" is-not-null="yes"/>
  </class>
 
