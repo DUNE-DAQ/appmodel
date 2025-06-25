@@ -228,7 +228,7 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
 
     std::vector<const confmodel::DetectorStream*> enabled_det_streams;
     // Loop over senders
-    for (auto stream : d2d_conn->get_streams()) {
+    for (auto stream : d2d_conn->streams()) {
 
       // Are we sure?
       if (stream->is_disabled(*session)) {

@@ -243,7 +243,7 @@ MLTApplication::generate_modules(const confmodel::Session* session) const
         }
 
         // Interate over all the streams
-        for (auto stream : d2d_conn->get_streams()) {
+        for (auto stream : d2d_conn->streams()) {
           if (stream == nullptr) {
             throw(BadConf(ERS_HERE, "ReadoutInterface contains something other than DetectorStream"));
           }

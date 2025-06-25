@@ -203,7 +203,7 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
 
     std::vector<const confmodel::DetectorStream*> enabled_det_streams;
     // Loop over streams
-    for (auto stream : d2d_conn->get_streams()) {
+    for (auto stream : d2d_conn->streams()) {
 
       // Are we sure?
       if (stream->is_disabled(*session)) {

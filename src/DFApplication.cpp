@@ -77,7 +77,7 @@ fill_sourceid_object_from_app(const ConfigObjectFactory& obj_fac,
     }
 
     // Loop over senders
-    for (auto dros : d2d_conn->get_streams()) {
+    for (auto dros : d2d_conn->streams()) {
 
       auto stream = dros->cast<confmodel::DetectorStream>();
       if (!stream)
