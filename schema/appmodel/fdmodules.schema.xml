@@ -88,6 +88,22 @@
 </include>
 
 
+ <class name="CRTBernReaderConf">
+  <superclass name="DataReaderConf"/>
+ </class>
+
+ <class name="CRTBernReaderModule">
+  <superclass name="DataReaderModule"/>
+ </class>
+
+ <class name="CRTGrenobleReaderConf">
+  <superclass name="DataReaderConf"/>
+ </class>
+
+ <class name="CRTGrenobleReaderModule">
+  <superclass name="DataReaderModule"/>
+ </class>
+
  <class name="DPDKPortConfiguration">
   <attribute name="flow_control" type="bool" init-value="1"/>
   <attribute name="promiscuous_mode" type="bool" init-value="0"/>
@@ -225,6 +241,10 @@
   <superclass name="SocketDataWriterConf"/>
   <attribute name="socket_type" description="Socket type" type="enum" range="TCP,UDP" init-value="UDP" is-not-null="yes"/>
   <attribute name="remote_ip" description="Remote IP address" type="string" init-value="127.0.0.1" is-not-null="yes"/>
+ </class>
+
+ <class name="SocketWriterModule">
+  <superclass name="SocketDataWriterModule"/>
  </class>
 
 </oks-schema>

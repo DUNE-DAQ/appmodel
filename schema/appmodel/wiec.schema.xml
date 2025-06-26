@@ -120,7 +120,7 @@
   <attribute name="pulse_channels" description="Array of up to 16 true/false values, for whether to send pulser to each corresponding channel per LArASIC." type="bool" is-multi-value="yes"/>
  </class>
 
- <class name="FakeSocketDataSender">
+ <class name="SocketDataSender">
   <superclass name="NWDetDataSender"/>
   <attribute name="link_id" type="u32" is-not-null="yes"/>
   <attribute name="port" type="u32" init-value="1234" is-not-null="yes"/>
