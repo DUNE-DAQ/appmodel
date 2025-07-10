@@ -306,10 +306,7 @@ nlohmann::json CTBoardConf::get_ctb_json(const dunedaq::confmodel::Session& sess
 }
 
 std::vector<const confmodel::Resource*> CTBMisc::contained_resources() const {
-  std::vector<const confmodel::Resource*> res;
-  res.push_back(get_HLT_trigger());
-  res.push_back(get_LLT_trigger());
-  return res;
+  return std::vector<const confmodel::Resource*>{ get_randomtrigger_1(), get_randomtrigger_2() };
 }
 
 
@@ -317,8 +314,8 @@ std::vector<const confmodel::Resource*> CTBMisc::contained_resources() const {
 nlohmann::json CTBMisc::get_ctb_json(const dunedaq::confmodel::Session& session) const {
 
   nlohmann::json ret;
-  ret["randomtrigger_1"] = get_HLT_trigger()->get_ctb_json(session);
-  ret["randomtrigger_2"] = get_LLT_trigger()->get_ctb_json(session);
+  ret["randomtrigger_1"] = get_randomtrigger_1()->get_ctb_json(session);
+  ret["randomtrigger_2"] = get_randomtrigger_2()->get_ctb_json(session);
   ret["pulser"] = get_pulser() -> to_json(false, true);
   ret["timing"] = get_timing() ->  to_json(false, true);
 

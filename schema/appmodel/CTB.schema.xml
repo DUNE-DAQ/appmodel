@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="23" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20250611T092117"/>
+<info name="" type="" num-of-items="23" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250710T104541"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -147,8 +147,8 @@
   <attribute name="ch_status" type="bool" init-value="0" is-not-null="yes"/>
   <relationship name="pulser" class-type="CTBPulser" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="timing" class-type="CTBTiming" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="HLT_trigger" class-type="CTBRandomTrigger" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
-  <relationship name="LLT_trigger" class-type="CTBRandomTrigger" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <relationship name="randomtrigger_1" class-type="CTBRandomTrigger" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <relationship name="randomtrigger_2" class-type="CTBRandomTrigger" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
   <method name="get_ctb_json" description="">
    <method-implementation language="C++" prototype="nlohmann::json get_ctb_json(const dunedaq::confmodel::Session&amp; session) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;END_HEADER_PROLOGUE"/>
   </method>
