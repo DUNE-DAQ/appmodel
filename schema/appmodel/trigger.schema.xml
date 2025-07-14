@@ -175,6 +175,11 @@
   <relationship name="configuration" class-type="MLTConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
+ <class name="PDSRawDataProcessor" description="A class which contains info about PDS. For example here you can add threshold for specific channels.">
+  <superclass name="RawDataProcessor"/>
+  <attribute name="default_adc_intg_thresh" type="u32" init-value="0" is-not-null="yes"/>
+ </class>
+
  <class name="ProcessingStep" description="Base class for TPG processors.">
   <superclass name="Jsonable"/>
  </class>
@@ -194,6 +199,12 @@
   <relationship name="tc_readout" description="Configuration for the TC output type and the TC window size" class-type="TCReadoutMap" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
+ <class name="TPCRawDataProcessor">
+  <superclass name="RawDataProcessor"/>
+  <relationship name="processing_steps" class-type="ProcessingStep" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="sot_minima" description="TP samples over threshold minimum requirement by plane." class-type="SamplesOverThresholdMinima" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
  <class name="RandomTCMakerModule">
   <superclass name="StandaloneTCMakerModule"/>
   <relationship name="configuration" class-type="RandomTCMakerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -203,8 +214,6 @@
   <superclass name="DataProcessor"/>
   <attribute name="channel_mask" description="List of channels to be masked from TP generation" type="u32" is-multi-value="yes"/>
   <attribute name="channel_map" type="string"/>
-  <relationship name="processing_steps" class-type="ProcessingStep" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="sot_minima" description="TP samples over threshold minimum requirement by plane." class-type="SamplesOverThresholdMinima" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="StandaloneTCMakerConf" is-abstract="yes">
