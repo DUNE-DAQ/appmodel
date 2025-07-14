@@ -159,6 +159,10 @@ FakeHSIApplication::generate_modules(const confmodel::Session* session) const
     obj_fac.create("FakeHSIEventGeneratorModule", genuid);
   fakehsiObj.set_obj("configuration", &rdrConf->config_object());
   fakehsiObj.set_objs("outputs", { &queueObj, &hsiNetObj });
+  if (tsNetDesc != nullptr) {
+    conffwk::ConfigObject tsNetObjIn = obj_fac.create_net_obj(tsNetDesc, ".*");
+    fakehsiObj.set_objs("inputs", { &tsNetObjIn });
+  }
 
   modules.push_back(obj_fac.get_dal<FakeHSIEventGeneratorModule>(genuid));
 
