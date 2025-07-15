@@ -6,6 +6,11 @@
 namespace dunedaq {
 namespace appmodel {
 
+std::vector<const dunedaq::confmodel::DaqModule*>
+SmartDaqApplication::generate_modules(const confmodel::Session* /* session */ ) const {
+    throw appmodel::UnimplementedMethodCalled(ERS_HERE, "SmartDaqApplication::generate_modules");
+}
+
 const std::vector<std::string> SmartDaqApplication::construct_commandline_parameters(
     const conffwk::Configuration& confdb,
     const dunedaq::confmodel::Session* session) const {
