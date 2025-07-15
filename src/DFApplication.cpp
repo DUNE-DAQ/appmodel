@@ -66,7 +66,7 @@ fill_sourceid_object_from_app(const ConfigObjectFactory& obj_fac,
   std::vector<const conffwk::ConfigObject*> source_id_objs;
   std::vector<uint32_t> app_source_ids;
 
-  for (auto d2d_conn_res : roapp->get_contains()) {
+  for (auto d2d_conn_res : roapp->get_detector_connections()) {
 
     // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader
     // module
@@ -77,7 +77,7 @@ fill_sourceid_object_from_app(const ConfigObjectFactory& obj_fac,
     }
 
     // Loop over senders
-    for (auto dros : d2d_conn->get_streams()) {
+    for (auto dros : d2d_conn->streams()) {
 
       auto stream = dros->cast<confmodel::DetectorStream>();
       if (!stream)
@@ -122,15 +122,10 @@ fill_sourceid_object_from_app(const ConfigObjectFactory& obj_fac,
   std::vector<const conffwk::ConfigObject*> source_id_objs;
   std::vector<uint32_t> app_source_ids;
 
-  for (auto fdp_res : fdapp->get_contains()) {
+  for (auto fdpc : fdapp->get_producers()) {
 
     // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader
     // module
-    auto fdpc = fdp_res->cast<appmodel::FakeDataProdConf>();
-
-    if (!fdpc) {
-      continue;
-    }
 
     app_source_ids.push_back(fdpc->get_source_id());
   }
@@ -213,7 +208,7 @@ DFApplication::generate_modules(const confmodel::Session* session) const
 
   // Process special Network rules!
   // Looking for DataRequest rules from ReadoutAppplications in current Session
-  auto sessionApps = session->get_enabled_applications();
+  auto sessionApps = session->enabled_applications();
   std::vector<conffwk::ConfigObject> dreqNetObjs;
   std::vector<conffwk::ConfigObject> sidNetObjs;
   std::vector<std::shared_ptr<conffwk::ConfigObject>> sidObjs;

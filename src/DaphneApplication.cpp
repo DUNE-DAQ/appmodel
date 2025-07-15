@@ -12,8 +12,6 @@
 #include "oks/kernel.hpp"
 #include "logging/Logging.hpp"
 
-#include "confmodel/DetectorToDaqConnection.hpp"
-#include "confmodel/DetDataSender.hpp"
 #include "confmodel/GeoId.hpp"
 #include "confmodel/DetectorStream.hpp"
 
@@ -29,6 +27,8 @@
 #include "appmodel/DaphneV2LNA.hpp"
 #include "appmodel/DaphneV2ControllerModule.hpp"
 #include "appmodel/DaphneApplication.hpp"
+#include "appmodel/FelixDetectorToDaqConnection.hpp"
+#include "appmodel/FelixDataSender.hpp"
 
 
 #include <string>
@@ -41,6 +41,12 @@
 namespace dunedaq {
 namespace appmodel {
   
+std::vector<const confmodel::Resource*>
+DaphneApplication::contained_resources() const {
+  return to_resources(get_detector_connections());
+}
+
+
 std::vector<const confmodel::DaqModule*> 
 DaphneApplication::generate_modules(const confmodel::Session* session) const
 {
@@ -52,60 +58,47 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
 
   std::map<std::string, const confmodel::GeoId*> geo_ids;
   
-  for (auto d2d_conn_res : get_contains()) {
+  for (auto d2d_conn : get_detector_connections()) {
 
     // A Resource can be disabled and still its application can be enabled because the application can have multile resources, so we need to check which resources are enabled
-    if (d2d_conn_res->disabled(*session)) {
-      TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn_res->UID();
+    if (d2d_conn->is_disabled(*session)) {
+      TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
       continue;
     }
 
-    TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn_res->UID();
+    TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn->UID();
     // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader module
-    auto d2d_conn = d2d_conn_res->cast<confmodel::DetectorToDaqConnection>();
 
-    if (!d2d_conn) {
-      throw(BadConf(ERS_HERE, "DaphneApplication contains something other than DetectorToDaqConnection"));
-    }
-
-    if (d2d_conn->get_contains().empty()) {
+    // Redundant? Schema forbids 0 connections
+    if (d2d_conn->contained_resources().empty()) {
       throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain senders or receivers"));
     }
 
-    auto det_senders = d2d_conn->get_senders();
+    auto det_senders = d2d_conn->get_felix_senders();
 
     // Loop over senders
-    for (const auto* sender : det_senders) {
+    for (const auto* felix_sender : det_senders) {
 
-      if ( sender->disabled(*session) ) {
-        TLOG() << "Skipping disabled sender: " << sender->UID();
+      if ( felix_sender->is_disabled(*session) ) {
+        TLOG() << "Skipping disabled sender: " << felix_sender->UID();
         continue;
-      }
-      // Check the sender type, must me a FelixDataSender
-      const auto* felix_sender = sender->cast<appmodel::FelixDataSender>();
-      if (!felix_sender ) {
-        //throw(BadConf(ERS_HERE, fmt::format("DataSender {} is not a appmodel::HermesDataSender", sender->UID())));
-        continue;
-        // MaR: I don't think we should throw here because there can be other connections other than felix
-        // MaR: should we be worried that we assume that a Felix connection is a Daphne?
       }
 
       auto ip = felix_sender -> get_control_host();
 
       // from the felix sender we get the DetStream and then the GeoID
 
-      auto streams = felix_sender -> get_contains();
+      auto streams = felix_sender -> get_streams();
 
       for ( const auto * det_s : streams ) {
 
-	if ( det_s->disabled(*session) ) {
+	if ( det_s->is_disabled(*session) ) {
 	  TLOG() << "Skipping disabled DetStream: " << det_s->UID();
 	  continue;
 	}
 
 	if (!geo_ids.contains(ip)) {
-	  const auto * temp_stream = det_s->cast<confmodel::DetectorStream>();
-	  geo_ids[ip] = temp_stream->get_geo_id();
+	  geo_ids[ip] = det_s->get_geo_id();
 	} 
 	 
       } // loop over DetStreams

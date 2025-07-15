@@ -32,6 +32,11 @@
 namespace dunedaq {
 namespace appmodel {
 
+std::vector<const confmodel::Resource*>
+TDECrateApplication::contained_resources() const {
+  return to_resources(get_detector_connections());
+}
+
 std::vector<const confmodel::DaqModule*> 
 TDECrateApplication::generate_modules(const confmodel::Session* session) const
 {
@@ -41,31 +46,26 @@ TDECrateApplication::generate_modules(const confmodel::Session* session) const
 
   std::map<std::string, std::vector<const appmodel::TdeAmcDetDataSender*>> ctrlhost_sender_map;
 
-  for (auto d2d_conn_res : get_contains()) {
+  for (auto d2d_conn : get_detector_connections()) {
         // Are we sure?
-    if (d2d_conn_res->disabled(*session)) {
-      TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn_res->UID();
+    if (d2d_conn->is_disabled(*session)) {
+      TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
       continue;
     }
 
-    TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn_res->UID();
+    TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn->UID();
     // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader module
-    auto d2d_conn = d2d_conn_res->cast<confmodel::DetectorToDaqConnection>();
 
-    if (!d2d_conn) {
-      throw(BadConf(ERS_HERE, "ReadoutApplication contains something other than DetectorToDaqConnection"));
+    auto det_senders = d2d_conn->senders();
+    // Should not be necessary, schema doesn't allow 0 senders
+    if (det_senders.empty()) {
+      throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain senders"));
     }
-
-    if (d2d_conn->get_contains().empty()) {
-      throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain senders or receivers"));
-    }
-    auto det_senders = d2d_conn->get_senders();
-
 
     // Loop over senders
     for (const auto* sender : det_senders) {
 
-      if ( sender->disabled(*session) ) {
+      if ( sender->is_disabled(*session) ) {
         TLOG() << "Skipping disabled sender: " << sender->UID();
         continue;
       }

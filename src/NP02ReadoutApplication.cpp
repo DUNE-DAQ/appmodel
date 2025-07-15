@@ -176,32 +176,30 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
   
 
   std::set<int16_t> numas;
-  for (auto d2d_conn_res : get_contains()) {
+  for (auto d2d_conn : get_detector_connections()) {
     uint16_t receiver_numa = 0;
 
     // Are we sure?
-    if (d2d_conn_res->disabled(*session)) {
-      TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn_res->UID();
+    if (d2d_conn->is_disabled(*session)) {
+      TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
       continue;
     }
 
-    d2d_conn_objs.push_back(&d2d_conn_res->config_object());
+    d2d_conn_objs.push_back(&d2d_conn->config_object());
 
-    TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn_res->UID();
+    TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn->UID();
     // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader module
-    auto d2d_conn = d2d_conn_res->cast<confmodel::DetectorToDaqConnection>();
 
-    if (!d2d_conn) {
-      throw(BadConf(ERS_HERE, "NP02ReadoutApplication contains something other than DetectorToDaqConnection"));
-    }
-
-    if (d2d_conn->get_contains().empty()) {
+    if (d2d_conn->senders().empty()) {
       throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain sebders or receivers"));
+    }
+    if (d2d_conn->receiver() == nullptr) {
+      throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain a receiver"));
     }
 
     // Loop over detector 2 daq connections to find senders and receivers
-    auto det_senders = d2d_conn->get_senders();
-    auto det_receiver = d2d_conn->get_receiver();
+    auto det_senders = d2d_conn->senders();
+    auto det_receiver = d2d_conn->receiver();
 
 
     // Here I want to resolve the type of connection (network, felix, or?)
@@ -230,10 +228,10 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
 
     std::vector<const confmodel::DetectorStream*> enabled_det_streams;
     // Loop over senders
-    for (auto stream : d2d_conn->get_streams()) {
+    for (auto stream : d2d_conn->streams()) {
 
       // Are we sure?
-      if (stream->disabled(*session)) {
+      if (stream->is_disabled(*session)) {
         TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
         continue;
       }
@@ -429,7 +427,7 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
 
   // Process special Network rules!
   // Looking for Fragment rules from DFAppplications in current Session
-  auto sessionApps = session->get_enabled_applications();
+  auto sessionApps = session->enabled_applications();
   std::vector<conffwk::ConfigObject> fragOutObjs;
   for (auto app : sessionApps) {
     auto dfapp = app->cast<appmodel::DFApplication>();

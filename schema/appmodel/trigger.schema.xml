@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="47" oks-format="schema" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231211T133151" last-modified-by="aoranday" last-modified-on="epdtdi103" last-modification-time="20241127T072254"/>
+<info name="" type="" num-of-items="47" oks-format="schema" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231211T133151" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20250523T112537"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -92,14 +92,14 @@
   <superclass name="AVXRunSumProcessor"/>
  </class>
 
- <class name="AVXFrugalPedestalSubtractProcessor" description="TPG frugal pedestal subtraction signal processor. Frugally updates the pedestal estimation and outputs the difference with the input signal.">
-  <superclass name="ProcessingStep"/>
-  <attribute name="accum_limit" description="Accumulation limit to increment/decrement the estimated pedestal value." type="u8" init-value="10" is-not-null="yes"/>
- </class>
-
  <class name="AVXFixedPedestalSubtractProcessor" description="TPG fixed pedestal subtraction signal processor. Gets an initial estimate on the pedestal then keeps fixed.">
   <superclass name="AVXFrugalPedestalSubtractProcessor"/>
   <attribute name="start_period" description="Number of time ticks to use for the initial pedestal estimate." type="u16" init-value="1000" is-not-null="yes"/>
+ </class>
+
+ <class name="AVXFrugalPedestalSubtractProcessor" description="TPG frugal pedestal subtraction signal processor. Frugally updates the pedestal estimation and outputs the difference with the input signal.">
+  <superclass name="ProcessingStep"/>
+  <attribute name="accum_limit" description="Accumulation limit to increment/decrement the estimated pedestal value." type="u8" init-value="10" is-not-null="yes"/>
  </class>
 
  <class name="AVXRunSumProcessor" description="TPG running sum signal processor. Outputs a scaled running sum from the input signal.">
@@ -157,13 +157,6 @@
   </method>
  </class>
 
-
- <class name="SubdetectorReadoutWindowMap">
-  <attribute name="subdetector" description="Name of the subdetector as defined in dunedaq::detdataformats::DetID, e.g. kHD_PDS" type="string" init-value="kUnknown" is-not-null="yes"/>
-  <attribute name="time_before" description="Time, in ticks, before the HSI timestamp, for the TriggerCandidate start_time" type="u32" init-value="10000" is-not-null="yes"/>
-  <attribute name="time_after"  description="Time, in ticks, after the HSI timestamp, for the TriggerCandidate end_time" type="u32" init-value="20000" is-not-null="yes"/>
- </class>
-
  <class name="MLTConf">
   <attribute name="template_for" type="class" init-value="MLTModule"/>
   <attribute name="latency_monitoring" description="Should we monitor latency in Grafana?" type="bool" init-value="true" is-not-null="yes"/>
@@ -216,6 +209,12 @@
   <attribute name="channel_map" type="string"/>
  </class>
 
+ <class name="SamplesOverThresholdMinima">
+  <attribute name="sot_minimum_plane0" description="Minimum TP samples over threshold for plane 0." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="sot_minimum_plane1" description="Minimum TP samples over threshold for plane 1." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+  <attribute name="sot_minimum_plane2" description="Minimum TP samples over threshold for plane 2." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
+ </class>
+
  <class name="StandaloneTCMakerConf" is-abstract="yes">
   <attribute name="template_for" type="class" init-value="StandaloneTCMakerModule" is-not-null="yes"/>
   <attribute name="timestamp_method" description="Option to pick source for timing (system / timesync)" type="enum" range="kTimeSync,kSystemClock" init-value="kTimeSync" is-not-null="yes"/>
@@ -224,6 +223,12 @@
 
  <class name="StandaloneTCMakerModule">
   <superclass name="DaqModule"/>
+ </class>
+
+ <class name="SubdetectorReadoutWindowMap">
+  <attribute name="subdetector" description="Name of the subdetector as defined in dunedaq::detdataformats::DetID, e.g. kHD_PDS" type="string" init-value="kUnknown" is-not-null="yes"/>
+  <attribute name="time_before" description="Time, in ticks, before the HSI timestamp, for the TriggerCandidate start_time" type="u32" init-value="10000" is-not-null="yes"/>
+  <attribute name="time_after" description="Time, in ticks, after the HSI timestamp, for the TriggerCandidate end_time" type="u32" init-value="20000" is-not-null="yes"/>
  </class>
 
  <class name="TAAlgorithm" description="Base class for TA algorithms">
@@ -395,15 +400,9 @@
   <relationship name="algorithms" class-type="TAAlgorithm" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="SamplesOverThresholdMinima">
-  <attribute name="sot_minimum_plane0" description="Minimum TP samples over threshold for plane 0." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
-  <attribute name="sot_minimum_plane1" description="Minimum TP samples over threshold for plane 1." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
-  <attribute name="sot_minimum_plane2" description="Minimum TP samples over threshold for plane 2." type="u16" range="1..65535" init-value="1" is-not-null="yes"/>
- </class>
-
  <class name="TriggerApplication">
-  <superclass name="ResourceSetAND"/>
   <superclass name="SmartDaqApplication"/>
+  <superclass name="Resource"/>
   <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
   <attribute name="tx_generation_disabled" description="Disable TA/TC generation as a post-processing task -- only to be done by the experts for e.g. TP performance studies" type="bool" init-value="false"/>
   <relationship name="data_subscriber" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
