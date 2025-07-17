@@ -25,7 +25,7 @@ daq_add_dal_library(application.schema.xml hermes.schema.xml fdmodules.schema.xm
 daq_add_application(getAppsArguments get_apps_arguments.cxx
   LINK_LIBRARIES confmodel::confmodel appmodel_dal conffwk::conffwk)
 
-daq_add_python_bindings(*.cpp LINK_LIBRARIES appmodel_dal confmodel::confmodel)
+daq_add_python_bindings(*.cpp DAL LINK_LIBRARIES confmodel::confmodel)
 
 daq_add_application(generate_modules_test generate_modules_test.cxx
  TEST LINK_LIBRARIES appmodel_dal confmodel::confmodel conffwk::conffwk
