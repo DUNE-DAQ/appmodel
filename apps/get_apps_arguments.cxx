@@ -2,7 +2,6 @@
 
 #include "conffwk/Configuration.hpp"
 
-#include "confmodel/Component.hpp"
 #include "confmodel/DaqApplication.hpp"
 #include "confmodel/RCApplication.hpp"
 #include "confmodel/DaqModule.hpp"

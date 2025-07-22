@@ -1,7 +1,7 @@
 /**
  * @file FakeDataApplication.cpp
  *
- * Implementation of FakeDataApplication's generate_modules dal method
+ * Implementation of FakeDataApplication's dal methods
  *
  * This is part of the DUNE DAQ Software Suite, copyright 2023.
  * Licensing/copyright details are in the COPYING file that you should have
@@ -39,6 +39,13 @@
 
 namespace dunedaq {
 namespace appmodel {
+
+//-----------------------------------------------------------------------------
+
+std::vector<const confmodel::Resource*>
+FakeDataApplication::contained_resources() const {
+  return to_resources(get_producers());
+}
 
 std::vector<const confmodel::DaqModule*>
 FakeDataApplication::generate_modules(const confmodel::Session* session) const
@@ -97,8 +104,8 @@ FakeDataApplication::generate_modules(const confmodel::Session* session) const
   conffwk::ConfigObject faQueueObj = obj_fac.create_queue_obj(faOutputQDesc, UID());
 
   // Create a FakeDataProdModule for each stream of this Readout Group
-  for (auto fdpConf : get_contains()) {
-    if (fdpConf->disabled(*session)) {
+  for (auto fdpConf : get_producers()) {
+    if (fdpConf->is_disabled(*session)) {
       TLOG_DEBUG(7) << "Ignoring disabled FakeDataProdConf " << fdpConf->UID();
       continue;
     }

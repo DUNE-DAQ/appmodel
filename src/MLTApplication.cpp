@@ -218,37 +218,31 @@ MLTApplication::generate_modules(const confmodel::Session* session) const
    * Create the readout map
    **************************************************************/
 
-  std::vector<const dunedaq::confmodel::Application*> apps = session->get_enabled_applications();
+  std::vector<const dunedaq::confmodel::Application*> apps = session->enabled_applications();
 
   std::vector<const conffwk::ConfigObject*> sourceIds;
 
   for (auto app : apps) {
     auto ro_app = app->cast<appmodel::ReadoutApplication>();
     if (ro_app != nullptr) {
-      auto resources = ro_app->get_contains();
+      auto connections = ro_app->get_detector_connections();
       // Interate over all the readout groups
-      for (auto d2d_conn_res : resources) {
-        if (d2d_conn_res->disabled(*session)) {
-          TLOG_DEBUG(7) << "Ignoring disabled Detector2DaqConnection " << d2d_conn_res->UID();
+      for (auto d2d_conn : connections) {
+        if (d2d_conn->is_disabled(*session)) {
+          TLOG_DEBUG(7) << "Ignoring disabled Detector2DaqConnection " << d2d_conn->UID();
           continue;
         }
 
-        auto d2d_conn = d2d_conn_res->cast<confmodel::DetectorToDaqConnection>();
-        if (d2d_conn == nullptr) {
-          throw(BadConf(
-            ERS_HERE,
-            "MLTApplication's detectordaq connections list contains something other than DetectorToDaqConnection"));
-        }
-        if (d2d_conn->get_contains().empty()) {
+        if (d2d_conn->contained_resources().empty()) {
           throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain interfaces"));
         }
 
         // Interate over all the streams
-        for (auto stream : d2d_conn->get_streams()) {
+        for (auto stream : d2d_conn->streams()) {
           if (stream == nullptr) {
             throw(BadConf(ERS_HERE, "ReadoutInterface contains something other than DetectorStream"));
           }
-          if (stream->disabled(*session)) {
+          if (stream->is_disabled(*session)) {
             TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
             continue;
           }
@@ -286,16 +280,14 @@ MLTApplication::generate_modules(const confmodel::Session* session) const
     auto fd_app = app->cast<appmodel::FakeDataApplication>();
     if (fd_app != nullptr) {
 
-      auto resources = fd_app->get_contains();
+      auto producers = fd_app->get_producers();
       // Interate over all the FakeDataProd modules
-      for (auto stream_res : resources) {
+      for (auto stream : producers) {
 
-        if (stream_res->disabled(*session)) {
-          TLOG_DEBUG(7) << "Ignoring disabled FakeDataProdConf " << stream_res->UID();
+        if (stream->is_disabled(*session)) {
+          TLOG_DEBUG(7) << "Ignoring disabled FakeDataProdConf " << stream->UID();
           continue;
         }
-
-        auto stream = stream_res->cast<appmodel::FakeDataProdConf>();
 
         // Create SourceIDConf object for the MLT
         auto id = stream->get_source_id();
@@ -378,7 +370,7 @@ MLTApplication::generate_modules(const confmodel::Session* session) const
 
   // Process special Network rules!
   // Looking for Fragment rules from DFAppplications in current Session
-  auto sessionApps = session->get_enabled_applications();
+  auto sessionApps = session->enabled_applications();
   std::vector<conffwk::ConfigObject> fragOutObjs;
   for (auto app : sessionApps) {
     auto dfapp = app->cast<appmodel::DFApplication>();
