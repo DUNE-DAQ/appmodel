@@ -1,5 +1,5 @@
 /**
- * @file module_dal.cpp
+ * @file module.cpp
  *
  * This is part of the DUNE DAQ Software Suite, copyright 2020.
  * Licensing/copyright details are in the COPYING file that you should have
@@ -14,14 +14,14 @@ namespace py = pybind11;
 namespace dunedaq::appmodel::python {
 
 extern void
-register_dal_methods(py::module&);
+register_methods(py::module&);
 
-PYBIND11_MODULE(_daq_appmodel_dal_py, m)
+PYBIND11_MODULE(_daq_appmodel_py, m)
 {
 
-  m.doc() = "C++ implementation of the application dal modules";
+  m.doc() = "C++ implementation of the application non-dal modules";
 
-  register_dal_methods(m);
+  register_methods(m);
 }
 
 } // namespace dunedaq::appmodel::python

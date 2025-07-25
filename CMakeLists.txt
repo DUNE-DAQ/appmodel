@@ -27,7 +27,7 @@ daq_add_application(getAppsArguments get_apps_arguments.cxx
 
 daq_add_python_bindings(module_dal.cpp dal_methods.cpp DAL LINK_LIBRARIES confmodel::confmodel)
 
-#daq_add_python_bindings(module_dal.cpp dal_methods.cpp DAL LINK_LIBRARIES confmodel::confmodel)
+daq_add_python_bindings(module.cpp methods.cpp LINK_LIBRARIES logging::logging )
 
 daq_add_application(generate_modules_test generate_modules_test.cxx
  TEST LINK_LIBRARIES appmodel_dal confmodel::confmodel conffwk::conffwk
