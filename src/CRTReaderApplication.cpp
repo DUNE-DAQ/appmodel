@@ -33,6 +33,11 @@
 
 namespace dunedaq::appmodel {
 
+std::vector<const confmodel::Resource*>
+CRTReaderApplication::contained_resources() const {
+  return to_resources(get_detector_connections());
+}
+
 std::vector<const confmodel::DaqModule*>
 CRTReaderApplication::generate_modules(const confmodel::Session* session) const
 {
@@ -87,32 +92,23 @@ CRTReaderApplication::generate_modules(const confmodel::Session* session) const
 
   uint16_t conn_idx = 0;
 
-  for (auto d2d_conn_res : get_contains()) {
+  for (auto d2d_conn : get_detector_connections()) {
 
     // Are we sure?
-    if (d2d_conn_res->disabled(*session)) {
-      TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn_res->UID();
+    if (d2d_conn->is_disabled(*session)) {
+      TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
       continue;
     }
 
-    TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn_res->UID();
+    TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn->UID();
     // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader module      
-    auto d2d_conn = d2d_conn_res->cast<confmodel::DetectorToDaqConnection>();
-
-    if (!d2d_conn) {
-      throw(BadConf(ERS_HERE, "CRTReaderApplication contains something other than DetectorToDaqConnection"));
-    }
-
-    if (d2d_conn->get_contains().empty()) {
-      throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain senders or receivers"));
-    }      
 
     std::vector<const confmodel::DetectorStream*> enabled_det_streams;      
     // Loop over streams
-    for (auto stream : d2d_conn->get_streams()) {
+    for (auto stream : d2d_conn->streams()) {
 
       // Are we sure?
-      if (stream->disabled(*session)) {
+      if (stream->is_disabled(*session)) {
         TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
         continue;
       }
@@ -149,7 +145,7 @@ CRTReaderApplication::generate_modules(const confmodel::Session* session) const
 
     // Populate configuration and interfaces (leave output queues for later)
     reader_obj.set_obj("configuration", &reader_conf->config_object());
-    reader_obj.set_objs("connections", {&d2d_conn_res->config_object()});
+    reader_obj.set_objs("connections", {&d2d_conn->config_object()});
     reader_obj.set_objs("outputs", data_queue_objs);
 
     modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(reader_obj.UID()));
@@ -178,7 +174,7 @@ CRTReaderApplication::generate_modules(const confmodel::Session* session) const
 
       // Populate configuration and interfaces
       writer_obj.set_obj("configuration", &writer_conf->config_object());
-      writer_obj.set_objs("connections", {&d2d_conn_res->config_object()});
+      writer_obj.set_objs("connections", {&d2d_conn->config_object()});
       writer_obj.set_objs("inputs", data_queue_objs);
 
       modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(writer_obj.UID()));
