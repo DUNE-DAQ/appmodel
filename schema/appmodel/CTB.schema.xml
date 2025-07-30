@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="23" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250710T104541"/>
+<info name="" type="" num-of-items="23" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250724T130024"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -231,7 +231,7 @@
  <class name="CTBSubsystem">
   <superclass name="Jsonable"/>
   <attribute name="channel_mask" type="string" is-not-null="yes"/>
-  <attribute name="reshape_length" type="u32" is-not-null="yes"/>
+  <attribute name="reshape_lengths" type="u32" is-multi-value="yes" is-not-null="yes"/>
   <attribute name="delays" type="u32" is-multi-value="yes" is-not-null="yes"/>
  </class>
 
