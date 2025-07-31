@@ -14,7 +14,6 @@
 
 #include "confmodel/Connection.hpp"
 #include "confmodel/NetworkConnection.hpp"
-#include "confmodel/ResourceSet.hpp"
 #include "confmodel/Service.hpp"
 
 #include "appmodel/DataHandlerConf.hpp"
@@ -210,15 +209,6 @@ TPReplayApplication::generate_modules(const confmodel::Session* /*session*/) con
   }
 
   return modules;
-}
-
-std::vector<const confmodel::Resource*>
-TPReplayApplication::contained_resources() const
-{
-  throw(BadConf(ERS_HERE,
-                "TPReplayApplication::contained_resources has not been implemented; this function is merely a stub to "
-                "allow the code to compile"));
-  return {};
 }
 
 } // namespace appmodel
