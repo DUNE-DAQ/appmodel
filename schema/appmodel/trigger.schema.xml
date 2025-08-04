@@ -100,7 +100,7 @@
  <class name="AVXFrugalPedestalSubtractProcessor" description="TPG frugal pedestal subtraction signal processor. Frugally updates the pedestal estimation and outputs the difference with the input signal.">
   <superclass name="ProcessingStep"/>
   <attribute name="accum_limit" description="Accumulation limit to increment/decrement the estimated pedestal value." type="u8" init-value="10" is-not-null="yes"/>
-  <attribute name="metric_collect_data_sample_rate" description="Rate in terms of time samples to store metric values in processors." type="u8" init-value="128" is-not-null="no"/>
+  <attribute name="metric_collect_data_sample_rate" description="Rate in terms of time samples to store metric values in processors." type="u64" init-value="128" is-not-null="no"/>
   <attribute name="metric_collect_toggle_state" description="Whether metric storaging function is enabled." type="bool" init-value="0" is-not-null="no"/>
  </class>
 
