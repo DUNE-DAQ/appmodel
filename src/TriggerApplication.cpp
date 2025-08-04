@@ -145,7 +145,7 @@ TriggerApplication::generate_modules(const confmodel::Session* session) const
 
   // Process special Network rules!
   // Looking for Fragment rules from DFAppplications in current Session
-  auto sessionApps = session->get_enabled_applications();
+  auto sessionApps = session->enabled_applications();
   std::vector<conffwk::ConfigObject> fragOutObjs;
   for (auto app : sessionApps) {
     auto dfapp = app->cast<appmodel::DFApplication>();

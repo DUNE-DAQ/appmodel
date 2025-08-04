@@ -112,7 +112,7 @@ FakeHSIApplication::generate_modules(const confmodel::Session* session) const
 
   // Process special Network rules!
   // Looking for Fragment rules from DFAppplications in current Session
-  auto sessionApps = session->get_enabled_applications();
+  auto sessionApps = session->enabled_applications();
   std::vector<conffwk::ConfigObject> fragOutObjs;
   for (auto app : sessionApps) {
     auto dfapp = app->cast<appmodel::DFApplication>();
@@ -159,6 +159,10 @@ FakeHSIApplication::generate_modules(const confmodel::Session* session) const
     obj_fac.create("FakeHSIEventGeneratorModule", genuid);
   fakehsiObj.set_obj("configuration", &rdrConf->config_object());
   fakehsiObj.set_objs("outputs", { &queueObj, &hsiNetObj });
+  if (tsNetDesc != nullptr) {
+    conffwk::ConfigObject tsNetObjIn = obj_fac.create_net_obj(tsNetDesc, ".*");
+    fakehsiObj.set_objs("inputs", { &tsNetObjIn });
+  }
 
   modules.push_back(obj_fac.get_dal<FakeHSIEventGeneratorModule>(genuid));
 

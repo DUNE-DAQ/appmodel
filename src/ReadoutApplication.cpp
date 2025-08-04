@@ -16,6 +16,7 @@
 #include "confmodel/DetDataReceiver.hpp"
 #include "confmodel/DetDataSender.hpp"
 #include "confmodel/DetectorStream.hpp"
+#include "confmodel/DetectorToDaqConnection.hpp"
 #include "confmodel/Session.hpp"
 
 #include "appmodel/NWDetDataReceiver.hpp"
@@ -29,7 +30,6 @@
 #include "confmodel/QueueWithSourceId.hpp"
 
 #include "confmodel/Connection.hpp"
-#include "confmodel/DetectorToDaqConnection.hpp"
 #include "confmodel/GeoId.hpp"
 #include "confmodel/NetworkConnection.hpp"
 #include "confmodel/ResourceSet.hpp"
@@ -67,6 +67,12 @@ namespace dunedaq {
 namespace appmodel {
 
 //-----------------------------------------------------------------------------
+
+std::vector<const confmodel::Resource*>
+ReadoutApplication::contained_resources() const {
+  return to_resources(get_detector_connections());
+}
+
 std::vector<const confmodel::DaqModule*>
 ReadoutApplication::generate_modules(const confmodel::Session* session) const
 {
@@ -174,80 +180,59 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
   // std::vector<const conffwk::ConfigObject*> d2d_conn_objs;
   uint16_t conn_idx = 0;
 
-  for (auto d2d_conn_res : get_contains()) {
-
-    // Are we sure?
-    if (d2d_conn_res->disabled(*session)) {
-      TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn_res->UID();
+  for (auto d2d_conn : get_detector_connections()) {
+    if (d2d_conn->is_disabled(*session)) {
+      TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
       continue;
     }
 
-    // d2d_conn_objs.push_back(&d2d_conn_res->config_object());
+    TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn->UID();
 
-    TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn_res->UID();
-    // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader module
-    auto d2d_conn = d2d_conn_res->cast<confmodel::DetectorToDaqConnection>();
-
-    if (!d2d_conn) {
-      throw(BadConf(ERS_HERE, "ReadoutApplication contains something other than DetectorToDaqConnection"));
+    // Are these tests necessary? Schema does not allow 0 cardinality
+    // for these relationships!!  TODO
+    if (d2d_conn->senders().empty()) {
+      throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain senders"));
+    }
+    if (d2d_conn->receiver() == nullptr) {
+      throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain a receiver"));
     }
 
-    if (d2d_conn->get_contains().empty()) {
-      throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain sebders or receivers"));
-    }
-
-    // Loop over detector 2 daq connections to find senders and receivers
-    auto det_senders = d2d_conn->get_senders();
-    auto det_receiver = d2d_conn->get_receiver();
+    // Find senders and receiver
+    auto det_senders = d2d_conn->senders();
+    auto det_receiver = d2d_conn->receiver();
 
     std::vector<const confmodel::DetectorStream*> enabled_det_streams;
-    // Loop over senders
-    for (auto stream : d2d_conn->get_streams()) {
+    // Loop over streams
+    for (auto stream : d2d_conn->streams()) {
 
       // Are we sure?
-      if (stream->disabled(*session)) {
+      if (stream->is_disabled(*session)) {
         TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
         continue;
       }
 
-      // loop over streams
       all_enabled_det_streams.push_back(stream);
       enabled_det_streams.push_back(stream);
     }
 
 
-
     // Here I want to resolve the type of connection (network, felix, or?)
     // Rules of engagement: if the receiver interface is network or felix, the receivers should be castable to the counterpart
     if (reader_class == "DPDKReaderModule" || reader_class == "SocketReaderModule") {
+      if (!d2d_conn->castable("NetworkDetectorToDaqConnection")) {
+        throw(BadConf(ERS_HERE, fmt::format("{} requires NetworkDetectorToDaqConnection, found {} of class {}", reader_class, d2d_conn->UID(), d2d_conn->class_name())));
+      }
       if ((reader_class == "DPDKReaderModule" && !det_receiver->cast<appmodel::DPDKReceiver>()) ||
           (reader_class == "SocketReaderModule" && !det_receiver->cast<appmodel::SocketReceiver>())) {
         throw(BadConf(ERS_HERE, fmt::format("{} requires NWDetDataReceiver, found {} of class {}", reader_class, det_receiver->UID(), det_receiver->class_name())));
       }
-
-      bool all_nw_senders = true;
-      for (auto s : det_senders) {
-        all_nw_senders &= (s->cast<appmodel::NWDetDataSender>() != nullptr);
-      }
-
-      // Ensure that all senders are compatible with receiver
-      if (!all_nw_senders) {
-        throw(BadConf(ERS_HERE, "Non-network DetDataSener found with NWreceiver"));
-      }
     }
     else if (reader_class == "FelixReaderModule") {
+      if (!d2d_conn->castable("FelixDetectorToDaqConnection")) {
+        throw(BadConf(ERS_HERE, fmt::format("{} requires FelixDetectorToDaqConnection, found {} of class {}", reader_class, d2d_conn->UID(), d2d_conn->class_name())));
+      }
       if (!det_receiver->cast<appmodel::FelixDataReceiver>()) {
         throw(BadConf(ERS_HERE, fmt::format("FelixReaderModule requires FelixDataReceiver, found {} of class {}", det_receiver->UID(), det_receiver->class_name())));
-      }
-
-      bool all_flx_senders = true;
-      for (auto s : det_senders) {
-        all_flx_senders &= (s->cast<appmodel::FelixDataSender>() != nullptr);
-      }
-
-      // Ensure that all senders are compatible with receiver
-      if (!all_flx_senders) {
-        throw(BadConf(ERS_HERE, "Non-felix DetDataSener found with FelixDataReceiver"));
       }
     }
   // }
@@ -269,7 +254,7 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
 
     // Populate configuration and interfaces (leave output queues for later)
     reader_obj.set_obj("configuration", &reader_conf->config_object());
-    reader_obj.set_objs("connections", {&d2d_conn_res->config_object()});
+    reader_obj.set_objs("connections", {&d2d_conn->config_object()});
 
     // Create the raw data queues
     std::vector<const conffwk::ConfigObject*> data_queue_objs;
@@ -401,7 +386,7 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
 
   // Process special Network rules!
   // Looking for Fragment rules from DFAppplications in current Session
-  auto sessionApps = session->get_enabled_applications();
+  auto sessionApps = session->enabled_applications();
   std::vector<conffwk::ConfigObject> fragOutObjs;
   for (auto app : sessionApps) {
     auto dfapp = app->cast<appmodel::DFApplication>();
