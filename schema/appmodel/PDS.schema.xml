@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="11" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20250623T091030"/>
+<info name="" type="" num-of-items="11" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250807T123616"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -105,6 +105,7 @@
  <class name="DaphneConf" description="Top entry for the configuraiton of a single daphne board">
   <attribute name="timeout_ms" description="timeout used for the board operations" type="u16" range="1..60000" init-value="1000" is-not-null="yes"/>
   <attribute name="json_file" type="string" is-not-null="yes"/>
+  <attribute name="time_reset" description="If True, it performs the time reset at configuration. If False, that is skipped" type="bool" init-value="True" is-not-null="yes"/>
   <relationship name="default_v2_settings" description="Value to be used during scrap" class-type="DaphneV2BoardConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="get_timeout" description="get the interval casted in ms">
    <method-implementation language="C++" prototype="std::chrono::milliseconds get_timeout() const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &lt;chrono&gt;&#xA;END_HEADER_PROLOGUE&#xA;&#xA;return std::chrono::milliseconds(get_timeout_ms());"/>
