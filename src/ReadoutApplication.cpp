@@ -13,6 +13,7 @@
 #include "appmodel/DFApplication.hpp"
 #include "appmodel/ReadoutApplication.hpp"
 #include "conffwk/Configuration.hpp"
+#include "confmodel/DaqModulesGroupById.hpp"
 #include "confmodel/DetDataReceiver.hpp"
 #include "confmodel/DetDataSender.hpp"
 #include "confmodel/DetectorStream.hpp"
@@ -57,6 +58,7 @@
 #include "logging/Logging.hpp"
 #include <fmt/core.h>
 
+#include <algorithm>
 #include <string>
 #include <vector>
 
@@ -169,6 +171,10 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
   //
 
   std::vector<const confmodel::DaqModule*> modules;
+  std::vector<const conffwk::ConfigObject*> reader_objects;
+  std::vector<const conffwk::ConfigObject*> dlh_objects;
+  std::vector<const conffwk::ConfigObject*> tph_objects;
+  std::vector<const conffwk::ConfigObject*> aggregator_objects;
 
   // Loop over the detector to daq connections and generate one data reader per connection
   // and the cooresponding datalink handlers
@@ -270,8 +276,9 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
 
     reader_obj.set_objs("outputs", data_queue_objs);
 
-    modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(reader_obj.UID()));
-
+    auto dal_obj = obj_fac.get_dal<confmodel::DaqModule>(reader_obj.UID());
+    reader_objects.push_back(&dal_obj->config_object());
+    modules.push_back(dal_obj);
   }
 
 
@@ -315,7 +322,10 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
       // Register queues with tp hankder
       tph_obj.set_objs("inputs", { &tp_queue_obj, &tpreq_queue_obj });
       tph_obj.set_objs("outputs", { &tp_net_obj, &ta_net_obj, &frag_queue_obj });
-      modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(tph_obj.UID()));
+
+      auto dal_obj = obj_fac.get_dal<confmodel::DaqModule>(tph_obj.UID());
+      tph_objects.push_back(&dal_obj->config_object());
+      modules.push_back(dal_obj);
     }
   }
 
@@ -373,7 +383,9 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
     dlh_obj.set_objs("inputs", dlh_ins);
     dlh_obj.set_objs("outputs", dlh_outs);
 
-    modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(dlh_obj.UID()));
+    auto dal_obj = obj_fac.get_dal<confmodel::DaqModule>(dlh_obj.UID());
+    dlh_objects.push_back(&dal_obj->config_object());
+    modules.push_back(dal_obj);
   }
 
 
@@ -429,7 +441,45 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
   frag_aggr.set_objs("inputs", { &fa_net_obj, &frag_queue_obj });
   frag_aggr.set_objs("outputs", fa_output_objs);
 
-  modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(frag_aggr.UID()));
+  auto dal_obj = obj_fac.get_dal<confmodel::DaqModule>(frag_aggr.UID());
+  aggregator_objects.push_back(&dal_obj->config_object());
+  modules.push_back(dal_obj);
+
+
+  // Generate ActionPlans
+
+  // First create a sequence of steps n the correct order for starting
+  std::vector<const conffwk::ConfigObject*> steps;
+  auto aggregator_step = obj_fac.create("DaqModulesGroupById", "aggrstep_"+this->UID());
+  aggregator_step.set_objs("modules", aggregator_objects);
+  steps.push_back(&aggregator_step);
+  if (!tph_objects.empty()) {
+    auto tph_step = obj_fac.create("DaqModulesGroupById", "tphstep_"+this->UID());
+    tph_step.set_objs("modules", tph_objects);
+    steps.push_back(&tph_step);
+  }
+  auto dlh_step = obj_fac.create("DaqModulesGroupById", "dlhstep_"+this->UID());
+  dlh_step.set_objs("modules", dlh_objects);
+  steps.push_back(&dlh_step);
+  auto reader_step = obj_fac.create("DaqModulesGroupById", "readerstep_"+this->UID());
+  reader_step.set_objs("modules", reader_objects);
+  steps.push_back(&reader_step);
+
+  // Use steps for start ActionPlan
+  auto start_ap_obj = obj_fac.create("ActionPlan", "ap_start_"+this->UID());
+  start_ap_obj.set_objs("steps", steps);
+  start_ap_obj.set_by_val<std::string>("command", "start");
+
+  // Reverse order of steps for stop ActionPlan
+  std::reverse(steps.begin(), steps.end());
+  auto stop_ap_obj = obj_fac.create("ActionPlan", "ap_stop_"+this->UID());
+  stop_ap_obj.set_objs("steps", steps);
+  stop_ap_obj.set_by_val<std::string>("command", "stop_trigger_sources");
+
+  // Update action_plans in application (naugty side effect?)
+  auto app_obj = obj_fac.get_dal<ReadoutApplication>(UID())->config_object();
+  app_obj.set_objs("action_plans", {&start_ap_obj, &stop_ap_obj});
+  configuration().update<ReadoutApplication>({UID()}, {}, {});
 
   return modules;
 }
