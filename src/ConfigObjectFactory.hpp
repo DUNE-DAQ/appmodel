@@ -32,7 +32,7 @@ class ConfigObjectFactory
 
 public:
   ConfigObjectFactory(conffwk::Configuration* config, const std::string& dbfile, const std::string& app_uid);
-  ConfigObjectFactory(const conffwk::DalObject* );
+  explicit ConfigObjectFactory(const conffwk::DalObject* );
 
   ~ConfigObjectFactory();
 

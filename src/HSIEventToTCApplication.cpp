@@ -31,13 +31,13 @@
 namespace dunedaq {
 namespace appmodel {
 
-std::vector<const confmodel::DaqModule*> 
+void
 HSIEventToTCApplication::generate_modules(const confmodel::Session* /*session*/) const
 {
 
   ConfigObjectFactory obj_fac(this);
   
-  std::vector<const confmodel::DaqModule*> modules;
+  std::vector<const conffwk::ConfigObject*> modules;
 
   std::string hstcUid("module-" + UID());
   TLOG_DEBUG(7) << "creating OKS configuration object for the DataSubscriberModule class ";
@@ -75,10 +75,12 @@ HSIEventToTCApplication::generate_modules(const confmodel::Session* /*session*/)
   hstcObj.set_objs("inputs", {&inObj});
   hstcObj.set_objs("outputs", {&outObj});
 
-  // Add to our list of modules to return
-  modules.push_back(obj_fac.get_dal<DataSubscriberModule>(hstcUid));
+  // Add to our list of modules
+  modules.push_back(&obj_fac.get_dal<DataSubscriberModule>(hstcUid)->config_object());
 
-  return modules;
+  auto app_obj = obj_fac.get_dal<HSIEventToTCApplication>(UID())->config_object();
+  app_obj.set_objs("modules", modules);
+  configuration().update<HSIEventToTCApplication>({UID()}, {}, {});
 }
  
 } // namespace appmodel  

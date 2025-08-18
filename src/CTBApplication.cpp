@@ -66,10 +66,10 @@ CTBApplication::contained_resources() const {
 }
 
 
-std::vector<const confmodel::DaqModule*> 
+void
 CTBApplication::generate_modules(const confmodel::Session* session) const
 {
-  std::vector<const confmodel::DaqModule*> modules;
+  std::vector<const conffwk::ConfigObject*> modules;
 
   ConfigObjectFactory obj_fac(this);
   
@@ -193,7 +193,7 @@ CTBApplication::generate_modules(const confmodel::Session* session) const
 
     dlhObj.set_objs("inputs", { &queueObj, &faNetObj });
 
-    modules.push_back(obj_fac.get_dal<appmodel::DataHandlerModule>(uid));
+    modules.push_back(&obj_fac.get_dal<appmodel::DataHandlerModule>(uid)->config_object());
     
   }  // loop over CTB sources
    
@@ -214,11 +214,13 @@ CTBApplication::generate_modules(const confmodel::Session* session) const
   
   module_obj.set_objs("outputs", ctb_module_output_ptrs);
   
-  auto module = obj_fac.get_dal<appmodel::CTBModule>(module_obj.UID());
+  auto module_dal = obj_fac.get_dal<appmodel::CTBModule>(module_obj.UID());
   
-  modules.push_back(module);
+  modules.push_back(&module_dal->config_object());
   
-  return modules;
+  auto app_obj = obj_fac.get_dal<CTBApplication>(UID())->config_object();
+  app_obj.set_objs("modules", modules);
+  configuration().update<CTBApplication>({UID()}, {}, {});
 }
 
 

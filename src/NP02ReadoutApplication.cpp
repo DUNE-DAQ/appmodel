@@ -68,7 +68,7 @@ namespace dunedaq {
 namespace appmodel {
 
 //-----------------------------------------------------------------------------
-std::vector<const confmodel::DaqModule*>
+void
 NP02ReadoutApplication::generate_modules(const confmodel::Session* session) const
 {
 
@@ -162,7 +162,7 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
   // Scan Detector 2 DAQ connections to extract sender, receiver and stream information
   //
 
-  std::vector<const confmodel::DaqModule*> modules;
+  std::vector<const conffwk::ConfigObject*> modules;
 
   // Loop over the detector to daq connections and generate one data reader per connection
   // and the cooresponding datalink handlers
@@ -277,7 +277,7 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
 
     reader_obj.set_objs("outputs", data_queue_objs);
 
-    modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(reader_obj.UID()));
+    modules.push_back(&obj_fac.get_dal<confmodel::DaqModule>(reader_obj.UID())->config_object());
 
 
 
@@ -327,7 +327,7 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
       // Register queues with tp handler
       tph_obj.set_objs("inputs", { &tp_queue_obj, &tpreq_queue_obj });
       tph_obj.set_objs("outputs", { &tp_net_obj, &ta_net_obj, &frag_queue_obj });
-      modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(tph_obj.UID()));
+      modules.push_back(&obj_fac.get_dal<confmodel::DaqModule>(tph_obj.UID())->config_object());
     }
   }
 
@@ -414,7 +414,7 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
     dlh_obj.set_objs("inputs", dlh_ins);
     dlh_obj.set_objs("outputs", dlh_outs);
 
-    modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(dlh_obj.UID()));
+    modules.push_back(&obj_fac.get_dal<confmodel::DaqModule>(dlh_obj.UID())->config_object());
   }
 
 
@@ -467,9 +467,11 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
   frag_aggr.set_objs("inputs", { &fa_net_obj, &frag_queue_obj });
   frag_aggr.set_objs("outputs", fa_output_objs);
 
-  modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(frag_aggr.UID()));
+  modules.push_back(&obj_fac.get_dal<confmodel::DaqModule>(frag_aggr.UID())->config_object());
 
-  return modules;
+  auto app_obj = obj_fac.get_dal<NP02ReadoutApplication>(UID())->config_object();
+  app_obj.set_objs("modules", modules);
+  configuration().update<NP02ReadoutApplication>({UID()}, {}, {});
 }
 
   

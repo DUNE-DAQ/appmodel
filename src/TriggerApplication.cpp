@@ -72,11 +72,11 @@ create_network_connection(std::string uid,
 }
 
 
-std::vector<const confmodel::DaqModule*>
+void
 TriggerApplication::generate_modules(const confmodel::Session* session) const
 {
 
-  std::vector<const confmodel::DaqModule*> modules;
+  std::vector<const conffwk::ConfigObject*> modules;
 
   ConfigObjectFactory obj_fac(this);
 
@@ -218,7 +218,7 @@ TriggerApplication::generate_modules(const confmodel::Session* session) const
   ti_obj.set_objs("inputs", {&input_queue_obj, &req_net_obj});
   ti_obj.set_objs("outputs", ti_output_objs);
   // Add to our list of modules to return
-  modules.push_back(obj_fac.get_dal<DataHandlerModule>(ti_uid));
+  modules.push_back(&obj_fac.get_dal<DataHandlerModule>(ti_uid)->config_object());
 
 
   // Now create the DataSubscriberModule object
@@ -237,9 +237,12 @@ TriggerApplication::generate_modules(const confmodel::Session* session) const
   reader_obj.set_objs("outputs", {&input_queue_obj} );
   reader_obj.set_obj("configuration", &rdr_conf->config_object());
 
-  modules.push_back(obj_fac.get_dal<DataSubscriberModule>(reader_uid));
+  modules.push_back(&obj_fac.get_dal<DataSubscriberModule>(reader_uid)->config_object());
 
-  return modules;
+
+  auto app_obj = obj_fac.get_dal<TriggerApplication>(UID())->config_object();
+  app_obj.set_objs("modules", modules);
+  configuration().update<TriggerApplication>({UID()}, {}, {});
 }
  
 } // namespace appmodel  

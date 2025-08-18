@@ -47,12 +47,12 @@ FakeDataApplication::contained_resources() const {
   return to_resources(get_producers());
 }
 
-std::vector<const confmodel::DaqModule*>
+void
 FakeDataApplication::generate_modules(const confmodel::Session* session) const
 {
   // oks::OksFile::set_nolock_mode(true);
 
-  std::vector<const confmodel::DaqModule*> modules;
+  std::vector<const conffwk::ConfigObject*> modules;
 
   ConfigObjectFactory obj_fac(this);
 
@@ -134,7 +134,7 @@ FakeDataApplication::generate_modules(const confmodel::Session* session) const
 
     dlhObj.set_objs("inputs", { &reqQueueObj });
 
-    modules.push_back(obj_fac.get_dal<FakeDataProdModule>(uid));
+    modules.push_back(&obj_fac.get_dal<FakeDataProdModule>(uid)->config_object());
   }
 
   // Finally create Fragment Aggregator
@@ -153,10 +153,11 @@ FakeDataApplication::generate_modules(const confmodel::Session* session) const
   faObj.set_objs("inputs", { &faNetObj, &faQueueObj });
   faObj.set_objs("outputs", qObjs);
 
-  modules.push_back(obj_fac.get_dal<FragmentAggregatorModule>(faUid));
+  modules.push_back(&obj_fac.get_dal<FragmentAggregatorModule>(faUid)->config_object());
 
-  // oks::OksFile::set_nolock_mode(false);
-  return modules;
+  auto app_obj = obj_fac.get_dal<FakeDataApplication>(UID())->config_object();
+  app_obj.set_objs("modules", modules);
+  configuration().update<FakeDataApplication>({UID()}, {}, {});
 }
 
 } // namespace appmodel  

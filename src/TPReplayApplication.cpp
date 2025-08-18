@@ -43,11 +43,11 @@
 namespace dunedaq {
 namespace appmodel {
 
-std::vector<const confmodel::DaqModule*>
+void
 TPReplayApplication::generate_modules(const confmodel::Session* /*session*/) const
 {
 
-  std::vector<const confmodel::DaqModule*> modules;
+  std::vector<const conffwk::ConfigObject*> modules;
 
   ConfigObjectFactory obj_fac(this);
 
@@ -203,12 +203,14 @@ TPReplayApplication::generate_modules(const confmodel::Session* /*session*/) con
   }
 
   // Store modules
-  modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(tprm_conf->UID()));
+  modules.push_back(&obj_fac.get_dal<confmodel::DaqModule>(tprm_conf->UID())->config_object());
   for (int i = 0; i < total_planes; i++) {
-    modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(TPHs_uids[i]));
+    modules.push_back(&obj_fac.get_dal<confmodel::DaqModule>(TPHs_uids[i])->config_object());
   }
 
-  return modules;
+  auto app_obj = obj_fac.get_dal<TPReplayApplication>(UID())->config_object();
+  app_obj.set_objs("modules", modules);
+  configuration().update<TPReplayApplication>({UID()}, {}, {});
 }
 
 } // namespace appmodel

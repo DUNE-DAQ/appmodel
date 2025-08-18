@@ -18,7 +18,7 @@ find_package(Boost COMPONENTS unit_test_framework program_options REQUIRED)
 
 daq_add_dal_library(application.schema.xml hermes.schema.xml fdmodules.schema.xml trigger.schema.xml wiec.schema.xml PDS.schema.xml tde.schema.xml CTB.schema.xml
   NAMESPACE dunedaq::appmodel DEP_PKGS confmodel
-  SOURCES ConfigObjectFactory.cpp ReadoutApplication.cpp SmartDaqApplication.cpp NP02ReadoutApplication.cpp
+  SOURCES ConfigObjectFactory.cpp ReadoutApplication.cpp NP02ReadoutApplication.cpp
           DFApplication.cpp DFOApplication.cpp TPWriterApplication.cpp FakeDataApplication.cpp FakeHSIApplication.cpp DTSHSIApplication.cpp TriggerApplication.cpp MLTApplication.cpp TPReplayApplication.cpp HSIEventToTCApplication.cpp WIECApplication.cpp DaphneApplication.cpp CRTReaderApplication.cpp TDECrateApplication.cpp CTBApplication.cpp NetworkDetectorToDaqConnection.cpp FelixDetectorToDaqConnection.cpp
   LINK_LIBRARIES conffwk::conffwk fmt::fmt logging::logging oks::oks ers::ers )
 

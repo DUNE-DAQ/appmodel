@@ -38,13 +38,13 @@ CRTReaderApplication::contained_resources() const {
   return to_resources(get_detector_connections());
 }
 
-std::vector<const confmodel::DaqModule*>
+void
 CRTReaderApplication::generate_modules(const confmodel::Session* session) const
 {
 
   TLOG_DEBUG(6) << "Generating modules for application " << this->UID();
   
-  std::vector<const confmodel::DaqModule*> modules;
+  std::vector<const conffwk::ConfigObject*> modules;
 
   const ConfigObjectFactory obj_fac(this);
 
@@ -148,7 +148,7 @@ CRTReaderApplication::generate_modules(const confmodel::Session* session) const
     reader_obj.set_objs("connections", {&d2d_conn->config_object()});
     reader_obj.set_objs("outputs", data_queue_objs);
 
-    modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(reader_obj.UID()));
+    modules.push_back(&obj_fac.get_dal<confmodel::DaqModule>(reader_obj.UID())->config_object());
 
     //-----------------------------------------------------------------
     //
@@ -177,12 +177,14 @@ CRTReaderApplication::generate_modules(const confmodel::Session* session) const
       writer_obj.set_objs("connections", {&d2d_conn->config_object()});
       writer_obj.set_objs("inputs", data_queue_objs);
 
-      modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(writer_obj.UID()));
+      modules.push_back(&obj_fac.get_dal<confmodel::DaqModule>(writer_obj.UID())->config_object());
     }    
   
   }
 
-  return modules;
+  auto app_obj = obj_fac.get_dal<CRTReaderApplication>(UID())->config_object();
+  app_obj.set_objs("modules", modules);
+  configuration().update<CRTReaderApplication>({UID()}, {}, {});
 }
  
 } // namespace dunedaq::appmodel  
