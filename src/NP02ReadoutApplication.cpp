@@ -176,32 +176,30 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
   
 
   std::set<int16_t> numas;
-  for (auto d2d_conn_res : get_contains()) {
+  for (auto d2d_conn : get_detector_connections()) {
     uint16_t receiver_numa = 0;
 
     // Are we sure?
-    if (d2d_conn_res->disabled(*session)) {
-      TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn_res->UID();
+    if (d2d_conn->is_disabled(*session)) {
+      TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
       continue;
     }
 
-    d2d_conn_objs.push_back(&d2d_conn_res->config_object());
+    d2d_conn_objs.push_back(&d2d_conn->config_object());
 
-    TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn_res->UID();
+    TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn->UID();
     // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader module
-    auto d2d_conn = d2d_conn_res->cast<confmodel::DetectorToDaqConnection>();
 
-    if (!d2d_conn) {
-      throw(BadConf(ERS_HERE, "NP02ReadoutApplication contains something other than DetectorToDaqConnection"));
-    }
-
-    if (d2d_conn->get_contains().empty()) {
+    if (d2d_conn->senders().empty()) {
       throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain sebders or receivers"));
+    }
+    if (d2d_conn->receiver() == nullptr) {
+      throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain a receiver"));
     }
 
     // Loop over detector 2 daq connections to find senders and receivers
-    auto det_senders = d2d_conn->get_senders();
-    auto det_receiver = d2d_conn->get_receiver();
+    auto det_senders = d2d_conn->senders();
+    auto det_receiver = d2d_conn->receiver();
 
 
     // Here I want to resolve the type of connection (network, felix, or?)
@@ -230,10 +228,10 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
 
     std::vector<const confmodel::DetectorStream*> enabled_det_streams;
     // Loop over senders
-    for (auto stream : d2d_conn->get_streams()) {
+    for (auto stream : d2d_conn->streams()) {
 
       // Are we sure?
-      if (stream->disabled(*session)) {
+      if (stream->is_disabled(*session)) {
         TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
         continue;
       }
@@ -270,7 +268,7 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
     // keep a map for convenience
 
     // Create data queues
-    for (auto& [numa, ds]  : all_enabled_det_streams) {
+    for (auto& [numa, ds] : all_enabled_det_streams) {
       conffwk::ConfigObject queue_obj = obj_fac.create_queue_sid_obj(dlh_input_qdesc, ds);
       const auto* data_queue = obj_fac.get_dal<confmodel::Connection>(queue_obj.UID());
       data_queue_objs.push_back(&data_queue->config_object());
@@ -288,12 +286,17 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
   //
   // Prepare the tp handlers and related queues
   //
-  std::vector<const confmodel::Connection*> tp_queues;
+  std::vector<std::pair<uint32_t, const confmodel::Connection*>> tp_queues;
+
   if (get_tp_generation_enabled()) {
 
     // Create TP handler object
     auto tph_conf_obj = tph_conf->config_object();
     auto tpsrc_ids = get_tp_source_ids();
+
+    if ((tpsrc_ids.size() % 3) > 0) {
+      throw(BadConf(ERS_HERE, fmt::format("number of TP source IDs must be a multiple of 3, current amount: {}", tpsrc_ids.size())));
+    }
 
     for (auto sid : tpsrc_ids) {
       conffwk::ConfigObject tp_queue_obj;
@@ -310,7 +313,7 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
       tp_queue_obj.set_by_val<uint32_t>("recv_timeout_ms", 50);
       tp_queue_obj.set_by_val<uint32_t>("send_timeout_ms", 1);
 
-      tp_queues.push_back(obj_fac.get_dal<confmodel::Connection>(tp_queue_obj.UID()));
+      tp_queues.push_back(std::make_pair(sid->get_sid(), obj_fac.get_dal<confmodel::Connection>(tp_queue_obj.UID())));
       // Create tp data requests queue from Fragment Aggregator
       tpreq_queue_obj = obj_fac.create_queue_sid_obj(dlh_reqinput_qdesc, sid->get_sid());
       req_queues.push_back(obj_fac.get_dal<confmodel::Connection>(tpreq_queue_obj.UID()));
@@ -321,17 +324,17 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
       // Create the ta(set) publishing service
       conffwk::ConfigObject ta_net_obj = obj_fac.create_net_obj(ta_net_desc, tp_uid);
 
-      // Register queues with tp hankder
+      // Register queues with tp handler
       tph_obj.set_objs("inputs", { &tp_queue_obj, &tpreq_queue_obj });
       tph_obj.set_objs("outputs", { &tp_net_obj, &ta_net_obj, &frag_queue_obj });
       modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(tph_obj.UID()));
     }
   }
 
-    // Add output queueus of tps
-  std::vector<const conffwk::ConfigObject*> tp_queue_objs;
+  // Add output queueus of tps
+  std::vector<std::pair<uint32_t, const conffwk::ConfigObject*>> tp_queue_objs;
   for (auto q : tp_queues) {
-    tp_queue_objs.push_back(&q->config_object());
+    tp_queue_objs.push_back(std::make_pair(q.first, &q.second->config_object()));
   }
 
   //-----------------------------------------------------------------
@@ -369,7 +372,6 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
 
   auto emulation_mode = reader_conf->get_emulation_mode();
   for (auto& [numa, ds] : all_enabled_det_streams) {
-
     uint32_t sid = ds->get_source_id();
     TLOG_DEBUG(6) << fmt::format("Processing stream {}, id {}, det id {}", ds->UID(), ds->get_source_id(), ds->get_geo_id()->get_detector_id());
     std::string uid(fmt::format("DLH-{}", sid));
@@ -403,8 +405,11 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
       dlh_outs.push_back(&ts_net_obj);
     }
 
+    // here, we want to select which tp queues to add to the output, to separate mutiple detector elements
     for (auto tpq : tp_queue_objs) {
-      dlh_outs.push_back(tpq);
+        if ((sid / 100) == (tpq.first / 10)) {
+        dlh_outs.push_back(tpq.second);
+      }
     }
     dlh_obj.set_objs("inputs", dlh_ins);
     dlh_obj.set_objs("outputs", dlh_outs);
@@ -422,7 +427,7 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
 
   // Process special Network rules!
   // Looking for Fragment rules from DFAppplications in current Session
-  auto sessionApps = session->get_enabled_applications();
+  auto sessionApps = session->enabled_applications();
   std::vector<conffwk::ConfigObject> fragOutObjs;
   for (auto app : sessionApps) {
     auto dfapp = app->cast<appmodel::DFApplication>();

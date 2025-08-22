@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="23" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250526T104120"/>
+<info name="" type="" num-of-items="23" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250724T130024"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -90,7 +90,7 @@
 
  <class name="CTBApplication" description="Application that controls the CTB">
   <superclass name="SmartDaqApplication"/>
-  <superclass name="ResourceSetAND"/>
+  <superclass name="ResourceSetDisableAND"/>
   <relationship name="generator" class-type="CTBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="board" class-type="CTBoardConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="link_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -100,6 +100,9 @@
   </method>
   <method name="get_sources" description="The CTB HSI has two sources, one for HLT and one for LLT. &#xA;This methods gets the right information in a way that makes easy to loop over the information">
    <method-implementation language="C++" prototype="std::vector&lt;std::pair&lt;std::string, const appmodel::SourceIDConf*&gt;&gt; get_sources() const" body="return {{ &quot;HLT&quot;,  get_source_id() }, &#xA;             { &quot;LLT&quot;, get_LLT_source() }};"/>
+  </method>
+  <method name="contained_resources" description="">
+   <method-implementation language="c++" prototype="virtual std::vector&lt;const Resource*&gt; contained_resources() const override" body=""/>
   </method>
  </class>
 
@@ -140,18 +143,17 @@
  </class>
 
  <class name="CTBMisc">
-  <superclass name="ResourceSetAND"/>
+  <superclass name="ResourceSetDisableAND"/>
   <attribute name="ch_status" type="bool" init-value="0" is-not-null="yes"/>
   <relationship name="pulser" class-type="CTBPulser" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="timing" class-type="CTBTiming" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="randomtrigger_1" class-type="CTBRandomTrigger" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <relationship name="randomtrigger_2" class-type="CTBRandomTrigger" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
   <method name="get_ctb_json" description="">
    <method-implementation language="C++" prototype="nlohmann::json get_ctb_json(const dunedaq::confmodel::Session&amp; session) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;END_HEADER_PROLOGUE"/>
   </method>
-  <method name="get_randomtrigger_1" description="">
-   <method-implementation language="C++" prototype="const CTBRandomTrigger &amp; get_randomtrigger_1() const" body=""/>
-  </method>
-  <method name="get_randomtrigger_2" description="">
-   <method-implementation language="C++" prototype="const CTBRandomTrigger &amp; get_randomtrigger_2() const" body=""/>
+  <method name="contained_resources" description="">
+   <method-implementation language="c++" prototype="virtual std::vector&lt;const Resource*&gt; contained_resources() const override" body=""/>
   </method>
  </class>
 
@@ -229,7 +231,7 @@
  <class name="CTBSubsystem">
   <superclass name="Jsonable"/>
   <attribute name="channel_mask" type="string" is-not-null="yes"/>
-  <attribute name="reshape_length" type="u32" is-not-null="yes"/>
+  <attribute name="reshape_lengths" type="u32" is-multi-value="yes" is-not-null="yes"/>
   <attribute name="delays" type="u32" is-multi-value="yes" is-not-null="yes"/>
  </class>
 
@@ -254,26 +256,21 @@
  </class>
 
  <class name="CTBoardConf">
-  <superclass name="ResourceSetAND"/>
+  <superclass name="ResourceSetDisableAND"/>
   <relationship name="sockets" class-type="CTBSockets" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
   <relationship name="beam" class-type="CTBSubsystem" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="CRT" class-type="CTBCRTSubsystem" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="pds" class-type="CTBPDSSubsystem" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="geo_id" class-type="GeoId" low-cc="one" high-cc="one" is-composite="no" is-exclusive="yes" is-dependent="no"/>
+  <relationship name="misc" class-type="CTBMisc" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <relationship name="HLTs" class-type="CTBHLT" low-cc="zero" high-cc="many" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <relationship name="CRT_LLTs" class-type="CTBCountLLT" low-cc="zero" high-cc="many" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <relationship name="beam_LLTs" class-type="CTBLLT" low-cc="zero" high-cc="many" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
   <method name="get_ctb_json" description="create the json configuration for the board">
    <method-implementation language="C++" prototype="nlohmann::json get_ctb_json(const dunedaq::confmodel::Session&amp; session, std::optional&lt;std::string&gt; socket_host = std::nullopt ) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;#include &lt;optional&gt;&#xA;END_HEADER_PROLOGUE"/>
   </method>
-  <method name="get_HLTs" description="">
-   <method-implementation language="C++" prototype="std::vector&lt;const CTBHLT*&gt; get_HLTs() const" body=""/>
-  </method>
-  <method name="get_CRT_LLTs" description="">
-   <method-implementation language="C++" prototype="std::vector&lt;const CTBCountLLT*&gt; get_CRT_LLTs() const" body=""/>
-  </method>
-  <method name="get_beam_LLTs" description="">
-   <method-implementation language="C++" prototype="std::vector&lt;const CTBLLT*&gt; get_beam_LLTs() const" body=""/>
-  </method>
-  <method name="get_misc" description="">
-   <method-implementation language="C++" prototype="const CTBMisc &amp; get_misc() const" body=""/>
+  <method name="contained_resources" description="">
+   <method-implementation language="c++" prototype="virtual std::vector&lt;const Resource*&gt; contained_resources() const override" body=""/>
   </method>
  </class>
 

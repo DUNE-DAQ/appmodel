@@ -9,6 +9,7 @@
  */
 
 
+#include "ConfigObjectFactory.hpp"
 #include "conffwk/Configuration.hpp"
 #include "logging/Logging.hpp"
 
@@ -39,6 +40,14 @@
 namespace dunedaq {
 namespace appmodel {
 
+//-----------------------------------------------------------------------------
+
+std::vector<const confmodel::Resource*>
+WIECApplication::contained_resources() const {
+  return to_resources(get_detector_connections());
+}
+
+
 std::vector<const confmodel::DaqModule*> 
 WIECApplication::generate_modules(const confmodel::Session* session) const
 {
@@ -52,28 +61,23 @@ WIECApplication::generate_modules(const confmodel::Session* session) const
 
 
   // uint16_t conn_idx = 0;
-  for (auto d2d_conn_res : get_contains()) {
+  for (auto d2d_conn : get_detector_connections()) {
 
     // Are we sure?
-    if (d2d_conn_res->disabled(*session)) {
-      TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn_res->UID();
+    if (d2d_conn->is_disabled(*session)) {
+      TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
       continue;
     }
 
-    TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn_res->UID();
-    // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader module
-    auto d2d_conn = d2d_conn_res->cast<confmodel::DetectorToDaqConnection>();
+    TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn->UID();
 
-    if (!d2d_conn) {
-      throw(BadConf(ERS_HERE, "ReadoutApplication contains something other than DetectorToDaqConnection"));
-    }
-
-    if (d2d_conn->get_contains().empty()) {
+    // Is this check necessary?
+    if (d2d_conn->contained_resources().empty()) {
       throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain senders or receivers"));
     }
 
-    auto det_senders = d2d_conn->get_senders();
-    auto det_receiver = d2d_conn->get_receiver();
+    auto det_senders = d2d_conn->senders();
+    auto det_receiver = d2d_conn->receiver();
 
     // Ensure that receiver is a nw_receiver
     const auto* nw_receiver = det_receiver->cast<appmodel::NWDetDataReceiver>();
@@ -85,7 +89,7 @@ WIECApplication::generate_modules(const confmodel::Session* session) const
     // Loop over senders
     for (const auto* sender : det_senders) {
 
-      if ( sender->disabled(*session) ) {
+      if ( sender->is_disabled(*session) ) {
         TLOG() << "Skipping disabled sender: " << sender->UID();
         continue;
       }
@@ -108,9 +112,8 @@ WIECApplication::generate_modules(const confmodel::Session* session) const
         bool enable_fembs[4] = {false, false, false, false};
 
         for ( const auto* sender : senders ){
-          for ( const auto* res : sender->get_contains() ) {
+          for ( const auto* det_stream : sender->get_streams() ) {
             // Loop over streams for this sender
-            const auto* det_stream = res->cast<confmodel::DetectorStream>();
             // Retrieve stream_id and calculate the femb_id
             uint32_t stream_id = det_stream->get_geo_id()->get_stream_id();
             uint32_t femb_id = (stream_id & 0xf) / 2 + 2*((stream_id >> 6) & 0xf);
@@ -119,12 +122,11 @@ WIECApplication::generate_modules(const confmodel::Session* session) const
 
             // Enable the femb if any of the associated streams is enabld
             // Senders in this senders list should be enabled, but better safe than sorry.
-            enable_fembs[femb_id] |= !det_stream->disabled(*session);
+            enable_fembs[femb_id] |= !det_stream->is_disabled(*session);
           }
         }
-        conffwk::ConfigObject wib_obj;
         std::string wib_uid = fmt::format("wib-ctrl-{}-{}", this->UID(), ctrlhost);
-        config->create(dbfile, "WIBModule", wib_uid, wib_obj);
+        conffwk::ConfigObject wib_obj = obj_fac.create("WIBModule", wib_uid);
         wib_obj.set_by_val<std::string>("wib_addr", fmt::format("{}://{}:{}", this->get_wib_module_conf()->get_communication_type(), ctrlhost, this->get_wib_module_conf()->get_communication_port()));
         wib_obj.set_by_val<bool>("enabled_femb0", enable_fembs[0]);
         wib_obj.set_by_val<bool>("enabled_femb1", enable_fembs[1]);
@@ -136,9 +138,8 @@ WIECApplication::generate_modules(const confmodel::Session* session) const
 
       // Create Hermes Modules
       if (this->get_hermes_module_conf()) {
-        conffwk::ConfigObject hermes_obj;
         std::string hermes_uid = fmt::format("hermes-ctrl-{}-{}", this->UID(), ctrlhost);
-        config->create(dbfile, "HermesModule", hermes_uid, hermes_obj);
+        conffwk::ConfigObject hermes_obj = obj_fac.create("HermesModule", hermes_uid);
         hermes_obj.set_obj("address_table", &this->get_hermes_module_conf()->get_address_table()->config_object());
         hermes_obj.set_by_val<std::string>("uri", fmt::format("{}://{}:{}", this->get_hermes_module_conf()->get_ipbus_type(), ctrlhost, this->get_hermes_module_conf()->get_ipbus_port()));
         hermes_obj.set_by_val<uint32_t>("timeout_ms", this->get_hermes_module_conf()->get_ipbus_timeout_ms());
