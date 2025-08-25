@@ -58,7 +58,7 @@ TRMonReqApplication::generate_modules(const confmodel::Session* session) const
   const QueueDescriptor* tdtQDesc = nullptr;
   for (auto rule : get_queue_rules()) {
     auto destination_class = rule->get_destination_class();
-    if (destination_class == "TRMonRequestModule") {
+    if (destination_class == "TRMonRequestorModule") {
       tdtQDesc = rule->get_descriptor();
     }
   }
@@ -81,7 +81,7 @@ TRMonReqApplication::generate_modules(const confmodel::Session* session) const
     throw(BadConf(ERS_HERE, "Could not find network descriptor rule for input TriggerRecords!"));
   }
   // Create network connection config object
-  auto dwInputObj = obj_fac.create_net_obj(dwNetDesc, UID());
+  auto dwInputObj = obj_fac.create_net_obj(dwNetDesc, "");
 
   // Process special Network rules!
   // Looking for DataRequest rules from ReadoutAppplications in current Session

@@ -199,6 +199,7 @@ DFApplication::generate_modules(const confmodel::Session* session) const
 
   // Containers for module specific config objects for output/input
   // Prepare TRB output objects
+  std::vector<const conffwk::ConfigObject*> trbInputObjs;
   std::vector<const conffwk::ConfigObject*> trbOutputObjs;
   std::vector<const conffwk::ConfigObject*> trbSidNetObjs;
 
@@ -225,6 +226,8 @@ DFApplication::generate_modules(const confmodel::Session* session) const
   const NetworkConnectionDescriptor* fragNetDesc = nullptr;
   const NetworkConnectionDescriptor* trigdecNetDesc = nullptr;
   const NetworkConnectionDescriptor* tokenNetDesc = nullptr;
+  const NetworkConnectionDescriptor* trmonReqNetDesc = nullptr;
+  const NetworkConnectionDescriptor* trmonTRNetDesc = nullptr;
   for (auto rule : get_network_rules()) {
     auto descriptor = rule->get_descriptor();
     auto data_type = descriptor->get_data_type();
@@ -234,6 +237,10 @@ DFApplication::generate_modules(const confmodel::Session* session) const
       trigdecNetDesc = rule->get_descriptor();
     } else if (data_type == "TriggerDecisionToken") {
       tokenNetDesc = rule->get_descriptor();
+    } else if (data_type == "TRMonRequest") {
+      trmonReqNetDesc = rule->get_descriptor();
+    } else if (data_type == "TriggerRecord") {
+      trmonTRNetDesc = rule->get_descriptor();
     }
   }
   if (fragNetDesc == nullptr) { // BadConf if no descriptor for Fragments into TRB
@@ -252,6 +259,14 @@ DFApplication::generate_modules(const confmodel::Session* session) const
   auto fragNetObj = obj_fac.create_net_obj(fragNetDesc, UID());
   auto trigdecNetObj =  obj_fac.create_net_obj(trigdecNetDesc, UID());
   auto tokenNetObj = obj_fac.create_net_obj(tokenNetDesc, "");
+  conffwk::ConfigObject trmonReqNetObj;
+  conffwk::ConfigObject trmonTRNetObj;
+  if (trmonReqNetDesc != nullptr) {
+    trmonReqNetObj = obj_fac.create_net_obj(trmonReqNetDesc, UID());
+  }
+  if (trmonTRNetDesc != nullptr) {
+    trmonTRNetObj = obj_fac.create_net_obj(trmonTRNetDesc, "");
+  }
 
   // Process special Network rules!
   // Looking for DataRequest rules from ReadoutAppplications in current Session
@@ -336,11 +351,18 @@ DFApplication::generate_modules(const confmodel::Session* session) const
   }
   auto trbConfObj = trbConf->config_object();
   trbConfObj.set_by_val<uint32_t>("source_id", get_source_id()->get_sid());
+  trbInputObjs = { &trigdecNetObj, &fragNetObj };
+  if (trmonReqNetDesc != nullptr) {
+    trbInputObjs.push_back(&trmonReqNetObj);
+  }
+  if (trmonTRNetDesc != nullptr) {
+    trbOutputObjs.push_back(&trmonTRNetObj);
+  }
   // Prepare TRB Module Object and assign its Config Object.
   std::string trbUid(UID() + "-trb");
   conffwk::ConfigObject trbObj = obj_fac.create("TRBModule", trbUid);
   trbObj.set_obj("configuration", &trbConfObj);
-  trbObj.set_objs("inputs", { &trigdecNetObj, &fragNetObj });
+  trbObj.set_objs("inputs", trbInputObjs);
   trbObj.set_objs("outputs", trbOutputObjs);
   trbObj.set_objs("request_connections", trbSidNetObjs);
   // Push TRB Module Object from confdb
