@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ASCII"?>
+<?xml version="1.0" encoding="us-ascii"?>
 
 <!-- oks-schema version 2.2 -->
 
@@ -518,6 +518,17 @@
   <superclass name="DaqModule"/>
   <relationship name="configuration" class-type="TRBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="request_connections" class-type="SourceIDToNetworkConnection" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="TRMonRequestorConf">
+  <attribute name="request_interval_ms" type="u32" init-value="1000" is-not-null="yes"/>
+  <attribute name="trigger_type_mask" type="u32" init-value="0" is-not-null="yes"/>
+     <relationship name="trigger_record_destination" class-type="Connection" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="TRMonRequestorModule">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="TRMonRequestorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
 </oks-schema>
