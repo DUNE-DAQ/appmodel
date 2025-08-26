@@ -364,6 +364,7 @@ DFApplication::generate_modules(const confmodel::Session* session) const
   trbObj.set_obj("configuration", &trbConfObj);
   trbObj.set_objs("inputs", trbInputObjs);
   trbObj.set_objs("outputs", trbOutputObjs);
+  trbObj.set_obj("trigger_record_output", &trQueueObj);
   trbObj.set_objs("request_connections", trbSidNetObjs);
   // Push TRB Module Object from confdb
   modules.push_back(obj_fac.get_dal<TRBModule>(trbUid));
