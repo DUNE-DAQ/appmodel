@@ -533,7 +533,8 @@
  </class>
 
  <class name="TRMonRequestorConf">
-  <attribute name="request_interval_ms" type="u32" init-value="1000" is-not-null="yes"/>
+  <attribute name="minimum_request_interval_ms" description="TRMonRequestor will not request TriggerRecords more often than this interval, as long as it has tokens from the DataWriter" type="u32" init-value="1000" is-not-null="yes"/>
+  <attribute name="maximum_outstanding_requests" description="The number of requests that the TRMonRequestor will send before waiting for DataWriter completion" type="u32" init-value="1" is-not-null="yes"/>
   <attribute name="trigger_type_mask" type="u32" init-value="0" is-not-null="yes"/>
  </class>
 
