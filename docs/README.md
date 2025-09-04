@@ -27,17 +27,21 @@ Readout, HSI, Hermes Dataflow and Trigger applications extend from **SmartDaqApp
  The **ReadoutApplication** inherits from **SmartDaqApplication** and provides
 a `generate_modules()` method which will
 generate a **DataReaderModule** for each **DetectorToDaqConnection** associated with the application via the `detector_connections` relationship, and set of **DataHandlerModule** objects, i.e. **DLH** for each
-**DetectorStream** plus a single **TPHandlerModule** (FIXME: this shall become a TPHandler per detector plane). Optionally **DataRecorderModule** modules may be created (not supported yet)). The modules are created
+**DetectorStream** plus a single **TPHandlerModule** (FIXME: this shall become a TPHandler per detector plane).
+
+ Optionally **DataRecorderModule** modules may be created (not supported yet)). The modules are created
 according to the configuration given by the data_reader, link_handler, data_recorder
-and tp_handler relationships respectively. Connections between pairs
-of modules are configured according to the queue_rules relationship
+and tp_handler relationships respectively.
+
+ Connections between pairs
+of modules are configured according to the `queue_rules` relationship
 inherited from **SmartDaqApplication**.
 
 ### Far Detector schema extensions
 
 ![Class extensions for far detector](fd_customizations.png)
 
-Several OKS classes have far detector specific customisations, as shown in the diagram.
+Several OKS classes have far detector specific customisations, as shown in blue the above diagram.
 
 ## DataFlow applications
 
@@ -66,5 +70,3 @@ testing the `generate_modules` method of **SmartDaqApplication**s. It reads
 a configuration from an OKS database, generates the DaqModules for the
 requested SmartDaqApplication and prints a summary of the DaqModules
 and Connections.
-
-LocalWords:  SmartDaqApplication ReadoutApplication
