@@ -30,7 +30,7 @@ namespace dunedaq::appmodel::python {
   };
 
   std::vector<ObjectLocator>
-  smart_dap_application_generate_modules(const conffwk::Configuration& confdb, const std::string& app_id, const std::string& session_id)
+  smart_daq_application_generate_modules(const conffwk::Configuration& confdb, const std::string& app_id, const std::string& session_id)
   {
     auto app =
       const_cast<conffwk::Configuration&>(confdb).get<appmodel::SmartDaqApplication>(app_id);
@@ -62,7 +62,7 @@ register_dal_methods(py::module& m)
     .def_readonly("class_name", &ObjectLocator::class_name)
     ;
 
-  m.def("smart_dap_application_generate_modules", &smart_dap_application_generate_modules, "Generate DaqModules");
+  m.def("smart_daq_application_generate_modules", &smart_dap_application_generate_modules, "Generate DaqModules");
   m.def("smart_daq_application_construct_commandline_parameters", &smart_daq_application_construct_commandline_parameters, "Get a version of the command line agruments parsed");
 }
 
