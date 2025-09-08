@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="us-ascii"?>
+<?xml version="1.0" encoding="ASCII"?>
 
 <!-- oks-schema version 2.2 -->
 
@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="56" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="dergonul" last-modified-on="np04-srv-028.cern.ch" last-modification-time="20250729T142105"/>
+<info name="" type="" num-of-items="63" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20250908T151235"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -138,14 +138,6 @@
   <relationship name="configuration" class-type="DFOConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="SNBTransferApplication">
-  <superclass name="SmartDaqApplication"/>
-  <relationship name="snbt" class-type="SNBTransferConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
-   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(const confmodel::Session*) const override" body=""/>
-  </method>
- </class>
- 
  <class name="DTSHSIApplication">
   <superclass name="SmartDaqApplication"/>
   <superclass name="Resource"/>
@@ -154,41 +146,6 @@
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(const confmodel::Session*) const override" body=""/>
   </method>
- </class>
-
- <class name="SNBTransferConf">
-  <attribute name="client_ip" type="string" is-not-null="yes"/>
-  <attribute name="work_dir" type="string" is-not-null="yes"/>
-  <attribute name="connection_prefix" type="string" init-value="snbmodules"/>
-  <attribute name="timeout_send" type="u16" init-value="10"/>
-  <attribute name="timeout_receive" type="u16" init-value="100"/>
- </class>
-
- <class name="SNBFileTransfer">
-  <superclass name="DaqModule"/>
-  <relationship name="configuration" class-type="SNBTransferConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="SNBBookkeeperApplication">
-  <superclass name="SmartDaqApplication"/>
-  <relationship name="snbbk" class-type="SNBBookkeeperConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
-   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(const confmodel::Session*) const override" body=""/>
-  </method>
- </class>
-
- <class name="SNBBookkeeperConf">
-  <attribute name="bookkeeper_ip" type="string" is-not-null="yes"/>
-  <attribute name="bookkeeper_log_path" type="string" is-not-null="yes"/>
-  <attribute name="connection_prefix" type="string" init-value="snbmodules"/>
-  <attribute name="refresh_rate" type="u8" init-value="5"/>
-  <attribute name="timeout_send" type="u16" init-value="10"/>
-  <attribute name="timeout_receive" type="u16" init-value="100"/>
- </class>
-
- <class name="SNBTransferBookkeeper">
-  <superclass name="DaqModule"/>
-  <relationship name="configuration" class-type="SNBBookkeeperConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="DataHandlerConf">
@@ -223,7 +180,7 @@
   <attribute name="template_for" description="OKS class of the DataReaderModule that this config is a template for" type="class" init-value="DataReaderModule" is-not-null="yes"/>
   <attribute name="emulation_mode" type="bool" init-value="false"/>
   <relationship name="emulation_conf" description="Parameters for emulating the stream." class-type="StreamEmulationParameters" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-     <relationship name="snb_conf" description="Parameters for the SNB file stream." class-type="SNBFileSourceParameters" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="snb_conf" description="Parameters for the SNB file stream." class-type="SNBFileSourceParameters" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="DataReaderModule" is-abstract="yes">
@@ -483,6 +440,56 @@
   <relationship name="hitFindingProc" class-type="ProcessingResource" low-cc="zero" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
  </class>
 
+ <class name="SNBBookkeeperApplication">
+  <superclass name="SmartDaqApplication"/>
+  <relationship name="snbbk" class-type="SNBBookkeeperConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(const confmodel::Session*) const override" body=""/>
+  </method>
+ </class>
+
+ <class name="SNBBookkeeperConf">
+  <attribute name="bookkeeper_ip" type="string" is-not-null="yes"/>
+  <attribute name="bookkeeper_log_path" type="string" is-not-null="yes"/>
+  <attribute name="connection_prefix" type="string" init-value="snbmodules"/>
+  <attribute name="refresh_rate" type="u8" init-value="5"/>
+  <attribute name="timeout_send" type="u16" init-value="10"/>
+  <attribute name="timeout_receive" type="u16" init-value="100"/>
+ </class>
+
+ <class name="SNBFileSourceParameters">
+  <attribute name="data_file_name" type="string"/>
+  <attribute name="input_buffer_size" type="u32" init-value="10485100" is-not-null="yes"/>
+  <attribute name="set_t0" description="Set first timestamp to now" type="bool" init-value="true" is-not-null="yes"/>
+  <attribute name="file_compression_algorithm" description="Compression algorithm used when writing data" type="string" init-value="None"/>
+ </class>
+
+ <class name="SNBFileTransfer">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="SNBTransferConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="SNBTransferApplication">
+  <superclass name="SmartDaqApplication"/>
+  <relationship name="snbt" class-type="SNBTransferConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(const confmodel::Session*) const override" body=""/>
+  </method>
+ </class>
+
+ <class name="SNBTransferBookkeeper">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="SNBBookkeeperConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="SNBTransferConf">
+  <attribute name="client_ip" type="string" is-not-null="yes"/>
+  <attribute name="work_dir" type="string" is-not-null="yes"/>
+  <attribute name="connection_prefix" type="string" init-value="snbmodules"/>
+  <attribute name="timeout_send" type="u16" init-value="10"/>
+  <attribute name="timeout_receive" type="u16" init-value="100"/>
+ </class>
+
  <class name="SmartDaqApplication" description="A SmartDaqApplication defines a &quot;generate_modules&quot; method which uses input configuration to generate the modules for known DUNE-DAQ applications." is-abstract="yes">
   <superclass name="Application"/>
   <relationship name="source_id" class-type="SourceIDConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -516,13 +523,6 @@
   <relationship name="source_ids" class-type="SourceIDConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="netconn" class-type="NetworkConnection" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
-
-    <class name="SNBFileSourceParameters">
-        <attribute name="data_file_name" type="string"/>
-        <attribute name="input_buffer_size" type="u32" init-value="10485100" is-not-null="yes"/>
-        <attribute name="set_t0" description="Set first timestamp to now" type="bool" init-value="true" is-not-null="yes"/>
-        <attribute name="file_compression_algorithm" description="Compression algorithm used when writing data" type="string" init-value="None" is-not-null="no" />
-    </class>
 
  <class name="StreamEmulationParameters">
   <attribute name="data_file_name" type="string"/>
