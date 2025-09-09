@@ -78,15 +78,17 @@ TDECrateApplication::generate_modules(const confmodel::Session* session) const
 
       ctrlhost_sender_map[tde_sender->get_control_host()].push_back(tde_sender);
     }
+  }
 
-    for( const auto& [ctrlhost, senders] : ctrlhost_sender_map ) {
-      if ( this->get_tde_amc_module_conf() ) {
-        conffwk::ConfigObject tde_obj = obj_fac.create( "TDEAMCModule", fmt::format("tde-ctrl-{}-{}", this->UID(), ctrlhost));
-        // std::string tde_uid = fmt::format("tde-ctrl-{}-{}", this->UID(), ctrlhost);
-        // config->create(dbfile, "TDEAMCModule", tde_uid, tde_obj);
-        tde_obj.set_obj("amc", &(senders[0]->config_object()) ); // for now just allow one AMC per module
-        modules.push_back(obj_fac.get_dal<appmodel::TDEAMCModule>(tde_obj));
-      }
+  for( const auto& [ctrlhost, senders] : ctrlhost_sender_map ) {
+
+    // std::cout << "this->UID()='" << this->UID() << "' ctrlhost='" << ctrlhost << "'" << std::endl;
+    if ( this->get_tde_amc_module_conf() ) {
+      conffwk::ConfigObject tde_obj = obj_fac.create( "TDEAMCModule", fmt::format("tde-ctrl-{}-{}", this->UID(), ctrlhost));
+      // std::string tde_uid = fmt::format("tde-ctrl-{}-{}", this->UID(), ctrlhost);
+      // config->create(dbfile, "TDEAMCModule", tde_uid, tde_obj);
+      tde_obj.set_obj("amc", &(senders[0]->config_object()) ); // for now just allow one AMC per module
+      modules.push_back(obj_fac.get_dal<appmodel::TDEAMCModule>(tde_obj));
     }
   }
   return modules;

@@ -404,6 +404,9 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
         auto frag_conn = obj_fac.create("NetworkConnection", dreqNetUid);
 
         frag_conn.set_by_val<std::string>("data_type", descriptor->get_data_type());
+
+        // Override capacity, set to 2x expected number of Fragments
+        frag_conn.set_by_val<int>("capacity", all_enabled_det_streams.size() * 2);
         frag_conn.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
 
         auto serviceObj = descriptor->get_associated_service()->config_object();
