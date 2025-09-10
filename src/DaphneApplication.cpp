@@ -29,6 +29,7 @@
 #include "appmodel/DaphneV2ControllerModule.hpp"
 #include "appmodel/DaphneApplication.hpp"
 #include "appmodel/FelixDetectorToDaqConnection.hpp"
+#include "appmodel/NetworkDetectorToDaqConnection.hpp"
 #include "appmodel/FelixDataSender.hpp"
 
 
@@ -75,36 +76,47 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
       throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain senders or receivers"));
     }
 
-    auto det_senders = d2d_conn->get_felix_senders();
+    auto flx_conn = dynamic_cast<const appmodel::FelixDetectorToDaqConnection *>( d2d_conn );
+    auto net_conn = dynamic_cast<const appmodel::NetworkDetectorToDaqConnection *>( d2d_conn );
 
-    // Loop over senders
-    for (const auto* felix_sender : det_senders) {
+    bool is_v3 = false;
+    if (net_conn) {
+      is_v3 = true;
+      if ( ! flx_conn ) throw BadConf(ERS_HERE, d2d_conn->UID() + " is neither felix or eth connection");
+    }
 
-      if ( felix_sender->is_disabled(*session) ) {
-        TLOG() << "Skipping disabled sender: " << felix_sender->UID();
-        continue;
-      }
+    if ( flx_conn ) {
+      auto det_senders = flx_conn->get_felix_senders();
 
-      auto ip = felix_sender -> get_control_host();
-
-      // from the felix sender we get the DetStream and then the GeoID
-
-      auto streams = felix_sender -> get_streams();
-
-      for ( const auto * det_s : streams ) {
-
-	if ( det_s->is_disabled(*session) ) {
-	  TLOG() << "Skipping disabled DetStream: " << det_s->UID();
+      // Loop over senders
+      for (const auto* felix_sender : det_senders) {
+	
+	if ( felix_sender->is_disabled(*session) ) {
+	  TLOG() << "Skipping disabled sender: " << felix_sender->UID();
 	  continue;
 	}
+	
+	auto ip = felix_sender -> get_control_host();
+	
+	// from the felix sender we get the DetStream and then the GeoID
+	
+	auto streams = felix_sender -> get_streams();
+	
+	for ( const auto * det_s : streams ) {
+	  
+	  if ( det_s->is_disabled(*session) ) {
+	    TLOG() << "Skipping disabled DetStream: " << det_s->UID();
+	    continue;
+	  }
 
-	if (!geo_ids.contains(ip)) {
-	  geo_ids[ip] = det_s->get_geo_id();
-	} 
-	 
-      } // loop over DetStreams
-      
-    } // loop over det_senders
+	  if (!geo_ids.contains(ip)) {
+	    geo_ids[ip] = det_s->get_geo_id();
+	  } 
+	  
+	} // loop over DetStreams
+	
+      } // loop over det_senders
+    }
 
   } // loop over det2DAQ Connections
 

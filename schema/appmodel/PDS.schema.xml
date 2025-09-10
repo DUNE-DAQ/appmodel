@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="12" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250910T112107"/>
+<info name="" type="" num-of-items="12" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250910T123754"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -93,7 +93,7 @@
   <superclass name="SmartDaqApplication"/>
   <superclass name="ResourceSetDisableAND"/>
   <relationship name="configuration" class-type="DaphneConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="detector_connections" description="List of detector components controlled by this application" class-type="FelixDetectorToDaqConnection" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="detector_connections" description="List of detector components controlled by this application" class-type="DetectorToDaqConnection" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(const confmodel::Session*) const override" body=""/>
   </method>
@@ -107,6 +107,7 @@
   <attribute name="time_reset" description="If True, it performs the time reset at configuration. If False, that is skipped" type="bool" init-value="True" is-not-null="yes"/>
   <relationship name="default_v2_settings" description="Value to be used during scrap" class-type="DaphneV2BoardConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="boards" class-type="DaphneMap" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="default_v3_settings" class-type="DaphneV2BoardConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="get_timeout" description="get the interval casted in ms">
    <method-implementation language="C++" prototype="std::chrono::milliseconds get_timeout() const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &lt;chrono&gt;&#xA;END_HEADER_PROLOGUE&#xA;&#xA;return std::chrono::milliseconds(get_timeout_ms());"/>
   </method>
