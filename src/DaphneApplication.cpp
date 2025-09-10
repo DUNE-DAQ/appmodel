@@ -14,6 +14,7 @@
 
 #include "confmodel/GeoId.hpp"
 #include "confmodel/DetectorStream.hpp"
+#include "confmodel/NetworkInterface.hpp"
 
 #include "ConfigObjectFactory.hpp"
 #include "appmodel/appmodelIssues.hpp"
@@ -32,7 +33,7 @@
 #include "appmodel/FelixDetectorToDaqConnection.hpp"
 #include "appmodel/NetworkDetectorToDaqConnection.hpp"
 #include "appmodel/FelixDataSender.hpp"
-
+#include "appmodel/NWDetDataSender.hpp"
 
 #include <string>
 #include <vector>
@@ -59,8 +60,16 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
 
   auto daphne_conf = get_configuration();
 
+  std::map<std::string, const DaphneV2BoardConf*> conf_map;
+  auto confs = daphne_conf->get_boards();
+  for ( const auto & c : confs ) {
+    conf_map[c->get_ip()] = c->get_conf();
+  }
+ 
   std::map<std::string, const confmodel::GeoId*> geo_ids;
   std::map<std::string, bool> v3_map;
+
+
   
   
   for (auto d2d_conn : get_detector_connections()) {
@@ -82,9 +91,7 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
     auto flx_conn = dynamic_cast<const appmodel::FelixDetectorToDaqConnection *>( d2d_conn );
     auto net_conn = dynamic_cast<const appmodel::NetworkDetectorToDaqConnection *>( d2d_conn );
 
-    bool is_v3 = false;
-    if (net_conn) {
-      is_v3 = true;
+    if ( ! net_conn) {
       if ( ! flx_conn ) throw BadConf(ERS_HERE, d2d_conn->UID() + " is neither felix or eth connection");
     }
 
@@ -114,7 +121,7 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
 
 	  if (!geo_ids.contains(ip)) {
 	    geo_ids[ip] = det_s->get_geo_id();
-	    v3_map[ip] = is_v3;
+	    v3_map[ip] = false;
 	  } 
 	  
 	} // loop over DetStreams
@@ -122,16 +129,48 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
       } // loop over det_senders
     } // if flx connection
 
-    
+    if ( net_conn ) {
+      auto det_senders = net_conn->get_net_senders();
+
+      for ( const auto* nw_sender : det_senders ) {
+	if ( nw_sender->is_disabled(*session) ) {
+          TLOG() << "Skipping disabled sender: " << nw_sender->UID();
+          continue;
+        }
+
+	auto interface = nw_sender->get_uses();
+	auto ips = interface->get_ip_address();
+
+	std::string ip;
+	for ( auto temp_ip : ips ) {
+	  if ( conf_map.count(temp_ip) > 0 ) {
+	    ip = temp_ip;
+	    break;
+	  }
+	}
+		
+	auto streams = nw_sender -> get_streams();
+	for ( const auto * det_s : streams ) {
+	  
+          if ( det_s->is_disabled(*session) ) {
+            TLOG() << "Skipping disabled DetStream: " << det_s->UID();
+            continue;
+          }
+	  
+	  if (!geo_ids.contains(ip)) {
+            geo_ids[ip] = det_s->get_geo_id();
+	    v3_map[ip] = true;
+          }
+	  
+	} // loop over streams
+
+      } // loop over NW senders
+      
+    } // if net_connection
 
   } // loop over det2DAQ Connections
 
 
-  std::map<std::string, const DaphneV2BoardConf*> conf_map;
-  auto confs = daphne_conf->get_boards();
-  for ( const auto & c : confs ) {
-    conf_map[c->get_ip()] = c->get_conf();
-  }
   
   
   for ( const auto & [ip, geo] : geo_ids ) {
