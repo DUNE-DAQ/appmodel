@@ -118,7 +118,11 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
   
   for ( const auto & [ip, geo] : geo_ids ) {
   
-    auto conf = conf_map.at(ip);
+    auto conf_it = conf_map.find(ip);
+    if ( conf_it == conf_map.end() ) {
+      throw MissingIP(ERS_HERE, ip);
+    }
+    auto conf = conf_it->second;
 
     conffwk::ConfigObject module_obj = obj_fac.create( "DaphneV2ControllerModule", fmt::format("controller-{}", ip) );
     module_obj.set_by_val<std::string>("address", ip);
