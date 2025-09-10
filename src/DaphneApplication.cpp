@@ -27,6 +27,7 @@
 #include "appmodel/DaphneV2PGA.hpp"
 #include "appmodel/DaphneV2LNA.hpp"
 #include "appmodel/DaphneV2ControllerModule.hpp"
+#include "appmodel/DaphneV3ControllerModule.hpp"
 #include "appmodel/DaphneApplication.hpp"
 #include "appmodel/FelixDetectorToDaqConnection.hpp"
 #include "appmodel/NetworkDetectorToDaqConnection.hpp"
@@ -59,6 +60,8 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
   auto daphne_conf = get_configuration();
 
   std::map<std::string, const confmodel::GeoId*> geo_ids;
+  std::map<std::string, bool> v3_map;
+  
   
   for (auto d2d_conn : get_detector_connections()) {
 
@@ -111,12 +114,15 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
 
 	  if (!geo_ids.contains(ip)) {
 	    geo_ids[ip] = det_s->get_geo_id();
+	    v3_map[ip] = is_v3;
 	  } 
 	  
 	} // loop over DetStreams
 	
       } // loop over det_senders
-    }
+    } // if flx connection
+
+    
 
   } // loop over det2DAQ Connections
 
@@ -136,7 +142,7 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
     }
     auto conf = conf_it->second;
 
-    conffwk::ConfigObject module_obj = obj_fac.create( "DaphneV2ControllerModule", fmt::format("controller-{}", ip) );
+    conffwk::ConfigObject module_obj = obj_fac.create( (v3_map.at(ip) ?  "DaphneV3ControllerModule" : "DaphneV2ControllerModule"), fmt::format("controller-{}", ip) );
     module_obj.set_by_val<std::string>("address", ip);
     module_obj.set_obj("daphne_conf", & daphne_conf -> config_object() );
     module_obj.set_obj("board_conf", & conf -> config_object() );
@@ -144,8 +150,7 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
     module_obj.set_by_val<uint16_t>("crate_id", geo->get_crate_id());
     module_obj.set_by_val<uint16_t>("detector_id", geo->get_detector_id());
 
-    
-    auto module = obj_fac.get_dal<appmodel::DaphneV2ControllerModule>(module_obj);
+    auto module = obj_fac.get_dal<confmodel::DaqModule>(module_obj); 
     modules.push_back(module);
     
   } // ips
