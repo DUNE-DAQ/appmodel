@@ -34,6 +34,7 @@
 #include "appmodel/NetworkDetectorToDaqConnection.hpp"
 #include "appmodel/FelixDataSender.hpp"
 #include "appmodel/NWDetDataSender.hpp"
+#include "appmodel/HermesDataSender.hpp"
 
 #include <string>
 #include <vector>
@@ -66,11 +67,7 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
     conf_map[c->get_ip()] = c->get_conf();
   }
  
-  std::map<std::string, const confmodel::GeoId*> geo_ids;
   std::map<std::string, bool> v3_map;
-
-
-  
   
   for (auto d2d_conn : get_detector_connections()) {
 
@@ -119,9 +116,10 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
 	    continue;
 	  }
 
-	  if (!geo_ids.contains(ip)) {
-	    geo_ids[ip] = det_s->get_geo_id();
-	    v3_map[ip] = false;
+	  auto geo_id = det_s->get_geo_id();
+	  auto id = fmt::format("{},{},{}", geo_id->get_detector_id(), geo_id->get_crate_id(), geo_id->get_slot_id());
+	  if (!v3_map.contains(id)) {
+	    v3_map[id] = false;
 	  } 
 	  
 	} // loop over DetStreams
@@ -138,17 +136,12 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
           continue;
         }
 
-	auto interface = nw_sender->get_uses();
-	auto ips = interface->get_ip_address();
-
-	std::string ip;
-	for ( auto temp_ip : ips ) {
-	  if ( conf_map.count(temp_ip) > 0 ) {
-	    ip = temp_ip;
-	    break;
-	  }
+	// Check the sender type, must me a HermesSender
+	const auto* hrms_sender = nw_sender->cast<appmodel::HermesDataSender>();
+	if (!hrms_sender ) {
+	  throw(BadConf(ERS_HERE, fmt::format("DataSender {} is not a appmodel::HermesDataSender", nw_sender->UID())));
 	}
-		
+	
 	auto streams = nw_sender -> get_streams();
 	for ( const auto * det_s : streams ) {
 	  
@@ -157,10 +150,11 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
             continue;
           }
 	  
-	  if (!geo_ids.contains(ip)) {
-            geo_ids[ip] = det_s->get_geo_id();
-	    v3_map[ip] = true;
-          }
+	  auto geo_id = det_s->get_geo_id();
+	  auto id = fmt::format("{},{},{}", geo_id->get_detector_id(), geo_id->get_crate_id(), geo_id->get_slot_id());
+	  if (!v3_map.contains(id)) {
+	    v3_map[id] = true;
+	  } 
 	  
 	} // loop over streams
 
@@ -173,15 +167,15 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
 
   
   
-  for ( const auto & [ip, geo] : geo_ids ) {
+  for ( const auto & [id, v3] : v3_map ) {
   
-    auto conf_it = conf_map.find(ip);
+    auto conf_it = conf_map.find(id);
     if ( conf_it == conf_map.end() ) {
-      throw MissingIP(ERS_HERE, ip);
+      throw MissingDaphne(ERS_HERE, id);
     }
     auto conf = conf_it->second;
 
-    conffwk::ConfigObject module_obj = obj_fac.create( (v3_map.at(ip) ?  "DaphneV3ControllerModule" : "DaphneV2ControllerModule"), fmt::format("controller-{}", ip) );
+    conffwk::ConfigObject module_obj = obj_fac.create( (v3 ?  "DaphneV3ControllerModule" : "DaphneV2ControllerModule"), fmt::format("controller-{}", ip) );
     module_obj.set_by_val<std::string>("address", ip);
     module_obj.set_obj("daphne_conf", & daphne_conf -> config_object() );
     module_obj.set_obj("board_conf", & conf -> config_object() );
@@ -191,9 +185,29 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
 
     auto module = obj_fac.get_dal<confmodel::DaqModule>(module_obj); 
     modules.push_back(module);
+
+
+    // Create Hermes Modules
+    if (v3) {
+      std::string hermes_uid = fmt::format("hermes-ctrl-{}", this->UID(), id);
+      conffwk::ConfigObject hermes_obj = obj_fac.create("HermesModule", hermes_uid);
+      hermes_obj.set_obj("address_table", &this->get_hermes_module_conf()->get_address_table()->config_object());
+      hermes_obj.set_by_val<std::string>("uri", fmt::format("{}://{}:{}", this->get_hermes_module_conf()->get_ipbus_type(), ctrlhost, this->get_hermes_module_conf()->get_ipbus_port()));
+      hermes_obj.set_by_val<uint32_t>("timeout_ms", this->get_hermes_module_conf()->get_ipbus_timeout_ms());
+      hermes_obj.set_obj("destination", &nw_receiver->get_uses()->config_object());
+      
+      std::vector< const conffwk::ConfigObject * > links_obj; 
+      for ( const auto* sndr : senders ){
+	links_obj.push_back(&sndr->config_object());
+      }
+      hermes_obj.set_objs("links", links_obj);
+      
+      modules.push_back(config->get<appmodel::HermesModule>(hermes_obj));
+
+    }
     
   } // ips
-
+    
   return modules;
 }
 

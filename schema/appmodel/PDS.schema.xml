@@ -94,6 +94,8 @@
   <superclass name="ResourceSetDisableAND"/>
   <relationship name="configuration" class-type="DaphneConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="detector_connections" description="List of detector components controlled by this application" class-type="DetectorToDaqConnection" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="hermes_module_conf" class-type="HermesModuleConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(const confmodel::Session*) const override" body=""/>
   </method>
@@ -114,7 +116,7 @@
  </class>
 
  <class name="DaphneMap">
-  <attribute name="ip" description="Ip of the board" type="string" is-not-null="yes"/>
+  <attribute name="id" description="Id of the board in the form of {det_id},{crate_id},{slot_id}" type="string" is-not-null="yes"/>
   <relationship name="conf" class-type="DaphneV2BoardConf" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
  </class>
 
@@ -144,6 +146,10 @@
   <attribute name="tp_conf" type="u32" is-not-null="yes"/>
   <attribute name="compensator" type="u64" range="0..1099511627775" is-not-null="yes"/>
   <attribute name="inverter" type="u64" range="0..1099511627775" is-not-null="yes"/>
+  <attribute name="address" description="ip address of the board" type="string" is-not-null="yes"/>
+  <attribute name="slot_id" type="u16" range="0..15" is-not-null="yes"/>
+  <attribute name="crate_id" type="u16" range="0..1023" is-not-null="yes"/>
+  <attribute name="detector_id" type="u16" range="0..63" is-not-null="yes"/>
   <relationship name="active_channels" class-type="DaphneV2Channel" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="active_afes" class-type="DaphneV2AFE" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="default_channel" class-type="DaphneV2Channel" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -167,26 +173,21 @@
   <attribute name="offset" description="Pedestal for the channel" type="u16" range="0..2700" init-value="0" is-not-null="yes"/>
   <attribute name="trim" description="trim value for the channel" type="u16" range="0..4095" init-value="0" is-not-null="yes"/>
   <attribute name="channel_id" type="u8" range="0..39,100" init-value="100" is-not-null="yes"/>
+  <attribute name="stream_id" description="In Daphne v3 we might need to link a channel to a specific link ID, and this is the hook for the operation" type="s8" init-value="-1" is-not-null="yes"/>
+ </class>
+
+ <class name="DaphneControllerModule">
+  <superclass name="DaqModule"/>
+  <relationship name="daphne_conf" class-type="DaphneConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="board_conf" class-type="DaphneV2BoardConf" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
  </class>
 
  <class name="DaphneV2ControllerModule">
-  <superclass name="DaqModule"/>
-  <attribute name="address" description="ip address of the board" type="string" is-not-null="yes"/>
-  <attribute name="slot_id" type="u16" range="0..15" is-not-null="yes"/>
-  <attribute name="crate_id" type="u16" range="0..1023" is-not-null="yes"/>
-  <attribute name="detector_id" type="u16" range="0..63" is-not-null="yes"/>
-  <relationship name="daphne_conf" class-type="DaphneConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="board_conf" class-type="DaphneV2BoardConf" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <superclass name="DaphneControllerModule"/>
  </class>
 
  <class name="DaphneV3ControllerModule">
-  <superclass name="DaqModule"/>
-  <attribute name="address" description="ip address of the board" type="string" is-not-null="yes"/>
-  <attribute name="slot_id" type="u16" range="0..15" is-not-null="yes"/>
-  <attribute name="crate_id" type="u16" range="0..1023" is-not-null="yes"/>
-  <attribute name="detector_id" type="u16" range="0..63" is-not-null="yes"/>
-  <relationship name="daphne_conf" class-type="DaphneConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="board_conf" class-type="DaphneV2BoardConf" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <superclass name="DaphneControllerModule"/>
  </class>
 
  <class name="DaphneV2LNA" description="info to generate Reg52 value">
