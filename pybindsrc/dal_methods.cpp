@@ -62,7 +62,7 @@ register_dal_methods(py::module& m)
     .def_readonly("class_name", &ObjectLocator::class_name)
     ;
 
-  m.def("smart_daq_application_generate_modules", &smart_dap_application_generate_modules, "Generate DaqModules");
+  m.def("smart_daq_application_generate_modules", &smart_daq_application_generate_modules, "Generate DaqModules");
   m.def("smart_daq_application_construct_commandline_parameters", &smart_daq_application_construct_commandline_parameters, "Get a version of the command line agruments parsed");
 }
 
