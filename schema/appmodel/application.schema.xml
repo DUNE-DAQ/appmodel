@@ -458,9 +458,8 @@
  </class>
 
  <class name="SNBFileSourceParameters">
-  <attribute name="data_file_name" type="string"/>
+  <attribute name="data_files" type="string" is-multi-value="yes"/>
   <attribute name="input_buffer_size" type="u32" init-value="10485100" is-not-null="yes"/>
-  <attribute name="set_t0" description="Set first timestamp to now" type="bool" init-value="true" is-not-null="yes"/>
   <attribute name="file_compression_algorithm" description="Compression algorithm used when writing data" type="string" init-value="None"/>
  </class>
 
