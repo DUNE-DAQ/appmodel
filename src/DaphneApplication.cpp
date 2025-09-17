@@ -68,7 +68,7 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
   std::map<std::string, const DaphneV2BoardConf*> conf_map;
   auto confs = daphne_conf->get_boards();
   for ( const auto & c : confs ) {
-    conf_map[c->get_id()] = c->get_conf();
+    conf_map[c->get_key()] = c->get_conf();
   }
 
   //  these maps are all indexed on the board id {detector].{crate}.{slot}

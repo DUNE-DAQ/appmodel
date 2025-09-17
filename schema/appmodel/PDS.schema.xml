@@ -116,7 +116,7 @@
  </class>
 
  <class name="DaphneMap">
-  <attribute name="id" description="Id of the board in the form of {det_id},{crate_id},{slot_id}" type="string" is-not-null="yes"/>
+  <attribute name="key" description="Id of the board in the form of {det_id},{crate_id},{slot_id}" type="string" is-not-null="yes"/>
   <relationship name="conf" class-type="DaphneV2BoardConf" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
  </class>
 
