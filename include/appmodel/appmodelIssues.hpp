@@ -17,6 +17,11 @@ namespace dunedaq {
         ((std::string)id))
 
   ERS_DECLARE_ISSUE(appmodel,
+		    MissingAFE,
+		    "Board " << board << "uses afe " << afe << "but it's not available",
+		    ((std::string)board)((std::size_t)afe))
+  
+  ERS_DECLARE_ISSUE(appmodel,
         UnimplementedMethodCalled,
         "Method '" << method_name << "' was called but is not implemented in this class",
         ((std::string)method_name))

@@ -37,6 +37,7 @@
 #include "appmodel/NWDetDataReceiver.hpp"
 #include "appmodel/HermesDataSender.hpp"
 #include "appmodel/HermesModuleConf.hpp"
+#include "appmodel/HermesModule.hpp"
 #include "appmodel/IpbusAddressTable.hpp"
 
 #include <string>
@@ -69,10 +70,14 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
   for ( const auto & c : confs ) {
     conf_map[c->get_id()] = c->get_conf();
   }
- 
+
+  //  these maps are all indexed on the board id {detector].{crate}.{slot}
   std::map<std::string, bool> v3_map;
   std::map<std::string, const confmodel::NetworkInterface*> interfaces;
   std::map<std::string, std::string> ctrl_hosts;
+
+  // map from ctrl_host to senders
+  std::map<std::string, std::vector<const appmodel::HermesDataSender*> > hermes_senders;
   
   for (auto d2d_conn : get_detector_connections()) {
 
@@ -147,7 +152,8 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
 	  throw(BadConf(ERS_HERE, fmt::format("DataSender {} is not a appmodel::HermesDataSender", nw_sender->UID())));
 	}
 
-	
+	hermes_senders[hrms_sender->get_control_host()].push_back(hrms_sender);
+	  
 	auto streams = nw_sender -> get_streams();
 	for ( const auto * det_s : streams ) {
 	  
@@ -200,13 +206,14 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
       hermes_obj.set_by_val<uint32_t>("timeout_ms", this->get_hermes_module_conf()->get_ipbus_timeout_ms());
       hermes_obj.set_obj("destination", & interfaces[id]->config_object());
       
-      std::vector< const conffwk::ConfigObject * > links_obj; 
+      std::vector< const conffwk::ConfigObject * > links_obj;
+      const auto & senders = hermes_senders[ctrl_hosts[id]];
       for ( const auto* sndr : senders ){
 	links_obj.push_back(&sndr->config_object());
       }
       hermes_obj.set_objs("links", links_obj);
       
-      modules.push_back(config->get<appmodel::HermesModule>(hermes_obj));
+      modules.push_back(obj_fac.get_dal<appmodel::HermesModule>(hermes_obj));
 
     }
     
@@ -263,7 +270,7 @@ DaphneV2BoardConf::get_afe(size_t ch) const {
     }
   }
 
-  throw appmodel::MissingDaphne(ERS_HERE, ch);
+  throw appmodel::MissingAFE(ERS_HERE, UID(), ch);
 }
 
 
