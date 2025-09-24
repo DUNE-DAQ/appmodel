@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="us-ascii"?>
+<?xml version="1.0" encoding="ASCII"?>
 
 <!-- oks-schema version 2.2 -->
 
@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="31" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20250908T151221"/>
+<info name="" type="" num-of-items="32" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20250924T135018"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -146,13 +146,9 @@
  </class>
 
  <class name="FakeDataReceiver">
-     <superclass name="NWDetDataReceiver"/>
+  <superclass name="NWDetDataReceiver"/>
  </class>
 
-
- <class name="FileReaderReceiver">
-     <superclass name="NWDetDataReceiver"/>
- </class>
  <class name="FakeDataSender">
   <superclass name="NWDetDataSender"/>
  </class>
@@ -212,6 +208,10 @@
 
  <class name="FelixReaderModule">
   <superclass name="DataReaderModule"/>
+ </class>
+
+ <class name="FileReaderReceiver">
+  <superclass name="NWDetDataReceiver"/>
  </class>
 
  <class name="IpbusAddressTable">
