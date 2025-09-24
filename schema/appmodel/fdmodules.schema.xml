@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ASCII"?>
+<?xml version="1.0" encoding="us-ascii"?>
 
 <!-- oks-schema version 2.2 -->
 
@@ -146,9 +146,13 @@
  </class>
 
  <class name="FakeDataReceiver">
-  <superclass name="NWDetDataReceiver"/>
+     <superclass name="NWDetDataReceiver"/>
  </class>
 
+
+ <class name="FileReaderReceiver">
+     <superclass name="NWDetDataReceiver"/>
+ </class>
  <class name="FakeDataSender">
   <superclass name="NWDetDataSender"/>
  </class>
