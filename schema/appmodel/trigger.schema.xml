@@ -196,8 +196,8 @@
 
  <class name="TPCRawDataProcessor">
   <superclass name="RawDataProcessor"/>
-  <attribute name="frame_count_thr" description="The maximum number of frames before TPs are sent to the TP sink.. &#xA;" type="u32" init-value="100" is-not-null="yes"/>
-  <attribute name="TP_count_thr" description="The maximum number of TPs collected after some frames, before all the TPs are sent to the TP sink. " type="u32" init-value="400000000" is-not-null="yes"/>
+  <attribute name="frame_count_limit" description="The maximum number of frames before TPs are sent to the TP sink. &#xA;" type="u32" init-value="100" is-not-null="yes"/>
+  <attribute name="tp_count_limit" description="The maximum number of TPs, before the TPs are sent to the TP sink. " type="u32" init-value="400000000" is-not-null="yes"/>
   <relationship name="processing_steps" class-type="ProcessingStep" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="sot_minima" description="TP samples over threshold minimum requirement by plane." class-type="SamplesOverThresholdMinima" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <attribute name="metric_collect_opmon_rate" description="The rate at which processor metric is polled from processors for monitoring" type="u32" init-value="1"/>
