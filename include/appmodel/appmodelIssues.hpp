@@ -12,14 +12,14 @@ namespace dunedaq {
                     ((std::string)id) ((std::string)stype))
 
   ERS_DECLARE_ISSUE(appmodel,
-        MissingIP,
-        "Daphne configuration has no IP " << ip,
-        ((std::string)ip))
+        MissingDaphne,
+        "Daphne configuration has no board " << id,
+        ((std::string)id))
 
   ERS_DECLARE_ISSUE(appmodel,
-        MissingDaphne,
-        "Daphne " << id << " has active channels but its turned off",
-        ((size_t)id))
+		    MissingAFE,
+		    "Board " << board << "uses afe " << afe << "but it's not available",
+		    ((std::string)board)((std::size_t)afe))
   
   ERS_DECLARE_ISSUE(appmodel,
         UnimplementedMethodCalled,
