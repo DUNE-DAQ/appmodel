@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="47" oks-format="schema" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231211T133151" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20250523T112537"/>
+<info name="" type="" num-of-items="54" oks-format="schema" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231211T133151" last-modified-by="ramarine" last-modified-on="np04-srv-016.cern.ch" last-modification-time="20251001T133247"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -175,8 +175,8 @@
 
  <class name="ProcessingStep" description="Base class for TPG processors.">
   <superclass name="Jsonable"/>
-  <attribute name="metric_collect_time_sample_period" description="If metric_collect_toggle_state is true, the processor will store values of its monitored quantities every metric_collect_time_sample_period time samples." type="u64" init-value="256" is-not-null="no"/>
-  <attribute name="metric_collect_toggle_state" description="Whether metric storaging function is enabled." type="bool" init-value="0" is-not-null="no"/>
+  <attribute name="metric_collect_time_sample_period" description="If metric_collect_toggle_state is true, the processor will store values of its monitored quantities every metric_collect_time_sample_period time samples." type="u64" init-value="256"/>
+  <attribute name="metric_collect_toggle_state" description="Whether metric storaging function is enabled." type="bool" init-value="0"/>
  </class>
 
  <class name="ROIGroupConf">
@@ -192,15 +192,6 @@
   <attribute name="trigger_rate_hz" description="Trigger rate (in Hz) for the RandomTCMaker to produce the TCs" type="float" init-value="1" is-not-null="yes"/>
   <attribute name="time_distribution" description="Type of distribution used for random timestamps (uniform or poisson)" type="enum" range="kUniform,kPoisson" init-value="kUniform" is-not-null="yes"/>
   <relationship name="tc_readout" description="Configuration for the TC output type and the TC window size" class-type="TCReadoutMap" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="TPCRawDataProcessor">
-  <superclass name="RawDataProcessor"/>
-  <attribute name="frame_count_limit" description="The maximum number of frames before TPs are sent to the TP sink. &#xA;" type="u32" init-value="100" is-not-null="yes"/>
-  <attribute name="tp_count_limit" description="The maximum number of TPs, before the TPs are sent to the TP sink. " type="u32" init-value="210" is-not-null="yes"/>
-  <relationship name="processing_steps" class-type="ProcessingStep" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="sot_minima" description="TP samples over threshold minimum requirement by plane." class-type="SamplesOverThresholdMinima" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <attribute name="metric_collect_opmon_rate" description="The rate at which processor metric is polled from processors for monitoring" type="u32" init-value="1"/>
  </class>
 
  <class name="RandomTCMakerModule">
@@ -324,14 +315,10 @@
   <attribute name="buffer_timeout" description="Timeout (buffer) to wait for new overlapping TCs before sending TD, in ms" type="u32" init-value="100" is-not-null="yes"/>
   <attribute name="td_readout_limit" description="Maximum allowed time length (in ticks) for a readout window of a single TD" type="u32" init-value="1000000" is-not-null="yes"/>
   <attribute name="ignore_tc" description="Optional list of TC types to be ignored in MLT" type="u32" is-multi-value="yes"/>
-  <relationship name="trigger_bitwords" description="Optional dictionary of bitwords to use when forming trigger decisions in MLT" class-type="TriggerBitword"  low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="trigger_bitwords" description="Optional dictionary of bitwords to use when forming trigger decisions in MLT" class-type="TriggerBitword" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="roi_group_conf" description="The configuration (table) for ROI readout (currently not used)" class-type="ROIGroupConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="tc_readout_map" description="The readout windows assigned to TDs in MLT, based on TC type." class-type="TCReadoutMap" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="mandatory_links" description="Source Ids that will always be included in a trigger decision." class-type="SourceIDConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="TriggerBitword">
-   <attribute name="bitword" description="Trigger Bitword in string format" type="string" is-multi-value="yes"/>
  </class>
 
  <class name="TCMakerADCSimpleWindowAlgorithm">
@@ -399,10 +386,50 @@
   <attribute name="time_after" description="Time, in ticks, after the HSI timestamp, for the TriggerCandidate end_time" type="u32" init-value="1001" is-not-null="yes"/>
  </class>
 
+ <class name="TPCRawDataProcessor">
+  <superclass name="RawDataProcessor"/>
+  <attribute name="frame_count_limit" description="When this number of frames is reached the TPs are sent to the sink. " type="u32" init-value="100" is-not-null="yes"/>
+  <attribute name="tp_count_limit" description="When this number of TPs is reached, the TPs are sent to the sink. SELECT 0 if you want this condition not to be used. In this case, sending TPs will only rely on the nuber of frames." type="u32" init-value="210" is-not-null="yes"/>
+  <attribute name="metric_collect_opmon_rate" description="The rate at which processor metric is polled from processors for monitoring" type="u32" init-value="1"/>
+  <relationship name="processing_steps" class-type="ProcessingStep" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="sot_minima" description="TP samples over threshold minimum requirement by plane." class-type="SamplesOverThresholdMinima" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
  <class name="TPDataProcessor">
   <superclass name="DataProcessor"/>
   <attribute name="print_tp_info" description="Whether to print TP information in the TA processor" type="bool" init-value="false"/>
   <relationship name="algorithms" class-type="TAAlgorithm" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="TPReplayApplication">
+  <superclass name="SmartDaqApplication"/>
+  <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
+  <relationship name="tp_source_ids" class-type="SourceIDConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="tprm_conf" class-type="TPReplayModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="tp_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <method name="generate_modules" description="Generate daq module dal objects for TPReplayApplication on the fly">
+   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(const confmodel::Session*) const override" body=""/>
+  </method>
+ </class>
+
+ <class name="TPReplayModule">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="TPReplayModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="TPReplayModuleConf">
+  <attribute name="template_for" type="class" init-value="TPReplayModule"/>
+  <attribute name="number_of_loops" type="s32" init-value="1" is-not-null="yes"/>
+  <attribute name="maximum_wait_time_us" type="u32" init-value="1000" is-not-null="yes"/>
+  <attribute name="channel_map" type="string" init-value="PD2HDTPCChannelMap" is-not-null="yes"/>
+  <attribute name="total_planes" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="filter_out_plane" type="u32" range="0..2" is-multi-value="yes" init-value="0"/>
+  <relationship name="tp_streams" class-type="TPStreamConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="TPStreamConf">
+  <attribute name="filename" type="string" init-value="1" is-not-null="yes"/>
+  <attribute name="index" type="u32" init-value="0" is-not-null="yes"/>
  </class>
 
  <class name="TriggerApplication">
@@ -417,41 +444,14 @@
   </method>
  </class>
 
+ <class name="TriggerBitword">
+  <attribute name="bitword" description="Trigger Bitword in string format" type="string" is-multi-value="yes"/>
+ </class>
+
  <class name="TriggerDataHandlerModule">
   <superclass name="DataHandlerModule"/>
   <relationship name="enabled_source_ids" description="List of source IDs enabled in this session: used by trigger to define the readout window for trigger decisions." class-type="SourceIDConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="mandatory_source_ids" description="Source Ids that will always be included in a trigger decision." class-type="SourceIDConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="TPReplayModule">
-  <superclass name="DaqModule"/>
-  <relationship name="configuration" class-type="TPReplayModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="TPReplayModuleConf">
-  <attribute name="template_for" type="class" init-value="TPReplayModule"/>
-  <attribute name="number_of_loops" type="s32" init-value="1" is-not-null="yes"/>
-  <attribute name="maximum_wait_time_us" type="u32" init-value="1000" is-not-null="yes"/>
-  <attribute name="channel_map" type="string" init-value="PD2HDTPCChannelMap" is-not-null="yes"/>
-  <attribute name="total_planes" type="u32" init-value="0" is-not-null="yes"/>
-  <attribute name="filter_out_plane" type="u32" range="0..2" init-value="0" is-multi-value="yes"/>
-  <relationship name="tp_streams" class-type="TPStreamConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-</class>
-
- <class name="TPStreamConf">
-  <attribute name="filename" type="string" init-value="1" is-not-null="yes"/>
-  <attribute name="index" type="u32" init-value="0" is-not-null="yes"/>
- </class>
-
- <class name="TPReplayApplication">
-  <superclass name="SmartDaqApplication"/>
-  <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
-  <relationship name="tp_source_ids" class-type="SourceIDConf" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="tprm_conf" class-type="TPReplayModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="tp_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <method name="generate_modules" description="Generate daq module dal objects for TPReplayApplication on the fly">
-    <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(const confmodel::Session*) const override" body=""/>
-  </method>
  </class>
 
 </oks-schema>
