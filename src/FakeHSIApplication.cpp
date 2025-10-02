@@ -50,6 +50,13 @@ FakeHSIApplication::generate_modules(const confmodel::Session* session) const
   auto dlhConf = get_link_handler();
   auto dlhClass = dlhConf->get_template_for();
 
+  // 23-Sep-2025, KAB et al: prevent a mis-configuration of the system in which the
+  // FakeHSI DLH is told to generate TimeSync messages. (TimeSync messages should only
+  // be sent from Readout DLH modules so that we don't get confusing system behavior.)
+  if (dlhConf->get_generate_timesync()) {
+    throw(BadConf(ERS_HERE, "TimeSync generation is enabled for a FakeHSIApplication and this is not allowed"));
+  }
+
   const QueueDescriptor* dlhInputQDesc = nullptr;
 
   for (auto rule : get_queue_rules()) {
