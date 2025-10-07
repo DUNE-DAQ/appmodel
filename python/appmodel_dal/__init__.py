@@ -1,4 +1,4 @@
-from ._daq_appmodel_py import *
+from ._daq_appmodel_dal_py import *
 
 __all__= ['generate_modules']
 
