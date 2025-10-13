@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="us-ascii"?>
+<?xml version="1.0" encoding="ASCII"?>
 
 <!-- oks-schema version 2.2 -->
 
@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="56" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="dergonul" last-modified-on="np04-srv-028.cern.ch" last-modification-time="20250729T142105"/>
+<info name="" type="" num-of-items="63" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20251013T181912"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -226,6 +226,19 @@
   <relationship name="configuration" class-type="DataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
+ <class name="DispatcherConf">
+  <attribute name="request_interval_ms" description="Time to wait between each reqeust to the FilterOrchestrator" type="u32" init-value="1000"/>
+  <attribute name="queue_timeout_ms" description="Time to wait for queue sends to complete" type="u32" init-value="100"/>
+  <attribute name="orchestrator_hostname" description="Host name for Orchestrator server" type="string" init-value="localhost"/>
+  <attribute name="orchestrator_port" description="Port for Orchestrator server" type="u16" init-value="6100"/>
+ </class>
+
+ <class name="DispatcherModule">
+  <superclass name="DaqModule"/>
+  <attribute name="hostname" description="Hostname for this Dispatcher (used for file lookups)" type="string" is-not-null="yes"/>
+  <relationship name="configuration" class-type="DispatcherConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
  <class name="FakeDataApplication">
   <superclass name="ResourceSetDisableAND"/>
   <superclass name="SmartDaqApplication"/>
@@ -286,6 +299,21 @@
   <attribute name="digits_for_file_index" type="s32" init-value="4" is-not-null="yes"/>
   <attribute name="trigger_number_prefix" type="string"/>
   <attribute name="digits_for_trigger_number" type="s32" init-value="8" is-not-null="yes"/>
+ </class>
+
+ <class name="FilterWriterConf">
+  <attribute name="min_write_retry_time_ms" type="s32" init-value="0" is-not-null="yes"/>
+  <attribute name="max_write_retry_time_ms" type="s32" init-value="0" is-not-null="yes"/>
+  <attribute name="write_retry_time_increase_factor" type="s32" init-value="0" is-not-null="yes"/>
+  <attribute name="orchestrator_hostname" description="Host name for Orchestrator server" type="string" init-value="localhost"/>
+  <attribute name="orchestrator_port" description="Port for Orchestrator server" type="u16" init-value="6100"/>
+  <relationship name="data_store_params" class-type="DataStoreConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="FilterWriterModule">
+  <superclass name="DaqModule"/>
+  <attribute name="writer_identifier" type="string"/>
+  <relationship name="configuration" class-type="FilterWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="FragmentAggregatorModule">
