@@ -93,6 +93,7 @@ ConfigObjectFactory::create_net_obj(const NetworkConnectionDescriptor* ndesc,
 
     net_obj.set_by_val<std::string>("data_type", ndesc->get_data_type());
     net_obj.set_by_val<std::string>("connection_type", ndesc->get_connection_type());
+    net_obj.set_by_val<uint32_t>("capacity", ndesc->get_capacity());
     net_obj.set_obj("associated_service", &svc_obj);
 
     return net_obj;
