@@ -11,6 +11,7 @@
 
 #include "ConfigObjectFactory.hpp"
 #include "appmodel/DFApplication.hpp"
+#include "appmodel/TRBConf.hpp"
 #include "appmodel/ReadoutApplication.hpp"
 #include "conffwk/Configuration.hpp"
 #include "confmodel/DetDataReceiver.hpp"
@@ -376,9 +377,9 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
     modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(dlh_obj.UID()));
   }
 
-
   // Finally create Fragment Aggregator
   std::string faUid("fragmentaggregator-" + UID());
+  uint32_t fragment_timeout = 0;
   // conffwk::ConfigObject frag_aggr;
   TLOG_DEBUG(7) << "creating OKS configuration object for Fragment Aggregator class ";
   auto frag_aggr = obj_fac.create("FragmentAggregatorModule", faUid);
@@ -393,6 +394,10 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
     if (dfapp == nullptr)
       continue;
 
+    auto dfapp_tmo = dfapp->get_trb()->get_trigger_record_timeout_ms();
+    if (dfapp_tmo > fragment_timeout) {
+      fragment_timeout = dfapp_tmo;
+    }
     auto dfNRules = dfapp->get_network_rules();
     for (auto rule : dfNRules) {
       auto descriptor = rule->get_descriptor();
@@ -426,6 +431,7 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
     fa_output_objs.push_back(&q->config_object());
   }
 
+  frag_aggr.set_by_val<uint32_t>("fragment_send_timeout_ms", fragment_timeout);
   frag_aggr.set_objs("inputs", { &fa_net_obj, &frag_queue_obj });
   frag_aggr.set_objs("outputs", fa_output_objs);
 

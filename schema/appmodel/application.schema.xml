@@ -290,6 +290,7 @@
 
  <class name="FragmentAggregatorModule">
   <superclass name="DaqModule"/>
+  <attribute name="fragment_send_timeout_ms" type="u32" init-value="0" is-not-null="yes"/>
  </class>
 
  <class name="HDF5FileLayoutParams">
@@ -508,9 +509,10 @@
  </class>
 
  <class name="TRBConf">
-  <attribute name="queues_timeout" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="tr_queue_timeout" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="request_queue_timeout" type="u32" init-value="0" is-not-null="yes"/>
   <attribute name="trigger_record_timeout_ms" type="u32" init-value="0" is-not-null="yes"/>
-  <attribute name="max_time_window" type="s64" init-value="0" is-not-null="yes"/>
+  <attribute name="max_sequence_length_ticks" type="s64" init-value="0" is-not-null="yes"/>
   <attribute name="source_id" type="u32" is-not-null="yes"/>
  </class>
 
