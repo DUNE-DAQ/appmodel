@@ -47,7 +47,7 @@ TRMonReqApplication::generate_modules(const confmodel::Session* session) const
 
   ConfigObjectFactory obj_fac(this);
 
-  std::vector<const conffwk::ConfigObject*> module_objects;
+  std::vector<const confmodel::DaqModule*> modules;
 
   // Containers for module specific config objects for output/input
   std::vector<const conffwk::ConfigObject*> trmrOutputObjs;
@@ -126,8 +126,7 @@ TRMonReqApplication::generate_modules(const confmodel::Session* session) const
   trmrObj.set_objs("outputs", trmrOutputObjs);
   trmrObj.set_obj("trigger_record_destination", &dwInputObj);
   // Push TRMR Module Object from confdb
-  auto dal_obj = obj_fac.get_dal<confmodel::DaqModule>(trmrUid);
-  module_objects.push_back(&dal_obj->config_object());
+  modules.push_back(obj_fac.get_dal<TRMonRequestorModule>(trmrUid));
 
   // Get DataWriterModule Config Object (only one for now, maybe more later?)
   auto dwrConf = get_data_writer();
@@ -145,12 +144,9 @@ TRMonReqApplication::generate_modules(const confmodel::Session* session) const
   dwrObj.set_objs("inputs", { &dwInputObj });
   dwrObj.set_objs("outputs", { &tdtQueueObj });
   // Push DataWriterModule Module Object from confdb
-  dal_obj = obj_fac.get_dal<confmodel::DaqModule>(dwrUid);
-  module_objects.push_back(&dal_obj->config_object());
+  modules.push_back(obj_fac.get_dal<DataWriterModule>(dwrUid));
 
-  auto app_obj = obj_fac.get_dal<TRMonReqApplication>(UID())->config_object();
-  app_obj.set_objs("modules", module_objects);
-  configuration().update<TRMonReqApplication>({UID()}, {}, {});
+  obj_fac.update_modules(modules);
 }
 
 } // namespace appmodel

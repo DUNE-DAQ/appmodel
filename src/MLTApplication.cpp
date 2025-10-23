@@ -66,7 +66,7 @@ void
 MLTApplication::generate_modules(const confmodel::Session* session) const
 {
 
-  std::vector<const conffwk::ConfigObject*> modules;
+  std::vector<const confmodel::DaqModule*> modules;
 
   ConfigObjectFactory obj_fac(this);
 
@@ -193,7 +193,7 @@ MLTApplication::generate_modules(const confmodel::Session* session) const
     generated_tc_conns.push_back(tc_net_gen);
 
     gen_obj.set_objs("outputs", { &generated_tc_conns.back() });
-    modules.push_back(&obj_fac.get_dal<StandaloneTCMakerModule>(gen_conf->UID())->config_object());
+    modules.push_back(obj_fac.get_dal<StandaloneTCMakerModule>(gen_conf->UID()));
   }
 
   /**************************************************************
@@ -212,7 +212,7 @@ MLTApplication::generate_modules(const confmodel::Session* session) const
   reader_obj.set_objs("outputs", { &input_queue_obj });
   reader_obj.set_obj("configuration", &rdr_conf->config_object());
 
-  modules.push_back(&obj_fac.get_dal<DataSubscriberModule>(reader_uid)->config_object());
+  modules.push_back(obj_fac.get_dal<DataSubscriberModule>(reader_uid));
 
   /**************************************************************
    * Create the readout map
@@ -410,7 +410,7 @@ MLTApplication::generate_modules(const confmodel::Session* session) const
   ti_obj.set_objs("outputs", ti_output_objs);
 
   // Add to our list of modules to return
-  modules.push_back(&obj_fac.get_dal<DataHandlerModule>(ti_uid)->config_object());
+  modules.push_back(obj_fac.get_dal<DataHandlerModule>(ti_uid));
 
   /**************************************************************
    * Instantiate the MLTModule module
@@ -421,11 +421,9 @@ MLTApplication::generate_modules(const confmodel::Session* session) const
   mlt_obj.set_obj("configuration", &(mlt_conf->config_object()));
   mlt_obj.set_objs("inputs", { &output_queue_obj, &ti_net_obj });
   mlt_obj.set_objs("outputs", { &td_net_obj });
-  modules.push_back(&obj_fac.get_dal<MLTModule>(mlt_conf->UID())->config_object());
+  modules.push_back(obj_fac.get_dal<MLTModule>(mlt_conf->UID()));
 
-  auto app_obj = obj_fac.get_dal<MLTApplication>(UID())->config_object();
-  app_obj.set_objs("modules", modules);
-  configuration().update<MLTApplication>({UID()}, {}, {});
+  obj_fac.update_modules(modules);
 }
  
 } // namespace appmodel  

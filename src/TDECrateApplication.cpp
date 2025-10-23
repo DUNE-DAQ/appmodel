@@ -42,7 +42,7 @@ TDECrateApplication::generate_modules(const confmodel::Session* session) const
 {
   ConfigObjectFactory obj_fac(this);
 
-  std::vector<const conffwk::ConfigObject*> modules;
+  std::vector<const confmodel::DaqModule*> modules;
 
   std::map<std::string, std::vector<const appmodel::TdeAmcDetDataSender*>> ctrlhost_sender_map;
 
@@ -88,12 +88,10 @@ TDECrateApplication::generate_modules(const confmodel::Session* session) const
       // std::string tde_uid = fmt::format("tde-ctrl-{}-{}", this->UID(), ctrlhost);
       // config->create(dbfile, "TDEAMCModule", tde_uid, tde_obj);
       tde_obj.set_obj("amc", &(senders[0]->config_object()) ); // for now just allow one AMC per module
-      modules.push_back(&obj_fac.get_dal<appmodel::TDEAMCModule>(tde_obj)->config_object());
+      modules.push_back(obj_fac.get_dal<appmodel::TDEAMCModule>(tde_obj));
     }
   }
-  auto app_obj = obj_fac.get_dal<TDECrateApplication>(UID())->config_object();
-  app_obj.set_objs("modules", modules);
-  configuration().update<TDECrateApplication>({UID()}, {}, {});
+  obj_fac.update_modules(modules);
 }
 
 } // namespace appmodel  

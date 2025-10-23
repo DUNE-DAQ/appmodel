@@ -1,5 +1,9 @@
 
 #include "ConfigObjectFactory.hpp"
+#include "confmodel/Service.hpp"
+#include "oks/file.hpp"
+
+#include <fmt/core.h> // Replace with std::format when we switch to a newer compiler?
 
 namespace dunedaq {
 namespace appmodel {

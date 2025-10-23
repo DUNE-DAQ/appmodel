@@ -195,7 +195,7 @@ DFApplication::generate_modules(const confmodel::Session* session) const
 
   ConfigObjectFactory obj_fac(this);
 
-  std::vector<const conffwk::ConfigObject*> module_objects;
+  std::vector<const confmodel::DaqModule*> modules;
 
   // Containers for module specific config objects for output/input
   // Prepare TRB output objects
@@ -367,7 +367,7 @@ DFApplication::generate_modules(const confmodel::Session* session) const
   trbObj.set_obj("trigger_record_output", &trQueueObj);
   trbObj.set_objs("request_connections", trbSidNetObjs);
   // Push TRB Module Object from confdb
-  module_objects.push_back(&obj_fac.get_dal<TRBModule>(trbUid)->config_object());
+  modules.push_back(obj_fac.get_dal<TRBModule>(trbUid));
 
   // Get DataWriterModule Config Object (only one for now, maybe more later?)
   auto dwrConfs = get_data_writers();
@@ -388,14 +388,11 @@ DFApplication::generate_modules(const confmodel::Session* session) const
     dwrObj.set_objs("inputs", { &trQueueObj });
     dwrObj.set_objs("outputs", { &tokenNetObj });
     // Push DataWriterModule Module Object from confdb
-    module_objects.push_back(&obj_fac.get_dal<DataWriterModule>(dwrUid)->config_object());
+    modules.push_back(obj_fac.get_dal<DataWriterModule>(dwrUid));
     ++dw_idx;
   }
 
-  auto app_obj = obj_fac.get_dal<DFApplication>(UID())->config_object();
-  // app_obj.set_objs("action_plans", {&start_ap_obj, &stop_ap_obj});
-  app_obj.set_objs("modules", module_objects);
-  configuration().update<DFApplication>({UID()}, {}, {});
+  obj_fac.update_modules(modules);
 }
 
 } // namespace appmodel  

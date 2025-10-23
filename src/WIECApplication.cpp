@@ -55,7 +55,7 @@ WIECApplication::generate_modules(const confmodel::Session* session) const
   conffwk::Configuration* config = &this->configuration();
   const std::string& dbfile = this->config_object().contained_in();
   
-  std::vector<const conffwk::ConfigObject*> modules;
+  std::vector<const confmodel::DaqModule*> modules;
 
   std::map<std::string, std::vector<const appmodel::HermesDataSender*>> ctrlhost_sender_map;
 
@@ -133,7 +133,7 @@ WIECApplication::generate_modules(const confmodel::Session* session) const
         wib_obj.set_by_val<bool>("enabled_femb2", enable_fembs[2]);
         wib_obj.set_by_val<bool>("enabled_femb3", enable_fembs[3]);
         wib_obj.set_obj("conf", &this->get_wib_module_conf()->get_settings()->config_object());
-        modules.push_back(&config->get<appmodel::WIBModule>(wib_obj)->config_object());
+        modules.push_back(config->get<appmodel::WIBModule>(wib_obj));
       }
 
       // Create Hermes Modules
@@ -151,7 +151,7 @@ WIECApplication::generate_modules(const confmodel::Session* session) const
         }
         hermes_obj.set_objs("links", links_obj);
 
-        modules.push_back(&config->get<appmodel::HermesModule>(hermes_obj)->config_object());
+        modules.push_back(config->get<appmodel::HermesModule>(hermes_obj));
       }
 
 
@@ -159,9 +159,7 @@ WIECApplication::generate_modules(const confmodel::Session* session) const
 
   }
 
-  auto app_obj = obj_fac.get_dal<WIECApplication>(UID())->config_object();
-  app_obj.set_objs("modules", modules);
-  configuration().update<WIECApplication>({UID()}, {}, {});
+  obj_fac.update_modules(modules);
 }
  
 } // namespace appmodel  

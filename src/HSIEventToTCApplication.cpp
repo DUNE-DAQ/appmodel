@@ -37,7 +37,7 @@ HSIEventToTCApplication::generate_modules(const confmodel::Session* /*session*/)
 
   ConfigObjectFactory obj_fac(this);
   
-  std::vector<const conffwk::ConfigObject*> modules;
+  std::vector<const confmodel::DaqModule*> modules;
 
   std::string hstcUid("module-" + UID());
   TLOG_DEBUG(7) << "creating OKS configuration object for the DataSubscriberModule class ";
@@ -75,12 +75,10 @@ HSIEventToTCApplication::generate_modules(const confmodel::Session* /*session*/)
   hstcObj.set_objs("inputs", {&inObj});
   hstcObj.set_objs("outputs", {&outObj});
 
-  // Add to our list of modules
-  modules.push_back(&obj_fac.get_dal<DataSubscriberModule>(hstcUid)->config_object());
+  // Add to our list of modules to return
+  modules.push_back(obj_fac.get_dal<DataSubscriberModule>(hstcUid));
 
-  auto app_obj = obj_fac.get_dal<HSIEventToTCApplication>(UID())->config_object();
-  app_obj.set_objs("modules", modules);
-  configuration().update<HSIEventToTCApplication>({UID()}, {}, {});
+  obj_fac.update_modules(modules);
 }
  
 } // namespace appmodel  

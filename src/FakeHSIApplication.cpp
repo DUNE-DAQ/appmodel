@@ -42,7 +42,7 @@ namespace appmodel {
 void
 FakeHSIApplication::generate_modules(const confmodel::Session* session) const
 {
-  std::vector<const conffwk::ConfigObject*> modules;
+  std::vector<const confmodel::DaqModule*> modules;
 
   ConfigObjectFactory obj_fac(this);
 
@@ -156,7 +156,7 @@ FakeHSIApplication::generate_modules(const confmodel::Session* session) const
 
   dlhObj.set_objs("inputs", { &queueObj, &faNetObj });
 
-  modules.push_back(&obj_fac.get_dal<DataHandlerModule>(uid)->config_object());
+  modules.push_back(obj_fac.get_dal<DataHandlerModule>(uid));
 
   auto hsiServiceObj = hsiNetDesc->get_associated_service()->config_object();
   conffwk::ConfigObject hsiNetObj = obj_fac.create_net_obj(hsiNetDesc, "");
@@ -171,11 +171,9 @@ FakeHSIApplication::generate_modules(const confmodel::Session* session) const
     fakehsiObj.set_objs("inputs", { &tsNetObjIn });
   }
 
-  modules.push_back(&obj_fac.get_dal<FakeHSIEventGeneratorModule>(genuid)->config_object());
+  modules.push_back(obj_fac.get_dal<FakeHSIEventGeneratorModule>(genuid));
 
-  auto app_obj = obj_fac.get_dal<FakeHSIApplication>(UID())->config_object();
-  app_obj.set_objs("modules", modules);
-  configuration().update<FakeHSIApplication>({UID()}, {}, {});
+  obj_fac.update_modules(modules);
 }
  
 } // namespace appmodel  

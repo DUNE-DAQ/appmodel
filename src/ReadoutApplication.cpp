@@ -168,7 +168,7 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
   // Scan Detector 2 DAQ connections to extract sender, receiver and stream information
   //
 
-  std::vector<const conffwk::ConfigObject*> module_objects;
+  std::vector<const confmodel::DaqModule*> modules;
 
   // Loop over the detector to daq connections and generate one data reader per connection
   // and the cooresponding datalink handlers
@@ -270,8 +270,7 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
 
     reader_obj.set_objs("outputs", data_queue_objs);
 
-    auto dal_obj = obj_fac.get_dal<confmodel::DaqModule>(reader_obj.UID());
-    module_objects.push_back(&dal_obj->config_object());
+    modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(reader_obj.UID()));
   }
 
 
@@ -316,8 +315,7 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
       tph_obj.set_objs("inputs", { &tp_queue_obj, &tpreq_queue_obj });
       tph_obj.set_objs("outputs", { &tp_net_obj, &ta_net_obj, &frag_queue_obj });
 
-      auto dal_obj = obj_fac.get_dal<confmodel::DaqModule>(tph_obj.UID());
-      module_objects.push_back(&dal_obj->config_object());
+      modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(tph_obj.UID()));
     }
   }
 
@@ -375,8 +373,7 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
     dlh_obj.set_objs("inputs", dlh_ins);
     dlh_obj.set_objs("outputs", dlh_outs);
 
-    auto dal_obj = obj_fac.get_dal<confmodel::DaqModule>(dlh_obj.UID());
-    module_objects.push_back(&dal_obj->config_object());
+    modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(dlh_obj.UID()));
   }
 
 
@@ -431,13 +428,9 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
 
   frag_aggr.set_objs("inputs", { &fa_net_obj, &frag_queue_obj });
   frag_aggr.set_objs("outputs", fa_output_objs);
+  modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(frag_aggr.UID()));
 
-  auto dal_obj = obj_fac.get_dal<confmodel::DaqModule>(frag_aggr.UID());
-  module_objects.push_back(&dal_obj->config_object());
-
-  auto app_obj = obj_fac.get_dal<ReadoutApplication>(UID())->config_object();
-  app_obj.set_objs("modules", module_objects);
-  configuration().update<ReadoutApplication>({UID()}, {}, {});
+  obj_fac.update_modules(modules);
 }
 
 } // namespace appmodel  

@@ -52,7 +52,7 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
 {
   ConfigObjectFactory obj_fac(this);
 
-  std::vector<const conffwk::ConfigObject*> modules;
+  std::vector<const confmodel::DaqModule*> modules;
 
   auto daphne_conf = get_configuration();
 
@@ -209,14 +209,12 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
     module_obj.set_obj("daphne_conf", & daphne_conf -> config_object() );
     module_obj.set_obj("board_conf", & conf -> config_object() );
     
-    auto module_dal = obj_fac.get_dal<appmodel::DaphneV2ControllerModule>(module_obj);
-    modules.push_back(&module_dal->config_object());
+    auto module = obj_fac.get_dal<appmodel::DaphneV2ControllerModule>(module_obj);
+    modules.push_back(module);
     
   } // ips
 
-  auto app_obj = obj_fac.get_dal<DaphneApplication>(UID())->config_object();
-  app_obj.set_objs("modules", modules);
-  configuration().update<DaphneApplication>({UID()}, {}, {});
+  obj_fac.update_modules(modules);
 }
 
 

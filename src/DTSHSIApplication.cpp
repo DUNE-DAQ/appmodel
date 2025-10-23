@@ -39,7 +39,7 @@ DTSHSIApplication::generate_modules(const confmodel::Session* /*session*/) const
 {
   ConfigObjectFactory obj_fac(this);
   
-  std::vector<const conffwk::ConfigObject*> modules;
+  std::vector<const confmodel::DaqModule*> modules;
 
   auto dlhConf = get_link_handler();
   auto dlhClass = dlhConf->get_template_for();
@@ -117,7 +117,7 @@ DTSHSIApplication::generate_modules(const confmodel::Session* /*session*/) const
   conffwk::ConfigObject faNetObj = obj_fac.create_net_obj(dlhReqInputNetDesc, UID());
   dlhObj.set_objs("inputs", { &queueObj, &faNetObj });
 
-  modules.push_back(&obj_fac.get_dal<DataHandlerModule>(uid)->config_object());
+  modules.push_back(obj_fac.get_dal<DataHandlerModule>(uid));
 
   auto hsiServiceObj = hsiNetDesc->get_associated_service()->config_object();
   conffwk::ConfigObject hsiNetObj = obj_fac.create_net_obj(hsiNetDesc, "");
@@ -127,11 +127,9 @@ DTSHSIApplication::generate_modules(const confmodel::Session* /*session*/) const
   hsiObj.set_obj("configuration", &rdrConf->config_object());
   hsiObj.set_objs("outputs", { &queueObj, &hsiNetObj });
 
-  modules.push_back(&obj_fac.get_dal<HSIReadout>(genuid)->config_object());
+  modules.push_back(obj_fac.get_dal<HSIReadout>(genuid));
 
-  auto app_obj = obj_fac.get_dal<DTSHSIApplication>(UID())->config_object();
-  app_obj.set_objs("modules", modules);
-  configuration().update<DTSHSIApplication>({UID()}, {}, {});
+  obj_fac.update_modules(modules);
 }
  
 } // namespace appmodel  

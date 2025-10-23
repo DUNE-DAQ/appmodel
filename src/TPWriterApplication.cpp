@@ -36,7 +36,7 @@ namespace appmodel {
 void
 TPStreamWriterApplication::generate_modules(const confmodel::Session* /*session*/) const
 {
-  std::vector<const conffwk::ConfigObject*> modules;
+  std::vector<const confmodel::DaqModule*> modules;
 
   ConfigObjectFactory obj_fac(this);
 
@@ -75,11 +75,9 @@ TPStreamWriterApplication::generate_modules(const confmodel::Session* /*session*
   tpwrObj.set_obj("configuration", &tpwriterConf->config_object());
   tpwrObj.set_objs("inputs", {&tset_in_net_obj} );
 
-  modules.push_back(&obj_fac.get_dal<TPStreamWriterModule>(tpwrUid)->config_object());
+  modules.push_back(obj_fac.get_dal<TPStreamWriterModule>(tpwrUid));
 
-  auto app_obj = obj_fac.get_dal<TPStreamWriterApplication>(UID())->config_object();
-  app_obj.set_objs("modules", modules);
-  configuration().update<TPStreamWriterApplication>({UID()}, {}, {});
+  obj_fac.update_modules(modules);
 }
  
 } // namespace appmodel  

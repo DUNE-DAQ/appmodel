@@ -35,7 +35,7 @@ namespace appmodel {
 void
 DFOApplication::generate_modules(const confmodel::Session* session) const
 {
-  std::vector<const conffwk::ConfigObject*> modules;
+  std::vector<const confmodel::DaqModule*> modules;
 
   ConfigObjectFactory obj_fac(this);
 
@@ -116,11 +116,9 @@ DFOApplication::generate_modules(const confmodel::Session* session) const
   dfoObj.set_objs("outputs", output_conns);
 
   // Add to our list of modules to return
-  modules.push_back(&obj_fac.get_dal<DFOModule>(dfoUid)->config_object());
+  modules.push_back(obj_fac.get_dal<DFOModule>(dfoUid));
 
-  auto app_obj = obj_fac.get_dal<DFOApplication>(UID())->config_object();
-  app_obj.set_objs("modules", modules);
-  configuration().update<DFOApplication>({UID()}, {}, {});
+  obj_fac.update_modules(modules);
 }
 
 } // namespace appmodel  
