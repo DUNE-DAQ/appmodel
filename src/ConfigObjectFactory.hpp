@@ -34,8 +34,7 @@ class ConfigObjectFactory
   std::string m_app_uid;
 
 public:
-  ConfigObjectFactory(conffwk::Configuration* config, const std::string& dbfile, const std::string& app_uid);
-  explicit ConfigObjectFactory(const conffwk::DalObject* );
+  explicit ConfigObjectFactory(const SmartDaqApplication* );
 
   ~ConfigObjectFactory();
 
