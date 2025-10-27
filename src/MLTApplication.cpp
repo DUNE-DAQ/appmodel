@@ -62,7 +62,7 @@ namespace dunedaq {
 namespace appmodel {
 
 
-std::vector<const confmodel::DaqModule*>
+void
 MLTApplication::generate_modules(const confmodel::Session* session) const
 {
 
@@ -423,7 +423,7 @@ MLTApplication::generate_modules(const confmodel::Session* session) const
   mlt_obj.set_objs("outputs", { &td_net_obj });
   modules.push_back(obj_fac.get_dal<MLTModule>(mlt_conf->UID()));
 
-  return modules;
+  obj_fac.update_modules(modules);
 }
  
 } // namespace appmodel  

@@ -41,7 +41,7 @@
 namespace dunedaq {
 namespace appmodel {
 
-std::vector<const confmodel::DaqModule*>
+void
 TRMonReqApplication::generate_modules(const confmodel::Session* session) const
 {
 
@@ -146,7 +146,7 @@ TRMonReqApplication::generate_modules(const confmodel::Session* session) const
   // Push DataWriterModule Module Object from confdb
   modules.push_back(obj_fac.get_dal<DataWriterModule>(dwrUid));
 
-  return modules;
+  obj_fac.update_modules(modules);
 }
 
 } // namespace appmodel
