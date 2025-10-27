@@ -10,6 +10,7 @@
 #ifndef APPMODEL_INCLUDE_OBJECTFACTORY_HPP_
 #define APPMODEL_INCLUDE_OBJECTFACTORY_HPP_
 
+#include "appmodel/appmodelIssues.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/QueueDescriptor.hpp"
 #include "appmodel/SmartDaqApplication.hpp"
@@ -80,8 +81,12 @@ public:
 
   void
   update_modules(const std::vector<const confmodel::DaqModule*>& modules) {
+    auto app = m_config->get<SmartDaqApplication>(m_app_uid);
+    if (!app->get_modules().empty()) {
+      throw (BadConf(ERS_HERE,
+                     "SmartDaqApplication contains DaqModules which would be overwritten by generated DaqModules"));
+    }
     if (!modules.empty()) {
-      auto app = m_config->get<SmartDaqApplication>(m_app_uid);
       const_cast<SmartDaqApplication*>(app)->set_modules(modules);
       m_config->update<SmartDaqApplication>({m_app_uid}, {}, {});
     }
