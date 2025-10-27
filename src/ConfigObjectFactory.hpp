@@ -80,9 +80,11 @@ public:
 
   void
   update_modules(const std::vector<const confmodel::DaqModule*>& modules) {
-    auto app = m_config->get<SmartDaqApplication>(m_app_uid);
-    const_cast<SmartDaqApplication*>(app)->set_modules(modules);
-    m_config->update<SmartDaqApplication>({m_app_uid}, {}, {});
+    if (!modules.empty()) {
+      auto app = m_config->get<SmartDaqApplication>(m_app_uid);
+      const_cast<SmartDaqApplication*>(app)->set_modules(modules);
+      m_config->update<SmartDaqApplication>({m_app_uid}, {}, {});
+    }
   }
 
 };
