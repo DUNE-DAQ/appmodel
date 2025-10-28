@@ -68,7 +68,7 @@ namespace dunedaq {
 namespace appmodel {
 
 //-----------------------------------------------------------------------------
-std::vector<const confmodel::DaqModule*>
+void
 NP02ReadoutApplication::generate_modules(const confmodel::Session* session) const
 {
 
@@ -469,7 +469,7 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
 
   modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(frag_aggr.UID()));
 
-  return modules;
+  obj_fac.update_modules(modules);
 }
 
   
