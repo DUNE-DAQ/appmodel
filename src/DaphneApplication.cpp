@@ -47,7 +47,7 @@ DaphneApplication::contained_resources() const {
 }
 
 
-std::vector<const confmodel::DaqModule*> 
+void
 DaphneApplication::generate_modules(const confmodel::Session* session) const
 {
   ConfigObjectFactory obj_fac(this);
@@ -214,7 +214,7 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
     
   } // ips
 
-  return modules;
+  obj_fac.update_modules(modules);
 }
 
 

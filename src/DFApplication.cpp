@@ -189,7 +189,7 @@ fill_sourceid_object_from_app(const ConfigObjectFactory& obj_fac,
   sidNetObj.set_objs("source_ids", source_id_objs);
 }
 
-std::vector<const confmodel::DaqModule*>
+void
 DFApplication::generate_modules(const confmodel::Session* session) const
 {
 
@@ -392,7 +392,7 @@ DFApplication::generate_modules(const confmodel::Session* session) const
     ++dw_idx;
   }
 
-  return modules;
+  obj_fac.update_modules(modules);
 }
 
 } // namespace appmodel  

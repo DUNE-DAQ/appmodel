@@ -173,14 +173,15 @@ main(int argc, char* argv[])
         std::cout << "Application " << appName << " is disabled" << std::endl;
         continue;
       }
-      std::vector<const confmodel::DaqModule*> modules;
+
       try {
-        modules = daqapp->generate_modules(session);
+        daqapp->generate_modules(session);
       } catch (appmodel::BadConf& exc) {
         std::cout << "Caught BadConf exception: " << exc << std::endl;
         exit(-1);
       }
 
+      auto modules = daqapp->get_modules();
       // std::cout << "Generated " << modules.size() << " modules" << std::endl;
       for (auto module : modules) {
         std::cout << "module " << module->UID() << std::endl;

@@ -39,7 +39,7 @@ using namespace dunedaq::appmodel;
 namespace dunedaq {
 namespace appmodel {
 
-std::vector<const confmodel::DaqModule*>
+void
 FakeHSIApplication::generate_modules(const confmodel::Session* session) const
 {
   std::vector<const confmodel::DaqModule*> modules;
@@ -173,7 +173,7 @@ FakeHSIApplication::generate_modules(const confmodel::Session* session) const
 
   modules.push_back(obj_fac.get_dal<FakeHSIEventGeneratorModule>(genuid));
 
-  return modules;
+  obj_fac.update_modules(modules);
 }
  
 } // namespace appmodel  

@@ -10,16 +10,20 @@
 #ifndef APPMODEL_INCLUDE_OBJECTFACTORY_HPP_
 #define APPMODEL_INCLUDE_OBJECTFACTORY_HPP_
 
+#include "appmodel/appmodelIssues.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/QueueDescriptor.hpp"
+#include "appmodel/SmartDaqApplication.hpp"
 
+#include "conffwk/ConfigObject.hpp"
 #include "conffwk/Configuration.hpp"
 
+#include "confmodel/DaqModule.hpp"
 #include "confmodel/DetectorStream.hpp"
-#include "confmodel/Service.hpp"
-#include "oks/file.hpp"
 
-#include <fmt/core.h> // Replace with std::format when we switch to a newer compiler?
+#include <cstdint>
+#include <string>
+#include <vector>
 
 namespace dunedaq::appmodel {
 
@@ -31,8 +35,7 @@ class ConfigObjectFactory
   std::string m_app_uid;
 
 public:
-  ConfigObjectFactory(conffwk::Configuration* config, const std::string& dbfile, const std::string& app_uid);
-  ConfigObjectFactory(const conffwk::DalObject* );
+  explicit ConfigObjectFactory(const SmartDaqApplication* );
 
   ~ConfigObjectFactory();
 
@@ -75,6 +78,20 @@ public:
   const T* get_dal(conffwk::ConfigObject& obj) const {
     return m_config->get<T>(obj);
   }
+
+  void
+  update_modules(const std::vector<const confmodel::DaqModule*>& modules) {
+    auto app = m_config->get<SmartDaqApplication>(m_app_uid);
+    if (!app->get_modules().empty()) {
+      throw (BadConf(ERS_HERE,
+                     "SmartDaqApplication contains DaqModules which would be overwritten by generated DaqModules"));
+    }
+    if (!modules.empty()) {
+      const_cast<SmartDaqApplication*>(app)->set_modules(modules);
+      m_config->update<SmartDaqApplication>({m_app_uid}, {}, {});
+    }
+  }
+
 };
 
 } // namespace dunedaq::appmodel
