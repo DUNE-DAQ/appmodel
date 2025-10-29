@@ -30,7 +30,7 @@
 namespace dunedaq {
 namespace appmodel {
 
-std::vector<const confmodel::DaqModule*>
+void
 SNBTransferApplication::generate_modules(const confmodel::Session* /*session*/) const
 {
   ConfigObjectFactory obj_fac(this);
@@ -72,7 +72,7 @@ SNBTransferApplication::generate_modules(const confmodel::Session* /*session*/) 
   // Add to our list of modules to return
   modules.push_back(obj_fac.get_dal<SNBFileTransfer>(snbTransferUid));
 
-  return modules;
+  obj_fac.update_modules(modules);
 }
 
 } // namespace appmodel
