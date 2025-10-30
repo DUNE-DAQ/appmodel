@@ -107,33 +107,33 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
 
       // Loop over senders
       for (const auto* felix_sender : det_senders) {
-	
-	if ( felix_sender->is_disabled(*session) ) {
-	  TLOG() << "Skipping disabled sender: " << felix_sender->UID();
-	  continue;
-	}
-	
-	auto ip = felix_sender -> get_control_host();
-	
-	// from the felix sender we get the DetStream and then the GeoID
-	
-	auto streams = felix_sender -> get_streams();
-	
-	for ( const auto * det_s : streams ) {
-	  
-	  if ( det_s->is_disabled(*session) ) {
-	    TLOG() << "Skipping disabled DetStream: " << det_s->UID();
-	    continue;
-	  }
+        
+        if ( felix_sender->is_disabled(*session) ) {
+          TLOG() << "Skipping disabled sender: " << felix_sender->UID();
+          continue;
+        }
+        
+        auto ip = felix_sender -> get_control_host();
+        
+        // from the felix sender we get the DetStream and then the GeoID
+        
+        auto streams = felix_sender -> get_streams();
+        
+        for ( const auto * det_s : streams ) {
+          
+          if ( det_s->is_disabled(*session) ) {
+            TLOG() << "Skipping disabled DetStream: " << det_s->UID();
+            continue;
+          }
 
-	  auto geo_id = det_s->get_geo_id();
-	  auto id = fmt::format("{}.{}.{}", geo_id->get_detector_id(), geo_id->get_crate_id(), geo_id->get_slot_id());
-	  if (!v3_map.contains(id)) {
-	    v3_map[id] = false;
-	  } 
-	  
-	} // loop over DetStreams
-	
+          auto geo_id = det_s->get_geo_id();
+          auto id = fmt::format("{}.{}.{}", geo_id->get_detector_id(), geo_id->get_crate_id(), geo_id->get_slot_id());
+          if (!v3_map.contains(id)) {
+            v3_map[id] = false;
+          } 
+          
+        } // loop over DetStreams
+        
       } // loop over det_senders
     } // if flx connection
 
@@ -141,36 +141,36 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
       auto det_senders = net_conn->get_net_senders();
 
       for ( const auto* nw_sender : det_senders ) {
-	if ( nw_sender->is_disabled(*session) ) {
+        if ( nw_sender->is_disabled(*session) ) {
           TLOG() << "Skipping disabled sender: " << nw_sender->UID();
           continue;
         }
 
-	// Check the sender type, must me a HermesSender
-	const auto* hrms_sender = nw_sender->cast<appmodel::HermesDataSender>();
-	if (!hrms_sender ) {
-	  throw(BadConf(ERS_HERE, fmt::format("DataSender {} is not a appmodel::HermesDataSender", nw_sender->UID())));
-	}
+        // Check the sender type, must me a HermesSender
+        const auto* hrms_sender = nw_sender->cast<appmodel::HermesDataSender>();
+        if (!hrms_sender ) {
+          throw(BadConf(ERS_HERE, fmt::format("DataSender {} is not a appmodel::HermesDataSender", nw_sender->UID())));
+        }
 
-	hermes_senders[hrms_sender->get_control_host()].push_back(hrms_sender);
-	  
-	auto streams = nw_sender -> get_streams();
-	for ( const auto * det_s : streams ) {
-	  
+        hermes_senders[hrms_sender->get_control_host()].push_back(hrms_sender);
+          
+        auto streams = nw_sender -> get_streams();
+        for ( const auto * det_s : streams ) {
+          
           if ( det_s->is_disabled(*session) ) {
             TLOG() << "Skipping disabled DetStream: " << det_s->UID();
             continue;
           }
-	  
-	  auto geo_id = det_s->get_geo_id();
-	  auto id = fmt::format("{}.{}.{}", geo_id->get_detector_id(), geo_id->get_crate_id(), geo_id->get_slot_id());
-	  if (!v3_map.contains(id)) {
-	    v3_map[id] = true;
-	    interfaces[id] = net_conn->get_net_receiver()->get_uses();
-	    ctrl_hosts[id] = hrms_sender->get_control_host();
-	  } 
-	  
-	} // loop over streams
+          
+          auto geo_id = det_s->get_geo_id();
+          auto id = fmt::format("{}.{}.{}", geo_id->get_detector_id(), geo_id->get_crate_id(), geo_id->get_slot_id());
+          if (!v3_map.contains(id)) {
+            v3_map[id] = true;
+            interfaces[id] = net_conn->get_net_receiver()->get_uses();
+            ctrl_hosts[id] = hrms_sender->get_control_host();
+          } 
+          
+        } // loop over streams
 
       } // loop over NW senders
       
@@ -194,7 +194,7 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
     module_obj.set_obj("board_conf", & conf -> config_object() );
 
     auto module = obj_fac.get_dal<confmodel::DaqModule>(module_obj); 
-    modules.push_back(module);
+//     modules.push_back(module);
 
 
     // Create Hermes Modules
@@ -209,7 +209,7 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
       std::vector< const conffwk::ConfigObject * > links_obj;
       const auto & senders = hermes_senders[ctrl_hosts[id]];
       for ( const auto* sndr : senders ){
-	links_obj.push_back(&sndr->config_object());
+        links_obj.push_back(&sndr->config_object());
       }
       hermes_obj.set_objs("links", links_obj);
       
