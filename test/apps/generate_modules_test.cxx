@@ -1,7 +1,7 @@
 /**
- * @file gen_readout_modules.cxx
+ * @file generate_modules_test.cxx
  *
- * Quick test/demonstration of ReadoutApplication's dal method
+ * Test/demonstration of SmartDaqApplication's generate_modules() method
  *
  * This is part of the DUNE DAQ Application Framework, copyright 2020.
  * Licensing/copyright details are in the COPYING file that you should have
@@ -27,75 +27,110 @@
 
 #include "appmodel/appmodelIssues.hpp"
 
+#include <cstdlib>
+#include <iostream>
+#include <memory>
 #include <string>
+
 using namespace dunedaq;
 
 int main(int argc, char* argv[]) {
   if (argc < 4) {
-    std::cout << "Usage: " << argv[0] << " <session> <smart-app> <database-file>\n";
-    return 0;
+    std::cerr << "Usage: " << argv[0] << " <session> <smart-app> <database-file>\n";
+    return EXIT_FAILURE;
   }
 
-  std::string sessionName(argv[1]);
-  std::string appName(argv[2]);
-  std::string dbfile(argv[3]);
+  const std::string sessionName(argv[1]);
+  const std::string appName(argv[2]);
+  const std::string dbfile(argv[3]);
 
   logging::Logging::setup("test", "generate_module");
 
-  conffwk::Configuration* confdb;
+  std::unique_ptr<conffwk::Configuration> confdb;
   try {
-    confdb = new conffwk::Configuration("oksconflibs:" + dbfile);
+    confdb = std::make_unique<conffwk::Configuration>("oksconflibs:" + dbfile);
   }
-  catch (conffwk::Generic& exc) {
-    std::cout << "Failed to load OKS database: " << exc << std::endl;
-    return 0;
+  catch (const conffwk::Generic& exc) {
+    std::cerr << "Failed to load OKS database: " << exc << std::endl;
+    return EXIT_FAILURE;
   }
 
-  auto session = confdb->get<confmodel::Session>(sessionName);
+  const auto* session = confdb->get<confmodel::Session>(sessionName);
   if (session == nullptr) {
-    std::cout << "Failed to get Session " << sessionName
-              << " from database\n";
-    return 0;
+    std::cerr << "Failed to get Session \"" << sessionName
+              << "\" from database\n";
+    return EXIT_FAILURE;
   }
-  auto daqapp = confdb->get<appmodel::SmartDaqApplication>(appName);
-  if (daqapp) {
-    std::cout << appName << " is of class " << daqapp->class_name() << std::endl;
 
-    auto res = daqapp->cast<confmodel::Resource>();
-    if (res && res->is_disabled(*session)) {
-      std::cout << "Application " << appName << " is disabled" << std::endl;
-      return 0;
+  const auto* daqapp = confdb->get<appmodel::SmartDaqApplication>(appName);
+  if (daqapp == nullptr) {
+    std::cerr << "Failed to get SmartDaqApplication \"" << appName
+              << "\" from database\n";
+    return EXIT_FAILURE;
+  }
+
+  std::cout << "Application \"" << appName << "\" is of class " 
+            << daqapp->class_name() << std::endl;
+
+  const auto* res = daqapp->cast<confmodel::Resource>();
+  if (res && res->is_disabled(*session)) {
+    std::cout << "Application \"" << appName << "\" is disabled in session \"" 
+              << sessionName << "\"" << std::endl;
+    return EXIT_SUCCESS;
+  }
+
+  try {
+    // Note: generate_modules is non-const, so we need a non-const pointer
+    auto* non_const_daqapp = const_cast<appmodel::SmartDaqApplication*>(daqapp);
+    non_const_daqapp->generate_modules(session);
+  }
+  catch (const appmodel::BadConf& exc) {
+    std::cerr << "ERROR: Caught BadConf exception during module generation: " 
+              << exc << std::endl;
+    return EXIT_FAILURE;
+  }
+  catch (const std::exception& exc) {
+    std::cerr << "ERROR: Unexpected exception during module generation: " 
+              << exc.what() << std::endl;
+    return EXIT_FAILURE;
+  }
+
+  const auto modules = daqapp->get_modules();
+  std::cout << "\nGenerated " << modules.size() << " module(s)" << std::endl;
+  std::cout << std::string(60, '-') << std::endl;
+
+  for (const auto* daq_module : modules) {
+    if (daq_module == nullptr) {
+      std::cerr << "WARNING: Encountered null module pointer" << std::endl;
+      continue;
     }
 
-    try {
-      daqapp->generate_modules(session);
-    }
-    catch (appmodel::BadConf& exc) {
-      std::cout << "Caught BadConf exception: " << exc << std::endl;
-      exit(-1);
-    }
+    std::cout << "\nModule: " << daq_module->UID() << std::endl;
+    daq_module->config_object().print_ref(std::cout, *confdb, "  ");
 
-    auto modules = daqapp->get_modules();
-    std::cout << "Generated " << modules.size() << " modules" << std::endl;
-    for (auto daq_module: modules) {
-      std::cout << "module " << daq_module->UID() << std::endl;
-      daq_module->config_object().print_ref(std::cout, *confdb, "  ");
-      std::cout  << " input objects "  << std::endl;
-      for (auto input : daq_module->get_inputs()) {
-        auto iObj = input->config_object();
+    const auto inputs = daq_module->get_inputs();
+    std::cout << "  Input connections: " << inputs.size() << std::endl;
+    for (const auto* input : inputs) {
+      if (input) {
+        const auto& iObj = input->config_object();
         iObj.print_ref(std::cout, *confdb, "    ");
       }
-      std::cout  << " output objects "  << std::endl;
-      for (auto output : daq_module->get_outputs()) {
-        auto oObj = output->config_object();
+    }
+
+    const auto outputs = daq_module->get_outputs();
+    std::cout << "  Output connections: " << outputs.size() << std::endl;
+    for (const auto* output : outputs) {
+      if (output) {
+        const auto& oObj = output->config_object();
         oObj.print_ref(std::cout, *confdb, "    ");
       }
-      std::cout << std::endl;
     }
+    std::cout << std::endl;
   }
-  else {
-    std::cout << "Failed to get SmartDaqApplication " << appName
-              << " from database\n";
-    return 0;
-  }
+
+  std::cout << std::string(60, '-') << std::endl;
+  std::cout << "Test completed successfully" << std::endl;
+
+  return EXIT_SUCCESS;
 }
+
