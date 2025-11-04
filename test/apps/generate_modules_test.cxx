@@ -66,26 +66,27 @@ int main(int argc, char* argv[]) {
       std::cout << "Application " << appName << " is disabled" << std::endl;
       return 0;
     }
-    std::vector<const confmodel::DaqModule*> modules;
+
     try {
-      modules = daqapp->generate_modules(session);
+      daqapp->generate_modules(session);
     }
     catch (appmodel::BadConf& exc) {
       std::cout << "Caught BadConf exception: " << exc << std::endl;
       exit(-1);
     }
 
+    auto modules = daqapp->get_modules();
     std::cout << "Generated " << modules.size() << " modules" << std::endl;
-    for (auto module: modules) {
-      std::cout << "module " << module->UID() << std::endl;
-      module->config_object().print_ref(std::cout, *confdb, "  ");
+    for (auto daq_module: modules) {
+      std::cout << "module " << daq_module->UID() << std::endl;
+      daq_module->config_object().print_ref(std::cout, *confdb, "  ");
       std::cout  << " input objects "  << std::endl;
-      for (auto input : module->get_inputs()) {
+      for (auto input : daq_module->get_inputs()) {
         auto iObj = input->config_object();
         iObj.print_ref(std::cout, *confdb, "    ");
       }
       std::cout  << " output objects "  << std::endl;
-      for (auto output : module->get_outputs()) {
+      for (auto output : daq_module->get_outputs()) {
         auto oObj = output->config_object();
         oObj.print_ref(std::cout, *confdb, "    ");
       }

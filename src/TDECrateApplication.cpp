@@ -37,7 +37,7 @@ TDECrateApplication::contained_resources() const {
   return to_resources(get_detector_connections());
 }
 
-std::vector<const confmodel::DaqModule*> 
+void
 TDECrateApplication::generate_modules(const confmodel::Session* session) const
 {
   ConfigObjectFactory obj_fac(this);
@@ -91,7 +91,7 @@ TDECrateApplication::generate_modules(const confmodel::Session* session) const
       modules.push_back(obj_fac.get_dal<appmodel::TDEAMCModule>(tde_obj));
     }
   }
-  return modules;
+  obj_fac.update_modules(modules);
 }
 
 } // namespace appmodel  

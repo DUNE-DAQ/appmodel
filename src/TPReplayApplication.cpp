@@ -43,7 +43,7 @@
 namespace dunedaq {
 namespace appmodel {
 
-std::vector<const confmodel::DaqModule*>
+void
 TPReplayApplication::generate_modules(const confmodel::Session* /*session*/) const
 {
 
@@ -208,7 +208,7 @@ TPReplayApplication::generate_modules(const confmodel::Session* /*session*/) con
     modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(TPHs_uids[i]));
   }
 
-  return modules;
+  obj_fac.update_modules(modules);
 }
 
 } // namespace appmodel

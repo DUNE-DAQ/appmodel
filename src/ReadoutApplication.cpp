@@ -74,7 +74,7 @@ ReadoutApplication::contained_resources() const {
   return to_resources(get_detector_connections());
 }
 
-std::vector<const confmodel::DaqModule*>
+void
 ReadoutApplication::generate_modules(const confmodel::Session* session) const
 {
 
@@ -272,7 +272,6 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
     reader_obj.set_objs("outputs", data_queue_objs);
 
     modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(reader_obj.UID()));
-
   }
 
 
@@ -316,6 +315,7 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
       // Register queues with tp hankder
       tph_obj.set_objs("inputs", { &tp_queue_obj, &tpreq_queue_obj });
       tph_obj.set_objs("outputs", { &tp_net_obj, &ta_net_obj, &frag_queue_obj });
+
       modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(tph_obj.UID()));
     }
   }
@@ -434,10 +434,9 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
   frag_aggr.set_by_val<uint32_t>("fragment_send_timeout_ms", fragment_timeout);
   frag_aggr.set_objs("inputs", { &fa_net_obj, &frag_queue_obj });
   frag_aggr.set_objs("outputs", fa_output_objs);
-
   modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(frag_aggr.UID()));
 
-  return modules;
+  obj_fac.update_modules(modules);
 }
 
 } // namespace appmodel  

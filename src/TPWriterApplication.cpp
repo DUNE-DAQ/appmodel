@@ -33,7 +33,7 @@
 namespace dunedaq {
 namespace appmodel {
 
-std::vector<const confmodel::DaqModule*> 
+void
 TPStreamWriterApplication::generate_modules(const confmodel::Session* /*session*/) const
 {
   std::vector<const confmodel::DaqModule*> modules;
@@ -77,7 +77,7 @@ TPStreamWriterApplication::generate_modules(const confmodel::Session* /*session*
 
   modules.push_back(obj_fac.get_dal<TPStreamWriterModule>(tpwrUid));
 
-  return modules;
+  obj_fac.update_modules(modules);
 }
  
 } // namespace appmodel  
