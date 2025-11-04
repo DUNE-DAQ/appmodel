@@ -219,7 +219,7 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
   } // ips
 
   obj_fac.update_modules(modules);
-}  // NOTLINT 
+}  // NOLINT 
 
 
 bool
