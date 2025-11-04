@@ -94,8 +94,8 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
       throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain senders or receivers"));
     }
 
-    auto flx_conn = dynamic_cast<const appmodel::FelixDetectorToDaqConnection *>( d2d_conn );
-    auto net_conn = dynamic_cast<const appmodel::NetworkDetectorToDaqConnection *>( d2d_conn );
+    auto flx_conn = dynamic_cast<const appmodel::FelixDetectorToDaqConnection *>( d2d_conn );  // NOLINT(runtime/rtti) 
+    auto net_conn = dynamic_cast<const appmodel::NetworkDetectorToDaqConnection *>( d2d_conn );  // NOLINT(runtime/rtti)
 
     if ( ! net_conn) {
       if ( ! flx_conn ) throw BadConf(ERS_HERE, d2d_conn->UID() + " is neither felix or eth connection");
