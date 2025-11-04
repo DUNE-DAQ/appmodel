@@ -1,23 +1,14 @@
 
 #include "ConfigObjectFactory.hpp"
+#include "confmodel/Service.hpp"
+#include "oks/file.hpp"
+
+#include <fmt/core.h> // Replace with std::format when we switch to a newer compiler?
 
 namespace dunedaq {
 namespace appmodel {
 
-ConfigObjectFactory::ConfigObjectFactory(conffwk::Configuration* config,
-        const std::string& dbfile,
-        const std::string& app_uid)
-    : m_config(config),
-    m_dbfile(dbfile),
-    m_app_uid(app_uid) {
-
-    //FIXME: remove this hacky hack
-    oks::OksFile::set_nolock_mode(true);
-}
-
-
-
-ConfigObjectFactory::ConfigObjectFactory(const conffwk::DalObject* parent) :
+ConfigObjectFactory::ConfigObjectFactory(const SmartDaqApplication* parent) :
     m_config(&parent->configuration()),
     m_dbfile(parent->config_object().contained_in()),
     m_app_uid(parent->UID()) {

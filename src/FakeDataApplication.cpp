@@ -47,7 +47,7 @@ FakeDataApplication::contained_resources() const {
   return to_resources(get_producers());
 }
 
-std::vector<const confmodel::DaqModule*>
+void
 FakeDataApplication::generate_modules(const confmodel::Session* session) const
 {
   // oks::OksFile::set_nolock_mode(true);
@@ -155,8 +155,7 @@ FakeDataApplication::generate_modules(const confmodel::Session* session) const
 
   modules.push_back(obj_fac.get_dal<FragmentAggregatorModule>(faUid));
 
-  // oks::OksFile::set_nolock_mode(false);
-  return modules;
+  obj_fac.update_modules(modules);
 }
 
 } // namespace appmodel  
