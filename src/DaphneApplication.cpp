@@ -20,7 +20,7 @@
 #include "appmodel/appmodelIssues.hpp"
 #include "appmodel/FelixDataSender.hpp"
 #include "appmodel/DaphneConf.hpp"
-#include "appmodel/DaphneMap.hpp"
+#include "appmodel/DaphneMapEntry.hpp"
 #include "appmodel/DaphneV2BoardConf.hpp"
 #include "appmodel/DaphneV2Channel.hpp"
 #include "appmodel/DaphneV2AFE.hpp"
