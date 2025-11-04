@@ -32,7 +32,6 @@
 #include "appmodel/DaphneApplication.hpp"
 #include "appmodel/FelixDetectorToDaqConnection.hpp"
 #include "appmodel/NetworkDetectorToDaqConnection.hpp"
-#include "appmodel/FelixDataSender.hpp"
 #include "appmodel/NWDetDataSender.hpp"
 #include "appmodel/NWDetDataReceiver.hpp"
 #include "appmodel/HermesDataSender.hpp"
@@ -46,9 +45,9 @@
 #include <iostream>
 #include <fmt/core.h>
 #include <set>
+#include <map>
 
-namespace dunedaq {
-namespace appmodel {
+namespace dunedaq::appmodel {
   
 std::vector<const confmodel::Resource*>
 DaphneApplication::contained_resources() const {
@@ -203,7 +202,7 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
       conffwk::ConfigObject hermes_obj = obj_fac.create("HermesModule", hermes_uid);
       hermes_obj.set_obj("address_table", &this->get_hermes_module_conf()->get_address_table()->config_object());
       hermes_obj.set_by_val<std::string>("uri", fmt::format("{}://{}:{}", this->get_hermes_module_conf()->get_ipbus_type(), ctrl_hosts[id], this->get_hermes_module_conf()->get_ipbus_port()));
-      hermes_obj.set_by_val<uint32_t>("timeout_ms", this->get_hermes_module_conf()->get_ipbus_timeout_ms());
+      hermes_obj.set_by_val<uint32_t>("timeout_ms", this->get_hermes_module_conf()->get_ipbus_timeout_ms());  // NOLINT
       hermes_obj.set_obj("destination", & interfaces[id]->config_object());
       
       std::vector< const conffwk::ConfigObject * > links_obj;
@@ -220,7 +219,7 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
   } // ips
 
   obj_fac.update_modules(modules);
-}
+}  // NOTLINT 
 
 
 bool
@@ -317,5 +316,4 @@ DaphneV2LNA::get_reg52() const {
   return reg52.to_ulong();
 }
  
-} // namespace appmodel  
-} // namespace dunedaq
+} // namespace dunedaq::appmodel
