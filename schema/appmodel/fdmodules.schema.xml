@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="32" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20250924T135018"/>
+<info name="" type="" num-of-items="33" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20251104T211957"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -229,6 +229,10 @@
   <attribute name="expected_packet_size" type="u32" init-value="7243" is-not-null="yes"/>
   <attribute name="expected_seq_id_step" type="u32" init-value="1"/>
   <attribute name="expected_timestamp_step" type="s32" init-value="-999" is-not-null="yes"/>
+ </class>
+
+ <class name="SNBDataHandlerModule">
+  <superclass name="DataHandlerModule"/>
  </class>
 
  <class name="SNBFileReaderConf">
