@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ASCII"?>
+<?xml version="1.0" encoding="us-ascii"?>
 
 <!-- oks-schema version 2.2 -->
 
@@ -231,6 +231,7 @@
   <superclass name="SmartDaqApplication"/>
   <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
   <relationship name="producers" description="List of configurations of fake data producer modules to be used by this application" class-type="FakeDataProdConf" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
+     <relationship name="fragment_aggregator" class-type="FragmentAggregatorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate daq module dal objects for streams of the FakeDataApplication on the fly">
    <method-implementation language="c++" prototype="void generate_modules(const confmodel::Session*) const override" body=""/>
   </method>
@@ -288,9 +289,13 @@
   <attribute name="digits_for_trigger_number" type="s32" init-value="8" is-not-null="yes"/>
  </class>
 
+ <class name="FragmentAggregatorConf">
+  <attribute name="fragment_send_timeout_ms" type="u32" init-value="0" is-not-null="yes"/>
+ </class>
+    
  <class name="FragmentAggregatorModule">
   <superclass name="DaqModule"/>
-  <attribute name="fragment_send_timeout_ms" type="u32" init-value="0" is-not-null="yes"/>
+ <relationship name="configuration" class-type="FragmentAggregatorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="HDF5FileLayoutParams">
@@ -409,6 +414,7 @@
   <relationship name="tp_handler" class-type="DataHandlerConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_reader" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_recorder" class-type="DataRecorderConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+     <relationship name="fragment_aggregator" class-type="FragmentAggregatorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="detector_connections" description="The list of detector channels to be read out by this readout application." class-type="DetectorToDaqConnection" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate daq module dal objects for streams of thie ReadoutApplication on the fly">
    <method-implementation language="c++" prototype="void generate_modules(const confmodel::Session*) const override" body=""/>
