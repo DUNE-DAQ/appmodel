@@ -44,6 +44,7 @@
 #include "appmodel/DataHandlerModule.hpp"
 #include "appmodel/DataHandlerConf.hpp"
 #include "appmodel/FragmentAggregatorModule.hpp"
+#include "appmodel/FragmentAggregatorConf.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
@@ -376,8 +377,11 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
     modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(dlh_obj.UID()));
   }
 
-
   // Finally create Fragment Aggregator
+  auto aggregator_conf = get_fragment_aggregator();
+  if (aggregator_conf == 0) {
+    throw(BadConf(ERS_HERE, "No FragmentAggregatorModule configuration given"));
+  }
   std::string faUid("fragmentaggregator-" + UID());
   // conffwk::ConfigObject frag_aggr;
   TLOG_DEBUG(7) << "creating OKS configuration object for Fragment Aggregator class ";
@@ -426,6 +430,7 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
     fa_output_objs.push_back(&q->config_object());
   }
 
+  frag_aggr.set_obj("configuration", &aggregator_conf->config_object());
   frag_aggr.set_objs("inputs", { &fa_net_obj, &frag_queue_obj });
   frag_aggr.set_objs("outputs", fa_output_objs);
   modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(frag_aggr.UID()));

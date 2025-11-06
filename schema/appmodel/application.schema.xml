@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="59" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20250917T111051"/>
+<info name="" type="" num-of-items="60" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20251105T144501"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -231,6 +231,7 @@
   <superclass name="SmartDaqApplication"/>
   <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
   <relationship name="producers" description="List of configurations of fake data producer modules to be used by this application" class-type="FakeDataProdConf" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
+  <relationship name="fragment_aggregator" class-type="FragmentAggregatorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate daq module dal objects for streams of the FakeDataApplication on the fly">
    <method-implementation language="c++" prototype="void generate_modules(const confmodel::Session*) const override" body=""/>
   </method>
@@ -288,8 +289,13 @@
   <attribute name="digits_for_trigger_number" type="s32" init-value="8" is-not-null="yes"/>
  </class>
 
+ <class name="FragmentAggregatorConf">
+  <attribute name="fragment_send_timeout_ms" type="u32" init-value="0" is-not-null="yes"/>
+ </class>
+
  <class name="FragmentAggregatorModule">
   <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="FragmentAggregatorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="HDF5FileLayoutParams">
@@ -408,6 +414,7 @@
   <relationship name="tp_handler" class-type="DataHandlerConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_reader" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_recorder" class-type="DataRecorderConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="fragment_aggregator" class-type="FragmentAggregatorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="detector_connections" description="The list of detector channels to be read out by this readout application." class-type="DetectorToDaqConnection" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate daq module dal objects for streams of thie ReadoutApplication on the fly">
    <method-implementation language="c++" prototype="void generate_modules(const confmodel::Session*) const override" body=""/>
@@ -504,9 +511,10 @@
  </class>
 
  <class name="TRBConf">
-  <attribute name="queues_timeout" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="tr_queue_timeout" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="request_queue_timeout" type="u32" init-value="0" is-not-null="yes"/>
   <attribute name="trigger_record_timeout_ms" type="u32" init-value="0" is-not-null="yes"/>
-  <attribute name="max_time_window" type="s64" init-value="0" is-not-null="yes"/>
+  <attribute name="max_sequence_length_ticks" type="s64" init-value="0" is-not-null="yes"/>
   <attribute name="source_id" type="u32" is-not-null="yes"/>
  </class>
 
