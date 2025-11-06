@@ -194,7 +194,7 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
     module_obj.set_obj("board_conf", & conf -> config_object() );
 
     auto module = obj_fac.get_dal<confmodel::DaqModule>(module_obj); 
-//     modules.push_back(module);
+    modules.push_back(module);
 
 
     // Create Hermes Modules
