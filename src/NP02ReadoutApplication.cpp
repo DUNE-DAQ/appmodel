@@ -44,6 +44,7 @@
 #include "appmodel/DataHandlerModule.hpp"
 #include "appmodel/DataHandlerConf.hpp"
 #include "appmodel/FragmentAggregatorModule.hpp"
+#include "appmodel/FragmentAggregatorConf.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
@@ -419,6 +420,10 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
 
 
   // Finally create Fragment Aggregator
+  auto aggregator_conf = get_fragment_aggregator();
+  if (aggregator_conf == 0) {
+    throw(BadConf(ERS_HERE, "No FragmentAggregatorModule configuration given"));
+  }
   std::string faUid("fragmentaggregator-" + UID());
   // conffwk::ConfigObject frag_aggr;
   TLOG_DEBUG(7) << "creating OKS configuration object for Fragment Aggregator class ";
@@ -464,6 +469,7 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
     fa_output_objs.push_back(&q->config_object());
   }
 
+  frag_aggr.set_obj("configuration", &aggregator_conf->config_object());
   frag_aggr.set_objs("inputs", { &fa_net_obj, &frag_queue_obj });
   frag_aggr.set_objs("outputs", fa_output_objs);
 
