@@ -80,8 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="57" oks-format="schema" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231211T133151" last-modified-by="eflumerf" last-modified-on="daq.fnal.gov" last-modification-time="20251016T201448"/>
-
+<info name="" type="" num-of-items="57" oks-format="schema" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231211T133151" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20251111T225403"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -129,6 +128,23 @@
  <class name="DataSubscriberModule">
   <superclass name="DaqModule"/>
   <relationship name="configuration" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="FixedTimeTCConf">
+  <attribute name="timestamp_start" type="u64" init-value="0" is-not-null="yes"/>
+  <attribute name="timestamp_end" type="u64" init-value="0" is-not-null="yes"/>
+ </class>
+
+ <class name="FixedTimeTCMakerModule">
+  <superclass name="StandaloneTCMakerModule"/>
+  <relationship name="configuration" class-type="FixedTimeTCMakerModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="FixedTimeTCMakerModuleConf">
+  <superclass name="StandaloneTCMakerConf"/>
+  <attribute name="wait_time_ms" description="Time to wait between TriggerCandidates" type="u64" init-value="1000" is-not-null="yes"/>
+  <attribute name="tc_type_name" description="Enumerator name of the TC type, e.g. kTiming" type="string" init-value="kSupernova" is-not-null="yes"/>
+  <relationship name="triggers" description="Timestamps for the TCs to generate" class-type="FixedTimeTCConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="HSI2TCTranslatorConf">
@@ -180,28 +196,11 @@
   <attribute name="default_adc_intg_thresh" type="u32" init-value="0" is-not-null="yes"/>
  </class>
 
- <class name="PreconfiguredTriggerModule">
-  <superclass name="StandaloneTCMakerModule"/>
-  <relationship name="configuration" class-type="PreconfiguredTriggerModuleConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="PreconfiguredTriggerModuleConf">
-  <superclass name="StandaloneTCMakerConf"/>
-  <attribute name="wait_time_ms" description="Time to wait between TriggerCandidates" type="u64" init-value="1000" is-not-null="yes"/>
-  <relationship name="tc_readout" description="Configuration for the TC output type and the TC window size" class-type="TCReadoutMap" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="triggers" description="Timestamps for the triggers to generate" class-type="PreconfiguredTriggerModuleTrigger" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
- </class>
-
- <class name="PreconfiguredTriggerModuleTrigger">
-  <attribute name="timestamp_start" type="u64" init-value="0" is-not-null="yes"/>
-  <attribute name="timestamp_end" type="u64" init-value="0" is-not-null="yes"/>
- </class>
-
  <class name="ProcessingStep" description="Base class for TPG processors.">
   <superclass name="Jsonable"/>
   <attribute name="metric_collect_time_sample_period" description="If metric_collect_toggle_state is true, the processor will store values of its monitored quantities every metric_collect_time_sample_period time samples." type="u64" init-value="256"/>
   <attribute name="metric_collect_toggle_state" description="Whether metric storaging function is enabled." type="bool" init-value="0"/>
-  <attribute name="requested_internal_states" description="config string for internal states to be collected" type="string" init-value="" is-not-null="no"/>
+  <attribute name="requested_internal_states" description="config string for internal states to be collected" type="string"/>
  </class>
 
  <class name="ROIGroupConf">
