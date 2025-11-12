@@ -42,6 +42,8 @@ daq_add_dal_library(application.schema.xml hermes.schema.xml fdmodules.schema.xm
 	TriggerApplication.cpp
 	TRMonReqApplication.cpp
 	WIECApplication.cpp
+	PACMANApplication.cpp
+	 PACMANDetectorToDaqConnection
   LINK_LIBRARIES conffwk::conffwk fmt::fmt logging::logging oks::oks ers::ers )
 
 daq_add_application(getAppsArguments get_apps_arguments.cxx

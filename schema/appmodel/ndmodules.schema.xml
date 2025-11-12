@@ -97,30 +97,48 @@
   <superclass name="DataReaderModule"/>
  </class>
 
- <class name="PACMANDataReaderConf">
-    <superclass name="DataReaderConf"/>
-    <attribute name="eal_args" type="string" is-not-null="yes"/>
- </class>
-
  <class name="PACMANReaderModule">
   <superclass name="DataReaderModule"/>
  </class>
 
 <class name="PACMANDataSender">
   <superclass name="NWDetDataSender"/>
-  <attribute name="link" description="Link within SLR" type="u8" range="0..5" init-value="0" is-not-null="yes"/>
+  <attribute name="card" description="Card ID" type="u8" init-value="0" is-not-null="yes"/>
  </class>
 
- <class name="PACMANConfiguration">
-   <attribute name="link_confs" description="List of Link configurations" type="u32" is-multi-value="yes" init-value="0" is-not-null="yes"/>
-  <attribute name="card" description="Card ID" type="u8" init-value="0" is-not-null="yes"/>
+<class name="PACMANConfiguration">
   <attribute name="zmq_receiver_timeout" description="ZMQ Recieve Timeout Value" type="u8" init-value="0" is-not-null="yes"/>
  </class>
 
- <class name="PACMANReceiver">
+
+ <class name="PACMANDataReceiver">
   <superclass name="NWDetDataReceiver"/>
-  <relationship name="uses" class-type="NetworkDevice" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="configuration" class-type="PACMANConfiguration" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
+
+ <class name="PACMANDetectorToDaqConnection">
+  <superclass name="DetectorToDaqConnection"/>
+  <relationship name="pacman_receiver" class-type="PACMANDataReceiver" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="pacman_senders" class-type="PACMANDataSender" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <method name="receiver" description="">
+   <method-implementation language="c++" prototype="const confmodel::DetDataReceiver* receiver() const override" body=""/>
+  </method>
+  <method name="senders" description="">
+   <method-implementation language="c++" prototype="std::vector&lt;const confmodel::DetDataSender*&gt; senders() const override" body=""/>
+  </method>
+ </class>
+
+ <class name="PACMANApplication">
+  <superclass name="SmartDaqApplication"/>
+  <superclass name="ResourceSetDisableAND"/>
+  <relationship name="detector_connections" description="List of detector components controlled by this application" class-type="PACMANDetectorToDaqConnection" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
+    <method-implementation language="c++" prototype="void generate_modules(const confmodel::Session*) const override" body=""/>
+  </method>
+  <method name="contained_resources" description="">
+   <method-implementation language="c++" prototype="virtual std::vector&lt;const Resource*&gt; contained_resources() const override" body=""/>
+  </method>
+
+</class>
 
 </oks-schema>
