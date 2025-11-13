@@ -18,9 +18,30 @@ find_package(Boost COMPONENTS unit_test_framework program_options REQUIRED)
 
 daq_add_dal_library(application.schema.xml hermes.schema.xml fdmodules.schema.xml trigger.schema.xml wiec.schema.xml PDS.schema.xml tde.schema.xml CTB.schema.xml
   NAMESPACE dunedaq::appmodel DEP_PKGS confmodel
-  SOURCES ConfigObjectFactory.cpp ReadoutApplication.cpp NP02ReadoutApplication.cpp
-          DFApplication.cpp DFOApplication.cpp TPWriterApplication.cpp FakeDataApplication.cpp FakeHSIApplication.cpp DTSHSIApplication.cpp TriggerApplication.cpp MLTApplication.cpp TPReplayApplication.cpp HSIEventToTCApplication.cpp WIECApplication.cpp DaphneApplication.cpp CRTReaderApplication.cpp TDECrateApplication.cpp CTBApplication.cpp NetworkDetectorToDaqConnection.cpp FelixDetectorToDaqConnection.cpp
-          TRMonReqApplication.cpp
+  SOURCES
+	ConfigObjectFactory.cpp
+	CRTReaderApplication.cpp
+	CTBApplication.cpp
+	DaphneApplication.cpp
+	DFApplication.cpp
+	DFOApplication.cpp
+	DTSHSIApplication.cpp
+	FakeDataApplication.cpp
+	FakeHSIApplication.cpp
+	FelixDetectorToDaqConnection.cpp
+	HSIEventToTCApplication.cpp
+	MLTApplication.cpp
+	NetworkDetectorToDaqConnection.cpp
+	NP02ReadoutApplication.cpp
+	ReadoutApplication.cpp
+	SNBBookkeeperApplication.cpp
+	SNBTransferApplication.cpp
+	TDECrateApplication.cpp
+	TPReplayApplication.cpp
+	TPWriterApplication.cpp
+	TriggerApplication.cpp
+	TRMonReqApplication.cpp
+	WIECApplication.cpp
   LINK_LIBRARIES conffwk::conffwk fmt::fmt logging::logging oks::oks ers::ers )
 
 daq_add_application(getAppsArguments get_apps_arguments.cxx
