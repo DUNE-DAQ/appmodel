@@ -73,12 +73,17 @@ CRTReaderApplication::generate_modules(const confmodel::Session* session) const
   for (auto rule : get_queue_rules()) {
     auto destination_class = rule->get_destination_class();
     auto data_type = rule->get_descriptor()->get_data_type();
-    // Why datahander here?
-    if (destination_class == "FDDataHandlerModule") {
+    // Why datahander here? It is the base class for several DataHandler types (e.g. FDDataHandlerModule,
+    // SNBDataHandlerModule)
+    if (destination_class == "DataHandlerModule") {
       if (data_type != "DataRequest") {
         dlh_input_qdesc = rule->get_descriptor();
       }
     }
+  }
+
+  if (dlh_input_qdesc == nullptr) {
+    throw(BadConf(ERS_HERE, "No data link handler input queue descriptor given"));
   }
 
   //
