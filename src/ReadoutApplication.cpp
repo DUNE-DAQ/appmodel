@@ -121,7 +121,7 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
   for (auto rule : get_queue_rules()) {
     auto destination_class = rule->get_destination_class();
     auto data_type = rule->get_descriptor()->get_data_type();
-    // Why datahander here?
+    // Why datahander here? It is the base class for several DataHandler types (e.g. FDDataHandlerModule, SNBDataHandlerModule)
     if (destination_class == "DataHandlerModule" || destination_class == dlh_class || destination_class == tph_class) {
       if (data_type == "DataRequest") {
         dlh_reqinput_qdesc = rule->get_descriptor();
@@ -133,6 +133,13 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
     } else if (destination_class == "FragmentAggregatorModule") {
       fa_output_qdesc = rule->get_descriptor();
     }
+  }
+
+  if (dlh_input_qdesc == nullptr) {
+    throw(BadConf(ERS_HERE, "No data link handler input queue descriptor given"));
+  }
+  if (dlh_reqinput_qdesc == nullptr) {
+    throw(BadConf(ERS_HERE, "No data link handler request input queue descriptor given"));
   }
 
   //
@@ -155,6 +162,13 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
     } else if (data_type == "TimeSync") {
       ts_net_desc = rule->get_descriptor();
     }
+  }
+
+  if (fa_net_desc == nullptr) {
+    throw(BadConf(ERS_HERE, "No Fragment Aggregator network descriptor given"));
+  }
+  if (ts_net_desc == nullptr && dlh_conf->get_generate_timesync()) {
+    throw(BadConf(ERS_HERE, "No Time Sync network descriptor given but time sync generation is enabled"));
   }
 
   // Create here the Queue on which all data fragments are forwarded to the fragment aggregator
@@ -281,7 +295,15 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
   //
   std::vector<const confmodel::Connection*> tp_queues;
   if (get_tp_generation_enabled()) {
-
+    if (tp_input_qdesc == nullptr) {
+        throw(BadConf(ERS_HERE, "TP generation is enabled but no TP input queue descriptor given"));
+    }
+    if (tp_net_desc == nullptr) {
+        throw(BadConf(ERS_HERE, "TP generation is enabled but no TPSet network descriptor given"));
+    }
+    if (ta_net_desc == nullptr) {
+      throw(BadConf(ERS_HERE, "TP generation is enabled but no TriggerActivity network descriptor given"));
+    }
     // Create TP handler object
     auto tph_conf_obj = tph_conf->config_object();
     auto tpsrc_ids = get_tp_source_ids();
