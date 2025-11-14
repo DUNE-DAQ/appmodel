@@ -141,10 +141,6 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
       auto det_senders = net_conn->get_net_senders();
 
       for ( const auto* nw_sender : det_senders ) {
-        if ( nw_sender->is_disabled(*session) ) {
-          TLOG() << "Skipping disabled sender: " << nw_sender->UID();
-          continue;
-        }
 
         // Check the sender type, must me a HermesSender
         const auto* hrms_sender = nw_sender->cast<appmodel::HermesDataSender>();
@@ -153,6 +149,11 @@ DaphneApplication::generate_modules(const confmodel::Session* session) const
         }
 
         hermes_senders[hrms_sender->get_control_host()].push_back(hrms_sender);
+
+        if ( nw_sender->is_disabled(*session) ) {
+          TLOG() << "Skipping disabled sender: " << nw_sender->UID();
+          continue;
+        }
           
         auto streams = nw_sender -> get_streams();
         for ( const auto * det_s : streams ) {
