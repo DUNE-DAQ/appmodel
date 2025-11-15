@@ -216,7 +216,7 @@
   <attribute name="trigger_rate_hz" description="Trigger rate (in Hz) for the RandomTCMaker to produce the TCs" type="float" init-value="1" is-not-null="yes"/>
   <attribute name="time_distribution" description="Type of distribution used for random timestamps (uniform or poisson)" type="enum" range="kUniform,kPoisson" init-value="kUniform" is-not-null="yes"/>
   <attribute name="candidate_type_name" description="Enumerator name of the TC type, e.g. kTiming" type="string" init-value="kRandom" is-not-null="yes"/>
-  <attribute name="candidate_offset_ts" type="s32" init-value="1000" is-not-null="yes"/>
+  <attribute name="candidate_backshift_ts" type="s32" init-value="1000" is-not-null="yes"/>
   <attribute name="candidate_window_before_ts" type="u32" init-value="1000" is-not-null="yes"/>
   <attribute name="candidate_window_after_ts" type="u32" init-value="1000" is-not-null="yes"/>
 </class>
