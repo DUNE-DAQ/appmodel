@@ -108,8 +108,12 @@
 
 <class name="PACMANConfiguration">
   <attribute name="zmq_receiver_timeout" description="ZMQ Recieve Timeout Value" type="u8" init-value="0" is-not-null="yes"/>
- </class>
+</class>
 
+<class name="PACMANModuleConf">
+  <superclass name="DataReaderConf"/>
+  <!-- <relationship name="configuration" class-type="PACMANConfiguration" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/> -->
+</class>
 
  <class name="PACMANDataReceiver">
   <superclass name="NWDetDataReceiver"/>
@@ -127,7 +131,7 @@
    <method-implementation language="c++" prototype="std::vector&lt;const confmodel::DetDataSender*&gt; senders() const override" body=""/>
   </method>
  </class>
-
+ 
  <class name="PACMANApplication">
   <superclass name="SmartDaqApplication"/>
   <superclass name="ResourceSetDisableAND"/>
