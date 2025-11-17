@@ -26,6 +26,10 @@
 #include "appmodel/FelixDataReceiver.hpp"
 #include "appmodel/FelixDataSender.hpp"
 
+#include "appmodel/PACMANModuleConf.hpp"
+#include "appmodel/PACMANReaderModule.hpp"
+#include "appmodel/PACMANDataReceiver.hpp"
+
 #include "appmodel/SocketReceiver.hpp"
 #include "confmodel/QueueWithSourceId.hpp"
 
@@ -49,8 +53,6 @@
 #include "appmodel/QueueConnectionRule.hpp"
 #include "appmodel/QueueDescriptor.hpp"
 #include "appmodel/RequestHandler.hpp"
-
-
 
 #include "appmodel/appmodelIssues.hpp"
 
@@ -218,12 +220,15 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
 
     // Here I want to resolve the type of connection (network, felix, or?)
     // Rules of engagement: if the receiver interface is network or felix, the receivers should be castable to the counterpart
-    if (reader_class == "DPDKReaderModule" || reader_class == "SocketReaderModule") {
+    if (reader_class == "DPDKReaderModule" || reader_class == "SocketReaderModule" || reader_class == "PACMANReaderModule")
+    {
       if (!d2d_conn->castable("NetworkDetectorToDaqConnection")) {
         throw(BadConf(ERS_HERE, fmt::format("{} requires NetworkDetectorToDaqConnection, found {} of class {}", reader_class, d2d_conn->UID(), d2d_conn->class_name())));
       }
       if ((reader_class == "DPDKReaderModule" && !det_receiver->cast<appmodel::DPDKReceiver>()) ||
-          (reader_class == "SocketReaderModule" && !det_receiver->cast<appmodel::SocketReceiver>())) {
+          (reader_class == "SocketReaderModule" && !det_receiver->cast<appmodel::SocketReceiver>()) ||
+          (reader_class == "PACMANReaderModule" && !det_receiver->cast<appmodel::PACMANReaderModule>()))
+      {
         throw(BadConf(ERS_HERE, fmt::format("{} requires NWDetDataReceiver, found {} of class {}", reader_class, det_receiver->UID(), det_receiver->class_name())));
       }
     }
@@ -234,6 +239,7 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
       if (!det_receiver->cast<appmodel::FelixDataReceiver>()) {
         throw(BadConf(ERS_HERE, fmt::format("FelixReaderModule requires FelixDataReceiver, found {} of class {}", det_receiver->UID(), det_receiver->class_name())));
       }
+      
     }
   // }
 
