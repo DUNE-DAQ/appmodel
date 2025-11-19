@@ -39,6 +39,7 @@ ConfigObjectFactory::create_queue_obj(const QueueDescriptor* qdesc, std::string 
     queue_obj.set_by_val<std::string>("data_type", qdesc->get_data_type());
     queue_obj.set_by_val<std::string>("queue_type", qdesc->get_queue_type());
     queue_obj.set_by_val<uint32_t>("capacity", qdesc->get_capacity());
+    queue_obj.set_by_val<bool>("direct_callbacks_enabled", qdesc->get_direct_callbacks_enabled());
 
     return queue_obj;
 }
