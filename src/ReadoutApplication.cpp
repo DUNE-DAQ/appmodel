@@ -242,7 +242,7 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
       }
       if ((reader_class == "DPDKReaderModule" && !det_receiver->cast<appmodel::DPDKReceiver>()) ||
           (reader_class == "SocketReaderModule" && !det_receiver->cast<appmodel::SocketReceiver>()) ||
-          (reader_class == "PACMANReaderModule" && !det_receiver->cast<appmodel::PACMANReaderModule>()))
+          (reader_class == "PACMANReaderModule" && !det_receiver->cast<appmodel::PACMANDataReceiver>()))
       {
         throw(BadConf(ERS_HERE, fmt::format("{} requires NWDetDataReceiver, found {} of class {}", reader_class, det_receiver->UID(), det_receiver->class_name())));
       }
@@ -331,6 +331,7 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
 
       tp_queues.push_back(obj_fac.get_dal<confmodel::Connection>(tp_queue_obj.UID()));
       // Create tp data requests queue from Fragment Aggregator
+
       tpreq_queue_obj = obj_fac.create_queue_sid_obj(dlh_reqinput_qdesc, sid->get_sid());
       req_queues.push_back(obj_fac.get_dal<confmodel::Connection>(tpreq_queue_obj.UID()));
 
@@ -381,7 +382,6 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
 
     // Create request queue
     conffwk::ConfigObject req_queue_obj = obj_fac.create_queue_sid_obj(dlh_reqinput_qdesc, ds);
-
 
     // Add the requessts queue dal pointer to the outputs of the FragmentAggregatorModule
     req_queues.push_back(obj_fac.get_dal<confmodel::Connection>(req_queue_obj.UID()));
