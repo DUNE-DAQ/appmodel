@@ -241,8 +241,6 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
     // Rules of engagement: if the receiver interface is network or felix, the receivers should be castable to the counterpart
     if (reader_class == "DPDKReaderModule" || reader_class == "SocketReaderModule" || reader_class == "PACMANReaderModule")
     {
-    if (reader_class == "DPDKReaderModule" || reader_class == "SocketReaderModule" || reader_class == "PACMANReaderModule")
-    {
       if (!d2d_conn->castable("NetworkDetectorToDaqConnection")) {
         throw(BadConf(ERS_HERE, fmt::format("{} requires NetworkDetectorToDaqConnection, found {} of class {}", reader_class, d2d_conn->UID(), d2d_conn->class_name())));
       }
@@ -260,21 +258,18 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
       if (!det_receiver->cast<appmodel::FelixDataReceiver>()) {
         throw(BadConf(ERS_HERE, fmt::format("FelixReaderModule requires FelixDataReceiver, found {} of class {}", det_receiver->UID(), det_receiver->class_name())));
       }
-      
-      
     }
-  // }
 
-  //-----------------------------------------------------------------
-  //
-  // Create DataReaderModule object
-  //
+    //-----------------------------------------------------------------
+    //
+    // Create DataReaderModule object
+    //
 
-  //
-  // Instantiate DataReaderModule of type DPDKReaderModule
-  //
+    //
+    // Instantiate DataReaderModule of type DPDKReaderModule
+    //
 
-   // Create the Data reader object
+    // Create the Data reader object
 
     std::string reader_uid(fmt::format("datareader-{}-{}", this->UID(), std::to_string(conn_idx++)));
     TLOG_DEBUG(6) << fmt::format("creating OKS configuration object for Data reader class {} with id {}", reader_class, reader_uid);
