@@ -98,7 +98,7 @@
  </class>
 
  <class name="CIBConf">
-  <attribute name="Port" description="Port test" type="u32" range="0..2500" init-value="1" is-not-null="yes"/>
+  <attribute name="control_connection_port" description="Port test" type="u32" range="0..2500" init-value="1" is-not-null="yes"/>
  </class>
 
  <class name="CIBModule">
