@@ -80,19 +80,19 @@ CIBApplication::generate_modules(const confmodel::Session* session) const
   }
 
   
-  // auto ctb_conf = get_generator();
-  // if (ctb_conf ==nullptr) {
-  //   throw(BadConf(ERS_HERE, "No CTBModule configuration given"));
-  // }
-  // if (dlhInputQDesc == nullptr) {
-  //   throw(BadConf(ERS_HERE, "No DLH data input queue descriptor given"));
-  // }
-  // if (dlhReqInputNetDesc == nullptr) {
-  //   throw(BadConf(ERS_HERE, "No DLH request input network descriptor given"));
-  // }
-  // if (hsiNetDesc == nullptr) {
-  //   throw(BadConf(ERS_HERE, "No HSIEvent output network descriptor given"));
-  // }
+  auto cib_conf = get_cib_conf();
+  if (cib_conf ==nullptr) {
+    throw(BadConf(ERS_HERE, "No CIBModule configuration given"));
+  }
+  if (dlhInputQDesc == nullptr) {
+    throw(BadConf(ERS_HERE, "No DLH data input queue descriptor given"));
+  }
+  if (dlhReqInputNetDesc == nullptr) {
+    throw(BadConf(ERS_HERE, "No DLH request input network descriptor given"));
+  }
+  if (hsiNetDesc == nullptr) {
+    throw(BadConf(ERS_HERE, "No HSIEvent output network descriptor given"));
+  }
 
   // Process special Network rules!
   // Looking for Fragment rules from DFAppplications in current Session
@@ -121,78 +121,74 @@ CIBApplication::generate_modules(const confmodel::Session* session) const
     fh_output_objs.push_back(&fNet);
   }
 
-  std::vector<conffwk::ConfigObject> ctb_module_outputs;
+  std::vector<conffwk::ConfigObject> cib_module_outputs;
+  auto source = get_source_id();
+  if (source == nullptr) {
+    throw(BadConf(ERS_HERE, "No SourceIDConf given for CIBApplication"));
+  }
 
-  // MR I'm connecting out for the sake of the compilation, but this is an importat part ot the logic
-  // for ( const auto & s : sources ) {
-  //   // MR: This is where you simpliify. The CTB had 2 source ids and I had to envelope this into a loop
-  //   // You just need one and you have that already in the SmartDAQApplication that already has one source id
-  //   if (s.second == nullptr) {
-  //     throw(BadConf(ERS_HERE, "No SourceIDConf given for " + s.first));
-  //   }
+  auto id = source->get_sid();
 
-  //   auto id = s.second->get_sid();
-  //   // ----------------------------
-  //   // create DLH
-  //   // ----------------------------    
-  //   auto det_id = 1; // TODO Eric Flumerfelt <eflumerf@fnal.gov>, 08-Feb-2024: This is a magic number corresponding to kDAQ
-  //   TLOG() << "creating OKS configuration object for " + s.first + " Data Link Handler class " << dlhClass << ", id " << id;
-  //   std::string uid("DLH-" + s.first);
-  //   conffwk::ConfigObject dlhObj = obj_fac.create( dlhClass, uid );
-  //   dlhObj.set_by_val<uint32_t>("source_id", id);
-  //   dlhObj.set_by_val<uint32_t>("detector_id", det_id);
-  //   dlhObj.set_by_val<bool>("post_processing_enabled", false);
-  //   dlhObj.set_obj("module_configuration", &dlhConf->config_object());
-    
-  //   auto net_objc(fh_output_objs);
-    
-  //   // Time Sync network connection
-  //   if (dlhConf->get_generate_timesync()) {
-  //     std::string tsStreamUid = tsNetDesc->get_uid_base() + std::to_string(id);
-  //     conffwk::ConfigObject tsNetObj = obj_fac.create_net_obj(tsNetDesc, tsStreamUid);
-  //     net_objc.push_back(&tsNetObj);
-  //   }
+  // ----------------------------
+  // create DLH
+  // ----------------------------
+  auto det_id = 1; // TODO Eric Flumerfelt <eflumerf@fnal.gov>, 08-Feb-2024: This is a magic number corresponding to kDAQ
+  TLOG() << "creating OKS configuration object for Data Link Handler class " << dlhClass << ", id " << id;
+  std::string uid("DLH-");
+  conffwk::ConfigObject dlhObj = obj_fac.create( dlhClass, uid );
+  dlhObj.set_by_val<uint32_t>("source_id", id);
+  dlhObj.set_by_val<uint32_t>("detector_id", det_id);
+  dlhObj.set_by_val<bool>("post_processing_enabled", false);
+  dlhObj.set_obj("module_configuration", &dlhConf->config_object());
 
-  //   dlhObj.set_objs("outputs", net_objc);
+  auto net_objc(fh_output_objs);
 
-  //   // create Queues from CTB to DLH
-  //   std::string dataQueueUid(dlhInputQDesc->get_uid_base() + s.first);
-  //   conffwk::ConfigObject queueObj = obj_fac.create_queue_sid_obj(dlhInputQDesc, id); 
-  //   queueObj.rename(dataQueueUid);
-    
-  //   ctb_module_outputs.push_back(queueObj);
+  // Time Sync network connection
+  if (dlhConf->get_generate_timesync()) {
+    std::string tsStreamUid = tsNetDesc->get_uid_base() + std::to_string(id);
+    conffwk::ConfigObject tsNetObj = obj_fac.create_net_obj(tsNetDesc, tsStreamUid);
+    net_objc.push_back(&tsNetObj);
+  }
 
-  //   // Create network connections to DLHs
-  //   std::string faNetUid = dlhReqInputNetDesc->get_uid_base() + UID() + '_' + s.first;
-  //   conffwk::ConfigObject faNetObj = obj_fac.create_net_obj(dlhReqInputNetDesc, faNetUid);
+  dlhObj.set_objs("outputs", net_objc);
 
-  //   dlhObj.set_objs("inputs", { &queueObj, &faNetObj });
+  // create Queues from CIB to DLH
+  std::string dataQueueUid(dlhInputQDesc->get_uid_base());
+  conffwk::ConfigObject queueObj = obj_fac.create_queue_sid_obj(dlhInputQDesc, id);
+  queueObj.rename(dataQueueUid);
 
-  //   modules.push_back(obj_fac.get_dal<appmodel::DataHandlerModule>(uid));
-    
-  // }  // loop over CTB sources
-   
+  cib_module_outputs.push_back(queueObj);
 
-  // conffwk::ConfigObject hsiNetObj = obj_fac.create_net_obj(hsiNetDesc, "");
-  // ctb_module_outputs.push_back(hsiNetObj);
-  
+  // Create network connections to DLHs
+  std::string faNetUid = dlhReqInputNetDesc->get_uid_base() + UID();
+  conffwk::ConfigObject faNetObj = obj_fac.create_net_obj(dlhReqInputNetDesc, faNetUid);
+
+  dlhObj.set_objs("inputs", { &queueObj, &faNetObj });
+
+  modules.push_back(obj_fac.get_dal<appmodel::DataHandlerModule>(uid));
+
+
+  // HSI and BoardConfs
+  conffwk::ConfigObject hsiNetObj = obj_fac.create_net_obj(hsiNetDesc, "");
+  cib_module_outputs.push_back(hsiNetObj);
+
   // auto board = get_board();
-  
-  // conffwk::ConfigObject module_obj = obj_fac.create( "CTBModule", "ctb-module");
-  // module_obj.set_obj("configuration", & ctb_conf -> config_object() );
+
+  // conffwk::ConfigObject module_obj = obj_fac.create( "CIBModule", "cib-module");
+  // module_obj.set_obj("configuration", & cib_conf -> config_object() );
   // module_obj.set_obj("board", & board -> config_object() );
-  
-  // std::vector<const conffwk::ConfigObject*> ctb_module_output_ptrs;
-  // for ( const auto & o : ctb_module_outputs ) {
-  //   ctb_module_output_ptrs.push_back( & o );
+
+  // std::vector<const conffwk::ConfigObject*> cib_module_output_ptrs;
+  // for ( const auto & o : cib_module_outputs ) {
+  //   cib_module_output_ptrs.push_back( & o );
   // }
-  
-  // module_obj.set_objs("outputs", ctb_module_output_ptrs);
-  
-  // auto module = obj_fac.get_dal<appmodel::CTBModule>(module_obj.UID());
-  
+
+  // module_obj.set_objs("outputs", cib_module_output_ptrs);
+
+  // auto module = obj_fac.get_dal<appmodel::CIBModule>(module_obj.UID());
+
   // modules.push_back(module);
-  
+
   obj_fac.update_modules(modules);
 }
 
