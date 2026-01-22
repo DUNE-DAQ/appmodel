@@ -80,11 +80,29 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="0" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-019.cern.ch" creation-time="20260122T101931" last-modified-by="maroda" last-modified-on="np04-srv-019.cern.ch" last-modification-time="20260122T101931"/>
+<info name="" type="" num-of-items="3" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-019.cern.ch" creation-time="20260122T101931" last-modified-by="maroda" last-modified-on="np04-srv-019.cern.ch" last-modification-time="20260122T104750"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
  <file path="schema/appmodel/application.schema.xml"/>
 </include>
+
+
+ <class name="CIBApplication">
+  <superclass name="SmartDaqApplication"/>
+  <relationship name="cib_conf" class-type="CIBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <method name="generate_modules" description="">
+   <method-implementation language="C++" prototype="void generate_modules(const confmodel::Session*) const override" body=""/>
+  </method>
+ </class>
+
+ <class name="CIBConf">
+  <attribute name="Port" description="Port test" type="u32" range="0..2500" init-value="1" is-not-null="yes"/>
+ </class>
+
+ <class name="CIBModule">
+  <superclass name="DaqModule"/>
+  <relationship name="conf" class-type="CIBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
 
 </oks-schema>
