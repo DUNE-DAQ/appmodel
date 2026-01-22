@@ -39,7 +39,7 @@ using namespace dunedaq;
 using namespace dunedaq::appmodel;
 
 void
-CTBApplication::generate_modules(const confmodel::Session* session) const
+CIBApplication::generate_modules(const confmodel::Session* session) const
 {
   std::vector<const confmodel::DaqModule*> modules;
 
