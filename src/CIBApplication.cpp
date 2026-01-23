@@ -223,150 +223,42 @@ CIBApplication::generate_modules(const confmodel::Session* session) const
 
 
 
-std::vector<const confmodel::Resource*>
-CIBoardConf::contained_resources() const {
-  std::vector<const confmodel::Resource*> resources;
-  resources.push_back(get_misc());
+// std::vector<const confmodel::Resource*>
+// CIBoardConf::contained_resources() const {
+//   std::vector<const confmodel::Resource*> resources;
+//   resources.push_back(get_misc());
 
-  auto hlts = get_HLTs();
-  resources.insert(resources.end(), hlts.begin(), hlts.end());
+//   auto hlts = get_HLTs();
+//   resources.insert(resources.end(), hlts.begin(), hlts.end());
 
-  auto crt_llts = get_CRT_LLTs();
-  resources.insert(resources.end(), crt_llts.begin(), crt_llts.end());
+//   auto crt_llts = get_CRT_LLTs();
+//   resources.insert(resources.end(), crt_llts.begin(), crt_llts.end());
 
-  auto llts = get_beam_LLTs();
-  resources.insert(resources.end(), llts.begin(), llts.end());
+//   auto llts = get_beam_LLTs();
+//   resources.insert(resources.end(), llts.begin(), llts.end());
 
-  return resources;
-}
+//   return resources;
+// }
 
 
-nlohmann::json CIBoardConf::get_CIB_json(const dunedaq::confmodel::Session& session, std::optional<std::string> socket_host) const {
+nlohmann::json CIBoardConf::get_cib_json(const dunedaq::confmodel::Session& session, std::optional<std::string> socket_host) const {
 
   nlohmann::json json;
-  json["sockets"] = get_sockets() -> get_CIB_json( socket_host ); 
-  json["misc"] = get_misc()->get_CIB_json(session);
+  json["command"] = "config";
+  json["config"] = nlohmann::json::object();
+  json["config"]["sockets"] = nlohmann::json::object();
+  json["config"]["sockets"]["receiver"]["host"] = get_host();
+  json["config"]["sockets"]["receiver"]["port"] = get_port();
 
-  nlohmann::json hlt;
-
-  // constant block that we don't even want to configure
-  auto & mask = hlt["command_mask"];
-  mask["C"]="0x0";
-  mask["D"]="0x0";
-  mask["E"]="0x0";
-  mask["F"]="0x0";
-
-  auto hlts = get_HLTs();
-
-  std::list<nlohmann::json> json_hlts;
-  for ( const auto & hlt : hlts ) {
-    json_hlts.push_back(hlt->get_CIB_json(session));
-  }
-
-  hlt["trigger"] = nlohmann::json(json_hlts);
+  // nlohmann::json ret;
+  // ret["CIB"] = json;
   
-  json["HLT"] = hlt;
-
-  // --------------------------
-  // Subsystems
-  // --------------------------
-  
-  auto & subsystems = json["subsystems"];
-
-  //  ---- Beam ----
-
-  auto & beam_block = subsystems["beam"] = get_beam() -> to_json(false, true);
-  std::list<nlohmann::json> json_beam_llts;
-  auto beam_llts = get_beam_LLTs();
-  for ( const auto & llt : beam_llts ) {
-    json_beam_llts.push_back(llt->get_CIB_json(session));
-  }
-  
-  beam_block["triggers"] = nlohmann::json(json_beam_llts);
-
-  //  ---- CRT ----
-  
-  auto & crt_block = subsystems["crt"] = get_CRT() -> to_json(false, true);
-  std::list<nlohmann::json> json_crt_llts;
-  auto crt_llts = get_CRT_LLTs();
-  for ( const auto & llt : crt_llts ) {
-    json_crt_llts.push_back(llt->get_CIB_json(session));
-  }
-  crt_block["triggers"] = nlohmann::json(json_crt_llts);
-
-  //  ---- PDS ----
-  
-  subsystems["pds"] = get_pds() -> to_json(false, true);
-
-  nlohmann::json ret;
-  ret["CIB"] = json;
-  
-  return ret;
-
+  // return ret;
+  return json;
 }
 
 std::vector<const confmodel::Resource*> CIBMisc::contained_resources() const {
   return std::vector<const confmodel::Resource*>{ get_randomtrigger_1(), get_randomtrigger_2() };
 }
-
-
-
-nlohmann::json CIBMisc::get_CIB_json(const dunedaq::confmodel::Session& session) const {
-
-  nlohmann::json ret;
-  ret["randomtrigger_1"] = get_randomtrigger_1()->get_CIB_json(session);
-  ret["randomtrigger_2"] = get_randomtrigger_2()->get_CIB_json(session);
-  ret["pulser"] = get_pulser() -> to_json(false, true);
-  ret["timing"] = get_timing() ->  to_json(false, true);
-
-  static std::string ch_status_flag = "ch_status";
-  if ( get_ch_status() ) ret[ch_status_flag] = true;
-  else ret[ch_status_flag] = false;
-
-  static std::string standalong_flag = "standalone_enable";
-  ret[standalong_flag] = false;
-  
-  return ret;
-
-}
-
-
-nlohmann::json CIBTrigger::get_CIB_json(const dunedaq::confmodel::Session& session) const {
-
-  auto json = this -> to_json(false, true);
-  static std::string enable_tag = "enable";
-  if ( this -> is_disabled(session) ) {
-    json[enable_tag] = false;
-  }
-  else {
-    json[enable_tag] = true;
-  }
-
-  json["id"] = this -> UID();
-  
-  return json;
-
-}
-
-nlohmann::json CIBSockets::get_CIB_json(std::optional<std::string> socket_host) const {
-
-  nlohmann::json json;
-  json["receiver"] = get_receiver() -> get_CIB_json(socket_host);
-  json["monitor"] = get_monitor() -> get_CIB_json(socket_host);
-  json["statistics"] = get_statistics() -> to_json(false, true);
-  return json;
-
-}
-
-nlohmann::json CIBSocket::get_CIB_json(std::optional<std::string> socket_host) const {
-
-  auto json = to_json(false, true);
-  if ( socket_host ) {
-    json["host"] = socket_host.value();
-  }
-  return json;
-
-}
-
 
 

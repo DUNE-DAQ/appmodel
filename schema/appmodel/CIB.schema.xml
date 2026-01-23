@@ -106,12 +106,13 @@
  </class>
 
  <!-- This is kind of a class on its own. This will store the HSI event data into a local dump -->
- <class name="CIBCalibrationStream">
+ <class name="CIBCalibrationStream" description="Configuration of the calibration stream">
   <attribute name="directory" type="string" is-not-null="yes"/>
   <attribute name="update_period_s" type="u16" is-not-null="yes"/>
  </class>
 
- <!-- Configuration of the instance-->
+ <!-- Configuration of the generator instance, i.e., the receiver on dunedaq that will then communicate with the CIB -->
+ <!-- This is passed to CIBModules to be parsed and then establish the connection to the CIB -->
  <class name="CIBConf" description="Top level configuration object for the CIB">
   <attribute name="hostname" description="IP address of the board" type="string" is-not-null="yes"/>
   <attribute name="control_connection_port" description="Port where the CIB is listening to" type="u16" is-not-null="yes"/>
@@ -120,66 +121,32 @@
   <relationship name="trigger_report" class-type="CIBTriggerReport" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
+
+ <!-- This represents the configuration sent **to** the CIB : needs to be updated with the runtime information of where the receiver is-->
+ <class name="CIBoardConf">
+  <superclass name="ResourceSetDisableAND"/>
+  <attribute name="host" type="string" init-value="localhost" is-not-null="yes"/>
+  <attribute name="port" type="u64" init-value="8992" is-not-null="yes"/>
+  <relationship name="geo_id" class-type="GeoId" low-cc="one" high-cc="one" is-composite="no" is-exclusive="yes" is-dependent="no"/>
+  <method name="get_cib_json" description="create the json configuration for the board">
+   <method-implementation language="C++" prototype="nlohmann::json get_cib_json(const dunedaq::confmodel::Session&amp; session, std::optional&lt;std::string&gt; socket_host = std::nullopt ) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;#include &lt;optional&gt;&#xA;END_HEADER_PROLOGUE"/>
+  </method>
+  <!-- <method name="contained_resources" description="">
+   <method-implementation language="c++" prototype="virtual std::vector&lt;const Resource*&gt; contained_resources() const override" body=""/>
+  </method> -->
+ </class>
+
  <class name="CIBModule" description="Top level configuration object for the CIBModule">
   <superclass name="DaqModule"/>
   <attribute name="run_trigger_output" description="CIB Trigger Output Path" type="string" init-value="/nfs/sw/trigger/counters_cib/" is-not-null="yes"/>
   
   <relationship name="configuration" class-type="CIBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <!-- the board itself-->
+  <!-- the confusing part is that this is actually the configuration of the cibmodule receiver-->
   <relationship name="board" class-type="CIBBoardConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="yes"/>
- </class>
-
-
- <class name="CIBRandomTrigger" description="Period of the trigger in clock ticks units">
-  <superclass name="CIBTrigger"/>
-  <attribute name="fixed_freq" type="bool" init-value="true" is-not-null="yes"/>
-  <attribute name="beam_mode" type="bool" init-value="true" is-not-null="yes"/>
-  <attribute name="period" type="u64" init-value="10000" is-not-null="yes"/>
- </class>
-
- <class name="CIBReceiverSocket" description="Settings to configure the conditions for the data transmission socket">
-  <superclass name="CIBSocket"/>
-  <attribute name="port" type="u64" init-value="8992" is-not-null="yes"/>
- </class>
-
- <class name="CIBSocket">
-  <superclass name="Jsonable"/>
-  <attribute name="host" type="string" init-value="localhost" is-not-null="yes"/>
-  <method name="get_cib_json" description="">
-   <method-implementation language="C++" prototype="nlohmann::json get_cib_json( std::optional&lt;std::string&gt; socket_host = std::nullopt ) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;#include &lt;optional&gt;&#xA;END_HEADER_PROLOGUE"/>
-  </method>
- </class>
-
- <class name="CIBSockets">
-  <relationship name="receiver" class-type="CIBReceiverSocket" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
-  <method name="get_cib_json" description="">
-   <method-implementation language="C++" prototype="nlohmann::json get_cib_json(std::optional&lt;std::string&gt; socket_host = std::nullopt) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;#include &lt;optional&gt;&#xA;END_HEADER_PROLOGUE"/>
-  </method>
- </class>
-
-<class name="CIBTrigger">
-  <superclass name="Jsonable"/>
-  <superclass name="Resource"/>
-  <attribute name="description" type="string" is-not-null="yes"/>
-  <method name="get_cib_json" description="obtain a jsonification specific for the CIB">
-   <method-implementation language="c++" prototype="nlohmann::json get_cib_json(const dunedaq::confmodel::Session&amp; session) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;END_HEADER_PROLOGUE"/>
-  </method>
  </class>
 
  <class name="CIBTriggerReport">
   <attribute name="directory" type="string" is-not-null="yes"/>
- </class>
-
- <class name="CIBoardConf">
-  <superclass name="ResourceSetDisableAND"/>
-  <relationship name="sockets" class-type="CIBSockets" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
-  <relationship name="geo_id" class-type="GeoId" low-cc="one" high-cc="one" is-composite="no" is-exclusive="yes" is-dependent="no"/>
-  <method name="get_cib_json" description="create the json configuration for the board">
-   <method-implementation language="C++" prototype="nlohmann::json get_cib_json(const dunedaq::confmodel::Session&amp; session, std::optional&lt;std::string&gt; socket_host = std::nullopt ) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;#include &lt;optional&gt;&#xA;END_HEADER_PROLOGUE"/>
-  </method>
-  <method name="contained_resources" description="">
-   <method-implementation language="c++" prototype="virtual std::vector&lt;const Resource*&gt; contained_resources() const override" body=""/>
-  </method>
  </class>
 
 </oks-schema>
