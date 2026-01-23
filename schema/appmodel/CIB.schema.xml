@@ -142,7 +142,7 @@
   
   <relationship name="configuration" class-type="CIBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <!-- the confusing part is that this is actually the configuration of the cibmodule receiver-->
-  <relationship name="board" class-type="CIBBoardConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="yes"/>
+  <relationship name="board" class-type="CIBoardConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="yes"/>
  </class>
 
  <class name="CIBTriggerReport">
