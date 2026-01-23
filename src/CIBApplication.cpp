@@ -132,54 +132,47 @@ CIBApplication::generate_modules(const confmodel::Session* session) const
   }
 
   std::vector<conffwk::ConfigObject> CIB_module_outputs;
-  auto sources = get_sources();
+  auto source_id = get_source_id();
 
-  for ( const auto & s : sources ) {
-    if (s.second == nullptr) {
-      throw(BadConf(ERS_HERE, "No SourceIDConf given for " + s.first));
-    }
+  auto id = source_id->get_sid();
 
-    auto id = s.second->get_sid();
-    // ----------------------------
-    // create DLH
-    // ----------------------------    
-    auto det_id = 1; // TODO Eric Flumerfelt <eflumerf@fnal.gov>, 08-Feb-2024: This is a magic number corresponding to kDAQ
-    TLOG() << "creating OKS configuration object for " + s.first + " Data Link Handler class " << dlhClass << ", id " << id;
-    std::string uid("DLH-" + s.first);
-    conffwk::ConfigObject dlhObj = obj_fac.create( dlhClass, uid );
-    dlhObj.set_by_val<uint32_t>("source_id", id);
-    dlhObj.set_by_val<uint32_t>("detector_id", det_id);
-    dlhObj.set_by_val<bool>("post_processing_enabled", false);
-    dlhObj.set_obj("module_configuration", &dlhConf->config_object());
+  // ----------------------------
+  // create DLH
+  // ----------------------------    
+  auto det_id = 1; // TODO Eric Flumerfelt <eflumerf@fnal.gov>, 08-Feb-2024: This is a magic number corresponding to kDAQ
+  TLOG() << "creating OKS configuration object for " + s.first + " Data Link Handler class " << dlhClass << ", id " << id;
+  std::string uid("DLH-CIB");
+  conffwk::ConfigObject dlhObj = obj_fac.create( dlhClass, uid );
+  dlhObj.set_by_val<uint32_t>("source_id", id);
+  dlhObj.set_by_val<uint32_t>("detector_id", det_id);
+  dlhObj.set_by_val<bool>("post_processing_enabled", false);
+  dlhObj.set_obj("module_configuration", &dlhConf->config_object());
     
-    auto net_objc(fh_output_objs);
+  auto net_objc(fh_output_objs);
     
-    // Time Sync network connection
-    if (dlhConf->get_generate_timesync()) {
-      std::string tsStreamUid = tsNetDesc->get_uid_base() + std::to_string(id);
-      conffwk::ConfigObject tsNetObj = obj_fac.create_net_obj(tsNetDesc, tsStreamUid);
-      net_objc.push_back(&tsNetObj);
-    }
+  // Time Sync network connection
+  if (dlhConf->get_generate_timesync()) {
+    std::string tsStreamUid = tsNetDesc->get_uid_base() + std::to_string(id);
+    conffwk::ConfigObject tsNetObj = obj_fac.create_net_obj(tsNetDesc, tsStreamUid);
+    net_objc.push_back(&tsNetObj);
+  }
 
-    dlhObj.set_objs("outputs", net_objc);
+  dlhObj.set_objs("outputs", net_objc);
 
-    // create Queues from CIB to DLH
-    std::string dataQueueUid(dlhInputQDesc->get_uid_base() + s.first);
-    conffwk::ConfigObject queueObj = obj_fac.create_queue_sid_obj(dlhInputQDesc, id); 
-    queueObj.rename(dataQueueUid);
+  // create Queues from CIB to DLH
+  std::string dataQueueUid(dlhInputQDesc->get_uid_base());
+  conffwk::ConfigObject queueObj = obj_fac.create_queue_sid_obj(dlhInputQDesc, id); 
+  queueObj.rename(dataQueueUid);
     
-    CIB_module_outputs.push_back(queueObj);
+  CIB_module_outputs.push_back(queueObj);
 
-    // Create network connections to DLHs
-    std::string faNetUid = dlhReqInputNetDesc->get_uid_base() + UID() + '_' + s.first;
-    conffwk::ConfigObject faNetObj = obj_fac.create_net_obj(dlhReqInputNetDesc, faNetUid);
+  // Create network connections to DLHs
+  std::string faNetUid = dlhReqInputNetDesc->get_uid_base() + UID();
+  conffwk::ConfigObject faNetObj = obj_fac.create_net_obj(dlhReqInputNetDesc, faNetUid);
 
-    dlhObj.set_objs("inputs", { &queueObj, &faNetObj });
+  dlhObj.set_objs("inputs", { &queueObj, &faNetObj });
 
-    modules.push_back(obj_fac.get_dal<appmodel::DataHandlerModule>(uid));
-    
-  }  // loop over CIB sources
-   
+  modules.push_back(obj_fac.get_dal<appmodel::DataHandlerModule>(uid));
 
   conffwk::ConfigObject hsiNetObj = obj_fac.create_net_obj(hsiNetDesc, "");
   CIB_module_outputs.push_back(hsiNetObj);
@@ -216,6 +209,8 @@ CIBoardConf::contained_resources() const {
 
 nlohmann::json CIBoardConf::get_cib_json(const dunedaq::confmodel::Session& session, std::optional<std::string> socket_host) const {
 
+  // shut up compiler!
+  (void)session; // unused parameter
   nlohmann::json json;
   json["command"] = "config";
   json["config"] = nlohmann::json::object();
@@ -234,10 +229,6 @@ nlohmann::json CIBoardConf::get_cib_json(const dunedaq::confmodel::Session& sess
   }
 
   return json;
-}
-
-std::vector<const confmodel::Resource*> CIBMisc::contained_resources() const {
-  return std::vector<const confmodel::Resource*>{ get_randomtrigger_1(), get_randomtrigger_2() };
 }
 
 
