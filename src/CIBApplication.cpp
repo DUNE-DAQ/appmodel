@@ -140,7 +140,7 @@ CIBApplication::generate_modules(const confmodel::Session* session) const
   // create DLH
   // ----------------------------    
   auto det_id = 1; // TODO Eric Flumerfelt <eflumerf@fnal.gov>, 08-Feb-2024: This is a magic number corresponding to kDAQ
-  TLOG() << "creating OKS configuration object for " + s.first + " Data Link Handler class " << dlhClass << ", id " << id;
+  TLOG() << "creating OKS configuration object for CIB Data Link Handler class " << dlhClass << ", id " << id;
   std::string uid("DLH-CIB");
   conffwk::ConfigObject dlhObj = obj_fac.create( dlhClass, uid );
   dlhObj.set_by_val<uint32_t>("source_id", id);
