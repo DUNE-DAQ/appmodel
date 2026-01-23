@@ -21,22 +21,22 @@
 #include "appmodel/CIBoardConf.hpp"
 #include "appmodel/CIBConf.hpp"
 #include "appmodel/CIBModule.hpp"
-#include "appmodel/CIBSockets.hpp"
-#include "appmodel/CIBTrigger.hpp"
-#include "appmodel/CIBMisc.hpp"
-#include "appmodel/CIBRandomTrigger.hpp"
-#include "appmodel/CIBPulser.hpp"
-#include "appmodel/CIBTiming.hpp"
-#include "appmodel/CIBHLT.hpp"
-#include "appmodel/CIBLLT.hpp"
-#include "appmodel/CIBCountLLT.hpp"
-#include "appmodel/CIBSubsystem.hpp"
-#include "appmodel/CIBCRTSubsystem.hpp"
-#include "appmodel/CIBPDSSubsystem.hpp"
-#include "appmodel/CIBStatisticsSocket.hpp"
-#include "appmodel/CIBSocket.hpp"
-#include "appmodel/CIBReceiverSocket.hpp"
-#include "appmodel/CIBMonitorSocket.hpp"
+// #include "appmodel/CIBSockets.hpp"
+// #include "appmodel/CIBTrigger.hpp"
+// #include "appmodel/CIBMisc.hpp"
+// #include "appmodel/CIBRandomTrigger.hpp"
+// #include "appmodel/CIBPulser.hpp"
+// #include "appmodel/CIBTiming.hpp"
+// #include "appmodel/CIBHLT.hpp"
+// #include "appmodel/CIBLLT.hpp"
+// #include "appmodel/CIBCountLLT.hpp"
+// #include "appmodel/CIBSubsystem.hpp"
+// #include "appmodel/CIBCRTSubsystem.hpp"
+// #include "appmodel/CIBPDSSubsystem.hpp"
+// #include "appmodel/CIBStatisticsSocket.hpp"
+// #include "appmodel/CIBSocket.hpp"
+// #include "appmodel/CIBReceiverSocket.hpp"
+// #include "appmodel/CIBMonitorSocket.hpp"
 
 
 #include "appmodel/DataHandlerConf.hpp"
@@ -223,22 +223,22 @@ CIBApplication::generate_modules(const confmodel::Session* session) const
 
 
 
-// std::vector<const confmodel::Resource*>
-// CIBoardConf::contained_resources() const {
-//   std::vector<const confmodel::Resource*> resources;
-//   resources.push_back(get_misc());
+std::vector<const confmodel::Resource*>
+CIBoardConf::contained_resources() const {
+  std::vector<const confmodel::Resource*> resources;
+  // resources.push_back(get_misc());
 
-//   auto hlts = get_HLTs();
-//   resources.insert(resources.end(), hlts.begin(), hlts.end());
+  // auto hlts = get_HLTs();
+  // resources.insert(resources.end(), hlts.begin(), hlts.end());
 
-//   auto crt_llts = get_CRT_LLTs();
-//   resources.insert(resources.end(), crt_llts.begin(), crt_llts.end());
+  // auto crt_llts = get_CRT_LLTs();
+  // resources.insert(resources.end(), crt_llts.begin(), crt_llts.end());
 
-//   auto llts = get_beam_LLTs();
-//   resources.insert(resources.end(), llts.begin(), llts.end());
+  // auto llts = get_beam_LLTs();
+  // resources.insert(resources.end(), llts.begin(), llts.end());
 
-//   return resources;
-// }
+  return resources;
+}
 
 
 nlohmann::json CIBoardConf::get_cib_json(const dunedaq::confmodel::Session& session, std::optional<std::string> socket_host) const {
