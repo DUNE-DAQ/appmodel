@@ -1,24 +1,21 @@
 /**
  * @file generate_modules.cpp
  *
- * Implementation of ReadoutApplication's generate_modules dal method
+ * Implementation of NP02ReadoutApplication's generate_modules dal method
  *
  * This is part of the DUNE DAQ Software Suite, copyright 2023.
  * Licensing/copyright details are in the COPYING file that you should have
  * received with this code.
  */
 
-
-
-#include "appmodel/ConfigurationHelper.hpp"
 #include "ConfigObjectFactory.hpp"
 #include "appmodel/DFApplication.hpp"
-#include "appmodel/ReadoutApplication.hpp"
+#include "appmodel/NP02ReadoutApplication.hpp"
 #include "conffwk/Configuration.hpp"
 #include "confmodel/DetDataReceiver.hpp"
+#include "confmodel/NetworkDevice.hpp"
 #include "confmodel/DetDataSender.hpp"
 #include "confmodel/DetectorStream.hpp"
-#include "confmodel/DetectorToDaqConnection.hpp"
 #include "confmodel/Session.hpp"
 
 #include "appmodel/NWDetDataReceiver.hpp"
@@ -32,6 +29,7 @@
 #include "confmodel/QueueWithSourceId.hpp"
 
 #include "confmodel/Connection.hpp"
+#include "confmodel/DetectorToDaqConnection.hpp"
 #include "confmodel/GeoId.hpp"
 #include "confmodel/NetworkConnection.hpp"
 #include "confmodel/ResourceSet.hpp"
@@ -52,7 +50,8 @@
 #include "appmodel/QueueConnectionRule.hpp"
 #include "appmodel/QueueDescriptor.hpp"
 #include "appmodel/RequestHandler.hpp"
-
+#include "appmodel/LatencyBuffer.hpp"
+#include "appmodel/DataProcessor.hpp"
 
 
 #include "appmodel/appmodelIssues.hpp"
@@ -70,20 +69,14 @@ namespace dunedaq {
 namespace appmodel {
 
 //-----------------------------------------------------------------------------
-
-std::vector<const confmodel::Resource*>
-ReadoutApplication::contained_resources() const {
-  return to_resources(get_detector_connections());
-}
-
 void
-ReadoutApplication::generate_modules(std::shared_ptr<ConfigurationHelper> helper) const {
+NP02ReadoutApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> helper) const
+{
 
   TLOG_DEBUG(6) << "Generating modules for application " << this->UID();
 
   ConfigObjectFactory obj_fac(this);
-  // conffwk::Configuration& confdb = this->configuration();
-
+  
   //
   // Extract basic configuration objects
   //
@@ -122,7 +115,7 @@ ReadoutApplication::generate_modules(std::shared_ptr<ConfigurationHelper> helper
   for (auto rule : get_queue_rules()) {
     auto destination_class = rule->get_destination_class();
     auto data_type = rule->get_descriptor()->get_data_type();
-    // Why datahander here? It is the base class for several DataHandler types (e.g. FDDataHandlerModule, SNBDataHandlerModule)
+    // Why datahander here?
     if (destination_class == "DataHandlerModule" || destination_class == dlh_class || destination_class == tph_class) {
       if (data_type == "DataRequest") {
         dlh_reqinput_qdesc = rule->get_descriptor();
@@ -134,13 +127,6 @@ ReadoutApplication::generate_modules(std::shared_ptr<ConfigurationHelper> helper
     } else if (destination_class == "FragmentAggregatorModule") {
       fa_output_qdesc = rule->get_descriptor();
     }
-  }
-
-  if (dlh_input_qdesc == nullptr) {
-    throw(BadConf(ERS_HERE, "No data link handler input queue descriptor given"));
-  }
-  if (dlh_reqinput_qdesc == nullptr) {
-    throw(BadConf(ERS_HERE, "No data link handler request input queue descriptor given"));
   }
 
   //
@@ -165,13 +151,6 @@ ReadoutApplication::generate_modules(std::shared_ptr<ConfigurationHelper> helper
     }
   }
 
-  if (fa_net_desc == nullptr) {
-    throw(BadConf(ERS_HERE, "No Fragment Aggregator network descriptor given"));
-  }
-  if (ts_net_desc == nullptr && dlh_conf->get_generate_timesync()) {
-    throw(BadConf(ERS_HERE, "No Time Sync network descriptor given but time sync generation is enabled"));
-  }
-
   // Create here the Queue on which all data fragments are forwarded to the fragment aggregator
   // and a container for the queues of data request to TP handler and DLH
   if (fa_output_qdesc == nullptr) {
@@ -190,35 +169,66 @@ ReadoutApplication::generate_modules(std::shared_ptr<ConfigurationHelper> helper
   // and the cooresponding datalink handlers
 
   // Collect all streams
-  std::vector<const confmodel::DetectorStream*> all_enabled_det_streams;
+  std::vector<std::pair<int16_t, const confmodel::DetectorStream*>> all_enabled_det_streams;
   std::map<uint32_t, const confmodel::Connection*> data_queues_by_sid;
 
-  // std::vector<const conffwk::ConfigObject*> d2d_conn_objs;
+  std::vector<const conffwk::ConfigObject*> d2d_conn_objs;
   uint16_t conn_idx = 0;
+  
 
+  std::set<int16_t> numas;
   for (auto d2d_conn : get_detector_connections()) {
+    uint16_t receiver_numa = 0;
+
+    // Are we sure?
     if (!helper->enabled(d2d_conn)) {
       TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
       continue;
     }
 
-    TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn->UID();
+    d2d_conn_objs.push_back(&d2d_conn->config_object());
 
-    // Are these tests necessary? Schema does not allow 0 cardinality
-    // for these relationships!!  TODO
+    TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn->UID();
+    // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader module
+
     if (d2d_conn->senders().empty()) {
-      throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain senders"));
+      throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain sebders or receivers"));
     }
     if (d2d_conn->receiver() == nullptr) {
       throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain a receiver"));
     }
 
-    // Find senders and receiver
+    // Loop over detector 2 daq connections to find senders and receivers
     auto det_senders = d2d_conn->senders();
     auto det_receiver = d2d_conn->receiver();
 
+
+    // Here I want to resolve the type of connection (network, felix, or?)
+    // Rules of engagement: if the receiver interface is network or felix, the receivers should be castable to the counterpart
+    if (reader_class == "DPDKReaderModule" || reader_class == "SocketReaderModule") {
+      if ((reader_class == "DPDKReaderModule" && !det_receiver->cast<appmodel::DPDKReceiver>()) ||
+          (reader_class == "SocketReaderModule" && !det_receiver->cast<appmodel::SocketReceiver>())) {
+        throw(BadConf(ERS_HERE, fmt::format("{} requires NWDetDataReceiver, found {} of class {}", reader_class, det_receiver->UID(), det_receiver->class_name())));
+      }
+
+      if (reader_class == "DPDKReaderModule") {
+        auto dpdk_reciever = det_receiver->cast<appmodel::DPDKReceiver>();
+        receiver_numa = (int16_t)dpdk_reciever->get_uses()->get_numa_id();
+      }
+
+      bool all_nw_senders = true;
+      for (auto s : det_senders) {
+        all_nw_senders &= (s->cast<appmodel::NWDetDataSender>() != nullptr);
+      }
+
+      // Ensure that all senders are compatible with receiver
+      if (!all_nw_senders) {
+        throw(BadConf(ERS_HERE, "Non-network DetDataSener found with NWreceiver"));
+      }
+    }
+
     std::vector<const confmodel::DetectorStream*> enabled_det_streams;
-    // Loop over streams
+    // Loop over senders
     for (auto stream : d2d_conn->streams()) {
 
       // Are we sure?
@@ -227,31 +237,13 @@ ReadoutApplication::generate_modules(std::shared_ptr<ConfigurationHelper> helper
         continue;
       }
 
-      all_enabled_det_streams.push_back(stream);
+      // loop over streams
+      all_enabled_det_streams.push_back(std::make_pair(receiver_numa, stream));
       enabled_det_streams.push_back(stream);
+      numas.insert(receiver_numa);
     }
 
-
-    // Here I want to resolve the type of connection (network, felix, or?)
-    // Rules of engagement: if the receiver interface is network or felix, the receivers should be castable to the counterpart
-    if (reader_class == "DPDKReaderModule" || reader_class == "SocketReaderModule") {
-      if (!d2d_conn->castable("NetworkDetectorToDaqConnection")) {
-        throw(BadConf(ERS_HERE, fmt::format("{} requires NetworkDetectorToDaqConnection, found {} of class {}", reader_class, d2d_conn->UID(), d2d_conn->class_name())));
-      }
-      if ((reader_class == "DPDKReaderModule" && !det_receiver->cast<appmodel::DPDKReceiver>()) ||
-          (reader_class == "SocketReaderModule" && !det_receiver->cast<appmodel::SocketReceiver>())) {
-        throw(BadConf(ERS_HERE, fmt::format("{} requires NWDetDataReceiver, found {} of class {}", reader_class, det_receiver->UID(), det_receiver->class_name())));
-      }
-    }
-    else if (reader_class == "FelixReaderModule") {
-      if (!d2d_conn->castable("FelixDetectorToDaqConnection")) {
-        throw(BadConf(ERS_HERE, fmt::format("{} requires FelixDetectorToDaqConnection, found {} of class {}", reader_class, d2d_conn->UID(), d2d_conn->class_name())));
-      }
-      if (!det_receiver->cast<appmodel::FelixDataReceiver>()) {
-        throw(BadConf(ERS_HERE, fmt::format("FelixReaderModule requires FelixDataReceiver, found {} of class {}", det_receiver->UID(), det_receiver->class_name())));
-      }
-    }
-  // }
+  }
 
   //-----------------------------------------------------------------
   //
@@ -270,14 +262,14 @@ ReadoutApplication::generate_modules(std::shared_ptr<ConfigurationHelper> helper
 
     // Populate configuration and interfaces (leave output queues for later)
     reader_obj.set_obj("configuration", &reader_conf->config_object());
-    reader_obj.set_objs("connections", {&d2d_conn->config_object()});
+    reader_obj.set_objs("connections", d2d_conn_objs);
 
     // Create the raw data queues
     std::vector<const conffwk::ConfigObject*> data_queue_objs;
     // keep a map for convenience
 
     // Create data queues
-    for (auto ds : enabled_det_streams) {
+    for (auto& [numa, ds] : all_enabled_det_streams) {
       conffwk::ConfigObject queue_obj = obj_fac.create_queue_sid_obj(dlh_input_qdesc, ds);
       const auto* data_queue = obj_fac.get_dal<confmodel::Connection>(queue_obj.UID());
       data_queue_objs.push_back(&data_queue->config_object());
@@ -287,27 +279,25 @@ ReadoutApplication::generate_modules(std::shared_ptr<ConfigurationHelper> helper
     reader_obj.set_objs("outputs", data_queue_objs);
 
     modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(reader_obj.UID()));
-  }
+
+
 
 
   //-----------------------------------------------------------------
   //
   // Prepare the tp handlers and related queues
   //
-  std::vector<const confmodel::Connection*> tp_queues;
+  std::vector<std::pair<uint32_t, const confmodel::Connection*>> tp_queues;
+
   if (get_tp_generation_enabled()) {
-    if (tp_input_qdesc == nullptr) {
-        throw(BadConf(ERS_HERE, "TP generation is enabled but no TP input queue descriptor given"));
-    }
-    if (tp_net_desc == nullptr) {
-        throw(BadConf(ERS_HERE, "TP generation is enabled but no TPSet network descriptor given"));
-    }
-    if (ta_net_desc == nullptr) {
-      throw(BadConf(ERS_HERE, "TP generation is enabled but no TriggerActivity network descriptor given"));
-    }
+
     // Create TP handler object
     auto tph_conf_obj = tph_conf->config_object();
     auto tpsrc_ids = get_tp_source_ids();
+
+    if ((tpsrc_ids.size() % 3) > 0) {
+      throw(BadConf(ERS_HERE, fmt::format("number of TP source IDs must be a multiple of 3, current amount: {}", tpsrc_ids.size())));
+    }
 
     for (auto sid : tpsrc_ids) {
       conffwk::ConfigObject tp_queue_obj;
@@ -324,7 +314,7 @@ ReadoutApplication::generate_modules(std::shared_ptr<ConfigurationHelper> helper
       tp_queue_obj.set_by_val<uint32_t>("recv_timeout_ms", 50);
       tp_queue_obj.set_by_val<uint32_t>("send_timeout_ms", 1);
 
-      tp_queues.push_back(obj_fac.get_dal<confmodel::Connection>(tp_queue_obj.UID()));
+      tp_queues.push_back(std::make_pair(sid->get_sid(), obj_fac.get_dal<confmodel::Connection>(tp_queue_obj.UID())));
       // Create tp data requests queue from Fragment Aggregator
       tpreq_queue_obj = obj_fac.create_queue_sid_obj(dlh_reqinput_qdesc, sid->get_sid());
       req_queues.push_back(obj_fac.get_dal<confmodel::Connection>(tpreq_queue_obj.UID()));
@@ -335,18 +325,17 @@ ReadoutApplication::generate_modules(std::shared_ptr<ConfigurationHelper> helper
       // Create the ta(set) publishing service
       conffwk::ConfigObject ta_net_obj = obj_fac.create_net_obj(ta_net_desc, tp_uid);
 
-      // Register queues with tp hankder
+      // Register queues with tp handler
       tph_obj.set_objs("inputs", { &tp_queue_obj, &tpreq_queue_obj });
       tph_obj.set_objs("outputs", { &tp_net_obj, &ta_net_obj, &frag_queue_obj });
-
       modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(tph_obj.UID()));
     }
   }
 
-    // Add output queueus of tps
-  std::vector<const conffwk::ConfigObject*> tp_queue_objs;
+  // Add output queueus of tps
+  std::vector<std::pair<uint32_t, const conffwk::ConfigObject*>> tp_queue_objs;
   for (auto q : tp_queues) {
-    tp_queue_objs.push_back(&q->config_object());
+    tp_queue_objs.push_back(std::make_pair(q.first, &q.second->config_object()));
   }
 
   //-----------------------------------------------------------------
@@ -354,9 +343,36 @@ ReadoutApplication::generate_modules(std::shared_ptr<ConfigurationHelper> helper
   // Create datalink handlers
   //
   // Recover the emulation flag
-  auto emulation_mode = reader_conf->get_emulation_mode();
-  for (auto ds : all_enabled_det_streams) {
 
+  auto lb_conf = dlh_conf->get_latency_buffer();
+
+  std::map<int16_t, conffwk::ConfigObject> numa_dhlconf_map;
+  for ( int16_t numa : numas ) {
+    auto lb_confobj_numa = obj_fac.create(lb_conf->class_name(), fmt::format("{}-numa{}",lb_conf->UID(), numa));
+    lb_confobj_numa.set_by_val<uint32_t>("size", lb_conf->get_size());
+    lb_confobj_numa.set_by_val<bool>("numa_aware", lb_conf->get_numa_aware());
+    lb_confobj_numa.set_by_val<int16_t>("numa_node", numa);
+    lb_confobj_numa.set_by_val<bool>("intrinsic_allocator", lb_conf->get_intrinsic_allocator());
+    lb_confobj_numa.set_by_val<uint32_t>("alignment_size", lb_conf->get_alignment_size());
+    lb_confobj_numa.set_by_val<bool>("preallocation", lb_conf->get_preallocation());
+
+    auto dhl_confobj_numa = obj_fac.create(dlh_conf->class_name(), fmt::format("{}-numa{}",dlh_conf->UID(), numa));
+    dhl_confobj_numa.set_by_val<std::string>("template_for", dlh_conf->get_template_for());
+    dhl_confobj_numa.set_by_val<std::string>("input_data_type", dlh_conf->get_input_data_type());
+    dhl_confobj_numa.set_by_val<bool>("generate_timesync", dlh_conf->get_generate_timesync());
+    dhl_confobj_numa.set_by_val<uint64_t>("post_processing_delay_ticks", dlh_conf->get_post_processing_delay_ticks());
+    dhl_confobj_numa.set_by_val<std::string>("input_data_type", dlh_conf->get_input_data_type());
+    dhl_confobj_numa.set_obj("request_handler", &dlh_conf->get_request_handler()->config_object());
+    dhl_confobj_numa.set_obj("latency_buffer", &lb_confobj_numa);
+    dhl_confobj_numa.set_obj("data_processor", &dlh_conf->get_data_processor()->config_object());
+
+
+    numa_dhlconf_map[numa] = dhl_confobj_numa;
+
+  }
+
+  auto emulation_mode = reader_conf->get_emulation_mode();
+  for (auto& [numa, ds] : all_enabled_det_streams) {
     uint32_t sid = ds->get_source_id();
     TLOG_DEBUG(6) << fmt::format("Processing stream {}, id {}, det id {}", ds->UID(), ds->get_source_id(), ds->get_geo_id()->get_detector_id());
     std::string uid(fmt::format("DLH-{}", sid));
@@ -367,8 +383,7 @@ ReadoutApplication::generate_modules(std::shared_ptr<ConfigurationHelper> helper
     dlh_obj.set_by_val<bool>("post_processing_enabled", get_tp_generation_enabled());
     dlh_obj.set_by_val<bool>("emulation_mode", emulation_mode);
     dlh_obj.set_obj("geo_id", &ds->get_geo_id()->config_object());
-    dlh_obj.set_obj("module_configuration", &dlh_conf->config_object());
-
+    dlh_obj.set_obj("module_configuration", &numa_dhlconf_map[numa]);
     std::vector<const conffwk::ConfigObject*> dlh_ins, dlh_outs;
 
     // Add datalink-handler queue to the inputs
@@ -391,14 +406,18 @@ ReadoutApplication::generate_modules(std::shared_ptr<ConfigurationHelper> helper
       dlh_outs.push_back(&ts_net_obj);
     }
 
+    // here, we want to select which tp queues to add to the output, to separate mutiple detector elements
     for (auto tpq : tp_queue_objs) {
-      dlh_outs.push_back(tpq);
+        if ((sid / 100) == (tpq.first / 10)) {
+        dlh_outs.push_back(tpq.second);
+      }
     }
     dlh_obj.set_objs("inputs", dlh_ins);
     dlh_obj.set_objs("outputs", dlh_outs);
 
     modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(dlh_obj.UID()));
   }
+
 
   // Finally create Fragment Aggregator
   auto aggregator_conf = get_fragment_aggregator();
@@ -442,10 +461,12 @@ ReadoutApplication::generate_modules(std::shared_ptr<ConfigurationHelper> helper
   frag_aggr.set_obj("configuration", &aggregator_conf->config_object());
   frag_aggr.set_objs("inputs", { &fa_net_obj, &frag_queue_obj });
   frag_aggr.set_objs("outputs", fa_output_objs);
+
   modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(frag_aggr.UID()));
 
   obj_fac.update_modules(modules);
 }
 
-} // namespace appmodel
-} // namespace dunedaq
+  
+}
+}

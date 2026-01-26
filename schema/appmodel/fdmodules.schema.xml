@@ -80,13 +80,33 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="15" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20240703T164113"/>
+<info name="" type="" num-of-items="33" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20251104T211957"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
  <file path="schema/appmodel/application.schema.xml"/>
 </include>
 
+
+ <class name="CRTBernReaderConf">
+  <superclass name="DataReaderConf"/>
+ </class>
+
+ <class name="CRTBernReaderModule">
+  <superclass name="DataReaderModule"/>
+ </class>
+
+ <class name="CRTGrenobleReaderConf">
+  <superclass name="DataReaderConf"/>
+ </class>
+
+ <class name="CRTGrenobleReaderModule">
+  <superclass name="DataReaderModule"/>
+ </class>
+
+ <class name="CRTReaderConf">
+  <superclass name="DataReaderConf"/>
+ </class>
 
  <class name="DPDKPortConfiguration">
   <attribute name="flow_control" type="bool" init-value="1"/>
@@ -117,30 +137,6 @@
   <relationship name="configuration" class-type="DPDKPortConfiguration" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
- <class name="SocketReaderConf">
-  <superclass name="DataReaderConf"/>
-  <attribute name="socket_type" description="Socket type" type="enum" range="TCP,UDP" init-value="UDP" is-not-null="yes"/>
-  <attribute name="local_ip" description="Local IP address" type="string" init-value="127.0.0.1" is-not-null="yes"/>
- </class>
-
- <class name="SocketReaderModule">
-  <superclass name="DataReaderModule"/>
- </class>
-
- <class name="SocketReceiver">
-  <superclass name="NWDetDataReceiver"/>
- </class> 
-
- <class name="SocketWriterConf">
-  <superclass name="SocketDataWriterConf"/>
-  <attribute name="socket_type" description="Socket type" type="enum" range="TCP,UDP" init-value="UDP" is-not-null="yes"/>
-  <attribute name="remote_ip" description="Remote IP address" type="string" init-value="127.0.0.1" is-not-null="yes"/>
- </class>
-
- <class name="FakeSocketWriterModule">
-  <superclass name="SocketDataWriterModule"/>
- </class>  
-
  <class name="FDDataHandlerModule">
   <superclass name="DataHandlerModule"/>
  </class>
@@ -150,18 +146,26 @@
  </class>
 
  <class name="FakeDataReceiver">
-  <superclass name="DetDataReceiver"/>
+  <superclass name="NWDetDataReceiver"/>
  </class>
 
  <class name="FakeDataSender">
-  <superclass name="DetDataSender"/>
+  <superclass name="NWDetDataSender"/>
+ </class>
+
+ <class name="FakeSocketWriterModule">
+  <superclass name="SocketDataWriterModule"/>
  </class>
 
  <class name="FelixCardControllerModule">
   <superclass name="DaqModule"/>
   <attribute name="super_chunk_size" description="Number of chunks in superchunk" type="u16" init-value="12" is-not-null="yes"/>
   <attribute name="emu_fanout" description="Enable emulator" type="bool" init-value="0" is-not-null="yes"/>
-  <relationship name="controls" class-type="DetectorToDaqConnection" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="controls" class-type="FelixDetectorToDaqConnection" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="FelixDataReceiver">
+  <superclass name="DetDataReceiver"/>
  </class>
 
  <class name="FelixDataSender">
@@ -169,10 +173,18 @@
   <attribute name="protocol" type="enum" range="full,half"/>
   <attribute name="link" description="Link within SLR" type="u8" range="0..5" init-value="0" is-not-null="yes"/>
   <attribute name="control_host" type="string" init-value="localhost" is-not-null="yes"/>
-</class>
+ </class>
 
-<class name="FelixDataReceiver">
-  <superclass name="DetDataReceiver"/>
+ <class name="FelixDetectorToDaqConnection">
+  <superclass name="DetectorToDaqConnection"/>
+  <relationship name="felix_receiver" class-type="FelixDataReceiver" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="felix_senders" class-type="FelixDataSender" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <method name="receiver" description="">
+   <method-implementation language="c++" prototype="const confmodel::DetDataReceiver* receiver() const override" body=""/>
+  </method>
+  <method name="senders" description="">
+   <method-implementation language="c++" prototype="std::vector&lt;const confmodel::DetDataSender*&gt; senders() const override" body=""/>
+  </method>
  </class>
 
  <class name="FelixInterface" description="Specialization of ReadoutInterface for the FLX card. ">
@@ -190,12 +202,16 @@
   <attribute name="numa_id" description="CMEM_RCC NUMA region selector" type="u8" init-value="0" is-not-null="yes"/>
  </class>
 
-  <class name="FelixReaderConf">
+ <class name="FelixReaderConf">
   <superclass name="DataReaderConf"/>
  </class>
 
  <class name="FelixReaderModule">
   <superclass name="DataReaderModule"/>
+ </class>
+
+ <class name="FileReaderReceiver">
+  <superclass name="NWDetDataReceiver"/>
  </class>
 
  <class name="IpbusAddressTable">
@@ -213,6 +229,42 @@
   <attribute name="expected_packet_size" type="u32" init-value="7243" is-not-null="yes"/>
   <attribute name="expected_seq_id_step" type="u32" init-value="1"/>
   <attribute name="expected_timestamp_step" type="s32" init-value="-999" is-not-null="yes"/>
+ </class>
+
+ <class name="SNBDataHandlerModule">
+  <superclass name="DataHandlerModule"/>
+ </class>
+
+ <class name="SNBFileReaderConf">
+  <superclass name="DataReaderConf"/>
+ </class>
+
+ <class name="SNBFileReaderModule">
+  <superclass name="DataReaderModule"/>
+ </class>
+
+ <class name="SocketReaderConf">
+  <superclass name="DataReaderConf"/>
+  <attribute name="socket_type" description="Socket type" type="enum" range="TCP,UDP" init-value="UDP" is-not-null="yes"/>
+  <attribute name="local_ip" description="Local IP address" type="string" init-value="127.0.0.1" is-not-null="yes"/>
+ </class>
+
+ <class name="SocketReaderModule">
+  <superclass name="DataReaderModule"/>
+ </class>
+
+ <class name="SocketReceiver">
+  <superclass name="NWDetDataReceiver"/>
+ </class>
+
+ <class name="SocketWriterConf">
+  <superclass name="SocketDataWriterConf"/>
+  <attribute name="socket_type" description="Socket type" type="enum" range="TCP,UDP" init-value="UDP" is-not-null="yes"/>
+  <attribute name="remote_ip" description="Remote IP address" type="string" init-value="127.0.0.1" is-not-null="yes"/>
+ </class>
+
+ <class name="SocketWriterModule">
+  <superclass name="SocketDataWriterModule"/>
  </class>
 
 </oks-schema>

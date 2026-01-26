@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="10" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="thea" last-modified-on="np04-srv-031.cern.ch" last-modification-time="20240618T084639"/>
+<info name="" type="" num-of-items="4" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20250818T151927"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -88,8 +88,32 @@
  <file path="schema/appmodel/fdmodules.schema.xml"/>
 </include>
 
+
+ <class name="TDEAMCModule">
+  <superclass name="DaqModule"/>
+  <relationship name="amc" description="AMC to control." class-type="TdeAmcDetDataSender" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="TDEAMCModuleConf">
+ </class>
+
+ <class name="TDECrateApplication">
+  <superclass name="SmartDaqApplication"/>
+  <superclass name="ResourceSetDisableAND"/>
+  <relationship name="tde_amc_module_conf" class-type="TDEAMCModuleConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="detector_connections" class-type="DetectorToDaqConnection" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
+   <method-implementation language="c++" prototype="void generate_modules(std::shared_ptr&lt;appmodel::ConfigurationHelper&gt;) const override" body=""/>
+  </method>
+  <method name="contained_resources" description="">
+   <method-implementation language="c++" prototype="virtual std::vector&lt;const Resource*&gt; contained_resources() const override" body=""/>
+  </method>
+ </class>
+
  <class name="TdeAmcDetDataSender">
   <superclass name="NWDetDataSender"/>
+  <attribute name="port" type="u32" is-not-null="yes"/>
+  <attribute name="control_host" type="string" is-not-null="yes"/>
   <relationship name="control_endpoint" class-type="NetworkInterface" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 

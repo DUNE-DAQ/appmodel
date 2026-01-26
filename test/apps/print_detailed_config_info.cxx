@@ -25,6 +25,7 @@
 #include "appmodel/SmartDaqApplication.hpp"
 #include "appmodel/TPStreamWriterApplication.hpp"
 #include "appmodel/TriggerApplication.hpp"
+#include "appmodel/TPReplayApplication.hpp"
 
 #include "appmodel/appmodelIssues.hpp"
 
@@ -169,19 +170,20 @@ main(int argc, char* argv[])
     if (daqapp) {
       std::cout << appName << " is of class " << daqapp->class_name() << std::endl;
 
-      auto res = daqapp->cast<confmodel::ResourceBase>();
-      if (res && res->disabled(*session)) {
+      auto res = daqapp->cast<confmodel::Resource>();
+      if (res && res->is_disabled(*session)) {
         std::cout << "Application " << appName << " is disabled" << std::endl;
         continue;
       }
-      std::vector<const confmodel::DaqModule*> modules;
+
       try {
-        modules = daqapp->generate_modules(confdb, dbfile, helper);
+        daqapp->generate_modules(helper);
       } catch (appmodel::BadConf& exc) {
         std::cout << "Caught BadConf exception: " << exc << std::endl;
         exit(-1);
       }
 
+      auto modules = daqapp->get_modules();
       // std::cout << "Generated " << modules.size() << " modules" << std::endl;
       for (auto module : modules) {
         std::cout << "module " << module->UID() << std::endl;

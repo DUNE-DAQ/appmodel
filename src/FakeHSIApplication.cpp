@@ -1,5 +1,5 @@
 /**
- * @file DFO.cpp
+ * @file FakeHSIApplication.cpp
  *
  * Implementation of FakeHSIApplication's generate_modules dal method
  *
@@ -8,8 +8,8 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
 
+#include "ConfigObjectFactory.hpp"
 #include "appmodel/ConfigurationHelper.hpp"
 #include "appmodel/FakeHSIApplication.hpp"
 #include "appmodel/FakeHSIEventGeneratorModule.hpp"
@@ -34,27 +34,26 @@
 #include <string>
 #include <vector>
 
-using namespace dunedaq;
-using namespace dunedaq::appmodel;
+namespace dunedaq {
+namespace appmodel {
 
-static ModuleFactory::Registrator __reg__("FakeHSIApplication",
-                                          [](const SmartDaqApplication* smartApp,
-                                             conffwk::Configuration* confdb,
-                                             const std::string& dbfile,
-                                             std::shared_ptr<appmodel::ConfigurationHelper> helper) -> ModuleFactory::ReturnType {
-                                            auto app = smartApp->cast<FakeHSIApplication>();
-                                            return app->generate_modules(confdb, dbfile, helper);
-                                          });
-
-std::vector<const confmodel::DaqModule*>
-FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
-                                     const std::string& dbfile,
-                                     std::shared_ptr<appmodel::ConfigurationHelper> helper) const
+void
+FakeHSIApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> helper) const
 {
   std::vector<const confmodel::DaqModule*> modules;
 
+  ConfigObjectFactory obj_fac(this);
+
+
   auto dlhConf = get_link_handler();
   auto dlhClass = dlhConf->get_template_for();
+
+  // 23-Sep-2025, KAB et al: prevent a mis-configuration of the system in which the
+  // FakeHSI DLH is told to generate TimeSync messages. (TimeSync messages should only
+  // be sent from Readout DLH modules so that we don't get confusing system behavior.)
+  if (dlhConf->get_generate_timesync()) {
+    throw(BadConf(ERS_HERE, "TimeSync generation is enabled for a FakeHSIApplication and this is not allowed"));
+  }
 
   const QueueDescriptor* dlhInputQDesc = nullptr;
 
@@ -109,9 +108,8 @@ FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
 
   auto det_id = 1; // TODO Eric Flumerfelt <eflumerf@fnal.gov>, 08-Feb-2024: This is a magic number corresponding to kDAQ
   std::string uid("DLH-" + std::to_string(id));
-  conffwk::ConfigObject dlhObj;
   TLOG_DEBUG(7) << "creating OKS configuration object for Data Link Handler class " << dlhClass << ", id " << id;
-  confdb->create(dbfile, dlhClass, uid, dlhObj);
+  conffwk::ConfigObject dlhObj = obj_fac.create(dlhClass, uid);
   dlhObj.set_by_val<uint32_t>("source_id", id);
   dlhObj.set_by_val<uint32_t>("detector_id", det_id);
   dlhObj.set_by_val<bool>("post_processing_enabled", false);
@@ -122,18 +120,7 @@ FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
   std::vector<conffwk::ConfigObject> fragOutObjs;
   for (auto [uid, descriptor]:
          helper->get_netdescriptors("Fragment", "DFApplication")) {
-    std::string dreqNetUid(descriptor->get_uid_base() + uid);
-
-    conffwk::ConfigObject frag_conn;
-    confdb->create(dbfile, "NetworkConnection", dreqNetUid, frag_conn);
-    // auto frag_conn = obj_fac.create("NetworkConnection", dreqNetUid);
-
-    frag_conn.set_by_val<std::string>("data_type", descriptor->get_data_type());
-    frag_conn.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
-
-    auto serviceObj = descriptor->get_associated_service()->config_object();
-    frag_conn.set_obj("associated_service", &serviceObj);
-    fragOutObjs.push_back(frag_conn);
+    fragOutObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
   }    
 
   // start building the list of outputs
@@ -144,52 +131,35 @@ FakeHSIApplication::generate_modules(conffwk::Configuration* confdb,
 
   // Time Sync network connection
   if (dlhConf->get_generate_timesync()) {
-    std::string tsStreamUid = tsNetDesc->get_uid_base() + std::to_string(id);
-    auto tsServiceObj = tsNetDesc->get_associated_service()->config_object();
-    conffwk::ConfigObject tsNetObj;
-    confdb->create(dbfile, "NetworkConnection", tsStreamUid, tsNetObj);
-    tsNetObj.set_by_val<std::string>("connection_type", tsNetDesc->get_connection_type());
-    tsNetObj.set_by_val<std::string>("data_type", tsNetDesc->get_data_type());
-    tsNetObj.set_obj("associated_service", &tsServiceObj);
+    conffwk::ConfigObject tsNetObj = obj_fac.create_net_obj(tsNetDesc, std::to_string(id));
     fh_output_objs.push_back(&tsNetObj);
   }
   dlhObj.set_objs("outputs", fh_output_objs);
 
-  std::string dataQueueUid(dlhInputQDesc->get_uid_base() + std::to_string(id));
-  conffwk::ConfigObject queueObj;
-  confdb->create(dbfile, "QueueWithSourceId", dataQueueUid, queueObj);
-  queueObj.set_by_val<std::string>("data_type", dlhInputQDesc->get_data_type());
-  queueObj.set_by_val<std::string>("queue_type", dlhInputQDesc->get_queue_type());
-  queueObj.set_by_val<uint32_t>("capacity", dlhInputQDesc->get_capacity());
-  queueObj.set_by_val<uint32_t>("source_id", id);
-
-  auto faServiceObj = dlhReqInputNetDesc->get_associated_service()->config_object();
-  std::string faNetUid = dlhReqInputNetDesc->get_uid_base() + UID();
-  conffwk::ConfigObject faNetObj;
-  confdb->create(dbfile, "NetworkConnection", faNetUid, faNetObj);
-  faNetObj.set_by_val<std::string>("connection_type", dlhReqInputNetDesc->get_connection_type());
-  faNetObj.set_by_val<std::string>("data_type", dlhReqInputNetDesc->get_data_type());
-  faNetObj.set_obj("associated_service", &faServiceObj);
+  conffwk::ConfigObject queueObj = obj_fac.create_queue_sid_obj(dlhInputQDesc, id);
+  conffwk::ConfigObject faNetObj = obj_fac.create_net_obj(dlhReqInputNetDesc, UID());
 
   dlhObj.set_objs("inputs", { &queueObj, &faNetObj });
 
-  modules.push_back(confdb->get<DataHandlerModule>(uid));
+  modules.push_back(obj_fac.get_dal<DataHandlerModule>(uid));
 
   auto hsiServiceObj = hsiNetDesc->get_associated_service()->config_object();
-  std::string hsiNetUid = hsiNetDesc->get_uid_base();
-  conffwk::ConfigObject hsiNetObj;
-  confdb->create(dbfile, "NetworkConnection", hsiNetUid, hsiNetObj);
-  hsiNetObj.set_by_val<std::string>("connection_type", hsiNetDesc->get_connection_type());
-  hsiNetObj.set_by_val<std::string>("data_type", hsiNetDesc->get_data_type());
-  hsiNetObj.set_obj("associated_service", &hsiServiceObj);
+  conffwk::ConfigObject hsiNetObj = obj_fac.create_net_obj(hsiNetDesc, "");
   
   std::string genuid("FakeHSI-" + std::to_string(id));
-  conffwk::ConfigObject fakehsiObj;
-  confdb->create(dbfile, "FakeHSIEventGeneratorModule", genuid, fakehsiObj);
+  conffwk::ConfigObject fakehsiObj =
+    obj_fac.create("FakeHSIEventGeneratorModule", genuid);
   fakehsiObj.set_obj("configuration", &rdrConf->config_object());
   fakehsiObj.set_objs("outputs", { &queueObj, &hsiNetObj });
+  if (tsNetDesc != nullptr) {
+    conffwk::ConfigObject tsNetObjIn = obj_fac.create_net_obj(tsNetDesc, ".*");
+    fakehsiObj.set_objs("inputs", { &tsNetObjIn });
+  }
 
-  modules.push_back(confdb->get<FakeHSIEventGeneratorModule>(genuid));
+  modules.push_back(obj_fac.get_dal<FakeHSIEventGeneratorModule>(genuid));
 
-  return modules;
+  obj_fac.update_modules(modules);
 }
+ 
+} // namespace appmodel  
+} // namespace dunedaq

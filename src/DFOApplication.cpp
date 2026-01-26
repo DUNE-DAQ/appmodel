@@ -8,9 +8,9 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
 
 #include "appmodel/ConfigurationHelper.hpp"
+#include "ConfigObjectFactory.hpp"
 #include "appmodel/DFApplication.hpp"
 #include "appmodel/DFOApplication.hpp"
 #include "appmodel/DFOConf.hpp"
@@ -30,29 +30,20 @@
 #include <string>
 #include <vector>
 
-using namespace dunedaq;
-using namespace dunedaq::appmodel;
+namespace dunedaq {
+namespace appmodel {
 
-static ModuleFactory::Registrator __reg__("DFOApplication",
-                                          [](const SmartDaqApplication* smartApp,
-                                             conffwk::Configuration* confdb,
-                                             const std::string& dbfile,
-                                             std::shared_ptr<appmodel::ConfigurationHelper> helper) -> ModuleFactory::ReturnType {
-                                            auto app = smartApp->cast<DFOApplication>();
-                                            return app->generate_modules(confdb, dbfile, helper);
-                                          });
-
-std::vector<const confmodel::DaqModule*>
-DFOApplication::generate_modules(conffwk::Configuration* confdb,
-                                 const std::string& dbfile,
-                                 std::shared_ptr<appmodel::ConfigurationHelper> helper) const
+void
+DFOApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> helper) const
 {
   std::vector<const confmodel::DaqModule*> modules;
 
+  ConfigObjectFactory obj_fac(this);
+
+
   std::string dfoUid("DFO-" + UID());
-  conffwk::ConfigObject dfoObj;
   TLOG_DEBUG(7) << "creating OKS configuration object for DFOModule class ";
-  confdb->create(dbfile, "DFOModule", dfoUid, dfoObj);
+  auto dfoObj = obj_fac.create("DFOModule", dfoUid);
 
   auto dfoConf = get_dfo();
   dfoObj.set_obj("configuration", &dfoConf->config_object());
@@ -71,13 +62,7 @@ DFOApplication::generate_modules(conffwk::Configuration* confdb,
     auto endpoint_class = rule->get_endpoint_class();
     auto descriptor = rule->get_descriptor();
 
-    conffwk::ConfigObject connObj;
-    auto serviceObj = descriptor->get_associated_service()->config_object();
-    std::string connUid(descriptor->get_uid_base());
-    confdb->create(dbfile, "NetworkConnection", connUid, connObj);
-    connObj.set_by_val<std::string>("data_type", descriptor->get_data_type());
-    connObj.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
-    connObj.set_obj("associated_service", &serviceObj);
+    auto connObj = obj_fac.create_net_obj(descriptor, "");
 
     if (descriptor->get_data_type() == "TriggerDecision") {
       if (endpoint_class == "DFOModule") {
@@ -109,15 +94,7 @@ DFOApplication::generate_modules(conffwk::Configuration* confdb,
   std::vector<conffwk::ConfigObject> tdOutObjs;
   for (auto [uid, descriptor]:
          helper->get_netdescriptors("TriggerDecision", "DFApplication")) {
-    std::string dreqNetUid(descriptor->get_uid_base() + uid);
-    tdOutObjs.emplace_back();
-    confdb->create(dbfile, "NetworkConnection", dreqNetUid, tdOutObjs.back());
-
-    tdOutObjs.back().set_by_val<std::string>("data_type", descriptor->get_data_type());
-    tdOutObjs.back().set_by_val<std::string>("connection_type", descriptor->get_connection_type());
-
-    auto serviceObj = descriptor->get_associated_service()->config_object();
-    tdOutObjs.back().set_obj("associated_service", &serviceObj);
+    tdOutObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
   }
 
   for (auto& tdOut : tdOutObjs) {
@@ -128,7 +105,10 @@ DFOApplication::generate_modules(conffwk::Configuration* confdb,
   dfoObj.set_objs("outputs", output_conns);
 
   // Add to our list of modules to return
-  modules.push_back(confdb->get<DFOModule>(dfoUid));
+  modules.push_back(obj_fac.get_dal<DFOModule>(dfoUid));
 
-  return modules;
+  obj_fac.update_modules(modules);
 }
+
+} // namespace appmodel  
+} // namespace dunedaq

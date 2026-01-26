@@ -8,17 +8,19 @@
  * received with this code.
  */
 
-#include "ModuleFactory.hpp"
-
 #include "conffwk/Configuration.hpp"
 #include "oks/kernel.hpp"
 #include "logging/Logging.hpp"
 
-#include "confmodel/DetectorToDaqConnection.hpp"
-#include "confmodel/DetDataSender.hpp"
+#include "confmodel/GeoId.hpp"
+#include "confmodel/DetectorStream.hpp"
+#include "confmodel/NetworkInterface.hpp"
 
+#include "ConfigObjectFactory.hpp"
+#include "appmodel/appmodelIssues.hpp"
 #include "appmodel/FelixDataSender.hpp"
 #include "appmodel/DaphneConf.hpp"
+#include "appmodel/DaphneMapEntry.hpp"
 #include "appmodel/DaphneV2BoardConf.hpp"
 #include "appmodel/DaphneV2Channel.hpp"
 #include "appmodel/DaphneV2AFE.hpp"
@@ -26,8 +28,16 @@
 #include "appmodel/DaphneV2PGA.hpp"
 #include "appmodel/DaphneV2LNA.hpp"
 #include "appmodel/DaphneV2ControllerModule.hpp"
+#include "appmodel/DaphneV3ControllerModule.hpp"
 #include "appmodel/DaphneApplication.hpp"
-
+#include "appmodel/FelixDetectorToDaqConnection.hpp"
+#include "appmodel/NetworkDetectorToDaqConnection.hpp"
+#include "appmodel/NWDetDataSender.hpp"
+#include "appmodel/NWDetDataReceiver.hpp"
+#include "appmodel/HermesDataSender.hpp"
+#include "appmodel/HermesModuleConf.hpp"
+#include "appmodel/HermesModule.hpp"
+#include "appmodel/IpbusAddressTable.hpp"
 
 #include <string>
 #include <vector>
@@ -35,210 +45,181 @@
 #include <iostream>
 #include <fmt/core.h>
 #include <set>
+#include <map>
 
-using namespace dunedaq;
-using namespace dunedaq::appmodel;
+namespace dunedaq::appmodel {
+  
+std::vector<const confmodel::Resource*>
+DaphneApplication::contained_resources() const {
+  return to_resources(get_detector_connections());
+}
 
-static ModuleFactory::Registrator
-__reg__("DaphneApplication", [] (const SmartDaqApplication* smartApp,
-                             conffwk::Configuration* config,
-                             const std::string& dbfile,
-                             std::shared_ptr<appmodel::ConfigurationHelper> helper) -> ModuleFactory::ReturnType
-  {
-    auto app = smartApp->cast<DaphneApplication>();
-    return app->generate_modules(config, dbfile, helper);
-  }
-  );
-
-std::vector<const confmodel::DaqModule*> 
-DaphneApplication::generate_modules(conffwk::Configuration* config,
-                                    const std::string& dbfile,
-                                    std::shared_ptr<appmodel::ConfigurationHelper> helper) const
+void
+DaphneApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> helper) const
 {
+  ConfigObjectFactory obj_fac(this);
+
   std::vector<const confmodel::DaqModule*> modules;
 
   auto daphne_conf = get_configuration();
 
-  std::set<std::string> ips;
+  std::map<std::string, const DaphneV2BoardConf*> conf_map;
+  auto confs = daphne_conf->get_boards();
+  for ( const auto & c : confs ) {
+    conf_map[c->get_key()] = c->get_conf();
+  }
+
+  //  these maps are all indexed on the board id {detector].{crate}.{slot}
+  std::map<std::string, bool> v3_map;
+  std::map<std::string, const confmodel::NetworkInterface*> interfaces;
+  std::map<std::string, std::string> ctrl_hosts;
+
+  // map from ctrl_host to senders
+  std::map<std::string, std::vector<const appmodel::HermesDataSender*> > hermes_senders;
   
-  for (auto d2d_conn_res : get_contains()) {
+  for (auto d2d_conn : get_detector_connections()) {
 
     // A Resource can be disabled and still its application can be enabled because the application can have multile resources, so we need to check which resources are enabled
-    if (!helper->enabled(d2d_conn_res)) {
-      TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn_res->UID();
+    if (!helper->enabled(d2d_conn)) {
+      TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
       continue;
     }
 
-    TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn_res->UID();
+    TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn->UID();
     // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader module
-    auto d2d_conn = d2d_conn_res->cast<confmodel::DetectorToDaqConnection>();
 
-    if (!d2d_conn) {
-      throw(BadConf(ERS_HERE, "DaphneApplication contains something other than DetectorToDaqConnection"));
-    }
-
-    if (d2d_conn->get_contains().empty()) {
+    // Redundant? Schema forbids 0 connections
+    if (d2d_conn->contained_resources().empty()) {
       throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain senders or receivers"));
     }
 
-    auto det_senders = d2d_conn->get_senders();
+    auto flx_conn = dynamic_cast<const appmodel::FelixDetectorToDaqConnection *>( d2d_conn );  // NOLINT(runtime/rtti) 
+    auto net_conn = dynamic_cast<const appmodel::NetworkDetectorToDaqConnection *>( d2d_conn );  // NOLINT(runtime/rtti)
 
-    // Loop over senders
-    for (const auto* sender : det_senders) {
+    if ( ! net_conn && ! flx_conn) {
+      throw BadConf(ERS_HERE, d2d_conn->UID() + " is neither felix or eth connection");
+    }
 
-      if ( !helper->enabled(sender) ) {
-        TLOG() << "Skipping disabled sender: " << sender->UID();
-        continue;
-      }
-      // Check the sender type, must me a FelixDataSender
-      const auto* felix_sender = sender->cast<appmodel::FelixDataSender>();
-      if (!felix_sender ) {
-        //throw(BadConf(ERS_HERE, fmt::format("DataSender {} is not a appmodel::HermesDataSender", sender->UID())));
-        continue;
-        // MaR: I don't think we should throw here because there can be other connections other than felix
-        // MaR: should we be worried that we assume that a Felix connection is a Daphne?
-      }
+    if ( flx_conn ) {
+      auto det_senders = flx_conn->get_felix_senders();
 
-      auto ip = felix_sender -> get_control_host();
+      // Loop over senders
+      for (const auto* felix_sender : det_senders) {
+        
+        if ( !helper->enabled(felix_sender) ) {
+          TLOG() << "Skipping disabled sender: " << felix_sender->UID();
+          continue;
+        }
+        
+        auto ip = felix_sender -> get_control_host();
+        
+        // from the felix sender we get the DetStream and then the GeoID
+        
+        auto streams = felix_sender -> get_streams();
+        
+        for ( const auto * det_s : streams ) {
+          
+          if ( !helper->enabled(det_s) ) {
+            TLOG() << "Skipping disabled DetStream: " << det_s->UID();
+            continue;
+          }
 
-      ips.insert(ip);
-    } // loop over det_senders
+          auto geo_id = det_s->get_geo_id();
+          auto id = fmt::format("{}.{}.{}", geo_id->get_detector_id(), geo_id->get_crate_id(), geo_id->get_slot_id());
+          if (!v3_map.contains(id)) {
+            v3_map[id] = false;
+          } 
+          
+        } // loop over DetStreams
+        
+      } // loop over det_senders
+    } // if flx connection
+
+    if ( net_conn ) {
+      auto det_senders = net_conn->get_net_senders();
+
+      for ( const auto* nw_sender : det_senders ) {
+        if ( !helper->enabled(nw_sender) ) {
+          TLOG() << "Skipping disabled sender: " << nw_sender->UID();
+          continue;
+        }
+
+        // Check the sender type, must me a HermesSender
+        const auto* hrms_sender = nw_sender->cast<appmodel::HermesDataSender>();
+        if (!hrms_sender ) {
+          throw(BadConf(ERS_HERE, fmt::format("DataSender {} is not a appmodel::HermesDataSender", nw_sender->UID())));
+        }
+
+        hermes_senders[hrms_sender->get_control_host()].push_back(hrms_sender);
+          
+        auto streams = nw_sender -> get_streams();
+        for ( const auto * det_s : streams ) {
+          
+          if ( !helper->enabled(det_s) ) {
+            TLOG() << "Skipping disabled DetStream: " << det_s->UID();
+            continue;
+          }
+          
+          auto geo_id = det_s->get_geo_id();
+          auto id = fmt::format("{}.{}.{}", geo_id->get_detector_id(), geo_id->get_crate_id(), geo_id->get_slot_id());
+          if (!v3_map.contains(id)) {
+            v3_map[id] = true;
+            interfaces[id] = net_conn->get_net_receiver()->get_uses();
+            ctrl_hosts[id] = hrms_sender->get_control_host();
+          } 
+          
+        } // loop over streams
+
+      } // loop over NW senders
+      
+    } // if net_connection
 
   } // loop over det2DAQ Connections
 
-  for ( const auto & ip : ips ) {
+
   
-    auto slot = daphne_conf -> get_board_slot(ip);
-
-    const auto raw_conf = daphne_conf->get_json().at(ip);
-
-    // setup channels
-    std::vector<const conffwk::ConfigObject*> channels;
-    const auto raw_channels = raw_conf["channel_analog_conf"];
-    const auto raw_ids = raw_channels["ids"].get<std::vector<uint8_t>>();
-    const auto raw_gains = raw_channels["gains"].get<std::vector<uint8_t>>();
-    const auto raw_offsets = raw_channels["offsets"].get<std::vector<uint16_t>>();
-    const auto raw_trims = raw_channels["trims"].get<std::vector<uint16_t>>();
-    for ( size_t i = 0; i < raw_ids.size(); ++i ) {
-      auto id = raw_ids[i];
-      conffwk::ConfigObject channel_obj;
-      config->create(dbfile, "DaphneV2Channel",
-                     fmt::format("daphne-{}-channel-{}", slot, id), channel_obj );
-      channel_obj.set_by_val<uint8_t>("channel_id", id);
-      channel_obj.set_by_val<uint8_t>("gain", raw_gains[i]);
-      channel_obj.set_by_val<uint16_t>("offset", raw_offsets[i]);
-      channel_obj.set_by_val<uint16_t>("trim", raw_trims[i]);
-      auto ch = config->get<appmodel::DaphneV2Channel>(channel_obj);
-      channels.push_back(& ch -> config_object());
+  
+  for ( const auto & [id, v3] : v3_map ) {
+  
+    auto conf_it = conf_map.find(id);
+    if ( conf_it == conf_map.end() ) {
+      throw MissingDaphne(ERS_HERE, id);
     }
-    
-    //setup afes
-    std::vector<const conffwk::ConfigObject*> afes;
-    const auto raw_afes = raw_conf["afes"];
-    const auto raw_afe_ids = raw_afes["ids"].get<std::vector<size_t>>();
-    const auto raw_afe_attenuators = raw_afes["attenuators"].get<std::vector<uint16_t>>();
-    const auto raw_afe_biases = raw_afes["v_biases"].get<std::vector<uint16_t>>();
-    const auto raw_adcs = raw_afes["adcs"];
-    const auto raw_adc_res = raw_adcs["resolution"].get<std::vector<uint16_t>>();
-    const auto raw_adc_format = raw_adcs["output_format"].get<std::vector<uint16_t>>();
-    const auto raw_adc_SB = raw_adcs["SB_first"].get<std::vector<uint16_t>>();
-    const auto raw_lnas = raw_afes["lnas"];
-    const auto raw_lna_clamps = raw_lnas["clamp"].get<std::vector<uint8_t>>();
-    const auto raw_lna_gains = raw_lnas["gain"].get<std::vector<uint8_t>>();
-    const auto raw_lna_integrators = raw_lnas["integrator_disable"].get<std::vector<uint16_t>>();
-    const auto raw_pgas = raw_afes["pgas"];
-    const auto raw_pga_cuts = raw_pgas["lpf_cut_frequency"].get<std::vector<uint8_t>>();
-    const auto raw_pga_integrators = raw_pgas["integrator_disable"].get<std::vector<uint16_t>>();
-    const auto raw_pga_gains = raw_pgas["gain"].get<std::vector<uint16_t>>();
-    for ( size_t i = 0; i < raw_afe_ids.size(); ++i ) {
-      auto id = raw_afe_ids[i];
-      
-      // create the adc
-      conffwk::ConfigObject adc_obj;
-      config->create(dbfile, "DaphneV2ADC",
-                     fmt::format("daphne-{}-adc-{}", slot, id), adc_obj);
-      adc_obj.set_by_val<bool>("low_resolution",  raw_adc_res[i] > 0);
-      adc_obj.set_by_val<bool>("output_offset_binary",  raw_adc_format[i] > 0 );
-      adc_obj.set_by_val<bool>("MSB_first",  raw_adc_SB[i] > 0);
-      auto adc = config->get<appmodel::DaphneV2ADC>(adc_obj);
-      
-      // create the lna
-      conffwk::ConfigObject lna_obj;
-      config->create(dbfile, "DaphneV2LNA",
-                     fmt::format("daphne-{}-lna-{}", slot, id), lna_obj);
-      lna_obj.set_by_val<uint8_t>("clamp",  raw_lna_clamps[i]);
-      lna_obj.set_by_val<uint8_t>("gain",  raw_lna_gains[i]);
-      lna_obj.set_by_val<bool>("integrator_disable",  raw_lna_integrators[i]>0);
-      auto lna = config->get<appmodel::DaphneV2LNA>(lna_obj);
-      
-      // create the pga
-      conffwk::ConfigObject pga_obj;
-      config->create(dbfile, "DaphneV2PGA",
-                     fmt::format("daphne-{}-pga-{}", slot, id), pga_obj);
-      pga_obj.set_by_val<uint8_t>("lpf_cut_frequency",  raw_pga_cuts[i]);
-      pga_obj.set_by_val<bool>("gain",  raw_pga_gains[i]>0);
-      pga_obj.set_by_val<bool>("integrator_disable",  raw_pga_integrators[i]>0);
-      auto pga = config->get<appmodel::DaphneV2PGA>(pga_obj);
-      
-      // finally create the afe
-      conffwk::ConfigObject afe_obj;
-      config->create(dbfile, "DaphneV2AFE",
-                     fmt::format("daphne-{}-afe-{}", slot, id),afe_obj );
-      afe_obj.set_by_val<uint8_t>("afe_id", id);
-      afe_obj.set_by_val<uint16_t>("attenuator", raw_afe_attenuators[i]);
-      afe_obj.set_by_val<uint16_t>("v_bias", raw_afe_biases[i]);
-      afe_obj.set_obj("adc", & adc -> config_object() );
-      afe_obj.set_obj("lna", & lna -> config_object() );
-      afe_obj.set_obj("pga", & pga -> config_object() );
-      auto afe = config->get<appmodel::DaphneV2AFE>(afe_obj);
-      afes.push_back( & afe-> config_object());
-    }
-    
-    
-    conffwk::ConfigObject board_obj;
-    config->create(dbfile, "DaphneV2BoardConf",
-                   fmt::format("daphne-{}-conf", slot), board_obj);
-    board_obj.set_by_val<uint16_t>("bias_ctrl", raw_conf.at("bias_ctrl"));
-    board_obj.set_by_val<uint64_t>("self_trigger_threshold", raw_conf.at("self_trigger_threshold"));
-    board_obj.set_by_val<std::vector<uint8_t>>("full_stream_channels",
-                                               raw_conf.at("full_stream_channels").get<std::vector<uint8_t>>());
-    board_obj.set_by_val<uint64_t>("self_trigger_xcorr", raw_conf.at("self_trigger_xcorr"));
-    board_obj.set_by_val<uint32_t>("tp_conf", raw_conf.at("tp_conf"));
-    board_obj.set_by_val<uint64_t>("compensator", raw_conf.at("compensator"));
-    board_obj.set_by_val<uint64_t>("inverter", raw_conf.at("inverter"));    
-    board_obj.set_objs("active_channels", channels);
-    board_obj.set_objs("active_afes", afes);
-    board_obj.set_obj("default_channel", & daphne_conf->get_default_v2_settings()->get_default_channel()->config_object());
-    board_obj.set_obj("default_afe", & daphne_conf->get_default_v2_settings()->get_default_afe()->config_object());
-    auto conf = config->get<appmodel::DaphneV2BoardConf>(board_obj);
-    
-    conffwk::ConfigObject module_obj;
-    std::string module_name = fmt::format("controller-{}", slot);
-    config -> create( dbfile, "DaphneV2ControllerModule", module_name, module_obj);
-    module_obj.set_by_val<std::string>("address", ip);
-    module_obj.set_by_val<uint16_t>("slot", slot);
+    auto conf = conf_it->second;
+
+    conffwk::ConfigObject module_obj = obj_fac.create( (v3 ?  "DaphneV3ControllerModule" : "DaphneV2ControllerModule"), fmt::format("controller-{}", id) );
     module_obj.set_obj("daphne_conf", & daphne_conf -> config_object() );
     module_obj.set_obj("board_conf", & conf -> config_object() );
-    
-    auto module = config->get<appmodel::DaphneV2ControllerModule>(module_obj);
+
+    auto module = obj_fac.get_dal<confmodel::DaqModule>(module_obj); 
     modules.push_back(module);
+
+
+    // Create Hermes Modules
+    if (v3) {
+      std::string hermes_uid = fmt::format("daphne-hermes-ctrl-{}", id);
+      conffwk::ConfigObject hermes_obj = obj_fac.create("HermesModule", hermes_uid);
+      hermes_obj.set_obj("address_table", &this->get_hermes_module_conf()->get_address_table()->config_object());
+      hermes_obj.set_by_val<std::string>("uri", fmt::format("{}://{}:{}", this->get_hermes_module_conf()->get_ipbus_type(), ctrl_hosts[id], this->get_hermes_module_conf()->get_ipbus_port()));
+      hermes_obj.set_by_val<uint32_t>("timeout_ms", this->get_hermes_module_conf()->get_ipbus_timeout_ms());  // NOLINT
+      hermes_obj.set_obj("destination", & interfaces[id]->config_object());
+      
+      std::vector< const conffwk::ConfigObject * > links_obj;
+      const auto & senders = hermes_senders[ctrl_hosts[id]];
+      for ( const auto* sndr : senders ){
+        links_obj.push_back(&sndr->config_object());
+      }
+      hermes_obj.set_objs("links", links_obj);
+      
+      modules.push_back(obj_fac.get_dal<appmodel::HermesModule>(hermes_obj));
+
+    }
     
   } // ips
 
-  return modules;
-}
+  obj_fac.update_modules(modules);
+}  // NOLINT 
 
-
-uint16_t DaphneConf::get_board_slot(const std::string & ip) const {
-
-  auto conf_dict = get_json();
-  auto it = conf_dict.find(ip);
-  if ( it == conf_dict.end() ) {
-    throw MissingIP(ERS_HERE, ip);
-  }
-
-  return it->at("slot").get<uint16_t>();
-}
 
 bool
 DaphneV2BoardConf::is_channel_used(size_t ch) const {
@@ -287,7 +268,7 @@ DaphneV2BoardConf::get_afe(size_t ch) const {
     }
   }
 
-  throw appmodel::MissingDaphne(ERS_HERE, ch);
+  throw appmodel::MissingAFE(ERS_HERE, UID(), ch);
 }
 
 
@@ -333,5 +314,5 @@ DaphneV2LNA::get_reg52() const {
 
   return reg52.to_ulong();
 }
-
  
+} // namespace dunedaq::appmodel
