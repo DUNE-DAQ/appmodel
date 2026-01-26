@@ -193,19 +193,19 @@ CIBApplication::generate_modules(const confmodel::Session* session) const
   auto module = obj_fac.get_dal<appmodel::CIBModule>(module_obj.UID());
   
   modules.push_back(module);
-  
+
   obj_fac.update_modules(modules);
   // return modules;
 }
 
 
 
-std::vector<const confmodel::Resource*>
-CIBoardConf::contained_resources() const {
-  std::vector<const confmodel::Resource*> resources;
+// std::vector<const confmodel::Resource*>
+// CIBoardConf::contained_resources() const {
+//   std::vector<const confmodel::Resource*> resources;
 
-  return resources;
-}
+//   return resources;
+// }
 
 
 nlohmann::json CIBoardConf::get_cib_json(const dunedaq::confmodel::Session& session, std::optional<std::string> socket_host) const {
@@ -228,6 +228,8 @@ nlohmann::json CIBoardConf::get_cib_json(const dunedaq::confmodel::Session& sess
     json["config"]["sockets"]["receiver"]["host"] = get_host();
     json["config"]["sockets"]["receiver"]["port"] = get_port();
   }
+
+  TLOG() << "JSON frag : [" << json.dump() << "] " ;
 
   return json;
 }
