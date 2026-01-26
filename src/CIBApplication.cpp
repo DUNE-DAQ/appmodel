@@ -207,8 +207,8 @@ CIBApplication::generate_modules(const confmodel::Session* session) const
 //   return resources;
 // }
 
-
-nlohmann::json CIBoardConf::get_cib_json(const dunedaq::confmodel::Session& session, std::optional<std::string> socket_host) const {
+nlohmann::json CIBoardConf::get_cib_json(const dunedaq::confmodel::Session &session, std::optional<std::string> socket_host, std::optional<uint16_t> socket_port) const
+{
 
   // shut up compiler!
   (void)session; // unused parameter
@@ -220,7 +220,7 @@ nlohmann::json CIBoardConf::get_cib_json(const dunedaq::confmodel::Session& sess
   {
     json["config"]["sockets"]["receiver"] = nlohmann::json::object();
     json["config"]["sockets"]["receiver"]["host"] = socket_host.value();
-    json["config"]["sockets"]["receiver"]["port"] = get_port();
+    json["config"]["sockets"]["receiver"]["port"] = socket_port.value();
   }
   else 
   {
@@ -233,5 +233,3 @@ nlohmann::json CIBoardConf::get_cib_json(const dunedaq::confmodel::Session& sess
 
   return json;
 }
-
-
