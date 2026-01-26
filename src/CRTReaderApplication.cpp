@@ -100,7 +100,7 @@ void
   for (auto d2d_conn : get_detector_connections()) {
 
     // Are we sure?
-    if (!helper->enabled(d2d_conn)) {
+    if (helper->is_disabled(d2d_conn)) {
       TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
       continue;
     }
@@ -113,7 +113,7 @@ void
     for (auto stream : d2d_conn->streams()) {
 
       // Are we sure?
-      if (!helper->enabled(stream)) {
+      if (helper->is_disabled(stream)) {
         TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
         continue;
       }

@@ -197,7 +197,7 @@ ReadoutApplication::generate_modules(std::shared_ptr<ConfigurationHelper> helper
   uint16_t conn_idx = 0;
 
   for (auto d2d_conn : get_detector_connections()) {
-    if (!helper->enabled(d2d_conn)) {
+    if (helper->is_disabled(d2d_conn)) {
       TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
       continue;
     }
@@ -222,7 +222,7 @@ ReadoutApplication::generate_modules(std::shared_ptr<ConfigurationHelper> helper
     for (auto stream : d2d_conn->streams()) {
 
       // Are we sure?
-      if (!helper->enabled(stream)) {
+      if (helper->is_disabled(stream)) {
         TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
         continue;
       }

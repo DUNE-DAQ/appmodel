@@ -181,7 +181,7 @@ NP02ReadoutApplication::generate_modules(std::shared_ptr<appmodel::Configuration
     uint16_t receiver_numa = 0;
 
     // Are we sure?
-    if (!helper->enabled(d2d_conn)) {
+    if (helper->is_disabled(d2d_conn)) {
       TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
       continue;
     }
@@ -232,7 +232,7 @@ NP02ReadoutApplication::generate_modules(std::shared_ptr<appmodel::Configuration
     for (auto stream : d2d_conn->streams()) {
 
       // Are we sure?
-      if (!helper->enabled(stream)) {
+      if (helper->is_disabled(stream)) {
         TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
         continue;
       }

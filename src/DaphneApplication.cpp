@@ -80,7 +80,7 @@ DaphneApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelpe
   for (auto d2d_conn : get_detector_connections()) {
 
     // A Resource can be disabled and still its application can be enabled because the application can have multile resources, so we need to check which resources are enabled
-    if (!helper->enabled(d2d_conn)) {
+    if (helper->is_disabled(d2d_conn)) {
       TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
       continue;
     }
@@ -106,7 +106,7 @@ DaphneApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelpe
       // Loop over senders
       for (const auto* felix_sender : det_senders) {
         
-        if ( !helper->enabled(felix_sender) ) {
+        if ( helper->is_disabled(felix_sender) ) {
           TLOG() << "Skipping disabled sender: " << felix_sender->UID();
           continue;
         }
@@ -119,7 +119,7 @@ DaphneApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelpe
         
         for ( const auto * det_s : streams ) {
           
-          if ( !helper->enabled(det_s) ) {
+          if ( helper->is_disabled(det_s) ) {
             TLOG() << "Skipping disabled DetStream: " << det_s->UID();
             continue;
           }
@@ -139,7 +139,7 @@ DaphneApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelpe
       auto det_senders = net_conn->get_net_senders();
 
       for ( const auto* nw_sender : det_senders ) {
-        if ( !helper->enabled(nw_sender) ) {
+        if ( helper->is_disabled(nw_sender) ) {
           TLOG() << "Skipping disabled sender: " << nw_sender->UID();
           continue;
         }
@@ -155,7 +155,7 @@ DaphneApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelpe
         auto streams = nw_sender -> get_streams();
         for ( const auto * det_s : streams ) {
           
-          if ( !helper->enabled(det_s) ) {
+          if ( helper->is_disabled(det_s) ) {
             TLOG() << "Skipping disabled DetStream: " << det_s->UID();
             continue;
           }

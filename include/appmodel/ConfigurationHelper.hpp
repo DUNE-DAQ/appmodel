@@ -34,34 +34,75 @@ namespace dunedaq::appmodel {
       : m_session(ses) {}
 
 
-    /// Get the exposed Services of all network connections with given
-    /// data_type from all applications of given type 
+    /// @brief Get the exposed Services of all network connections
+    /// with given data_type from all smart daq applications of given
+    /// class
+    ///
+    /// @param app_class  Dal class of applications to match
+    /// @param data_type  Data type of network descriptor to match
+    ///
+    /// @returns  A vector of pointers to matching Services
     std::vector<const confmodel::Service*> get_services(std::string app_class,
                                                         std::string data_type);
 
-    /// Get all NetworkConnectionDescriptors with given data_type from
-    /// all applications of given type
+
+    /// @brief Get all NetworkConnectionDescriptors with given
+    /// data_type from all applications of given type
+    ///
+    /// @param data_type  Data type to match in network descriptor
+    /// @param app_class  Optional dal class name to match
+    ///
+    /// @returns a vector of application uid / network descriptor pairs
     std::vector<std::pair<std::string, const appmodel::NetworkConnectionDescriptor*>>
     get_netdescriptors (
       const std::string& data_type,
       const std::string& app_class="");
 
-    /// Get the source ids of all DetectorStreams in the Session
+
+    /// @brief Get the source ids of all DetectorStreams in the Session
+    ///
+    /// @returns A map of application uids to vectors of streams that
+    ///         they contain
     std::map<std::string, std::vector<uint32_t>> get_stream_source_ids();
 
-    /// Get the source ids of all the TP streams in all
+
+    /// @brief Get the source ids of all the TP streams in all
     /// ReadoutApplications and TriggerApplications
+    ///
+    /// @returns  A map of application uids to vectors of contained
+    ///          TP source ids
     std::map<std::string, std::vector<const SourceIDConf*>>
     get_tp_source_ids();
 
-    /// Get list of uids of applications that match given type
+
+    /// @brief Get list of uids of applications that match given type
+    ///
+    /// @param app_class  Class of applications to match
+    ///
+    /// @returns  A vector of uids of matching applications
     std::vector<std::string> get_app_uids(std::string app_class="");
 
+
+    /// @brief Get list of source ids for applications that match
+    ///       given type
+    ///
+    /// @returns  A map of application uids to vectors of contained
+    ///          source ids
     std::map<std::string, const SourceIDConf*>  get_app_source_ids(
       std::string app_class="");
 
-    /// Check the enabled state of the given item
-    bool enabled(const conffwk::DalObject* item);
+
+    /// @brief Check the enabled state of the given item
+    ///
+    /// @returns True if the object is not disabled
+    inline bool is_enabled(const conffwk::DalObject* item) {
+      return !is_disabled(item);
+    }
+
+    /// @brief Check the enabled state of the given item
+    ///
+    /// @returns True if the object is disabled
+    bool is_disabled(const conffwk::DalObject* item);
 
   private:
     const confmodel::Session* m_session;

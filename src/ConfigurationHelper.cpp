@@ -142,16 +142,18 @@ ConfigurationHelper::get_app_source_ids(std::string app_class) {
   for (auto app: m_session->enabled_applications()) {
     if (app_class.empty() || app->castable(app_class)) {
       auto smart_app = app->cast<SmartDaqApplication>();
-      result.insert({app->UID(), smart_app->get_source_id()});
+      if (smart_app != nullptr && smart_app->get_source_id() != nullptr) {
+        result.insert({app->UID(), smart_app->get_source_id()});
+      }
     }
   }
   return result;
 }
 
-bool ConfigurationHelper::enabled(const conffwk::DalObject* item) {
+bool ConfigurationHelper::is_disabled(const conffwk::DalObject* item) {
   auto res = item->cast<confmodel::Resource>();
   if (res == nullptr) {
-    return true;
+    return false;
   }
-  return !res->is_disabled(*m_session);
+  return res->is_disabled(*m_session);
 }

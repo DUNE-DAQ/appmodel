@@ -240,9 +240,15 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
   for (auto app_class: {"TriggerApplication", "FakeHSIApplication",
       "DTSHSIApplication", "CTBApplication"}) {
     for (auto [uid, src_id]: helper->get_app_source_ids(app_class)) {
-      sourceIds.push_back(&(src_id->config_object()));
+      auto tcSourceIdConf = new conffwk::ConfigObject(
+        obj_fac.create("SourceIDConf",
+                       uid + "-" + std::to_string(src_id->get_sid())
+          ));
+      tcSourceIdConf->set_by_val<uint32_t>("sid", src_id->get_sid());
+      tcSourceIdConf->set_by_val<std::string>("subsystem", src_id->get_subsystem());
+      sourceIds.push_back(tcSourceIdConf);
     }    
-  } // loop over applications
+  }
   
   // Get mandatory links
   std::vector<const conffwk::ConfigObject*> mandatory_sids;
