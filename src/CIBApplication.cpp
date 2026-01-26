@@ -49,7 +49,7 @@ CIBApplication::contained_resources() const {
 }
 
 
-std::vector<const confmodel::DaqModule*> 
+void
 CIBApplication::generate_modules(const confmodel::Session* session) const
 {
   std::vector<const confmodel::DaqModule*> modules;
@@ -194,7 +194,8 @@ CIBApplication::generate_modules(const confmodel::Session* session) const
   
   modules.push_back(module);
   
-  return modules;
+  obj_fac.update_modules(modules);
+  // return modules;
 }
 
 
