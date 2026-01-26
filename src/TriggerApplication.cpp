@@ -72,7 +72,7 @@ create_network_connection(std::string uid,
 }
 
 
-std::vector<const confmodel::DaqModule*>
+void
 TriggerApplication::generate_modules(const confmodel::Session* session) const
 {
 
@@ -239,7 +239,8 @@ TriggerApplication::generate_modules(const confmodel::Session* session) const
 
   modules.push_back(obj_fac.get_dal<DataSubscriberModule>(reader_uid));
 
-  return modules;
+
+  obj_fac.update_modules(modules);
 }
  
 } // namespace appmodel  

@@ -48,7 +48,7 @@ WIECApplication::contained_resources() const {
 }
 
 
-std::vector<const confmodel::DaqModule*> 
+void
 WIECApplication::generate_modules(const confmodel::Session* session) const
 {
   ConfigObjectFactory obj_fac(this);
@@ -159,7 +159,7 @@ WIECApplication::generate_modules(const confmodel::Session* session) const
 
   }
 
-  return modules;
+  obj_fac.update_modules(modules);
 }
  
 } // namespace appmodel  

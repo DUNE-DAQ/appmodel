@@ -80,12 +80,13 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="11" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250807T123616"/>
+<info name="" type="" num-of-items="11" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20250818T145108"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
  <file path="schema/appmodel/application.schema.xml"/>
  <file path="schema/appmodel/fdmodules.schema.xml"/>
+ <file path="schema/appmodel/hermes.schema.xml"/>
 </include>
 
 
@@ -93,9 +94,11 @@
   <superclass name="SmartDaqApplication"/>
   <superclass name="ResourceSetDisableAND"/>
   <relationship name="configuration" class-type="DaphneConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="detector_connections" description="List of detector components controlled by this application" class-type="FelixDetectorToDaqConnection" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="detector_connections" description="List of detector components controlled by this application" class-type="DetectorToDaqConnection" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="hermes_module_conf" class-type="HermesModuleConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
-   <method-implementation language="c++" prototype="std::vector&lt;const dunedaq::confmodel::DaqModule*&gt; generate_modules(const confmodel::Session*) const override" body=""/>
+   <method-implementation language="c++" prototype="void generate_modules(const confmodel::Session*) const override" body=""/>
   </method>
   <method name="contained_resources" description="">
    <method-implementation language="c++" prototype="virtual std::vector&lt;const Resource*&gt; contained_resources() const override" body=""/>
@@ -104,18 +107,18 @@
 
  <class name="DaphneConf" description="Top entry for the configuraiton of a single daphne board">
   <attribute name="timeout_ms" description="timeout used for the board operations" type="u16" range="1..60000" init-value="1000" is-not-null="yes"/>
-  <attribute name="json_file" type="string" is-not-null="yes"/>
   <attribute name="time_reset" description="If True, it performs the time reset at configuration. If False, that is skipped" type="bool" init-value="True" is-not-null="yes"/>
   <relationship name="default_v2_settings" description="Value to be used during scrap" class-type="DaphneV2BoardConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="boards" class-type="DaphneMapEntry" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="default_v3_settings" class-type="DaphneV2BoardConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="get_timeout" description="get the interval casted in ms">
    <method-implementation language="C++" prototype="std::chrono::milliseconds get_timeout() const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &lt;chrono&gt;&#xA;END_HEADER_PROLOGUE&#xA;&#xA;return std::chrono::milliseconds(get_timeout_ms());"/>
   </method>
-  <method name="get_json" description="Getter to cast the configuration into a json">
-   <method-implementation language="C++" prototype="nlohmann::json get_json() const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &lt;nlohmann/json.hpp&gt;&#xA;END_HEADER_PROLOGUE&#xA;&#xA;return nlohmann::json::parse(get_json_file());"/>
-  </method>
-  <method name="get_board_slot" description="Get the board slot from the IP">
-   <method-implementation language="c++" prototype="uint16_t get_board_slot(const std::string &amp; ip) const" body=""/>
-  </method>
+ </class>
+
+ <class name="DaphneMapEntry">
+  <attribute name="key" description="Id of the board in the form of {det_id},{crate_id},{slot_id}" type="string" is-not-null="yes"/>
+  <relationship name="conf" class-type="DaphneV2BoardConf" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
  </class>
 
  <class name="DaphneV2ADC">
@@ -144,6 +147,7 @@
   <attribute name="tp_conf" type="u32" is-not-null="yes"/>
   <attribute name="compensator" type="u64" range="0..1099511627775" is-not-null="yes"/>
   <attribute name="inverter" type="u64" range="0..1099511627775" is-not-null="yes"/>
+  <attribute name="address" description="ip address of the board" type="string" is-not-null="yes"/>
   <attribute name="slot_id" type="u16" range="0..15" is-not-null="yes"/>
   <attribute name="crate_id" type="u16" range="0..1023" is-not-null="yes"/>
   <attribute name="detector_id" type="u16" range="0..63" is-not-null="yes"/>
@@ -170,16 +174,21 @@
   <attribute name="offset" description="Pedestal for the channel" type="u16" range="0..2700" init-value="0" is-not-null="yes"/>
   <attribute name="trim" description="trim value for the channel" type="u16" range="0..4095" init-value="0" is-not-null="yes"/>
   <attribute name="channel_id" type="u8" range="0..39,100" init-value="100" is-not-null="yes"/>
+  <attribute name="stream_id" description="In Daphne v3 we might need to link a channel to a specific link ID, and this is the hook for the operation" type="s8" init-value="-1" is-not-null="yes"/>
+ </class>
+
+ <class name="DaphneControllerModule">
+  <superclass name="DaqModule"/>
+  <relationship name="daphne_conf" class-type="DaphneConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="board_conf" class-type="DaphneV2BoardConf" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
  </class>
 
  <class name="DaphneV2ControllerModule">
-  <superclass name="DaqModule"/>
-  <attribute name="address" description="ip address of the board" type="string" is-not-null="yes"/>
-  <relationship name="daphne_conf" class-type="DaphneConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="board_conf" class-type="DaphneV2BoardConf" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
-  <method name="get_slot" description="">
-   <method-implementation language="C++" prototype="auto get_slot() const { return get_board_conf()-&gt;get_slot_id(); }" body="BEGIN_HEADER_PROLOGUE&#xA;#include &lt;appmodel/DaphneV2BoardConf.hpp&gt;&#xA;END_HEADER_PROLOGUE"/>
-  </method>
+  <superclass name="DaphneControllerModule"/>
+ </class>
+
+ <class name="DaphneV3ControllerModule">
+  <superclass name="DaphneControllerModule"/>
  </class>
 
  <class name="DaphneV2LNA" description="info to generate Reg52 value">

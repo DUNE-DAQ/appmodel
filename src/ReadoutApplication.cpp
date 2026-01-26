@@ -44,6 +44,7 @@
 #include "appmodel/DataHandlerModule.hpp"
 #include "appmodel/DataHandlerConf.hpp"
 #include "appmodel/FragmentAggregatorModule.hpp"
+#include "appmodel/FragmentAggregatorConf.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
@@ -73,7 +74,7 @@ ReadoutApplication::contained_resources() const {
   return to_resources(get_detector_connections());
 }
 
-std::vector<const confmodel::DaqModule*>
+void
 ReadoutApplication::generate_modules(const confmodel::Session* session) const
 {
 
@@ -120,7 +121,7 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
   for (auto rule : get_queue_rules()) {
     auto destination_class = rule->get_destination_class();
     auto data_type = rule->get_descriptor()->get_data_type();
-    // Why datahander here?
+    // Why datahander here? It is the base class for several DataHandler types (e.g. FDDataHandlerModule, SNBDataHandlerModule)
     if (destination_class == "DataHandlerModule" || destination_class == dlh_class || destination_class == tph_class) {
       if (data_type == "DataRequest") {
         dlh_reqinput_qdesc = rule->get_descriptor();
@@ -132,6 +133,13 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
     } else if (destination_class == "FragmentAggregatorModule") {
       fa_output_qdesc = rule->get_descriptor();
     }
+  }
+
+  if (dlh_input_qdesc == nullptr) {
+    throw(BadConf(ERS_HERE, "No data link handler input queue descriptor given"));
+  }
+  if (dlh_reqinput_qdesc == nullptr) {
+    throw(BadConf(ERS_HERE, "No data link handler request input queue descriptor given"));
   }
 
   //
@@ -154,6 +162,13 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
     } else if (data_type == "TimeSync") {
       ts_net_desc = rule->get_descriptor();
     }
+  }
+
+  if (fa_net_desc == nullptr) {
+    throw(BadConf(ERS_HERE, "No Fragment Aggregator network descriptor given"));
+  }
+  if (ts_net_desc == nullptr && dlh_conf->get_generate_timesync()) {
+    throw(BadConf(ERS_HERE, "No Time Sync network descriptor given but time sync generation is enabled"));
   }
 
   // Create here the Queue on which all data fragments are forwarded to the fragment aggregator
@@ -271,7 +286,6 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
     reader_obj.set_objs("outputs", data_queue_objs);
 
     modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(reader_obj.UID()));
-
   }
 
 
@@ -281,7 +295,15 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
   //
   std::vector<const confmodel::Connection*> tp_queues;
   if (get_tp_generation_enabled()) {
-
+    if (tp_input_qdesc == nullptr) {
+        throw(BadConf(ERS_HERE, "TP generation is enabled but no TP input queue descriptor given"));
+    }
+    if (tp_net_desc == nullptr) {
+        throw(BadConf(ERS_HERE, "TP generation is enabled but no TPSet network descriptor given"));
+    }
+    if (ta_net_desc == nullptr) {
+      throw(BadConf(ERS_HERE, "TP generation is enabled but no TriggerActivity network descriptor given"));
+    }
     // Create TP handler object
     auto tph_conf_obj = tph_conf->config_object();
     auto tpsrc_ids = get_tp_source_ids();
@@ -315,6 +337,7 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
       // Register queues with tp hankder
       tph_obj.set_objs("inputs", { &tp_queue_obj, &tpreq_queue_obj });
       tph_obj.set_objs("outputs", { &tp_net_obj, &ta_net_obj, &frag_queue_obj });
+
       modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(tph_obj.UID()));
     }
   }
@@ -376,8 +399,11 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
     modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(dlh_obj.UID()));
   }
 
-
   // Finally create Fragment Aggregator
+  auto aggregator_conf = get_fragment_aggregator();
+  if (aggregator_conf == 0) {
+    throw(BadConf(ERS_HERE, "No FragmentAggregatorModule configuration given"));
+  }
   std::string faUid("fragmentaggregator-" + UID());
   // conffwk::ConfigObject frag_aggr;
   TLOG_DEBUG(7) << "creating OKS configuration object for Fragment Aggregator class ";
@@ -426,12 +452,12 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
     fa_output_objs.push_back(&q->config_object());
   }
 
+  frag_aggr.set_obj("configuration", &aggregator_conf->config_object());
   frag_aggr.set_objs("inputs", { &fa_net_obj, &frag_queue_obj });
   frag_aggr.set_objs("outputs", fa_output_objs);
-
   modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(frag_aggr.UID()));
 
-  return modules;
+  obj_fac.update_modules(modules);
 }
 
 } // namespace appmodel  

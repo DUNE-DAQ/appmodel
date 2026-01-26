@@ -25,6 +25,7 @@
 #include "appmodel/FakeDataProdConf.hpp"
 #include "appmodel/FakeDataProdModule.hpp"
 #include "appmodel/FragmentAggregatorModule.hpp"
+#include "appmodel/FragmentAggregatorConf.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
@@ -47,7 +48,7 @@ FakeDataApplication::contained_resources() const {
   return to_resources(get_producers());
 }
 
-std::vector<const confmodel::DaqModule*>
+void
 FakeDataApplication::generate_modules(const confmodel::Session* session) const
 {
   // oks::OksFile::set_nolock_mode(true);
@@ -138,6 +139,10 @@ FakeDataApplication::generate_modules(const confmodel::Session* session) const
   }
 
   // Finally create Fragment Aggregator
+  auto aggregator_conf = get_fragment_aggregator();
+  if (aggregator_conf == 0) {
+    throw(BadConf(ERS_HERE, "No FragmentAggregatorModule configuration given"));
+  }
   std::string faUid("fragmentaggregator-" + UID());
   TLOG_DEBUG(7) << "creating OKS configuration object for Fragment Aggregator class ";
   conffwk::ConfigObject faObj = obj_fac.create("FragmentAggregatorModule", faUid);
@@ -150,13 +155,13 @@ FakeDataApplication::generate_modules(const confmodel::Session* session) const
   for (auto q : faOutputQueues) {
     qObjs.push_back(&q->config_object());
   }
+  faObj.set_obj("configuration", &aggregator_conf->config_object());
   faObj.set_objs("inputs", { &faNetObj, &faQueueObj });
   faObj.set_objs("outputs", qObjs);
 
   modules.push_back(obj_fac.get_dal<FragmentAggregatorModule>(faUid));
 
-  // oks::OksFile::set_nolock_mode(false);
-  return modules;
+  obj_fac.update_modules(modules);
 }
 
 } // namespace appmodel  

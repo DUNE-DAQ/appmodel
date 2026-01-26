@@ -32,7 +32,7 @@
 namespace dunedaq {
 namespace appmodel {
 
-std::vector<const confmodel::DaqModule*>
+void
 DFOApplication::generate_modules(const confmodel::Session* session) const
 {
   std::vector<const confmodel::DaqModule*> modules;
@@ -118,7 +118,7 @@ DFOApplication::generate_modules(const confmodel::Session* session) const
   // Add to our list of modules to return
   modules.push_back(obj_fac.get_dal<DFOModule>(dfoUid));
 
-  return modules;
+  obj_fac.update_modules(modules);
 }
 
 } // namespace appmodel  
