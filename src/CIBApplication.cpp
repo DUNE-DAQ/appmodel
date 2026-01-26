@@ -213,20 +213,18 @@ nlohmann::json CIBoardConf::get_cib_json(const dunedaq::confmodel::Session &sess
   // shut up compiler!
   (void)session; // unused parameter
   nlohmann::json json;
-  json["command"] = "config";
-  json["config"] = nlohmann::json::object();
-  json["config"]["sockets"] = nlohmann::json::object();
+  json["sockets"] = nlohmann::json::object();
   if (socket_host.has_value()) 
   {
-    json["config"]["sockets"]["receiver"] = nlohmann::json::object();
-    json["config"]["sockets"]["receiver"]["host"] = socket_host.value();
-    json["config"]["sockets"]["receiver"]["port"] = socket_port.value();
+    json["sockets"]["receiver"] = nlohmann::json::object();
+    json["sockets"]["receiver"]["host"] = socket_host.value();
+    json["sockets"]["receiver"]["port"] = socket_port.value();
   }
   else 
   {
-    json["config"]["sockets"]["receiver"] = nlohmann::json::object();
-    json["config"]["sockets"]["receiver"]["host"] = get_host();
-    json["config"]["sockets"]["receiver"]["port"] = get_port();
+    json["sockets"]["receiver"] = nlohmann::json::object();
+    json["sockets"]["receiver"]["host"] = get_host();
+    json["sockets"]["receiver"]["port"] = get_port();
   }
 
   TLOG() << "JSON frag : [" << json.dump() << "] " ;
