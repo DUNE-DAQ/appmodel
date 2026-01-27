@@ -49,7 +49,7 @@ namespace dunedaq {
 namespace appmodel {
 
     
-inline void
+static inline void
 fill_sourceid_object(const ConfigObjectFactory& obj_fac,
                      const conffwk::ConfigObject* netConn,
                      const std::string& uid,

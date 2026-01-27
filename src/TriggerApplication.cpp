@@ -34,7 +34,6 @@
 #include "appmodel/SourceIDConf.hpp"
 
 #include "appmodel/TriggerApplication.hpp"
-#include "appmodel/DFApplication.hpp"
 #include "appmodel/appmodelIssues.hpp"
 
 #include "logging/Logging.hpp"

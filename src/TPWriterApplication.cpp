@@ -20,7 +20,6 @@
 #include "appmodel/TPStreamWriterConf.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
-#include "appmodel/ReadoutApplication.hpp"
 #include "appmodel/SourceIDConf.hpp"
 #include "appmodel/appmodelIssues.hpp"
 #include "logging/Logging.hpp"

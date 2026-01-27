@@ -45,7 +45,6 @@
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/SourceIDConf.hpp"
-#include "appmodel/DFApplication.hpp"
 #include "appmodel/DataHandlerModule.hpp"
 
 #include <string>

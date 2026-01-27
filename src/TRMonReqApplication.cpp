@@ -10,7 +10,6 @@
 
 #include "appmodel/TRMonReqApplication.hpp"
 #include "ConfigObjectFactory.hpp"
-#include "appmodel/DFApplication.hpp"
 #include "appmodel/DataStoreConf.hpp"
 #include "appmodel/DataWriterConf.hpp"
 #include "appmodel/DataWriterModule.hpp"

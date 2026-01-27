@@ -9,9 +9,8 @@
  */
 
 
-#include "appmodel/ConfigurationHelper.hpp"
 #include "ConfigObjectFactory.hpp"
-#include "appmodel/DFApplication.hpp"
+#include "appmodel/ConfigurationHelper.hpp"
 #include "appmodel/DFOApplication.hpp"
 #include "appmodel/DFOConf.hpp"
 #include "appmodel/DFOModule.hpp"
@@ -20,7 +19,7 @@
 #include "appmodel/QueueConnectionRule.hpp"
 #include "appmodel/QueueDescriptor.hpp"
 #include "appmodel/appmodelIssues.hpp"
-#include "conffwk/Configuration.hpp"
+
 #include "confmodel/Connection.hpp"
 #include "confmodel/NetworkConnection.hpp"
 #include "confmodel/Service.hpp"

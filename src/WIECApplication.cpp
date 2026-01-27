@@ -19,7 +19,6 @@
 #include "confmodel/GeoId.hpp"
 
 #include "appmodel/appmodelIssues.hpp"
-#include "ConfigObjectFactory.hpp"
 #include "appmodel/WIECApplication.hpp"
 
 #include "appmodel/WIBModule.hpp"
