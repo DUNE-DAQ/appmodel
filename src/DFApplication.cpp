@@ -50,13 +50,13 @@ namespace appmodel {
 
     
 inline void
-fill_sourceid_object_from_app(const ConfigObjectFactory& obj_fac,
-                              const conffwk::ConfigObject* netConn,
-                              const std::string& uid,
-                              const std::vector<uint32_t>& stream_source_ids,
-                              const std::vector<const SourceIDConf*>& tp_source_ids,
-                              conffwk::ConfigObject& sidNetObj,
-                              std::vector<std::shared_ptr<conffwk::ConfigObject>> sidObjs)
+fill_sourceid_object(const ConfigObjectFactory& obj_fac,
+                     const conffwk::ConfigObject* netConn,
+                     const std::string& uid,
+                     const std::vector<uint32_t>& stream_source_ids,
+                     const std::vector<const SourceIDConf*>& tp_source_ids,
+                     conffwk::ConfigObject& sidNetObj,
+                     std::vector<std::shared_ptr<conffwk::ConfigObject>> sidObjs)
 {
   sidNetObj.set_obj("netconn", netConn);
 
@@ -184,13 +184,13 @@ DFApplication::generate_modules(
     std::string sidToNetUid(descriptor->get_uid_base() + uid + "-sids");
     sidNetObjs.emplace_back(obj_fac.create("SourceIDToNetworkConnection", sidToNetUid));
 
-    fill_sourceid_object_from_app(obj_fac,
-                                  &dreqNetObjs.back(),
-                                  uid,
-                                  stream_src_ids.at(uid),
-                                  tp_src_ids.at(uid),
-                                  sidNetObjs.back(),
-                                  sidObjs);
+    fill_sourceid_object(obj_fac,
+                         &dreqNetObjs.back(),
+                         uid,
+                         stream_src_ids.at(uid),
+                         tp_src_ids.at(uid),
+                         sidNetObjs.back(),
+                         sidObjs);
     processed_apps.insert(uid);
   }
 
@@ -201,13 +201,13 @@ DFApplication::generate_modules(
     std::string sidToNetUid(descriptor->get_uid_base() + uid + "-sids");
     sidNetObjs.emplace_back(obj_fac.create("SourceIDToNetworkConnection", sidToNetUid));
 
-    fill_sourceid_object_from_app(obj_fac,
-                                  &dreqNetObjs.back(),
-                                  uid,
-                                  stream_src_ids.at(uid),
-                                  tp_src_ids.at(uid),
-                                  sidNetObjs.back(),
-                                  sidObjs);
+    fill_sourceid_object(obj_fac,
+                         &dreqNetObjs.back(),
+                         uid,
+                         stream_src_ids.at(uid),
+                         tp_src_ids.at(uid),
+                         sidNetObjs.back(),
+                         sidObjs);
     processed_apps.insert(uid);
   }
 
@@ -220,8 +220,15 @@ DFApplication::generate_modules(
     if (app_sources.contains(uid)) {
       dreqNetObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
 
+      sidObjs.push_back(std::make_shared<conffwk::ConfigObject>(
+                          app_sources.at(uid)->config_object()));
+
       std::string sidToNetUid(descriptor->get_uid_base() + uid + "-sids");
       sidNetObjs.emplace_back(obj_fac.create("SourceIDToNetworkConnection", sidToNetUid));
+      sidNetObjs.back().set_objs("source_ids", {sidObjs.back().get()});
+      sidNetObjs.back().set_obj("netconn", &dreqNetObjs.back());
+
+      processed_apps.insert(uid);
     }
   }
 
