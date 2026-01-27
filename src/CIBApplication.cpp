@@ -160,14 +160,14 @@ CIBApplication::generate_modules(const confmodel::Session* session) const
   dlhObj.set_objs("outputs", net_objc);
 
   // create Queues from CIB to DLH
-  std::string dataQueueUid(dlhInputQDesc->get_uid_base());
+  std::string dataQueueUid(dlhInputQDesc->get_uid_base() + std::string("CIB"));
   conffwk::ConfigObject queueObj = obj_fac.create_queue_sid_obj(dlhInputQDesc, id); 
   queueObj.rename(dataQueueUid);
     
   CIB_module_outputs.push_back(queueObj);
 
   // Create network connections to DLHs
-  std::string faNetUid = dlhReqInputNetDesc->get_uid_base() + UID();
+  std::string faNetUid = dlhReqInputNetDesc->get_uid_base() + UID() + "_CIB";
   conffwk::ConfigObject faNetObj = obj_fac.create_net_obj(dlhReqInputNetDesc, faNetUid);
 
   dlhObj.set_objs("inputs", { &queueObj, &faNetObj });
