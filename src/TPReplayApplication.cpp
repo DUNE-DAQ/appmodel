@@ -30,7 +30,6 @@
 #include "appmodel/TPReplayModule.hpp"
 #include "appmodel/TPReplayModuleConf.hpp"
 #include "appmodel/TPStreamConf.hpp"
-#include "appmodel/TriggerApplication.hpp"
 #include "appmodel/appmodelIssues.hpp"
 
 #include "logging/Logging.hpp"

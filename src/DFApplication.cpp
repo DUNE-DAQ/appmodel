@@ -8,11 +8,9 @@
  * received with this code.
  */
 
-
-#include "appmodel/ConfigurationHelper.hpp"
 #include "ConfigObjectFactory.hpp"
+#include "appmodel/ConfigurationHelper.hpp"
 #include "appmodel/DFApplication.hpp"
-#include "appmodel/CTBApplication.hpp"
 #include "appmodel/DataStoreConf.hpp"
 #include "appmodel/DataWriterConf.hpp"
 #include "appmodel/DataWriterModule.hpp"
@@ -21,22 +19,14 @@
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
 #include "appmodel/QueueDescriptor.hpp"
-#include "appmodel/ReadoutApplication.hpp"
 #include "appmodel/SourceIDConf.hpp"
-#include "appmodel/TPStreamConf.hpp"
 #include "appmodel/TRBConf.hpp"
 #include "appmodel/TRBModule.hpp"
 #include "appmodel/TPReplayModuleConf.hpp"
-#include "appmodel/TPReplayApplication.hpp"
 #include "appmodel/appmodelIssues.hpp"
 
-#include "conffwk/Configuration.hpp"
-
 #include "confmodel/Connection.hpp"
-#include "confmodel/DetectorStream.hpp"
-#include "confmodel/DetectorToDaqConnection.hpp"
 #include "confmodel/NetworkConnection.hpp"
-#include "confmodel/Service.hpp"
 
 #include "logging/Logging.hpp"
 #include "oks/kernel.hpp"
