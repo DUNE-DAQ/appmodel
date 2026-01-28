@@ -120,13 +120,13 @@
   <attribute name="trigger_bit" description="Trigger bit that this particular instance is associated with" type="u32" is-not-null="yes"/>
   <relationship name="calibration_stream" class-type="CIBCalibrationStream" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="cib_trigger" class-type="CIBTrigger" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <!-- <relationship name="trigger_report" class-type="CIBTriggerReport" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/> -->
+  <relationship name="trigger_report" class-type="CIBTriggerReport" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+
  </class>
 
 
  <!-- This represents the configuration sent **to** the CIB : needs to be updated with the runtime information of where the receiver is-->
  <class name="CIBoardConf" description="Configuration of the CIB board itself">
-  <!-- <superclass name="ResourceSetDisableAND"/> -->
   <superclass name="Resource"/>
   <attribute name="receiver_host" type="string" init-value="localhost" is-not-null="yes"/>
   <attribute name="receiver_port" type="u16" init-value="8993" is-not-null="yes"/>
@@ -143,14 +143,14 @@
   <relationship name="board" class-type="CIBoardConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="yes"/>
  </class>
 
- <!-- <class name="CIBTriggerReport">
+ <class name="CIBTriggerReport">
   <attribute name="directory" type="string" is-not-null="yes"/>
- </class> -->
+ </class>
 
   <class name="CIBTrigger" description="Configuration of the CIB trigger">
   <attribute name="trigger_id" type="string" is-not-null="yes"/>
   <attribute name="trigger_bit" type="string" is-not-null="yes"/>
   <attribute name="description" type="string" is-not-null="yes"/>
- </class>
+  </class>
 
 </oks-schema>
