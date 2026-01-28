@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="23" oks-format="schema" oks-version="862f2957270" created-by="maroda" created-on="np04-srv-015.cern.ch" creation-time="20240701T123215" last-modified-by="maroda" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20250724T130024"/>
+<info name="" type="" num-of-items="23" oks-format="schema" oks-version="862f2957270" created-by="nfiuza" created-on="np04-srv-019.cern.ch" creation-time="20260121T111115" last-modified-by="nfiuza" last-modified-on="np04-srv-019.cern.ch" last-modification-time="20260121T124152"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -114,12 +114,13 @@
  <!-- Configuration of the generator instance, i.e., the receiver on dunedaq that will then communicate with the CIB -->
  <!-- This is passed to CIBModule to be parsed and then establish the connection to the CIB -->
  <class name="CIBConf" description="Configuration of the connection *to* the CIB">
-  <attribute name="host" description="IP address of the board" type="string" is-not-null="yes"/>
-  <attribute name="port" description="Port where the CIB is listening to" type="u16" is-not-null="yes"/>
+  <attribute name="cib_host" description="IP address of the board" type="string" is-not-null="yes"/>
+  <attribute name="cib_port" description="Port where the CIB is listening to" type="u16" is-not-null="yes"/>
   <attribute name="connection_timeout_ms" description="Connection timeout" type="u16" is-not-null="yes"/>
   <attribute name="trigger_bit" description="Trigger bit that this particular instance is associated with" type="u32" is-not-null="yes"/>
   <relationship name="calibration_stream" class-type="CIBCalibrationStream" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="trigger_report" class-type="CIBTriggerReport" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+<relationship name="cib_trigger" class-type="CIBTrigger" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <!-- <relationship name="trigger_report" class-type="CIBTriggerReport" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/> -->
  </class>
 
 
@@ -127,29 +128,29 @@
  <class name="CIBoardConf" description="Configuration of the CIB board itself">
   <!-- <superclass name="ResourceSetDisableAND"/> -->
   <superclass name="Resource"/>
-  <attribute name="host" type="string" init-value="localhost" is-not-null="yes"/>
-  <attribute name="port" type="u16" init-value="8993" is-not-null="yes"/>
+  <attribute name="receiver_host" type="string" init-value="localhost" is-not-null="yes"/>
+  <attribute name="receiver_port" type="u16" init-value="8993" is-not-null="yes"/>
   <relationship name="geo_id" class-type="GeoId" low-cc="one" high-cc="one" is-composite="no" is-exclusive="yes" is-dependent="no"/>
   <method name="get_cib_json" description="create the json configuration for the board">
   <method-implementation language="C++" prototype="nlohmann::json get_cib_json(const dunedaq::confmodel::Session&amp; session, std::optional&lt;std::string&gt; socket_host = std::nullopt, std::optional&lt;uint16_t&gt; socket_port = std::nullopt ) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;#include &lt;optional&gt;&#xA;END_HEADER_PROLOGUE"/>
   </method>
-  <!-- <method name="contained_resources" description="">
-   <method-implementation language="c++" prototype="virtual std::vector&lt;const Resource*&gt; contained_resources() const override" body=""/>
-  </method>  -->
-
  </class>
 
  <class name="CIBModule" description="Top level configuration object for the CIBModule">
   <superclass name="DaqModule"/>
-  <attribute name="run_trigger_output" description="CIB Trigger Output Path" type="string" init-value="/nfs/sw/trigger/counters_cib/" is-not-null="yes"/>
   
   <relationship name="configuration" class-type="CIBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <!-- the confusing part is that this is actually the configuration of the cibmodule receiver-->
   <relationship name="board" class-type="CIBoardConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="yes"/>
  </class>
 
- <class name="CIBTriggerReport">
+ <!-- <class name="CIBTriggerReport">
   <attribute name="directory" type="string" is-not-null="yes"/>
- </class>
+ </class> -->
+
+  <class name="CIBTrigger" description="Configuration of the CIB trigger">
+  <attribute name="trigger_id" type="string" is-not-null="yes"/>
+  <attribute name="trigger_bit" type="string" is-not-null="yes"/>
+  <attribute name="description" type="string" is-not-null="yes"/>
+    </class>
 
 </oks-schema>

@@ -198,15 +198,6 @@ CIBApplication::generate_modules(const confmodel::Session* session) const
   // return modules;
 }
 
-
-
-// std::vector<const confmodel::Resource*>
-// CIBoardConf::contained_resources() const {
-//   std::vector<const confmodel::Resource*> resources;
-
-//   return resources;
-// }
-
 nlohmann::json CIBoardConf::get_cib_json(const dunedaq::confmodel::Session &session, std::optional<std::string> socket_host, std::optional<uint16_t> socket_port) const
 {
 
