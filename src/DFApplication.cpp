@@ -205,7 +205,7 @@ DFApplication::generate_modules(
                          &dreqNetObjs.back(),
                          uid,
                          stream_src_ids.at(uid),
-                         tp_src_ids.at(uid),
+                         {}, // No tp src_ids for FakeDataApplication
                          sidNetObjs.back(),
                          sidObjs);
     processed_apps.insert(uid);

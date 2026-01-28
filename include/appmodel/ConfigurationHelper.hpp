@@ -28,6 +28,13 @@ namespace dunedaq::appmodel {
   class NetworkConnectionDescriptor;
   class SourceIDConf;
 
+  /// Helper class to extract information from Session object without
+  /// exposing the Session to user code
+  ///
+  /// Provides methods that loop over all applications in the session
+  /// to get source IDs etc. avoiding the need for individual
+  /// application's code to access configuration objects of other
+  /// applications.
   class ConfigurationHelper {
   public:
     explicit ConfigurationHelper(const confmodel::Session* ses)

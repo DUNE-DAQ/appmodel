@@ -87,7 +87,9 @@ std::map<std::string,std::vector<uint32_t>> ConfigurationHelper::get_stream_sour
             throw (BadD2d(ERS_HERE, app->full_name(), res->full_name()));
           }
           for (auto stream: d2d->streams()) {
-            streams.push_back(stream->get_source_id());
+            if (!stream->is_disabled(*m_session)) {
+              streams.push_back(stream->get_source_id());
+            }
           }
         }
       }
@@ -100,10 +102,9 @@ std::map<std::string,std::vector<uint32_t>> ConfigurationHelper::get_stream_sour
         for (auto res: fake_app->contained_resources()) {
           if (!res->is_disabled(*m_session)) {
             auto fdpc = res->cast<appmodel::FakeDataProdConf>();
-            if (!fdpc) {
-              continue;
+            if (fdpc != nullptr && !fdpc->is_disabled(*m_session)) {
+              streams.push_back(fdpc->get_source_id());
             }
-            streams.push_back(fdpc->get_source_id());
           }
         }
         result.insert(std::pair(app->UID(), streams));
