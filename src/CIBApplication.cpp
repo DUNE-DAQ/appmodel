@@ -63,7 +63,6 @@ CIBApplication::generate_modules(const confmodel::Session* session) const
     
   for (auto rule : get_queue_rules()) {
     auto destination_class = rule->get_destination_class();
-    auto data_type = rule->get_descriptor()->get_data_type();
     if (destination_class == "DataHandlerModule" || destination_class == dlhClass) {
       dlhInputQDesc = rule->get_descriptor();
     }
@@ -91,7 +90,7 @@ CIBApplication::generate_modules(const confmodel::Session* session) const
   }
   
   auto CIB_conf = get_generator();
-  if (CIB_conf ==nullptr) {
+  if (CIB_conf == nullptr) {
     throw(BadConf(ERS_HERE, "No CIBModule configuration given"));
   }
   if (dlhInputQDesc == nullptr) {
@@ -121,7 +120,7 @@ CIBApplication::generate_modules(const confmodel::Session* session) const
 	std::string dreqNetUid(descriptor->get_uid_base() + dfapp->UID());
 	conffwk::ConfigObject frag_conn = obj_fac.create_net_obj(descriptor, dreqNetUid);
 	fragOutObjs.push_back(frag_conn);
-      } // If network rule has TriggerDecision type of data
+      } // If network rule has Fragment type of data
     }   // Loop over Apps network rules
   }     // loop over Session specific Apps
   
@@ -149,11 +148,12 @@ CIBApplication::generate_modules(const confmodel::Session* session) const
   dlhObj.set_obj("module_configuration", &dlhConf->config_object());
     
   auto net_objc(fh_output_objs);
-    
+  
+  conffwk::ConfigObject tsNetObj;
   // Time Sync network connection
   if (dlhConf->get_generate_timesync()) {
     std::string tsStreamUid = tsNetDesc->get_uid_base() + std::to_string(id);
-    conffwk::ConfigObject tsNetObj = obj_fac.create_net_obj(tsNetDesc, tsStreamUid);
+    tsNetObj = obj_fac.create_net_obj(tsNetDesc, tsStreamUid);
     net_objc.push_back(&tsNetObj);
   }
 
@@ -214,8 +214,8 @@ nlohmann::json CIBoardConf::get_cib_json(const dunedaq::confmodel::Session &sess
   else 
   {
     json["sockets"]["receiver"] = nlohmann::json::object();
-    json["sockets"]["receiver"]["host"] = get_host();
-    json["sockets"]["receiver"]["port"] = get_port();
+    json["sockets"]["receiver"]["host"] = get_receiver_host();
+    json["sockets"]["receiver"]["port"] = get_receiver_port();
   }
 
   TLOG() << "JSON frag : [" << json.dump() << "] " ;
