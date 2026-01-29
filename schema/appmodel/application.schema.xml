@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="66" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20251104T211957"/>
+<info name="" type="" num-of-items="69" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20260129T142013"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -94,6 +94,7 @@
   <relationship name="data_writers" class-type="SocketDataWriterConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_reader" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="detector_connections" class-type="DetectorToDaqConnection" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+	 <relationship name="callback_desc" class-type="RawDataCallbackDescriptor" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate daq module dal objects for streams of the CRTReaderApplication on the fly">
    <method-implementation language="c++" prototype="void generate_modules(const confmodel::Session*) const override" body=""/>
   </method>
@@ -167,6 +168,7 @@
   <attribute name="emulation_mode" type="bool" init-value="false" is-not-null="yes"/>
   <attribute name="post_processing_enabled" type="bool" init-value="true"/>
   <relationship name="geo_id" class-type="GeoId" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="raw_data_callback" description="Configuration for raw data callback" class-type="RawDataCallbackConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="module_configuration" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
@@ -187,6 +189,7 @@
   <superclass name="DaqModule"/>
   <relationship name="configuration" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="connections" class-type="DetectorToDaqConnection" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="no" is-dependent="no"/>
+  <relationship name="raw_data_callbacks" description="Configurations for raw data callbacks" class-type="RawDataCallbackConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="DataRecorderConf">
@@ -403,6 +406,16 @@
   <attribute name="data_type" description="string identifying type of data transferred through this queue" type="string" is-not-null="yes"/>
  </class>
 
+ <class name="RawDataCallbackConf">
+  <attribute name="source_id" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="data_type" description="Name of the output data type. Should be defined via a call to DUNE_DAQ_TYPESTRING" type="string" init-value="WIBEthFrame"/>
+ </class>
+
+ <class name="RawDataCallbackDescriptor">
+  <attribute name="uid_base" description="Base for callback UID string. May be combined with a source id" type="string" is-not-null="yes"/>
+  <attribute name="data_type" description="string identifying type of data passed as a callback parameter" type="string" is-not-null="yes"/>
+ </class>
+
  <class name="ReadoutApplication">
   <superclass name="SmartDaqApplication"/>
   <superclass name="ResourceSetDisableAND"/>
@@ -417,6 +430,7 @@
   <relationship name="data_recorder" class-type="DataRecorderConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="fragment_aggregator" class-type="FragmentAggregatorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="detector_connections" description="The list of detector channels to be read out by this readout application." class-type="DetectorToDaqConnection" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="callback_desc" class-type="RawDataCallbackDescriptor" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate daq module dal objects for streams of thie ReadoutApplication on the fly">
    <method-implementation language="c++" prototype="void generate_modules(const confmodel::Session*) const override" body=""/>
   </method>
@@ -514,6 +528,7 @@
   <superclass name="DaqModule"/>
   <relationship name="configuration" class-type="SocketDataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="connections" class-type="NetworkDetectorToDaqConnection" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="no" is-dependent="no"/>
+  <relationship name="raw_data_callback" description="Configuration for raw data callback" class-type="RawDataCallbackConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="SourceIDConf">
