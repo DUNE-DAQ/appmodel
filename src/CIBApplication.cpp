@@ -138,12 +138,12 @@ CIBApplication::generate_modules(const confmodel::Session* session) const
   // ----------------------------
   // create DLH
   // ----------------------------    
-  int det_id = 1; // TODO Eric Flumerfelt <eflumerf@fnal.gov>, 08-Feb-2024: This is a magic number corresponding to kDAQ
+  int det_id = 1; // TODO Eric Flumerfelt <eflumerf@fnal.gov>, 08-Feb-2024: This is a magic number corresponding to kDAQ  // NOLINT(readability/todo)
   TLOG() << "creating OKS configuration object for CIB Data Link Handler class " << dlhClass << ", id " << id;
   std::string uid("DLH-CIB");
   conffwk::ConfigObject dlhObj = obj_fac.create( dlhClass, uid );
-  dlhObj.set_by_val<uint32_t>("source_id", static_cast<uint32_t>(id));
-  dlhObj.set_by_val<uint32_t>("detector_id", static_cast<uint32_t>(det_id));
+  dlhObj.set_by_val<uint32_t>("source_id", static_cast<uint32_t>(id)); // NOLINT(build/unsigned)
+  dlhObj.set_by_val<uint32_t>("detector_id", static_cast<uint32_t>(det_id)); // NOLINT(build/unsigned)
   dlhObj.set_by_val<bool>("post_processing_enabled", false);
   dlhObj.set_obj("module_configuration", &dlhConf->config_object());
     
@@ -215,7 +215,7 @@ nlohmann::json CIBoardConf::get_cib_json(const dunedaq::confmodel::Session &sess
   {
     json["sockets"]["receiver"] = nlohmann::json::object();
     json["sockets"]["receiver"]["host"] = get_receiver_host();
-    json["sockets"]["receiver"]["port"] = get_receiver_port();
+    json["sockets"]["receiver"]["port"] = get_receiver_port(); // NOLINT(build/unsigned)
   }
 
   TLOG() << "JSON frag : [" << json.dump() << "] " ;
