@@ -44,7 +44,7 @@ using namespace dunedaq::appmodel;
 std::vector<const confmodel::Resource*>
 CIBApplication::contained_resources() const {
   std::vector<const confmodel::Resource*> resources;
-  resources.push_back(dynamic_cast<const confmodel::Resource*>(get_board()));
+  resources.push_back(dynamic_cast<const confmodel::Resource *>(get_board())); // NOLINT(runtime/rtti)
   return resources;
 }
 
@@ -133,17 +133,17 @@ CIBApplication::generate_modules(const confmodel::Session* session) const
   std::vector<conffwk::ConfigObject> CIB_module_outputs;
   auto source_id = get_source_id();
 
-  auto id = source_id->get_sid();
+  int id = static_cast<int>(source_id->get_sid());
 
   // ----------------------------
   // create DLH
   // ----------------------------    
-  auto det_id = 1; // TODO Eric Flumerfelt <eflumerf@fnal.gov>, 08-Feb-2024: This is a magic number corresponding to kDAQ
+  int det_id = 1; // TODO Eric Flumerfelt <eflumerf@fnal.gov>, 08-Feb-2024: This is a magic number corresponding to kDAQ
   TLOG() << "creating OKS configuration object for CIB Data Link Handler class " << dlhClass << ", id " << id;
   std::string uid("DLH-CIB");
   conffwk::ConfigObject dlhObj = obj_fac.create( dlhClass, uid );
-  dlhObj.set_by_val<uint32_t>("source_id", id);
-  dlhObj.set_by_val<uint32_t>("detector_id", det_id);
+  dlhObj.set_by_val<uint32_t>("source_id", static_cast<uint32_t>(id));
+  dlhObj.set_by_val<uint32_t>("detector_id", static_cast<uint32_t>(det_id));
   dlhObj.set_by_val<bool>("post_processing_enabled", false);
   dlhObj.set_obj("module_configuration", &dlhConf->config_object());
     
@@ -196,9 +196,9 @@ CIBApplication::generate_modules(const confmodel::Session* session) const
 
   obj_fac.update_modules(modules);
   // return modules;
-}
+} // NOLINT
 
-nlohmann::json CIBoardConf::get_cib_json(const dunedaq::confmodel::Session &session, std::optional<std::string> socket_host, std::optional<uint16_t> socket_port) const
+nlohmann::json CIBoardConf::get_cib_json(const dunedaq::confmodel::Session &session, std::optional<std::string> socket_host, std::optional<uint16_t> socket_port) const 
 {
 
   // shut up compiler!
@@ -209,7 +209,7 @@ nlohmann::json CIBoardConf::get_cib_json(const dunedaq::confmodel::Session &sess
   {
     json["sockets"]["receiver"] = nlohmann::json::object();
     json["sockets"]["receiver"]["host"] = socket_host.value();
-    json["sockets"]["receiver"]["port"] = socket_port.value();
+    json["sockets"]["receiver"]["port"] = socket_port.value(); // NOLINT(build/unsigned)
   }
   else 
   {
