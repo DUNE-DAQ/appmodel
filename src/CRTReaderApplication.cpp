@@ -15,6 +15,7 @@
 #include "appmodel/DataReaderConf.hpp"
 #include "appmodel/SocketWriterConf.hpp"
 #include "appmodel/SocketWriterModule.hpp"
+#include "appmodel/RawDataCallbackConf.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
 #include "appmodel/QueueDescriptor.hpp"
 
