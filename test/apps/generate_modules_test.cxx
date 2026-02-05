@@ -27,7 +27,7 @@
 
 #include "appmodel/DataHandlerModule.hpp"
 #include "appmodel/DataReaderModule.hpp"
-#include "appmodel/RawDataCallbackConf.hpp"
+#include "appmodel/DataMoveCallbackConf.hpp"
 #include "appmodel/SocketDataWriterModule.hpp"
 
 #include "appmodel/appmodelIssues.hpp"

@@ -36,7 +36,7 @@
 #include "confmodel/Service.hpp"
 
 #include "appmodel/SourceIDConf.hpp"
-#include "appmodel/RawDataCallbackConf.hpp"
+#include "appmodel/DataMoveCallbackConf.hpp"
 #include "appmodel/DataReaderModule.hpp"
 #include "appmodel/DataReaderConf.hpp"
 #include "appmodel/DataRecorderModule.hpp"
@@ -160,7 +160,7 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
   //
   // Get the callback descriptor
   //
-  const RawDataCallbackDescriptor* raw_data_callback_desc = get_callback_desc();
+  const DataMoveCallbackDescriptor* raw_data_callback_desc = get_callback_desc();
 
   if (raw_data_callback_desc == nullptr) {
     throw(BadConf(ERS_HERE, "No Raw Data Callback descriptor given"));
@@ -177,7 +177,7 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
 
   // Collect all streams
   std::vector<std::pair<int16_t, const confmodel::DetectorStream*>> all_enabled_det_streams;
-  std::map<uint32_t, const appmodel::RawDataCallbackConf*> callback_confs_by_sid;
+  std::map<uint32_t, const appmodel::DataMoveCallbackConf*> callback_confs_by_sid;
 
   std::vector<const conffwk::ConfigObject*> d2d_conn_objs;
   uint16_t conn_idx = 0;
@@ -277,7 +277,7 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
     // Create data queues
     for (auto& [numa, ds] : all_enabled_det_streams) {
       conffwk::ConfigObject callback_obj = obj_fac.create_callback_sid_obj(raw_data_callback_desc, ds->get_source_id());
-      const auto* callback_conf = obj_fac.get_dal<RawDataCallbackConf>(callback_obj.UID());
+      const auto* callback_conf = obj_fac.get_dal<DataMoveCallbackConf>(callback_obj.UID());
       raw_data_callback_objs.push_back(&callback_conf->config_object());
       callback_confs_by_sid[ds->get_source_id()] = callback_conf;
     }

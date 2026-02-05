@@ -66,10 +66,10 @@ return create_queue_sid_obj(qdesc, stream->get_source_id());
 
 //---
 conffwk::ConfigObject
-ConfigObjectFactory::create_callback_sid_obj(const RawDataCallbackDescriptor* cdesc, uint32_t src_id) const
+ConfigObjectFactory::create_callback_sid_obj(const DataMoveCallbackDescriptor* cdesc, uint32_t src_id) const
 {
   std::string rdc_uid(fmt::format("{}{}", cdesc->get_uid_base(), src_id));
-  auto rdc_obj = create("RawDataCallbackConf", rdc_uid);
+  auto rdc_obj = create("DataMoveCallbackConf", rdc_uid);
 
   rdc_obj.set_by_val<std::string>("data_type", cdesc->get_data_type());
   rdc_obj.set_by_val<uint32_t>("source_id", src_id);

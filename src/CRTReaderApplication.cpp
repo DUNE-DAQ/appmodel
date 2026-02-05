@@ -15,7 +15,7 @@
 #include "appmodel/DataReaderConf.hpp"
 #include "appmodel/SocketWriterConf.hpp"
 #include "appmodel/SocketWriterModule.hpp"
-#include "appmodel/RawDataCallbackConf.hpp"
+#include "appmodel/DataMoveCallbackConf.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
 #include "appmodel/QueueDescriptor.hpp"
 
@@ -69,7 +69,7 @@ CRTReaderApplication::generate_modules(const confmodel::Session* session) const
   //
   // Get the callback descriptor
   //
-  const RawDataCallbackDescriptor* raw_data_callback_desc = get_callback_desc();
+  const DataMoveCallbackDescriptor* raw_data_callback_desc = get_callback_desc();
 
   if (raw_data_callback_desc == nullptr) {
     throw(BadConf(ERS_HERE, "No Raw Data Callback descriptor given"));
@@ -82,7 +82,7 @@ CRTReaderApplication::generate_modules(const confmodel::Session* session) const
   // Loop over the detector to daq connections and generate one data reader per connection
 
   // Collect all streams
-  std::map<uint32_t, const appmodel::RawDataCallbackConf*> callback_confs_by_sid;
+  std::map<uint32_t, const appmodel::DataMoveCallbackConf*> callback_confs_by_sid;
 
   uint16_t conn_idx = 0;
 
@@ -116,7 +116,7 @@ CRTReaderApplication::generate_modules(const confmodel::Session* session) const
     // Create data queues
     for (auto ds : enabled_det_streams) {
       conffwk::ConfigObject callback_obj = obj_fac.create_callback_sid_obj(raw_data_callback_desc, ds->get_source_id());
-      const auto* callback_conf = obj_fac.get_dal<RawDataCallbackConf>(callback_obj.UID());
+      const auto* callback_conf = obj_fac.get_dal<DataMoveCallbackConf>(callback_obj.UID());
       raw_data_callback_objs.push_back(&callback_conf->config_object());
       callback_confs_by_sid[ds->get_source_id()] = callback_conf;
     }
