@@ -65,10 +65,11 @@ TDECrateApplication::generate_modules(const confmodel::Session* session) const
     // Loop over senders
     for (const auto* sender : det_senders) {
 
-      if ( sender->is_disabled(*session) ) {
-        TLOG() << "Skipping disabled sender: " << sender->UID();
-        continue;
-      }
+      // Create an AMCModule for every sender, disable status is checked by the AMCModule.
+      // if ( sender->is_disabled(*session) ) {
+      //   TLOG() << "Skipping disabled sender: " << sender->UID();
+      //   continue;
+      // }
       
       // Check the sender type, must me a TdeAmcDetDataSender
       const auto* tde_sender = sender->cast<appmodel::TdeAmcDetDataSender>();
