@@ -167,8 +167,7 @@ CIBApplication::generate_modules(const confmodel::Session* session) const
   CIB_module_outputs.push_back(queueObj);
 
   // Create network connections to DLHs
-  std::string faNetUid = dlhReqInputNetDesc->get_uid_base() + UID() + "_CIB";
-  conffwk::ConfigObject faNetObj = obj_fac.create_net_obj(dlhReqInputNetDesc, faNetUid);
+  conffwk::ConfigObject faNetObj = obj_fac.create_net_obj(dlhReqInputNetDesc, UID());
 
   dlhObj.set_objs("inputs", { &queueObj, &faNetObj });
 
