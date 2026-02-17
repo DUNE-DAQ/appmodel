@@ -189,6 +189,17 @@ fill_sourceid_object_from_app(const ConfigObjectFactory& obj_fac,
   sidNetObj.set_objs("source_ids", source_id_objs);
 }
 
+std::set<std::string>
+DFApplication::object_tags() const {
+  std::set<std::string> tags;
+  auto host = get_runs_on()->get_runs_on()->UID();
+  for (auto writer : get_data_writers()) {
+    auto path = writer->get_data_store_params()->get_directory_path();
+    tags.insert(host+"/"+path);
+  }
+  return tags;
+}
+
 void
 DFApplication::generate_modules(const confmodel::Session* session) const
 {

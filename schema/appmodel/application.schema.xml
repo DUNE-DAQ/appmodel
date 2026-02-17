@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="66" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20251104T211957"/>
+<info name="" type="" num-of-items="67" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20260217T151630"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -105,11 +105,15 @@
  <class name="DFApplication">
   <superclass name="SmartDaqApplication"/>
   <superclass name="Resource"/>
+  <superclass name="ManagedObject"/>
   <relationship name="trb" description="Configuration of the TRB to be generated my get_modules()" class-type="TRBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_writers" class-type="DataWriterConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="uses" class-type="DFHWConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
    <method-implementation language="c++" prototype="void generate_modules(const confmodel::Session*) const override" body=""/>
+  </method>
+  <method name="object_tags" description="">
+   <method-implementation language="c++" prototype="std::set&lt;std::string&gt; object_tags() const override" body=""/>
   </method>
  </class>
 
