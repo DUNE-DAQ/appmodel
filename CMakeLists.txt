@@ -16,7 +16,7 @@ find_package(fmt REQUIRED)
 
 find_package(Boost COMPONENTS unit_test_framework program_options REQUIRED)
 
-daq_add_dal_library(application.schema.xml hermes.schema.xml fdmodules.schema.xml trigger.schema.xml wiec.schema.xml PDS.schema.xml tde.schema.xml CTB.schema.xml
+daq_add_dal_library(application.schema.xml hermes.schema.xml fdmodules.schema.xml trigger.schema.xml wiec.schema.xml PDS.schema.xml tde.schema.xml CTB.schema.xml CIB.schema.xml
   NAMESPACE dunedaq::appmodel DEP_PKGS confmodel
   SOURCES
   ConfigurationHelper.cpp
@@ -43,7 +43,8 @@ daq_add_dal_library(application.schema.xml hermes.schema.xml fdmodules.schema.xm
 	TriggerApplication.cpp
 	TRMonReqApplication.cpp
 	WIECApplication.cpp
-  LINK_LIBRARIES confmodel::confmodel conffwk::conffwk fmt::fmt logging::logging oks::oks ers::ers )
+	CIBApplication.cpp
+	LINK_LIBRARIES confmodel::confmodel conffwk::conffwk fmt::fmt logging::logging oks::oks ers::ers )
 
 daq_add_application(getAppsArguments get_apps_arguments.cxx
   LINK_LIBRARIES confmodel::confmodel appmodel_dal conffwk::conffwk)

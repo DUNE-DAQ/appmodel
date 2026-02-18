@@ -22,6 +22,9 @@
 #include "appmodel/DataReaderConf.hpp"
 #include "appmodel/DataRecorderConf.hpp"
 #include "appmodel/DataSubscriberModule.hpp"
+#include "appmodel/CTBApplication.hpp"
+#include "appmodel/CIBApplication.hpp"
+#include "appmodel/FakeDataApplication.hpp"
 #include "appmodel/FakeDataProdConf.hpp"
 #include "appmodel/MLTApplication.hpp"
 #include "appmodel/MLTConf.hpp"
@@ -223,7 +226,7 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
   }
 
   for (auto app_class: {"TriggerApplication", "FakeHSIApplication",
-      "DTSHSIApplication", "CTBApplication"}) {
+			"DTSHSIApplication", "CTBApplication", "CIBApplication"}) {
     for (auto [uid, src_id]: helper->get_app_source_ids(app_class)) {
       auto tcSourceIdConf = new conffwk::ConfigObject(
         obj_fac.create("SourceIDConf",
@@ -232,9 +235,11 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
       tcSourceIdConf->set_by_val<uint32_t>("sid", src_id->get_sid());
       tcSourceIdConf->set_by_val<std::string>("subsystem", src_id->get_subsystem());
       sourceIds.push_back(tcSourceIdConf);
+
     }    
   }
   
+ 
   // Get mandatory links
   std::vector<const conffwk::ConfigObject*> mandatory_sids;
   const TCDataProcessor* tc_dp = tch_conf->get_data_processor()->cast<TCDataProcessor>();
@@ -243,7 +248,7 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
       mandatory_sids.push_back(&m->config_object());
     }
   }
-
+  
   /**************************************************************
    * Create the TC handler
    **************************************************************/
