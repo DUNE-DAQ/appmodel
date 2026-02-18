@@ -93,10 +93,20 @@ namespace dunedaq::appmodel {
     /// @brief Get list of source ids for applications that match
     ///       given type
     ///
-    /// @returns  A map of application uids to vectors of contained
-    ///          source ids
+    /// @returns A map of application uids to application source ids
     std::map<std::string, const SourceIDConf*>  get_app_source_ids(
       std::string app_class="");
+
+
+    /// @brief Get list of all source ids for applications that match
+    ///       given type. Follows any single value SourceIDConf relationship
+    ///
+    /// NB: Does not look at multi-value SourceIDConf relationships
+    ///
+    /// @returns  A map of application uids to maps relationship to contained
+    ///          source ids
+    std::map<std::string, std::map<std::string, const SourceIDConf*>>
+    get_all_app_source_ids(std::string app_class="");
 
 
     /// @brief Check the enabled state of the given item

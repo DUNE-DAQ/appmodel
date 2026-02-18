@@ -16,6 +16,9 @@
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/ReadoutApplication.hpp"
 #include "appmodel/SmartDaqApplication.hpp"
+#include "appmodel/SourceIDConf.hpp"
+#include "conffwk/ConfigObject.hpp"
+#include "conffwk/Schema.hpp"
 #include "confmodel/DetectorStream.hpp"
 #include "confmodel/DetectorToDaqConnection.hpp"
 #include "confmodel/NetworkConnection.hpp"
@@ -148,6 +151,36 @@ ConfigurationHelper::get_app_source_ids(std::string app_class) {
       }
     }
   }
+  return result;
+}
+
+
+std::map<std::string, std::map<std::string, const SourceIDConf*>>
+ConfigurationHelper::get_all_app_source_ids(std::string app_class) {
+  std::map<std::string, std::map<std::string, const SourceIDConf*>> result;
+  for (auto app: m_session->enabled_applications()) {
+    if (app_class.empty() || app->castable(app_class)) {
+      auto class_info = app->configuration().get_class_info(app->class_name());
+      auto obj = app->config_object();
+      for (auto rel: class_info.p_relationships) {
+        if (rel.p_type == "SourceIDConf") {
+          if (rel.p_cardinality == dunedaq::conffwk::cardinality_t::zero_or_one ||
+              rel.p_cardinality == dunedaq::conffwk::cardinality_t::only_one) {
+            dunedaq::conffwk::ConfigObject rel_obj;
+            obj.get(rel.p_name, rel_obj);
+            if (!rel_obj.is_null()) {
+              if (!result.contains(app->UID())) {
+                result.insert({app->UID(), {}});
+              }
+              const auto srcid = app->configuration().get<SourceIDConf>(rel_obj);
+              result.at(app->UID()).insert({rel.p_name, srcid});
+            }
+          } // cardinality
+        } // SourceIDConf
+      } // relationships
+    } // class
+  } // apps
+
   return result;
 }
 
