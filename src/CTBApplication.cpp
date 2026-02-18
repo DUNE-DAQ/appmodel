@@ -174,9 +174,8 @@ CTBApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
     ctb_module_outputs.push_back(queueObj);
 
     // Create network connections to DLHs
-    std::string faNetUid = dlhReqInputNetDesc->get_uid_base() + UID() + '_' + s.first;
-    conffwk::ConfigObject faNetObj = obj_fac.create_net_obj(dlhReqInputNetDesc, faNetUid);
-
+    conffwk::ConfigObject faNetObj = obj_fac.create_net_obj(dlhReqInputNetDesc, UID() + '_' + s.first);
+    
     dlhObj.set_objs("inputs", { &queueObj, &faNetObj });
 
     modules.push_back(obj_fac.get_dal<appmodel::DataHandlerModule>(uid));
