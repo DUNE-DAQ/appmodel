@@ -36,6 +36,7 @@
 #include "confmodel/Service.hpp"
 
 #include "appmodel/SourceIDConf.hpp"
+#include "appmodel/DataMoveCallbackConf.hpp"
 #include "appmodel/DataReaderModule.hpp"
 #include "appmodel/DataReaderConf.hpp"
 #include "appmodel/DataRecorderModule.hpp"
@@ -112,7 +113,6 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
   //
   // Process the queue rules looking for inputs to our DL/TP handler modules
   //
-  const QueueDescriptor* dlh_input_qdesc = nullptr;
   const QueueDescriptor* dlh_reqinput_qdesc = nullptr;
   const QueueDescriptor* tp_input_qdesc = nullptr;
   // const QueueDescriptor* tpReqInputQDesc = nullptr;
@@ -127,17 +127,12 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
         dlh_reqinput_qdesc = rule->get_descriptor();
       } else if ((data_type == "TriggerPrimitive" || data_type == "TriggerPrimitiveVector") && get_tp_generation_enabled()) {
         tp_input_qdesc = rule->get_descriptor();
-      } else {
-        dlh_input_qdesc = rule->get_descriptor();
       }
     } else if (destination_class == "FragmentAggregatorModule") {
       fa_output_qdesc = rule->get_descriptor();
     }
   }
 
-  if (dlh_input_qdesc == nullptr) {
-    throw(BadConf(ERS_HERE, "No data link handler input queue descriptor given"));
-  }
   if (dlh_reqinput_qdesc == nullptr) {
     throw(BadConf(ERS_HERE, "No data link handler request input queue descriptor given"));
   }
@@ -171,6 +166,15 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
     throw(BadConf(ERS_HERE, "No Time Sync network descriptor given but time sync generation is enabled"));
   }
 
+  //
+  // Get the callback descriptor
+  //
+  const DataMoveCallbackDescriptor* raw_data_callback_desc = get_callback_desc();
+
+  if (raw_data_callback_desc == nullptr) {
+    throw(BadConf(ERS_HERE, "No Raw Data Callback descriptor given"));
+  }
+
   // Create here the Queue on which all data fragments are forwarded to the fragment aggregator
   // and a container for the queues of data request to TP handler and DLH
   if (fa_output_qdesc == nullptr) {
@@ -190,7 +194,7 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
 
   // Collect all streams
   std::vector<const confmodel::DetectorStream*> all_enabled_det_streams;
-  std::map<uint32_t, const confmodel::Connection*> data_queues_by_sid;
+  std::map<uint32_t, const appmodel::DataMoveCallbackConf*> callback_confs_by_sid;
 
   // std::vector<const conffwk::ConfigObject*> d2d_conn_objs;
   uint16_t conn_idx = 0;
@@ -271,19 +275,18 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
     reader_obj.set_obj("configuration", &reader_conf->config_object());
     reader_obj.set_objs("connections", {&d2d_conn->config_object()});
 
-    // Create the raw data queues
-    std::vector<const conffwk::ConfigObject*> data_queue_objs;
-    // keep a map for convenience
+    // Create the raw data callbacks
+    std::vector<const conffwk::ConfigObject*> raw_data_callback_objs;
 
     // Create data queues
     for (auto ds : enabled_det_streams) {
-      conffwk::ConfigObject queue_obj = obj_fac.create_queue_sid_obj(dlh_input_qdesc, ds);
-      const auto* data_queue = obj_fac.get_dal<confmodel::Connection>(queue_obj.UID());
-      data_queue_objs.push_back(&data_queue->config_object());
-      data_queues_by_sid[ds->get_source_id()] = data_queue;
+      conffwk::ConfigObject callback_obj = obj_fac.create_callback_sid_obj(raw_data_callback_desc, ds->get_source_id());
+      const auto* callback_conf = obj_fac.get_dal<DataMoveCallbackConf>(callback_obj.UID());
+      raw_data_callback_objs.push_back(&callback_conf->config_object());
+      callback_confs_by_sid[ds->get_source_id()] = callback_conf;
     }
 
-    reader_obj.set_objs("outputs", data_queue_objs);
+    reader_obj.set_objs("raw_data_callbacks", raw_data_callback_objs);
 
     modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(reader_obj.UID()));
   }
@@ -367,11 +370,9 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
     dlh_obj.set_by_val<bool>("emulation_mode", emulation_mode);
     dlh_obj.set_obj("geo_id", &ds->get_geo_id()->config_object());
     dlh_obj.set_obj("module_configuration", &dlh_conf->config_object());
+    dlh_obj.set_obj("raw_data_callback", &callback_confs_by_sid[sid]->config_object());
 
     std::vector<const conffwk::ConfigObject*> dlh_ins, dlh_outs;
-
-    // Add datalink-handler queue to the inputs
-    dlh_ins.push_back(&data_queues_by_sid.at(sid)->config_object());
 
     // Create request queue
     conffwk::ConfigObject req_queue_obj = obj_fac.create_queue_sid_obj(dlh_reqinput_qdesc, ds);
@@ -460,5 +461,5 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
   obj_fac.update_modules(modules);
 }
 
-} // namespace appmodel  
+} // namespace appmodel
 } // namespace dunedaq
