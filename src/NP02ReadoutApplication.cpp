@@ -36,6 +36,7 @@
 #include "confmodel/Service.hpp"
 
 #include "appmodel/SourceIDConf.hpp"
+#include "appmodel/DataMoveCallbackConf.hpp"
 #include "appmodel/DataReaderModule.hpp"
 #include "appmodel/DataReaderConf.hpp"
 #include "appmodel/DataRecorderModule.hpp"
@@ -76,7 +77,7 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
   TLOG_DEBUG(6) << "Generating modules for application " << this->UID();
 
   ConfigObjectFactory obj_fac(this);
-  
+
   //
   // Extract basic configuration objects
   //
@@ -106,7 +107,6 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
   //
   // Process the queue rules looking for inputs to our DL/TP handler modules
   //
-  const QueueDescriptor* dlh_input_qdesc = nullptr;
   const QueueDescriptor* dlh_reqinput_qdesc = nullptr;
   const QueueDescriptor* tp_input_qdesc = nullptr;
   // const QueueDescriptor* tpReqInputQDesc = nullptr;
@@ -121,8 +121,6 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
         dlh_reqinput_qdesc = rule->get_descriptor();
       } else if ((data_type == "TriggerPrimitive" || data_type == "TriggerPrimitiveVector") && get_tp_generation_enabled()) {
         tp_input_qdesc = rule->get_descriptor();
-      } else {
-        dlh_input_qdesc = rule->get_descriptor();
       }
     } else if (destination_class == "FragmentAggregatorModule") {
       fa_output_qdesc = rule->get_descriptor();
@@ -160,6 +158,15 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
   conffwk::ConfigObject frag_queue_obj = obj_fac.create_queue_obj(fa_output_qdesc);
 
   //
+  // Get the callback descriptor
+  //
+  const DataMoveCallbackDescriptor* raw_data_callback_desc = get_callback_desc();
+
+  if (raw_data_callback_desc == nullptr) {
+    throw(BadConf(ERS_HERE, "No Raw Data Callback descriptor given"));
+  }
+
+  //
   // Scan Detector 2 DAQ connections to extract sender, receiver and stream information
   //
 
@@ -170,11 +177,11 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
 
   // Collect all streams
   std::vector<std::pair<int16_t, const confmodel::DetectorStream*>> all_enabled_det_streams;
-  std::map<uint32_t, const confmodel::Connection*> data_queues_by_sid;
+  std::map<uint32_t, const appmodel::DataMoveCallbackConf*> callback_confs_by_sid;
 
   std::vector<const conffwk::ConfigObject*> d2d_conn_objs;
   uint16_t conn_idx = 0;
-  
+
 
   std::set<int16_t> numas;
   for (auto d2d_conn : get_detector_connections()) {
@@ -264,19 +271,18 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
     reader_obj.set_obj("configuration", &reader_conf->config_object());
     reader_obj.set_objs("connections", d2d_conn_objs);
 
-    // Create the raw data queues
-    std::vector<const conffwk::ConfigObject*> data_queue_objs;
-    // keep a map for convenience
+    // Create the raw data callbacks
+    std::vector<const conffwk::ConfigObject*> raw_data_callback_objs;
 
     // Create data queues
     for (auto& [numa, ds] : all_enabled_det_streams) {
-      conffwk::ConfigObject queue_obj = obj_fac.create_queue_sid_obj(dlh_input_qdesc, ds);
-      const auto* data_queue = obj_fac.get_dal<confmodel::Connection>(queue_obj.UID());
-      data_queue_objs.push_back(&data_queue->config_object());
-      data_queues_by_sid[ds->get_source_id()] = data_queue;
+      conffwk::ConfigObject callback_obj = obj_fac.create_callback_sid_obj(raw_data_callback_desc, ds->get_source_id());
+      const auto* callback_conf = obj_fac.get_dal<DataMoveCallbackConf>(callback_obj.UID());
+      raw_data_callback_objs.push_back(&callback_conf->config_object());
+      callback_confs_by_sid[ds->get_source_id()] = callback_conf;
     }
 
-    reader_obj.set_objs("outputs", data_queue_objs);
+    reader_obj.set_objs("raw_data_callbacks", raw_data_callback_objs);
 
     modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(reader_obj.UID()));
 
@@ -384,10 +390,9 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
     dlh_obj.set_by_val<bool>("emulation_mode", emulation_mode);
     dlh_obj.set_obj("geo_id", &ds->get_geo_id()->config_object());
     dlh_obj.set_obj("module_configuration", &numa_dhlconf_map[numa]);
-    std::vector<const conffwk::ConfigObject*> dlh_ins, dlh_outs;
+    dlh_obj.set_obj("raw_data_callback", &callback_confs_by_sid[sid]->config_object());
 
-    // Add datalink-handler queue to the inputs
-    dlh_ins.push_back(&data_queues_by_sid.at(sid)->config_object());
+    std::vector<const conffwk::ConfigObject*> dlh_ins, dlh_outs;
 
     // Create request queue
     conffwk::ConfigObject req_queue_obj = obj_fac.create_queue_sid_obj(dlh_reqinput_qdesc, ds);
@@ -478,6 +483,6 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
   obj_fac.update_modules(modules);
 }
 
-  
+
 }
 }

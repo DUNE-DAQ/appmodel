@@ -13,6 +13,7 @@
 #include "appmodel/appmodelIssues.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/QueueDescriptor.hpp"
+#include "appmodel/DataMoveCallbackDescriptor.hpp"
 #include "appmodel/SmartDaqApplication.hpp"
 
 #include "conffwk/ConfigObject.hpp"
@@ -53,7 +54,10 @@ public:
   //---
   [[nodiscard]] conffwk::ConfigObject
   create_queue_sid_obj(const QueueDescriptor* qdesc, const confmodel::DetectorStream* stream) const;
+
   //---
+  [[nodiscard]] conffwk::ConfigObject create_callback_sid_obj(const DataMoveCallbackDescriptor* cdesc,
+                                                              uint32_t src_id) const;
 
   /**
    * \brief Helper function that gets a network connection config
