@@ -210,7 +210,7 @@ DFApplication::generate_modules(
       continue;
     }
  
-    for ( const auto [uid, rel_sources] :
+    for ( const auto & [uid, rel_sources] :
 	  helper->get_all_app_source_ids(ctb_type) ) {
       for ( auto [rel, id] : rel_sources ) {
 	if ( rel.find("LLT")!=std::string::npos ) {
