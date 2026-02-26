@@ -213,26 +213,17 @@ DFApplication::generate_modules(
     for ( const auto & [uid, rel_sources] :
 	  helper->get_all_app_source_ids(ctb_type) ) {
       for ( auto [rel, id] : rel_sources ) {
-	if ( rel.find("LLT")!=std::string::npos ) {
-	  // this is the LLT link
-	  dreqNetObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid+"_LLT"));
-	  sidObjs.push_back(std::make_shared<conffwk::ConfigObject>(id->config_object()));
+	std::string local_uid = uid;
+	local_uid += rel.find("LLT")!=std::string::npos ? "_LLT" : "_HLT";
+       
+	dreqNetObjs.emplace_back(obj_fac.create_net_obj(descriptor, local_uid));
+	sidObjs.push_back(std::make_shared<conffwk::ConfigObject>(id->config_object()));
 
-	  std::string sidToNetUid(descriptor->get_uid_base() + uid + "_LLT");
-	  sidNetObjs.emplace_back(obj_fac.create("SourceIDToNetworkConnection", sidToNetUid));
-	  sidNetObjs.back().set_objs("source_ids", {sidObjs.back().get()});
-	  sidNetObjs.back().set_obj("netconn", &dreqNetObjs.back());
-	} else {
-	  // this is the HLT link
-	  dreqNetObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid+"_HLT"));
-          sidObjs.push_back(std::make_shared<conffwk::ConfigObject>(id->config_object()));
-
-          std::string sidToNetUid(descriptor->get_uid_base() + uid + "_HLT");
-          sidNetObjs.emplace_back(obj_fac.create("SourceIDToNetworkConnection", sidToNetUid));
-          sidNetObjs.back().set_objs("source_ids", {sidObjs.back().get()});
-          sidNetObjs.back().set_obj("netconn", &dreqNetObjs.back());
-
-	}
+	std::string sidToNetUid(descriptor->get_uid_base() + local_uid);
+	sidNetObjs.emplace_back(obj_fac.create("SourceIDToNetworkConnection", sidToNetUid));
+	sidNetObjs.back().set_objs("source_ids", {sidObjs.back().get()});
+	sidNetObjs.back().set_obj("netconn", &dreqNetObjs.back());
+	
       } // loop on relational sources
   
       processed_apps.insert(uid);
