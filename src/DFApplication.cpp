@@ -165,6 +165,7 @@ DFApplication::generate_modules(
   for (auto uid: helper->get_app_uids("DFApplication")) {
     processed_apps.insert(uid);
   }
+
   auto stream_src_ids = helper->get_stream_source_ids();
   auto tp_src_ids = helper->get_tp_source_ids();
   for (auto [uid, descriptor]:
@@ -201,9 +202,48 @@ DFApplication::generate_modules(
     processed_apps.insert(uid);
   }
 
+  // now we treat the CTB which has 2 connections related to source IDs
+  const auto ctb_type = "CTBApplication";
+  for (auto [uid, descriptor]: helper->get_netdescriptors("DataRequest", ctb_type)) {
+
+    if (processed_apps.contains(uid)) {
+      continue;
+    }
+ 
+    for ( const auto [uid, rel_sources] :
+	  helper->get_all_app_source_ids(ctb_type) ) {
+      for ( auto [rel, id] : rel_sources ) {
+	if ( rel.find("LLT")!=std::string::npos ) {
+	  // this is the LLT link
+	  dreqNetObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid+"_LLT"));
+	  sidObjs.push_back(std::make_shared<conffwk::ConfigObject>(id->config_object()));
+
+	  std::string sidToNetUid(descriptor->get_uid_base() + uid + "_LLT");
+	  sidNetObjs.emplace_back(obj_fac.create("SourceIDToNetworkConnection", sidToNetUid));
+	  sidNetObjs.back().set_objs("source_ids", {sidObjs.back().get()});
+	  sidNetObjs.back().set_obj("netconn", &dreqNetObjs.back());
+	} else {
+	  // this is the HLT link
+	  dreqNetObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid+"_HLT"));
+          sidObjs.push_back(std::make_shared<conffwk::ConfigObject>(id->config_object()));
+
+          std::string sidToNetUid(descriptor->get_uid_base() + uid + "_HLT");
+          sidNetObjs.emplace_back(obj_fac.create("SourceIDToNetworkConnection", sidToNetUid));
+          sidNetObjs.back().set_objs("source_ids", {sidObjs.back().get()});
+          sidNetObjs.back().set_obj("netconn", &dreqNetObjs.back());
+
+	}
+      } // loop on relational sources
+  
+      processed_apps.insert(uid);
+    } // loop over CTB apps 
+  } // loop over descriptors for the CTB apps
+
   auto app_sources = helper->get_app_source_ids();
   // Now look at all Smart apps that are not Readout, FakeData or DF
   for (auto [uid, descriptor]: helper->get_netdescriptors("DataRequest")) {
+
+    
     if (processed_apps.contains(uid)) {
       continue;
     }
