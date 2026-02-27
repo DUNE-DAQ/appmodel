@@ -15,6 +15,7 @@
 #include "appmodel/DataReaderConf.hpp"
 #include "appmodel/SocketWriterConf.hpp"
 #include "appmodel/SocketWriterModule.hpp"
+#include "appmodel/DataMoveCallbackConf.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
 #include "appmodel/QueueDescriptor.hpp"
 
@@ -66,24 +67,12 @@ void
   }    
   
   //
-  // Process the queue rules looking for inputs to our DL/TP handler modules
+  // Get the callback descriptor
   //
-  const QueueDescriptor* dlh_input_qdesc = nullptr;
+  const DataMoveCallbackDescriptor* raw_data_callback_desc = get_callback_desc();
 
-  for (auto rule : get_queue_rules()) {
-    auto destination_class = rule->get_destination_class();
-    auto data_type = rule->get_descriptor()->get_data_type();
-    // Why datahander here? It is the base class for several DataHandler types (e.g. FDDataHandlerModule,
-    // SNBDataHandlerModule)
-    if (destination_class == "DataHandlerModule") {
-      if (data_type != "DataRequest") {
-        dlh_input_qdesc = rule->get_descriptor();
-      }
-    }
-  }
-
-  if (dlh_input_qdesc == nullptr) {
-    throw(BadConf(ERS_HERE, "No data link handler input queue descriptor given"));
+  if (raw_data_callback_desc == nullptr) {
+    throw(BadConf(ERS_HERE, "No Raw Data Callback descriptor given"));
   }
 
   //
@@ -93,7 +82,7 @@ void
   // Loop over the detector to daq connections and generate one data reader per connection
 
   // Collect all streams
-  std::map<uint32_t, const confmodel::Connection*> data_queues_by_sid;
+  std::map<uint32_t, const appmodel::DataMoveCallbackConf*> callback_confs_by_sid;
 
   uint16_t conn_idx = 0;
 
@@ -121,16 +110,15 @@ void
       enabled_det_streams.push_back(stream);
     }
 
-    // Create the raw data queues
-    std::vector<const conffwk::ConfigObject*> data_queue_objs;
-    // keep a map for convenience
+    // Create the raw data callbacks
+    std::vector<const conffwk::ConfigObject*> raw_data_callback_objs;
 
     // Create data queues
     for (auto ds : enabled_det_streams) {
-      conffwk::ConfigObject queue_obj = obj_fac.create_queue_sid_obj(dlh_input_qdesc, ds);
-      const auto* data_queue = obj_fac.get_dal<confmodel::Connection>(queue_obj.UID());
-      data_queue_objs.push_back(&data_queue->config_object());
-      data_queues_by_sid[ds->get_source_id()] = data_queue;
+      conffwk::ConfigObject callback_obj = obj_fac.create_callback_sid_obj(raw_data_callback_desc, ds->get_source_id());
+      const auto* callback_conf = obj_fac.get_dal<DataMoveCallbackConf>(callback_obj.UID());
+      raw_data_callback_objs.push_back(&callback_conf->config_object());
+      callback_confs_by_sid[ds->get_source_id()] = callback_conf;
     }
         
     //-----------------------------------------------------------------
@@ -150,8 +138,8 @@ void
 
     // Populate configuration and interfaces (leave output queues for later)
     reader_obj.set_obj("configuration", &reader_conf->config_object());
-    reader_obj.set_objs("connections", {&d2d_conn->config_object()});
-    reader_obj.set_objs("outputs", data_queue_objs);
+    reader_obj.set_objs("connections", { &d2d_conn->config_object() });
+    reader_obj.set_objs("raw_data_callbacks", raw_data_callback_objs);
 
     modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(reader_obj.UID()));
 
@@ -180,7 +168,6 @@ void
       // Populate configuration and interfaces
       writer_obj.set_obj("configuration", &writer_conf->config_object());
       writer_obj.set_objs("connections", {&d2d_conn->config_object()});
-      writer_obj.set_objs("inputs", data_queue_objs);
 
       modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(writer_obj.UID()));
     }
