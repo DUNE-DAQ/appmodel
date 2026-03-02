@@ -17,6 +17,7 @@
 #include "appmodel/ReadoutApplication.hpp"
 #include "appmodel/SmartDaqApplication.hpp"
 #include "appmodel/SourceIDConf.hpp"
+#include "appmodel/TPReplayApplication.hpp"
 #include "conffwk/ConfigObject.hpp"
 #include "conffwk/Schema.hpp"
 #include "confmodel/DetectorStream.hpp"
@@ -124,6 +125,10 @@ ConfigurationHelper::get_tp_source_ids(){
     auto ro_app = app->cast<appmodel::ReadoutApplication>();
     if (ro_app != nullptr) {
       result.insert(std::pair(app->UID(), ro_app->get_tp_source_ids()));
+    }
+    auto replay_app = app->cast<appmodel::TPReplayApplication>();
+    if (replay_app != nullptr) {
+      result.insert(std::pair(app->UID(), replay_app->get_tp_source_ids()));
     }
   }
   return result;

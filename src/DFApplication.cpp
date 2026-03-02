@@ -22,7 +22,6 @@
 #include "appmodel/SourceIDConf.hpp"
 #include "appmodel/TRBConf.hpp"
 #include "appmodel/TRBModule.hpp"
-#include "appmodel/TPReplayModuleConf.hpp"
 #include "appmodel/appmodelIssues.hpp"
 
 #include "confmodel/Connection.hpp"
@@ -75,6 +74,49 @@ fill_sourceid_object(const ConfigObjectFactory& obj_fac,
 
   sidNetObj.set_objs("source_ids", source_id_objs);
 }
+
+
+inline void
+fill_replay_sourceid_object(const ConfigObjectFactory& obj_fac,
+                            const std::string& uid,
+                            const std::vector<const SourceIDConf*>& tp_source_ids,
+                            std::vector<conffwk::ConfigObject>* netConn,
+                            std::vector<conffwk::ConfigObject>* sidNetObj,
+                            const NetworkConnectionDescriptor* descriptor,
+                            std::vector<std::shared_ptr<conffwk::ConfigObject>> sidObjs)
+{
+  std::vector<const conffwk::ConfigObject*> source_id_objs;
+
+  for (auto tp_sid : tp_source_ids) {
+    // get name extension
+    std::string name = tp_sid->UID();
+    size_t pos = name.find_last_of('-');
+    std::string ext;
+    if (pos != std::string::npos) {
+      ext = name.substr(pos);
+    }
+
+    // set Network connections
+    std::string dreqNetUid(uid + ext);
+    netConn->emplace_back(
+      obj_fac.create_net_obj(descriptor, dreqNetUid));
+    netConn->back().set_by_val<std::string>("data_type", descriptor->get_data_type());
+    netConn->back().set_by_val<std::string>("connection_type", descriptor->get_connection_type());
+    auto serviceObj = descriptor->get_associated_service()->config_object();
+    netConn->back().set_obj("associated_service", &serviceObj);
+
+    // set SourceID to Network connections
+    std::string sidToNetUid(uid + ext + "-sids");
+    sidNetObj->emplace_back(
+      obj_fac.create("SourceIDToNetworkConnection", sidToNetUid));
+    sidNetObj->back().set_obj("netconn", &netConn->back());
+
+    // set SourceID objs
+    sidObjs.push_back(std::make_shared<conffwk::ConfigObject>(tp_sid->config_object()));
+    sidNetObj->back().set_objs("source_ids", { sidObjs.back().get() });
+  }
+}
+
 
 
 void
@@ -184,6 +226,21 @@ DFApplication::generate_modules(
                          sidObjs);
     processed_apps.insert(uid);
   }
+
+  for (auto [uid, descriptor]:
+         helper->get_netdescriptors("DataRequest", "TPReplayApplication")) {
+    fill_replay_sourceid_object(obj_fac,
+                                uid,
+                                tp_src_ids.at(uid),
+                                &dreqNetObjs,
+                                &sidNetObjs,
+                                descriptor,
+                                sidObjs);
+    processed_apps.insert(uid);
+  }
+
+
+
 
   for (auto [uid, descriptor]:
          helper->get_netdescriptors("DataRequest", "FakeDataApplication")) {
