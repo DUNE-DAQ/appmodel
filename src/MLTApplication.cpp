@@ -225,8 +225,21 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
     }
   }
 
+  // set the CTB sources
+  for (const auto & [uid, sources]: helper->get_all_app_source_ids("CTBApplication")) {
+    for (const auto & [source_name, source_conf] : sources ) {
+      auto final_name = uid;
+      final_name += source_name.find("LLT")!=std::string::npos ? "_LLT" : "_HLT";
+      auto tcSourceIdConf = new conffwk::ConfigObject(
+						      obj_fac.create("SourceIDConf", final_name));
+      tcSourceIdConf->set_by_val<uint32_t>("sid", source_conf->get_sid());
+      tcSourceIdConf->set_by_val<std::string>("subsystem", source_conf->get_subsystem());
+      sourceIds.push_back(tcSourceIdConf);
+    }
+  }
+  
   for (auto app_class: {"TriggerApplication", "FakeHSIApplication",
-			"DTSHSIApplication", "CTBApplication", "CIBApplication"}) {
+			"DTSHSIApplication", "CIBApplication"}) {
     for (auto [uid, src_id]: helper->get_app_source_ids(app_class)) {
       auto tcSourceIdConf = new conffwk::ConfigObject(
         obj_fac.create("SourceIDConf",
@@ -237,8 +250,7 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
       sourceIds.push_back(tcSourceIdConf);
 
     }    
-  }
-  
+  }  
  
   // Get mandatory links
   std::vector<const conffwk::ConfigObject*> mandatory_sids;
