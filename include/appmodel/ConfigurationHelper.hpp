@@ -84,7 +84,8 @@ namespace dunedaq::appmodel {
 
     /// @brief Get list of uids of applications that match given type
     ///
-    /// @param app_class  Class of applications to match
+    /// @param app_class  Class name to select applications by. Empty
+    ///                  string implies no selection by class
     ///
     /// @returns  A vector of uids of matching applications
     std::vector<std::string> get_app_uids(std::string app_class="");
@@ -92,6 +93,13 @@ namespace dunedaq::appmodel {
 
     /// @brief Get list of source ids for applications that match
     ///       given type
+    ///
+    /// Gather the content of the SmartDaqApplication::source_id
+    /// relationship for all enabled SmartDaqApplications (or those
+    /// that match the given class)
+    ///
+    /// @param app_class  Class name to select applications by. Empty
+    ///                  string implies no selection by class
     ///
     /// @returns A map of application uids to application source ids
     std::map<std::string, const SourceIDConf*>  get_app_source_ids(
@@ -101,7 +109,14 @@ namespace dunedaq::appmodel {
     /// @brief Get list of all source ids for applications that match
     ///       given type. Follows any single value SourceIDConf relationship
     ///
+    /// Examine all relationships of applications checking for type
+    /// SourceIDConf generating a map of relationship name to
+    /// SourceIDConf object pointers
+    ///
     /// NB: Does not look at multi-value SourceIDConf relationships
+    ///
+    /// @param app_class  Class name to select applications by. Empty
+    ///                  string implies no selection by class
     ///
     /// @returns  A map of application uids to maps relationship to contained
     ///          source ids
@@ -111,12 +126,16 @@ namespace dunedaq::appmodel {
 
     /// @brief Check the enabled state of the given item
     ///
+    /// @param item  The item to be checked.
+    ///
     /// @returns True if the object is not disabled
     inline bool is_enabled(const conffwk::DalObject* item) {
       return !is_disabled(item);
     }
 
     /// @brief Check the enabled state of the given item
+    ///
+    /// @param item  The item to be checked.
     ///
     /// @returns True if the object is disabled
     bool is_disabled(const conffwk::DalObject* item);
