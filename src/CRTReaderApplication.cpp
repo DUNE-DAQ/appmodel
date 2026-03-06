@@ -56,44 +56,33 @@ CRTReaderApplication::generate_modules(const confmodel::Session* session) const
   const auto reader_conf = get_data_reader();
   if (reader_conf == 0) {
     throw(BadConf(ERS_HERE, "No DataReaderModule configuration given"));
-  }
+  }  
   const std::string reader_class = reader_conf->get_template_for();
   
-  // Data writers    
-  const auto writer_confs = get_data_writers();
-  if (writer_confs.size() == 0) {
+  // Data writer  
+  const auto writer_conf = get_data_writer();
+  if (writer_conf == 0) {
     throw(BadConf(ERS_HERE, "No DataWriterModule configuration given"));
   }    
-  
-  //
-  // Process the queue rules looking for inputs to our DL/TP handler modules
-  //
-  const QueueDescriptor* dlh_input_qdesc = nullptr;
+  const std::string writer_class = writer_conf->get_template_for();
 
-  for (auto rule : get_queue_rules()) {
-    auto destination_class = rule->get_destination_class();
-    auto data_type = rule->get_descriptor()->get_data_type();
-    // Why datahander here? It is the base class for several DataHandler types (e.g. FDDataHandlerModule,
-    // SNBDataHandlerModule)
-    if (destination_class == "DataHandlerModule") {
-      if (data_type != "DataRequest") {
-        dlh_input_qdesc = rule->get_descriptor();
-      }
-    }
+  //
+  // Process the queue rules looking for inputs to our socket writer modules
+  //
+  const QueueDescriptor* crtreader_output_qdesc = nullptr;
+  auto queue_rules = get_queue_rules();
+  if (queue_rules.size() != 1) {
+    throw(BadConf(ERS_HERE, "Strictly 1 queue rule is expected"));
   }
-
-  if (dlh_input_qdesc == nullptr) {
-    throw(BadConf(ERS_HERE, "No data link handler input queue descriptor given"));
-  }
+  crtreader_output_qdesc = queue_rules[0]->get_descriptor();
 
   //
   // Scan Detector 2 DAQ connections to extract sender, receiver and stream information
   //
 
-  // Loop over the detector to daq connections and generate one data reader per connection
-
-  // Collect all streams
-  std::map<uint32_t, const confmodel::Connection*> data_queues_by_sid;
+  // Loop over the detector to daq connections and generate:
+  // - One data reader per detector connection
+  // - One data writer per detector connection
 
   uint16_t conn_idx = 0;
 
@@ -106,9 +95,8 @@ CRTReaderApplication::generate_modules(const confmodel::Session* session) const
     }
 
     TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn->UID();
-    // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader module      
-
-    std::vector<const confmodel::DetectorStream*> enabled_det_streams;      
+    
+    std::vector<const confmodel::DetectorStream*> enabled_det_streams;
     // Loop over streams
     for (auto stream : d2d_conn->streams()) {
 
@@ -123,15 +111,13 @@ CRTReaderApplication::generate_modules(const confmodel::Session* session) const
 
     // Create the raw data queues
     std::vector<const conffwk::ConfigObject*> data_queue_objs;
-    // keep a map for convenience
 
     // Create data queues
     for (auto ds : enabled_det_streams) {
-      conffwk::ConfigObject queue_obj = obj_fac.create_queue_sid_obj(dlh_input_qdesc, ds);
+      conffwk::ConfigObject queue_obj = obj_fac.create_queue_sid_obj(crtreader_output_qdesc, ds);
       const auto* data_queue = obj_fac.get_dal<confmodel::Connection>(queue_obj.UID());
       data_queue_objs.push_back(&data_queue->config_object());
-      data_queues_by_sid[ds->get_source_id()] = data_queue;
-    }
+    }    
         
     //-----------------------------------------------------------------
     //
@@ -144,11 +130,11 @@ CRTReaderApplication::generate_modules(const confmodel::Session* session) const
 
     // Create the Data reader object
 
-    std::string reader_uid(fmt::format("crtdatareader-{}-{}", this->UID(), std::to_string(conn_idx++)));
+    std::string reader_uid(fmt::format("crtreader-{}-{}", this->UID(), std::to_string(conn_idx++)));
     TLOG_DEBUG(6) << fmt::format("creating OKS configuration object for Data reader class {} with id {}", reader_class, reader_uid);
     auto reader_obj = obj_fac.create(reader_class, reader_uid);
 
-    // Populate configuration and interfaces (leave output queues for later)
+    // Populate configuration and interfaces
     reader_obj.set_obj("configuration", &reader_conf->config_object());
     reader_obj.set_objs("connections", {&d2d_conn->config_object()});
     reader_obj.set_objs("outputs", data_queue_objs);
@@ -157,33 +143,25 @@ CRTReaderApplication::generate_modules(const confmodel::Session* session) const
 
     //-----------------------------------------------------------------
     //
-    // Create DataWriterModule objects
+    // Create DataWriterModule object
     //
 
     //
     // Instantiate DataWriterModule of type SocketWriterModule
     //
 
-    // Create the SocketWriterModule objects
+    // Create the SocketWriterModule object
 
-    conn_idx = 0;
-    
-    for (const auto writer_conf : writer_confs) {
+    std::string writer_uid(fmt::format("socketwriter-{}-{}", this->UID(), std::to_string(conn_idx++)));
+    TLOG_DEBUG(6) << fmt::format("Creating OKS configuration object for socket writer class {} with id {}", writer_class, writer_uid);
+    auto writer_obj = obj_fac.create(writer_class, writer_uid);
 
-      const std::string writer_class = writer_conf->get_template_for();
+    // Populate configuration and interfaces
+    writer_obj.set_obj("configuration", &writer_conf->config_object());
+    writer_obj.set_objs("connections", {&d2d_conn->config_object()});
+    writer_obj.set_objs("inputs", data_queue_objs);
 
-      std::string writer_uid(fmt::format("socketdatawriter-{}-{}", this->UID(), std::to_string(conn_idx++)));
-      TLOG_DEBUG(6) << fmt::format(
-        "Creating OKS configuration object for socket data writer class {} with id {}", writer_class, writer_uid);
-      auto writer_obj = obj_fac.create(writer_class, writer_uid);
-
-      // Populate configuration and interfaces
-      writer_obj.set_obj("configuration", &writer_conf->config_object());
-      writer_obj.set_objs("connections", {&d2d_conn->config_object()});
-      writer_obj.set_objs("inputs", data_queue_objs);
-
-      modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(writer_obj.UID()));
-    }
+    modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(writer_obj.UID()));    
   }
 
   obj_fac.update_modules(modules);

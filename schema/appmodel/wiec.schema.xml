@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="8" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20250818T143705"/>
+<info name="" type="" num-of-items="8" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="dergonul" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20260212T161706"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -122,9 +122,9 @@
 
  <class name="SocketDataSender">
   <superclass name="NWDetDataSender"/>
-  <attribute name="link_id" type="u32" is-not-null="yes"/>
-  <attribute name="port" type="u32" init-value="1234" is-not-null="yes"/>
-  <attribute name="control_host" type="string" init-value="localhost" is-not-null="yes"/>
+  <attribute name="socket_type" description="Socket type" type="enum" range="TCP,UDP" init-value="UDP" is-not-null="yes"/>
+  <attribute name="local_port" type="u32" is-not-null="yes" range="0..65535" init-value="0"/>
+  <attribute name="remote_port" type="u32" is-not-null="yes" range="1..65535" init-value="20001"/>
  </class>
 
  <class name="WIBModule">
