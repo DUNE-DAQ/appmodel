@@ -15,6 +15,7 @@
 #include "appmodel/DataReaderConf.hpp"
 #include "appmodel/SocketWriterConf.hpp"
 #include "appmodel/SocketWriterModule.hpp"
+#include "appmodel/DataMoveCallbackConf.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
 #include "appmodel/QueueDescriptor.hpp"
 
@@ -136,8 +137,8 @@ CRTReaderApplication::generate_modules(const confmodel::Session* session) const
 
     // Populate configuration and interfaces
     reader_obj.set_obj("configuration", &reader_conf->config_object());
-    reader_obj.set_objs("connections", {&d2d_conn->config_object()});
-    reader_obj.set_objs("outputs", data_queue_objs);
+    reader_obj.set_objs("connections", { &d2d_conn->config_object() });
+    reader_obj.set_objs("raw_data_callbacks", raw_data_callback_objs);
 
     modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(reader_obj.UID()));
 
