@@ -40,7 +40,7 @@ CRTReaderApplication::contained_resources() const {
 }
 
 void
-CRTReaderApplication::generate_modules(const confmodel::Session* session) const
+  CRTReaderApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> helper) const
 {
 
   TLOG_DEBUG(6) << "Generating modules for application " << this->UID();
@@ -89,7 +89,7 @@ CRTReaderApplication::generate_modules(const confmodel::Session* session) const
   for (auto d2d_conn : get_detector_connections()) {
 
     // Are we sure?
-    if (d2d_conn->is_disabled(*session)) {
+    if (helper->is_disabled(d2d_conn)) {
       TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
       continue;
     }
@@ -102,7 +102,7 @@ CRTReaderApplication::generate_modules(const confmodel::Session* session) const
     for (auto stream : d2d_conn->streams()) {
 
       // Are we sure?
-      if (stream->is_disabled(*session)) {
+      if (helper->is_disabled(stream)) {
         TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
         continue;
       }

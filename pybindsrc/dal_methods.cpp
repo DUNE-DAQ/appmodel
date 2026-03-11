@@ -37,7 +37,8 @@ namespace dunedaq::appmodel::python {
     auto session =
       const_cast<conffwk::Configuration&>(confdb).get<confmodel::Session>(session_id);
 
-    app->generate_modules(session);
+    auto helper = std::make_shared<ConfigurationHelper>(session);
+    app->generate_modules(helper);
     std::vector<ObjectLocator> mods;
     for (auto mod : app->get_modules()) {
       mods.push_back({mod->UID(),mod->class_name()});

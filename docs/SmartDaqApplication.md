@@ -14,6 +14,10 @@ This section will use the "[DFOApplication](https://github.com/DUNE-DAQ/appmodel
 Once instantiated at the start of `generate_modules`, it offers a set of methods to facilitate the creation of configurarion objects, queues and network connections.
 
 
+### The generate_modules method
+
+The boilerplate code above references a  method called generate_modules() which you have to supply. The `confdb` and `dbfile` arguments are used to create configuration objects in the database (see below). The helper argument is a pointer to a helper object with methods for extracting configuration data not belonging to the current application.
+
 ### Creating a module
 
 ```C++

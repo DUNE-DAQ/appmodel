@@ -50,7 +50,7 @@ CIBApplication::contained_resources() const {
 
 
 void
-CIBApplication::generate_modules(const confmodel::Session* session) const
+CIBApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> helper) const
 {
   std::vector<const confmodel::DaqModule*> modules;
 
@@ -105,24 +105,11 @@ CIBApplication::generate_modules(const confmodel::Session* session) const
 
   // Process special Network rules!
   // Looking for Fragment rules from DFAppplications in current Session
-  auto sessionApps = session->enabled_applications();
   std::vector<conffwk::ConfigObject> fragOutObjs;
-  for (auto app : sessionApps) {
-    auto dfapp = app->cast<appmodel::DFApplication>();
-    if (dfapp == nullptr)
-      continue;
-    
-    auto dfNRules = dfapp->get_network_rules();
-    for (auto rule : dfNRules) {
-      auto descriptor = rule->get_descriptor();
-      auto data_type = descriptor->get_data_type();
-      if (data_type == "Fragment") {
-	std::string dreqNetUid(descriptor->get_uid_base() + dfapp->UID());
-	conffwk::ConfigObject frag_conn = obj_fac.create_net_obj(descriptor, dreqNetUid);
-	fragOutObjs.push_back(frag_conn);
-      } // If network rule has Fragment type of data
-    }   // Loop over Apps network rules
-  }     // loop over Session specific Apps
+  for (auto [uid, descriptor]:
+         helper->get_netdescriptors("Fragment", "DFApplication")) {
+    fragOutObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
+  }    
   
   // start building the list of outputs
   std::vector<const conffwk::ConfigObject*> fh_output_objs;

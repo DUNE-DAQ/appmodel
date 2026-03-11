@@ -10,7 +10,6 @@
 
 #include "appmodel/TRMonReqApplication.hpp"
 #include "ConfigObjectFactory.hpp"
-#include "appmodel/DFApplication.hpp"
 #include "appmodel/DataStoreConf.hpp"
 #include "appmodel/DataWriterConf.hpp"
 #include "appmodel/DataWriterModule.hpp"
@@ -42,7 +41,7 @@ namespace dunedaq {
 namespace appmodel {
 
 void
-TRMonReqApplication::generate_modules(const confmodel::Session* session) const
+TRMonReqApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> helper) const
 {
 
   ConfigObjectFactory obj_fac(this);
@@ -83,26 +82,12 @@ TRMonReqApplication::generate_modules(const confmodel::Session* session) const
   // Create network connection config object
   auto dwInputObj = obj_fac.create_net_obj(dwNetDesc, "");
 
-  // Process special Network rules!
-  // Looking for DataRequest rules from ReadoutAppplications in current Session
-  auto sessionApps = session->enabled_applications();
+  // Create network connections for all DFApplications in session
   std::vector<conffwk::ConfigObject> trmonreqNetObjs;
-  for (auto app : sessionApps) {
-    auto smartapp = app->cast<appmodel::SmartDaqApplication>();
-    auto dfapp = app->cast<appmodel::DFApplication>();
-    if (smartapp == nullptr || dfapp == nullptr) {
-      continue;
-    }
-
-    auto dfNRules = smartapp->get_network_rules();
-    for (auto rule : dfNRules) {
-      auto descriptor = rule->get_descriptor();
-      auto data_type = descriptor->get_data_type();
-      if (data_type == "TRMonRequest") {
-        trmonreqNetObjs.emplace_back(obj_fac.create_net_obj(descriptor, smartapp->UID()));
-      } // If network rule has TRMonRequest type of data
-    } // Loop over Apps network rules
-  } // loop over Session specific Apps
+  for (auto [uid, descriptor]:
+         helper->get_netdescriptors("TRMonRequest", "DFApplication")) {
+    trmonreqNetObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
+  }    
 
   // Get pointers to objects here, after vector has been filled so they don't move on us
   for (auto& obj : trmonreqNetObjs) {
