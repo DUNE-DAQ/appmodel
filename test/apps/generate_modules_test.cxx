@@ -27,9 +27,8 @@
 
 #include "appmodel/DataHandlerModule.hpp"
 #include "appmodel/DataReaderModule.hpp"
-#include "appmodel/CRTBernReaderModule.hpp"
-#include "appmodel/CRTGrenobleReaderModule.hpp"
 #include "appmodel/DataMoveCallbackConf.hpp"
+#include "appmodel/SocketDataWriterModule.hpp"
 
 #include "appmodel/appmodelIssues.hpp"
 
@@ -98,15 +97,11 @@ main(int argc, char* argv[])
 
       auto reader_module = daq_module->cast<appmodel::DataReaderModule>();
       if (reader_module != nullptr) {
-        auto crt_reader_module = daq_module->cast<dunedaq::appmodel::CRTBernReaderModule>() != nullptr ||
-                                 daq_module->cast<dunedaq::appmodel::CRTGrenobleReaderModule>() != nullptr;
-        if (!crt_reader_module) { // Don't check raw data callbacks for CRT readers
-          auto callback_confs = reader_module->get_raw_data_callbacks();
-          std::cout << " callback confs " << std::endl;
-          for (auto* callback_conf : callback_confs) {
-            auto cbObj = callback_conf->config_object();
-            cbObj.print_ref(std::cout, *confdb, "    ");
-          }
+        auto callback_confs = reader_module->get_raw_data_callbacks();
+        std::cout << " callback confs " << std::endl;
+        for (auto* callback_conf : callback_confs) {
+          auto cbObj = callback_conf->config_object();
+          cbObj.print_ref(std::cout, *confdb, "    ");
         }
       }
 
@@ -114,6 +109,16 @@ main(int argc, char* argv[])
       if (handler_module != nullptr) {
         auto callback_conf = handler_module->get_raw_data_callback();
         if (callback_conf != nullptr) {
+          auto cbObj = callback_conf->config_object();
+          cbObj.print_ref(std::cout, *confdb, "    ");
+        }
+      }
+
+      auto socketwriter_module = daq_module->cast<appmodel::SocketDataWriterModule>();
+      if (socketwriter_module != nullptr) {
+        auto callback_confs = socketwriter_module->get_raw_data_callbacks();
+        std::cout << " callback confs " << std::endl;
+        for (auto* callback_conf : callback_confs) {
           auto cbObj = callback_conf->config_object();
           cbObj.print_ref(std::cout, *confdb, "    ");
         }

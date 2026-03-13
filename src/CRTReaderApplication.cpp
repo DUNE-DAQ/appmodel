@@ -68,14 +68,13 @@ CRTReaderApplication::generate_modules(const confmodel::Session* session) const
   const std::string writer_class = writer_conf->get_template_for();
 
   //
-  // Process the queue rules looking for inputs to our socket writer modules
+  // Get the callback descriptor
   //
-  const QueueDescriptor* crtreader_output_qdesc = nullptr;
-  auto queue_rules = get_queue_rules();
-  if (queue_rules.size() != 1) {
-    throw(BadConf(ERS_HERE, "Strictly 1 queue rule is expected"));
+  const DataMoveCallbackDescriptor* raw_data_callback_desc = get_callback_desc();
+
+  if (raw_data_callback_desc == nullptr) {
+    throw(BadConf(ERS_HERE, "No Raw Data Callback descriptor given"));
   }
-  crtreader_output_qdesc = queue_rules[0]->get_descriptor();
 
   //
   // Scan Detector 2 DAQ connections to extract sender, receiver and stream information
@@ -110,15 +109,15 @@ CRTReaderApplication::generate_modules(const confmodel::Session* session) const
       enabled_det_streams.push_back(stream);
     }
 
-    // Create the raw data queues
-    std::vector<const conffwk::ConfigObject*> data_queue_objs;
+    // Create the raw data callbacks
+    std::vector<const conffwk::ConfigObject*> raw_data_callback_objs;
 
     // Create data queues
     for (auto ds : enabled_det_streams) {
-      conffwk::ConfigObject queue_obj = obj_fac.create_queue_sid_obj(crtreader_output_qdesc, ds);
-      const auto* data_queue = obj_fac.get_dal<confmodel::Connection>(queue_obj.UID());
-      data_queue_objs.push_back(&data_queue->config_object());
-    }    
+      conffwk::ConfigObject callback_obj = obj_fac.create_callback_sid_obj(raw_data_callback_desc, ds->get_source_id());
+      const auto* callback_conf = obj_fac.get_dal<DataMoveCallbackConf>(callback_obj.UID());
+      raw_data_callback_objs.push_back(&callback_conf->config_object());
+    }  
         
     //-----------------------------------------------------------------
     //
@@ -138,7 +137,7 @@ CRTReaderApplication::generate_modules(const confmodel::Session* session) const
     // Populate configuration and interfaces
     reader_obj.set_obj("configuration", &reader_conf->config_object());
     reader_obj.set_objs("connections", { &d2d_conn->config_object() });
-    reader_obj.set_objs("outputs", data_queue_objs);
+    reader_obj.set_objs("raw_data_callbacks", raw_data_callback_objs);
 
     modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(reader_obj.UID()));
 
@@ -160,7 +159,7 @@ CRTReaderApplication::generate_modules(const confmodel::Session* session) const
     // Populate configuration and interfaces
     writer_obj.set_obj("configuration", &writer_conf->config_object());
     writer_obj.set_objs("connections", {&d2d_conn->config_object()});
-    writer_obj.set_objs("inputs", data_queue_objs);
+    writer_obj.set_objs("raw_data_callbacks", raw_data_callback_objs);
 
     modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(writer_obj.UID()));    
   }
