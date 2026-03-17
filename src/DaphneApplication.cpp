@@ -63,12 +63,6 @@ DaphneApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelpe
 
   auto daphne_conf = get_configuration();
 
-  std::map<std::string, const DaphneV2BoardConf*> conf_map;
-  auto confs = daphne_conf->get_boards();
-  for ( const auto & c : confs ) {
-    conf_map[c->get_key()] = c->get_conf();
-  }
-
   //  these maps are all indexed on the board id {detector].{crate}.{slot}
   std::map<std::string, bool> v3_map;
   std::map<std::string, const confmodel::NetworkInterface*> interfaces;
@@ -181,15 +175,10 @@ DaphneApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelpe
   
   for ( const auto & [id, v3] : v3_map ) {
   
-    auto conf_it = conf_map.find(id);
-    if ( conf_it == conf_map.end() ) {
-      throw MissingDaphne(ERS_HERE, id);
-    }
-    auto conf = conf_it->second;
 
     conffwk::ConfigObject module_obj = obj_fac.create( (v3 ?  "DaphneV3ControllerModule" : "DaphneV2ControllerModule"), fmt::format("controller-{}", id) );
     module_obj.set_obj("daphne_conf", & daphne_conf -> config_object() );
-    module_obj.set_obj("board_conf", & conf -> config_object() );
+    module_obj.set_by_val<std::string>("daphne_id", id);
 
     auto module = obj_fac.get_dal<confmodel::DaqModule>(module_obj); 
     modules.push_back(module);
