@@ -30,7 +30,6 @@
 #include "appmodel/TPReplayModule.hpp"
 #include "appmodel/TPReplayModuleConf.hpp"
 #include "appmodel/TPStreamConf.hpp"
-#include "appmodel/TriggerApplication.hpp"
 #include "appmodel/appmodelIssues.hpp"
 
 #include "logging/Logging.hpp"
@@ -44,7 +43,7 @@ namespace dunedaq {
 namespace appmodel {
 
 void
-TPReplayApplication::generate_modules(const confmodel::Session* /*session*/) const
+TPReplayApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> /*helper*/) const
 {
 
   std::vector<const confmodel::DaqModule*> modules;

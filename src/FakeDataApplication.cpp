@@ -19,7 +19,6 @@
 // #include "confmodel/ReadoutGroup.hpp"
 #include "confmodel/ResourceSet.hpp"
 #include "confmodel/Service.hpp"
-#include "confmodel/Session.hpp"
 
 #include "appmodel/FakeDataApplication.hpp"
 #include "appmodel/FakeDataProdConf.hpp"
@@ -49,7 +48,7 @@ FakeDataApplication::contained_resources() const {
 }
 
 void
-FakeDataApplication::generate_modules(const confmodel::Session* session) const
+FakeDataApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> helper) const
 {
   // oks::OksFile::set_nolock_mode(true);
 
@@ -106,7 +105,7 @@ FakeDataApplication::generate_modules(const confmodel::Session* session) const
 
   // Create a FakeDataProdModule for each stream of this Readout Group
   for (auto fdpConf : get_producers()) {
-    if (fdpConf->is_disabled(*session)) {
+    if (helper->is_disabled(fdpConf)) {
       TLOG_DEBUG(7) << "Ignoring disabled FakeDataProdConf " << fdpConf->UID();
       continue;
     }

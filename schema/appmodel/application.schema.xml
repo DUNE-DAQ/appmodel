@@ -96,7 +96,7 @@
   <relationship name="detector_connections" class-type="DetectorToDaqConnection" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="callback_desc" class-type="DataMoveCallbackDescriptor" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate daq module dal objects for streams of the CRTReaderApplication on the fly">
-   <method-implementation language="c++" prototype="void generate_modules(const confmodel::Session*) const override" body=""/>
+   <method-implementation language="c++" prototype="void generate_modules(std::shared_ptr&lt;appmodel::ConfigurationHelper&gt;) const override" body=""/>
   </method>
   <method name="contained_resources" description="">
    <method-implementation language="c++" prototype="virtual std::vector&lt;const Resource*&gt; contained_resources() const override" body=""/>
@@ -110,7 +110,7 @@
   <relationship name="data_writers" class-type="DataWriterConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="uses" class-type="DFHWConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
-   <method-implementation language="c++" prototype="void generate_modules(const confmodel::Session*) const override" body=""/>
+   <method-implementation language="c++" prototype="void generate_modules(std::shared_ptr&lt;appmodel::ConfigurationHelper&gt;) const override" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;appmodel/ConfigurationHelper.hpp&quot;&#xA;END_HEADER_PROLOGUE"/>
   </method>
  </class>
 
@@ -122,7 +122,7 @@
   <superclass name="SmartDaqApplication"/>
   <relationship name="dfo" class-type="DFOConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
-   <method-implementation language="c++" prototype="void generate_modules(const confmodel::Session*) const override" body=""/>
+   <method-implementation language="c++" prototype="void generate_modules(std::shared_ptr&lt;appmodel::ConfigurationHelper&gt;) const override" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;appmodel/ConfigurationHelper.hpp&quot;&#xA;END_HEADER_PROLOGUE"/>
   </method>
  </class>
 
@@ -145,7 +145,7 @@
   <relationship name="link_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="generator" class-type="HSIReadoutConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
-   <method-implementation language="c++" prototype="void generate_modules(const confmodel::Session*) const override" body=""/>
+   <method-implementation language="c++" prototype="void generate_modules(std::shared_ptr&lt;appmodel::ConfigurationHelper&gt;) const override" body=""/>
   </method>
  </class>
 
@@ -237,7 +237,7 @@
   <relationship name="producers" description="List of configurations of fake data producer modules to be used by this application" class-type="FakeDataProdConf" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
   <relationship name="fragment_aggregator" class-type="FragmentAggregatorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate daq module dal objects for streams of the FakeDataApplication on the fly">
-   <method-implementation language="c++" prototype="void generate_modules(const confmodel::Session*) const override" body=""/>
+   <method-implementation language="c++" prototype="void generate_modules(std::shared_ptr&lt;appmodel::ConfigurationHelper&gt;) const override" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;appmodel/ConfigurationHelper.hpp&quot;&#xA;END_HEADER_PROLOGUE"/>
   </method>
   <method name="contained_resources" description="">
    <method-implementation language="c++" prototype="virtual std::vector&lt;const Resource*&gt; contained_resources() const override" body=""/>
@@ -265,7 +265,7 @@
   <relationship name="link_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="generator" class-type="FakeHSIEventGeneratorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
-   <method-implementation language="c++" prototype="void generate_modules(const confmodel::Session*) const override" body=""/>
+   <method-implementation language="c++" prototype="void generate_modules(std::shared_ptr&lt;appmodel::ConfigurationHelper&gt;) const override" body=""/>
   </method>
  </class>
 
@@ -355,7 +355,7 @@
  <class name="NP02ReadoutApplication">
   <superclass name="ReadoutApplication"/>
   <method name="generate_modules" description="Generate daq module dal objects for streams of thie ReadoutApplication on the fly">
-   <method-implementation language="c++" prototype="void generate_modules(const confmodel::Session*) const override" body=""/>
+   <method-implementation language="c++" prototype="void generate_modules(std::shared_ptr&lt;appmodel::ConfigurationHelper&gt;) const override" body=""/>
   </method>
  </class>
 
@@ -432,7 +432,7 @@
   <relationship name="detector_connections" description="The list of detector channels to be read out by this readout application." class-type="DetectorToDaqConnection" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="callback_desc" class-type="DataMoveCallbackDescriptor" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate daq module dal objects for streams of thie ReadoutApplication on the fly">
-   <method-implementation language="c++" prototype="void generate_modules(const confmodel::Session*) const override" body=""/>
+   <method-implementation language="c++" prototype="void generate_modules(std::shared_ptr&lt;appmodel::ConfigurationHelper&gt;) const override" body=""/>
   </method>
   <method name="contained_resources" description="">
    <method-implementation language="c++" prototype="virtual std::vector&lt;const Resource*&gt; contained_resources() const override" body=""/>
@@ -465,7 +465,7 @@
   <superclass name="SmartDaqApplication"/>
   <relationship name="snbbk" class-type="SNBBookkeeperConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
-   <method-implementation language="c++" prototype="void generate_modules(const confmodel::Session*) const override" body=""/>
+   <method-implementation language="c++" prototype="void generate_modules(std::shared_ptr&lt;appmodel::ConfigurationHelper&gt;) const override" body=""/>
   </method>
  </class>
 
@@ -493,7 +493,7 @@
   <superclass name="SmartDaqApplication"/>
   <relationship name="snbt" class-type="SNBTransferConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
-   <method-implementation language="c++" prototype="void generate_modules(const confmodel::Session*) const override" body=""/>
+   <method-implementation language="c++" prototype="void generate_modules(std::shared_ptr&lt;appmodel::ConfigurationHelper&gt;) const override" body=""/>
   </method>
  </class>
 
@@ -516,7 +516,7 @@
   <relationship name="queue_rules" class-type="QueueConnectionRule" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="network_rules" class-type="NetworkConnectionRule" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="">
-   <method-implementation language="c++" prototype="virtual void generate_modules(const confmodel::Session*) const = 0" body=""/>
+   <method-implementation language="c++" prototype="virtual void generate_modules(std::shared_ptr&lt;appmodel::ConfigurationHelper&gt;) const = 0" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;appmodel/ConfigurationHelper.hpp&quot;&#xA;END_HEADER_PROLOGUE"/>
   </method>
  </class>
 
@@ -561,7 +561,7 @@
   <superclass name="Resource"/>
   <relationship name="tp_writer" class-type="TPStreamWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate dal objects for streams of thie ReadoutApplication on the fly">
-   <method-implementation language="c++" prototype="void generate_modules(const confmodel::Session*) const override" body=""/>
+   <method-implementation language="c++" prototype="void generate_modules(std::shared_ptr&lt;appmodel::ConfigurationHelper&gt;) const override" body=""/>
   </method>
  </class>
 
@@ -602,7 +602,7 @@
   <relationship name="data_writer" class-type="DataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="uses" class-type="DFHWConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
-   <method-implementation language="c++" prototype="void generate_modules(const confmodel::Session*) const override" body=""/>
+   <method-implementation language="c++" prototype="void generate_modules(std::shared_ptr&lt;appmodel::ConfigurationHelper&gt;) const override" body=""/>
   </method>
  </class>
 
