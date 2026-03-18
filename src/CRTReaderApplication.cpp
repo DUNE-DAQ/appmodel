@@ -31,6 +31,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 namespace dunedaq::appmodel {
 
@@ -55,14 +56,14 @@ void
 
   // Data reader  
   const auto reader_conf = get_data_reader();
-  if (reader_conf == 0) {
+  if (reader_conf == nullptr) {
     throw(BadConf(ERS_HERE, "No DataReaderModule configuration given"));
   }  
   const std::string reader_class = reader_conf->get_template_for();
   
   // Data writer  
   const auto writer_conf = get_data_writer();
-  if (writer_conf == 0) {
+  if (writer_conf == nullptr) {
     throw(BadConf(ERS_HERE, "No DataWriterModule configuration given"));
   }    
   const std::string writer_class = writer_conf->get_template_for();
@@ -84,7 +85,7 @@ void
   // - One data reader per detector connection
   // - One data writer per detector connection
 
-  uint16_t conn_idx = 0;
+  uint16_t conn_idx = 0; // NOLINT(build/unsigned)
 
   for (auto d2d_conn : get_detector_connections()) {
 
