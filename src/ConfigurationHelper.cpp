@@ -124,7 +124,12 @@ ConfigurationHelper::get_tp_source_ids(){
   for (auto app: m_session->enabled_applications()) {
     auto ro_app = app->cast<appmodel::ReadoutApplication>();
     if (ro_app != nullptr) {
-      result.insert(std::pair(app->UID(), ro_app->get_tp_source_ids()));
+      if (ro_app->get_tp_generation_enabled()) {
+        result.insert(std::pair(app->UID(), ro_app->get_tp_source_ids()));
+      }
+      else {
+        result.insert({app->UID(), std::vector<const SourceIDConf*>()});
+      }
     }
     auto replay_app = app->cast<appmodel::TPReplayApplication>();
     if (replay_app != nullptr) {
