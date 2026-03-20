@@ -21,7 +21,7 @@ daq_add_dal_library(application.schema.xml hermes.schema.xml fdmodules.schema.xm
   SOURCES
   ConfigurationHelper.cpp
 	ConfigObjectFactory.cpp
-	CRTReaderApplication.cpp
+	CRTFrameBuilderApplication.cpp
 	CTBApplication.cpp
 	DaphneApplication.cpp
 	DFApplication.cpp

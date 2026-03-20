@@ -1,14 +1,14 @@
 /**
- * @file CRTReaderApplication.cpp
+ * @file CRTFrameBuilderApplication.cpp
  *
- * Implementation of CRTReaderApplication's generate_modules dal method
+ * Implementation of CRTFrameBuilderApplication's generate_modules dal method
  *
  * This is part of the DUNE DAQ Software Suite, copyright 2023.
  * Licensing/copyright details are in the COPYING file that you should have
  * received with this code.
  */
 
-#include "appmodel/CRTReaderApplication.hpp"
+#include "appmodel/CRTFrameBuilderApplication.hpp"
 
 #include "appmodel/appmodelIssues.hpp"
 
@@ -36,12 +36,12 @@
 namespace dunedaq::appmodel {
 
 std::vector<const confmodel::Resource*>
-CRTReaderApplication::contained_resources() const {
+CRTFrameBuilderApplication::contained_resources() const {
   return to_resources(get_detector_connections());
 }
 
 void
-  CRTReaderApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> helper) const
+  CRTFrameBuilderApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> helper) const
 {
 
   TLOG_DEBUG(6) << "Generating modules for application " << this->UID();
@@ -55,11 +55,11 @@ void
   //
 
   // Data reader  
-  const auto reader_conf = get_data_reader();
-  if (reader_conf == nullptr) {
-    throw(BadConf(ERS_HERE, "No DataReaderModule configuration given"));
-  }  
-  const std::string reader_class = reader_conf->get_template_for();
+  //const auto reader_conf = get_data_reader();
+  //if (reader_conf == nullptr) {
+  //  throw(BadConf(ERS_HERE, "No DataReaderModule configuration given"));
+  //}  
+  //const std::string reader_class = reader_conf->get_template_for();
   
   // Data writer  
   const auto writer_conf = get_data_writer();
@@ -126,21 +126,21 @@ void
     //
 
     //
-    // Instantiate DataReaderModule of type CRTBernReaderModule/CRTGrenobleReaderModule
+    // Instantiate DataReaderModule of type CRTBernFrameBuilderModule/CRTGrenobleFrameBuilderModule
     //
 
     // Create the Data reader object
 
-    std::string reader_uid(fmt::format("crtreader-{}-{}", this->UID(), std::to_string(conn_idx++)));
-    TLOG_DEBUG(6) << fmt::format("creating OKS configuration object for Data reader class {} with id {}", reader_class, reader_uid);
-    auto reader_obj = obj_fac.create(reader_class, reader_uid);
-
-    // Populate configuration and interfaces
-    reader_obj.set_obj("configuration", &reader_conf->config_object());
-    reader_obj.set_objs("connections", { &d2d_conn->config_object() });
-    reader_obj.set_objs("raw_data_callbacks", raw_data_callback_objs);
-
-    modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(reader_obj.UID()));
+    //std::string reader_uid(fmt::format("crtframebuilder-{}-{}", this->UID(), std::to_string(conn_idx++)));
+    //TLOG_DEBUG(6) << fmt::format("creating OKS configuration object for Data reader class {} with id {}", reader_class, reader_uid);
+    //auto reader_obj = obj_fac.create(reader_class, reader_uid);
+//
+    //// Populate configuration and interfaces
+    //reader_obj.set_obj("configuration", &reader_conf->config_object());
+    //reader_obj.set_objs("connections", { &d2d_conn->config_object() });
+    //reader_obj.set_objs("raw_data_callbacks", raw_data_callback_objs);
+//
+    //modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(reader_obj.UID()));
 
     //-----------------------------------------------------------------
     //
