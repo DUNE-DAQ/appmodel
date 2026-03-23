@@ -12,18 +12,20 @@
 
 #include "appmodel/appmodelIssues.hpp"
 
-#include "appmodel/DataReaderConf.hpp"
+#include "appmodel/DetectorFrameBuilderConf.hpp"
 #include "appmodel/SocketWriterConf.hpp"
 #include "appmodel/SocketWriterModule.hpp"
-#include "appmodel/DataMoveCallbackConf.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
 #include "appmodel/QueueDescriptor.hpp"
+#include "appmodel/SocketDetectorToDaqConnection.hpp"
 
 #include "ConfigObjectFactory.hpp"
 
 #include "confmodel/Connection.hpp"
 #include "confmodel/DetectorStream.hpp"
 #include "confmodel/DetectorToDaqConnection.hpp"
+#include "confmodel/DetDataSender.hpp"
+#include "confmodel/DetDataReceiver.hpp"
 
 #include "logging/Logging.hpp"
 
@@ -54,12 +56,12 @@ void
   // Extract basic configuration objects
   //
 
-  // Data reader  
-  //const auto reader_conf = get_data_reader();
-  //if (reader_conf == nullptr) {
-  //  throw(BadConf(ERS_HERE, "No DataReaderModule configuration given"));
-  //}  
-  //const std::string reader_class = reader_conf->get_template_for();
+  // Detector frame builder
+  const auto det_frame_builder_conf = get_detector_frame_builder();
+  if (det_frame_builder_conf == nullptr) {
+    throw(BadConf(ERS_HERE, "No DetectorFrameBuilderModule configuration given"));
+  }  
+  const std::string builder_class = det_frame_builder_conf->get_template_for();
   
   // Data writer  
   const auto writer_conf = get_data_writer();
@@ -69,100 +71,129 @@ void
   const std::string writer_class = writer_conf->get_template_for();
 
   //
-  // Get the callback descriptor
+  // Process the queue rules looking for inputs to our socket writer modules
   //
-  const DataMoveCallbackDescriptor* raw_data_callback_desc = get_callback_desc();
-
-  if (raw_data_callback_desc == nullptr) {
-    throw(BadConf(ERS_HERE, "No Raw Data Callback descriptor given"));
+  const QueueDescriptor* crtframebuilder_output_qdesc = nullptr;
+  auto queue_rules = get_queue_rules();
+  if (queue_rules.size() != 1) {
+    throw(BadConf(ERS_HERE, "Strictly 1 queue rule is expected"));
   }
+  crtframebuilder_output_qdesc = queue_rules[0]->get_descriptor();
 
   //
   // Scan Detector 2 DAQ connections to extract sender, receiver and stream information
   //
 
   // Loop over the detector to daq connections and generate:
-  // - One data reader per detector connection
-  // - One data writer per detector connection
-
-  uint16_t conn_idx = 0; // NOLINT(build/unsigned)
+  // - One detector frame builder per data sender
+  // - One data writer per data sender
+  // - One queue per data sender
 
   for (auto d2d_conn : get_detector_connections()) {
 
+    auto d2d_conn_uid = d2d_conn->UID();
+
     // Are we sure?
     if (helper->is_disabled(d2d_conn)) {
-      TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
+      TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn_uid;
       continue;
     }
 
-    TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn->UID();
-    
-    std::vector<const confmodel::DetectorStream*> enabled_det_streams;
-    // Loop over streams
-    for (auto stream : d2d_conn->streams()) {
+    TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn_uid;
 
+    auto receiver = d2d_conn->receiver();
+
+    uint16_t sender_idx = 0; // NOLINT(build/unsigned)
+
+    // Loop over senders
+    for (auto sender : d2d_conn->senders()) {
+      
       // Are we sure?
-      if (helper->is_disabled(stream)) {
-        TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
+      if (helper->is_disabled(sender)) {
+        TLOG_DEBUG(7) << "Ignoring disabled DataSender " << sender->UID();
         continue;
       }
 
-      enabled_det_streams.push_back(stream);
-    }
-
-    // Create the raw data callbacks
-    std::vector<const conffwk::ConfigObject*> raw_data_callback_objs;
-
-    // Create data queues
-    for (auto ds : enabled_det_streams) {
-      conffwk::ConfigObject callback_obj = obj_fac.create_callback_sid_obj(raw_data_callback_desc, ds->get_source_id());
-      const auto* callback_conf = obj_fac.get_dal<DataMoveCallbackConf>(callback_obj.UID());
-      raw_data_callback_objs.push_back(&callback_conf->config_object());
-    }  
+      
+      bool has_enabled_det_stream = false;
+      // Loop over streams
+      for (auto stream : sender->get_streams()) {
         
-    //-----------------------------------------------------------------
-    //
-    // Create DataReaderModule object
-    //
+        // Are we sure?
+        if (helper->is_disabled(stream)) {
+          TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
+          continue;
+        }
 
-    //
-    // Instantiate DataReaderModule of type CRTBernFrameBuilderModule/CRTGrenobleFrameBuilderModule
-    //
+        has_enabled_det_stream = true;
+        break;
+      }
+      
+      if (!has_enabled_det_stream) {
+        continue;
+      }
 
-    // Create the Data reader object
+      const auto sender_idx_str = std::to_string(sender_idx);
+      
+      // Create a connection that is dedicated to this sender
+      std::string sender_conn_uid(d2d_conn_uid + sender_idx_str);
+      auto sender_conn_obj = obj_fac.create("SocketDetectorToDaqConnection", sender_conn_uid);
+      sender_conn_obj.set_objs("net_senders", { &sender->config_object() });
+      sender_conn_obj.set_obj("net_receiver", &receiver->config_object());
+      const auto* sender_conn = obj_fac.get_dal<appmodel::SocketDetectorToDaqConnection>(sender_conn_obj.UID());
+      const auto* sender_conn_conf_obj = &sender_conn->config_object();
 
-    //std::string reader_uid(fmt::format("crtframebuilder-{}-{}", this->UID(), std::to_string(conn_idx++)));
-    //TLOG_DEBUG(6) << fmt::format("creating OKS configuration object for Data reader class {} with id {}", reader_class, reader_uid);
-    //auto reader_obj = obj_fac.create(reader_class, reader_uid);
-//
-    //// Populate configuration and interfaces
-    //reader_obj.set_obj("configuration", &reader_conf->config_object());
-    //reader_obj.set_objs("connections", { &d2d_conn->config_object() });
-    //reader_obj.set_objs("raw_data_callbacks", raw_data_callback_objs);
-//
-    //modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(reader_obj.UID()));
+      // Create data queue
+      conffwk::ConfigObject queue_obj = obj_fac.create_queue_obj(crtframebuilder_output_qdesc, sender_idx_str);
+      const auto* queue = obj_fac.get_dal<confmodel::Connection>(queue_obj.UID());
+      const auto* queue_conf_obj = &queue->config_object();
 
-    //-----------------------------------------------------------------
-    //
-    // Create DataWriterModule object
-    //
+      //-----------------------------------------------------------------
+      //
+      // Create DetectorFrameBuilderModule object
+      //
+  
+      //
+      // Instantiate DetectorFrameBuilderModule of type CRTBernFrameBuilderModule/CRTGrenobleFrameBuilderModule
+      //
+  
+      // Create the detector frame builder object
+  
+      std::string builder_uid(fmt::format("crt-frame-builder-{}-{}", this->UID(), sender_idx_str));
+      TLOG_DEBUG(6) << fmt::format("creating OKS configuration object for detector frame builder class {} with id {}", builder_class, builder_uid);
+      auto builder_obj = obj_fac.create(builder_class, builder_uid);
+  
+      // Populate configuration and interfaces
+      builder_obj.set_obj("configuration", &det_frame_builder_conf->config_object());
+      builder_obj.set_obj("connection", sender_conn_conf_obj);
+      builder_obj.set_objs("outputs", { queue_conf_obj });
+  
+      modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(builder_obj.UID()));
 
-    //
-    // Instantiate DataWriterModule of type SocketWriterModule
-    //
+      //-----------------------------------------------------------------
+      //
+      // Create DataWriterModule object
+      //
+  
+      //
+      // Instantiate DataWriterModule of type SocketWriterModule
+      //
+  
+      // Create the SocketWriterModule object
+  
+      std::string writer_uid(fmt::format("socket-writer-{}-{}", this->UID(), sender_idx_str));
+      TLOG_DEBUG(6) << fmt::format("Creating OKS configuration object for socket writer class {} with id {}", writer_class, writer_uid);
+      auto writer_obj = obj_fac.create(writer_class, writer_uid);
+  
+      // Populate configuration and interfaces
+      writer_obj.set_obj("configuration", &writer_conf->config_object());
+      writer_obj.set_obj("connection", sender_conn_conf_obj);
+      writer_obj.set_objs("inputs", { queue_conf_obj });
+  
+      modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(writer_obj.UID()));    
 
-    // Create the SocketWriterModule object
-
-    std::string writer_uid(fmt::format("socketwriter-{}-{}", this->UID(), std::to_string(conn_idx++)));
-    TLOG_DEBUG(6) << fmt::format("Creating OKS configuration object for socket writer class {} with id {}", writer_class, writer_uid);
-    auto writer_obj = obj_fac.create(writer_class, writer_uid);
-
-    // Populate configuration and interfaces
-    writer_obj.set_obj("configuration", &writer_conf->config_object());
-    writer_obj.set_objs("connections", {&d2d_conn->config_object()});
-    writer_obj.set_objs("raw_data_callbacks", raw_data_callback_objs);
-
-    modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(writer_obj.UID()));    
+      ++sender_idx;
+    }
   }
 
   obj_fac.update_modules(modules);

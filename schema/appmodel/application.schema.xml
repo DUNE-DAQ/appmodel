@@ -94,7 +94,6 @@
   <relationship name="detector_frame_builder" class-type="DetectorFrameBuilderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_writer" class-type="SocketDataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="detector_connections" class-type="DetectorToDaqConnection" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="callback_desc" class-type="DataMoveCallbackDescriptor" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate daq module dal objects for streams of the CRTFrameBuilderApplication on the fly">
    <method-implementation language="c++" prototype="void generate_modules(std::shared_ptr&lt;appmodel::ConfigurationHelper&gt;) const override" body=""/>
   </method>
@@ -199,7 +198,7 @@
  <class name="DetectorFrameBuilderModule" is-abstract="yes">
   <superclass name="DaqModule"/>
   <relationship name="configuration" class-type="DetectorFrameBuilderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="connections" class-type="DetectorToDaqConnection" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="no" is-dependent="no"/>
+  <relationship name="connection" class-type="DetectorToDaqConnection" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class> 
 
  <class name="DataRecorderConf">
@@ -537,8 +536,7 @@
  <class name="SocketDataWriterModule">
   <superclass name="DaqModule"/>
   <relationship name="configuration" class-type="SocketDataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="connections" class-type="SocketDetectorToDaqConnection" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="no" is-dependent="no"/>
-  <relationship name="raw_data_callbacks" description="Configurations for raw data callbacks" class-type="DataMoveCallbackConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="connection" class-type="SocketDetectorToDaqConnection" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="SocketDetectorToDaqConnection">

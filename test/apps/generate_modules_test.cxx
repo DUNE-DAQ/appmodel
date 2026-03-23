@@ -118,16 +118,6 @@ main(int argc, char* argv[])
         }
       }
 
-      auto socketwriter_module = daq_module->cast<appmodel::SocketDataWriterModule>();
-      if (socketwriter_module != nullptr) {
-        auto callback_confs = socketwriter_module->get_raw_data_callbacks();
-        std::cout << " callback confs " << std::endl;
-        for (auto* callback_conf : callback_confs) {
-          auto cbObj = callback_conf->config_object();
-          cbObj.print_ref(std::cout, *confdb, "    ");
-        }
-      }
-
       std::cout << std::endl;
     }
   } else {
