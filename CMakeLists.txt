@@ -16,12 +16,12 @@ find_package(fmt REQUIRED)
 
 find_package(Boost COMPONENTS unit_test_framework program_options REQUIRED)
 
-daq_add_dal_library(application.schema.xml hermes.schema.xml fdmodules.schema.xml trigger.schema.xml wiec.schema.xml PDS.schema.xml tde.schema.xml CTB.schema.xml CIB.schema.xml
+daq_add_dal_library(application.schema.xml hermes.schema.xml fdmodules.schema.xml trigger.schema.xml wiec.schema.xml socket.schema.xml PDS.schema.xml tde.schema.xml CTB.schema.xml CIB.schema.xml
   NAMESPACE dunedaq::appmodel DEP_PKGS confmodel
   SOURCES
   ConfigurationHelper.cpp
 	ConfigObjectFactory.cpp
-	CRTReaderApplication.cpp
+	CRTFrameBuilderApplication.cpp
 	CTBApplication.cpp
 	DaphneApplication.cpp
 	DFApplication.cpp
