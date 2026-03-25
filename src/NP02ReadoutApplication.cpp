@@ -208,9 +208,6 @@ NP02ReadoutApplication::generate_modules(std::shared_ptr<appmodel::Configuration
     auto det_senders = d2d_conn->senders();
     auto det_receiver = d2d_conn->receiver();
 
-    TLOG() << "reader class: " << reader_class;
-    TLOG() << "Receiver: " << det_receiver->class_name();
-
     // Here I want to resolve the type of connection (network, felix, or?)
     // Rules of engagement: if the receiver interface is network or felix, the receivers should be castable to the counterpart
     if (reader_class == "DPDKReaderModule" || reader_class == "SocketReaderModule" || reader_class == "FDFakeReaderModule") {
