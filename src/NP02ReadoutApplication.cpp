@@ -208,18 +208,24 @@ NP02ReadoutApplication::generate_modules(std::shared_ptr<appmodel::Configuration
     auto det_senders = d2d_conn->senders();
     auto det_receiver = d2d_conn->receiver();
 
+    TLOG() << "reader class: " << reader_class;
+    TLOG() << "Receiver: " << det_receiver->class_name();
 
     // Here I want to resolve the type of connection (network, felix, or?)
     // Rules of engagement: if the receiver interface is network or felix, the receivers should be castable to the counterpart
-    if (reader_class == "DPDKReaderModule" || reader_class == "SocketReaderModule") {
+    if (reader_class == "DPDKReaderModule" || reader_class == "SocketReaderModule" || reader_class == "FDFakeReaderModule") {
       if ((reader_class == "DPDKReaderModule" && !det_receiver->cast<appmodel::DPDKReceiver>()) ||
+          (reader_class == "FDFakeReaderModule" && !det_receiver->cast<appmodel::DPDKReceiver>()) || // SSB: Note here, we are intrinsically locking FakeCard readout to only emulate DPDK data reception. Given NP02ReadoutApplication is intended for TDE readout at NP02, assuming this is OK.
           (reader_class == "SocketReaderModule" && !det_receiver->cast<appmodel::SocketReceiver>())) {
         throw(BadConf(ERS_HERE, fmt::format("{} requires NWDetDataReceiver, found {} of class {}", reader_class, det_receiver->UID(), det_receiver->class_name())));
       }
 
-      if (reader_class == "DPDKReaderModule") {
+      // SSB: Note that here you need to include FDFakeCardReader as well, because emulated readout needs some way to map NUMA to streams
+      // Since we require a receiver in the NetworkDetector2DAQConnections this would still work if the receiver type is a DPDKReceiver
+      if (reader_class == "DPDKReaderModule" || reader_class == "FDFakeReaderModule") {
         auto dpdk_reciever = det_receiver->cast<appmodel::DPDKReceiver>();
         receiver_numa = (int16_t)dpdk_reciever->get_uses()->get_numa_id();
+        TLOG() << "receiver numa: " << receiver_numa;
       }
 
       bool all_nw_senders = true;
