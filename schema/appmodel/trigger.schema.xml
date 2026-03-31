@@ -308,14 +308,13 @@
   <superclass name="TAAlgorithm"/>
  </class>
  
- <class name="TAMakerBSMWindowAlgorithm">
+ <class name="TAMakerProtoDUNEBSMWindowAlgorithm">
    <superclass name="TAAlgorithm"/>
    <attribute name="channel_map_name" description="Channel map for TA algorithm" type="string" init-value="PD2VDTPCChannelMap" is-not-null="yes"/>
    <attribute name="adc_threshold" description="Threshold for the SADC sum" type="u32" init-value="400000" is-not-null="yes"/>
    <attribute name="window_length" description="Length of window in time ticks" type="u32" init-value="20000" is-not-null="yes"/>
-   <attribute name="num_time_bins" description="Number of time bins" type="u32" init-value="5" is-not-null="yes"/>
+   <attribute name="num_time_bins" description="Number of time bins" type="u32" init-value="10" is-not-null="yes"/>
    <attribute name="bdt_threshold" description="BDT score threshold" type="u32" init-value="99" is-not-null="yes"/>
-   <attribute name="ratio_threshold" description="Threshold for ToT/peak ratio" type="u32" init-value="65" is-not-null="yes"/>
  </class>
 
  <class name="TCAlgorithm" description="Base class for TC algorithms">
