@@ -19,7 +19,6 @@
 #include "confmodel/GeoId.hpp"
 
 #include "appmodel/appmodelIssues.hpp"
-#include "ConfigObjectFactory.hpp"
 #include "appmodel/WIECApplication.hpp"
 
 #include "appmodel/WIBModule.hpp"
@@ -48,8 +47,8 @@ WIECApplication::contained_resources() const {
 }
 
 
-std::vector<const confmodel::DaqModule*> 
-WIECApplication::generate_modules(const confmodel::Session* session) const
+void
+WIECApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> helper) const
 {
   ConfigObjectFactory obj_fac(this);
   conffwk::Configuration* config = &this->configuration();
@@ -64,7 +63,7 @@ WIECApplication::generate_modules(const confmodel::Session* session) const
   for (auto d2d_conn : get_detector_connections()) {
 
     // Are we sure?
-    if (d2d_conn->is_disabled(*session)) {
+    if (helper->is_disabled(d2d_conn)) {
       TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
       continue;
     }
@@ -89,7 +88,7 @@ WIECApplication::generate_modules(const confmodel::Session* session) const
     // Loop over senders
     for (const auto* sender : det_senders) {
 
-      if ( sender->is_disabled(*session) ) {
+      if (helper->is_disabled(sender)) {
         TLOG() << "Skipping disabled sender: " << sender->UID();
         continue;
       }
@@ -122,7 +121,7 @@ WIECApplication::generate_modules(const confmodel::Session* session) const
 
             // Enable the femb if any of the associated streams is enabld
             // Senders in this senders list should be enabled, but better safe than sorry.
-            enable_fembs[femb_id] |= !det_stream->is_disabled(*session);
+            enable_fembs[femb_id] |= helper->is_enabled(det_stream);
           }
         }
         std::string wib_uid = fmt::format("wib-ctrl-{}-{}", this->UID(), ctrlhost);
@@ -159,7 +158,7 @@ WIECApplication::generate_modules(const confmodel::Session* session) const
 
   }
 
-  return modules;
+  obj_fac.update_modules(modules);
 }
  
 } // namespace appmodel  

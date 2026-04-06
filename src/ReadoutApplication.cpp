@@ -9,8 +9,9 @@
  */
 
 
+
+#include "appmodel/ConfigurationHelper.hpp"
 #include "ConfigObjectFactory.hpp"
-#include "appmodel/DFApplication.hpp"
 #include "appmodel/ReadoutApplication.hpp"
 #include "conffwk/Configuration.hpp"
 #include "confmodel/DetDataReceiver.hpp"
@@ -36,6 +37,7 @@
 #include "confmodel/Service.hpp"
 
 #include "appmodel/SourceIDConf.hpp"
+#include "appmodel/DataMoveCallbackConf.hpp"
 #include "appmodel/DataReaderModule.hpp"
 #include "appmodel/DataReaderConf.hpp"
 #include "appmodel/DataRecorderModule.hpp"
@@ -44,6 +46,7 @@
 #include "appmodel/DataHandlerModule.hpp"
 #include "appmodel/DataHandlerConf.hpp"
 #include "appmodel/FragmentAggregatorModule.hpp"
+#include "appmodel/FragmentAggregatorConf.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
@@ -73,9 +76,8 @@ ReadoutApplication::contained_resources() const {
   return to_resources(get_detector_connections());
 }
 
-std::vector<const confmodel::DaqModule*>
-ReadoutApplication::generate_modules(const confmodel::Session* session) const
-{
+void
+ReadoutApplication::generate_modules(std::shared_ptr<ConfigurationHelper> helper) const {
 
   TLOG_DEBUG(6) << "Generating modules for application " << this->UID();
 
@@ -111,7 +113,6 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
   //
   // Process the queue rules looking for inputs to our DL/TP handler modules
   //
-  const QueueDescriptor* dlh_input_qdesc = nullptr;
   const QueueDescriptor* dlh_reqinput_qdesc = nullptr;
   const QueueDescriptor* tp_input_qdesc = nullptr;
   // const QueueDescriptor* tpReqInputQDesc = nullptr;
@@ -120,18 +121,20 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
   for (auto rule : get_queue_rules()) {
     auto destination_class = rule->get_destination_class();
     auto data_type = rule->get_descriptor()->get_data_type();
-    // Why datahander here?
+    // Why datahander here? It is the base class for several DataHandler types (e.g. FDDataHandlerModule, SNBDataHandlerModule)
     if (destination_class == "DataHandlerModule" || destination_class == dlh_class || destination_class == tph_class) {
       if (data_type == "DataRequest") {
         dlh_reqinput_qdesc = rule->get_descriptor();
       } else if ((data_type == "TriggerPrimitive" || data_type == "TriggerPrimitiveVector") && get_tp_generation_enabled()) {
         tp_input_qdesc = rule->get_descriptor();
-      } else {
-        dlh_input_qdesc = rule->get_descriptor();
       }
     } else if (destination_class == "FragmentAggregatorModule") {
       fa_output_qdesc = rule->get_descriptor();
     }
+  }
+
+  if (dlh_reqinput_qdesc == nullptr) {
+    throw(BadConf(ERS_HERE, "No data link handler request input queue descriptor given"));
   }
 
   //
@@ -156,6 +159,22 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
     }
   }
 
+  if (fa_net_desc == nullptr) {
+    throw(BadConf(ERS_HERE, "No Fragment Aggregator network descriptor given"));
+  }
+  if (ts_net_desc == nullptr && dlh_conf->get_generate_timesync()) {
+    throw(BadConf(ERS_HERE, "No Time Sync network descriptor given but time sync generation is enabled"));
+  }
+
+  //
+  // Get the callback descriptor
+  //
+  const DataMoveCallbackDescriptor* raw_data_callback_desc = get_callback_desc();
+
+  if (raw_data_callback_desc == nullptr) {
+    throw(BadConf(ERS_HERE, "No Raw Data Callback descriptor given"));
+  }
+
   // Create here the Queue on which all data fragments are forwarded to the fragment aggregator
   // and a container for the queues of data request to TP handler and DLH
   if (fa_output_qdesc == nullptr) {
@@ -175,13 +194,13 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
 
   // Collect all streams
   std::vector<const confmodel::DetectorStream*> all_enabled_det_streams;
-  std::map<uint32_t, const confmodel::Connection*> data_queues_by_sid;
+  std::map<uint32_t, const appmodel::DataMoveCallbackConf*> callback_confs_by_sid;
 
   // std::vector<const conffwk::ConfigObject*> d2d_conn_objs;
   uint16_t conn_idx = 0;
 
   for (auto d2d_conn : get_detector_connections()) {
-    if (d2d_conn->is_disabled(*session)) {
+    if (helper->is_disabled(d2d_conn)) {
       TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
       continue;
     }
@@ -206,7 +225,7 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
     for (auto stream : d2d_conn->streams()) {
 
       // Are we sure?
-      if (stream->is_disabled(*session)) {
+      if (helper->is_disabled(stream)) {
         TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
         continue;
       }
@@ -256,22 +275,20 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
     reader_obj.set_obj("configuration", &reader_conf->config_object());
     reader_obj.set_objs("connections", {&d2d_conn->config_object()});
 
-    // Create the raw data queues
-    std::vector<const conffwk::ConfigObject*> data_queue_objs;
-    // keep a map for convenience
+    // Create the raw data callbacks
+    std::vector<const conffwk::ConfigObject*> raw_data_callback_objs;
 
     // Create data queues
     for (auto ds : enabled_det_streams) {
-      conffwk::ConfigObject queue_obj = obj_fac.create_queue_sid_obj(dlh_input_qdesc, ds);
-      const auto* data_queue = obj_fac.get_dal<confmodel::Connection>(queue_obj.UID());
-      data_queue_objs.push_back(&data_queue->config_object());
-      data_queues_by_sid[ds->get_source_id()] = data_queue;
+      conffwk::ConfigObject callback_obj = obj_fac.create_callback_sid_obj(raw_data_callback_desc, ds->get_source_id());
+      const auto* callback_conf = obj_fac.get_dal<DataMoveCallbackConf>(callback_obj.UID());
+      raw_data_callback_objs.push_back(&callback_conf->config_object());
+      callback_confs_by_sid[ds->get_source_id()] = callback_conf;
     }
 
-    reader_obj.set_objs("outputs", data_queue_objs);
+    reader_obj.set_objs("raw_data_callbacks", raw_data_callback_objs);
 
     modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(reader_obj.UID()));
-
   }
 
 
@@ -281,7 +298,15 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
   //
   std::vector<const confmodel::Connection*> tp_queues;
   if (get_tp_generation_enabled()) {
-
+    if (tp_input_qdesc == nullptr) {
+        throw(BadConf(ERS_HERE, "TP generation is enabled but no TP input queue descriptor given"));
+    }
+    if (tp_net_desc == nullptr) {
+        throw(BadConf(ERS_HERE, "TP generation is enabled but no TPSet network descriptor given"));
+    }
+    if (ta_net_desc == nullptr) {
+      throw(BadConf(ERS_HERE, "TP generation is enabled but no TriggerActivity network descriptor given"));
+    }
     // Create TP handler object
     auto tph_conf_obj = tph_conf->config_object();
     auto tpsrc_ids = get_tp_source_ids();
@@ -315,6 +340,7 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
       // Register queues with tp hankder
       tph_obj.set_objs("inputs", { &tp_queue_obj, &tpreq_queue_obj });
       tph_obj.set_objs("outputs", { &tp_net_obj, &ta_net_obj, &frag_queue_obj });
+
       modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(tph_obj.UID()));
     }
   }
@@ -344,11 +370,9 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
     dlh_obj.set_by_val<bool>("emulation_mode", emulation_mode);
     dlh_obj.set_obj("geo_id", &ds->get_geo_id()->config_object());
     dlh_obj.set_obj("module_configuration", &dlh_conf->config_object());
+    dlh_obj.set_obj("raw_data_callback", &callback_confs_by_sid[sid]->config_object());
 
     std::vector<const conffwk::ConfigObject*> dlh_ins, dlh_outs;
-
-    // Add datalink-handler queue to the inputs
-    dlh_ins.push_back(&data_queues_by_sid.at(sid)->config_object());
 
     // Create request queue
     conffwk::ConfigObject req_queue_obj = obj_fac.create_queue_sid_obj(dlh_reqinput_qdesc, ds);
@@ -376,8 +400,11 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
     modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(dlh_obj.UID()));
   }
 
-
   // Finally create Fragment Aggregator
+  auto aggregator_conf = get_fragment_aggregator();
+  if (aggregator_conf == 0) {
+    throw(BadConf(ERS_HERE, "No FragmentAggregatorModule configuration given"));
+  }
   std::string faUid("fragmentaggregator-" + UID());
   // conffwk::ConfigObject frag_aggr;
   TLOG_DEBUG(7) << "creating OKS configuration object for Fragment Aggregator class ";
@@ -386,35 +413,21 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
 
   // Process special Network rules!
   // Looking for Fragment rules from DFAppplications in current Session
-  auto sessionApps = session->enabled_applications();
   std::vector<conffwk::ConfigObject> fragOutObjs;
-  for (auto app : sessionApps) {
-    auto dfapp = app->cast<appmodel::DFApplication>();
-    if (dfapp == nullptr)
-      continue;
+  for (auto [uid, descriptor]:
+         helper->get_netdescriptors("Fragment", "DFApplication")) {
+    std::string dreqNetUid(descriptor->get_uid_base() + uid);
+    auto frag_conn = obj_fac.create("NetworkConnection", dreqNetUid);
 
-    auto dfNRules = dfapp->get_network_rules();
-    for (auto rule : dfNRules) {
-      auto descriptor = rule->get_descriptor();
-      auto data_type = descriptor->get_data_type();
-      if (data_type == "Fragment") {
-        std::string dreqNetUid(descriptor->get_uid_base() + dfapp->UID());
-        // conffwk::ConfigObject frag_conn;
-        // confdb.create(dbfile, "NetworkConnection", dreqNetUid, frag_conn);
-        auto frag_conn = obj_fac.create("NetworkConnection", dreqNetUid);
+    frag_conn.set_by_val<std::string>("data_type", descriptor->get_data_type());
+    frag_conn.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
+    // Override capacity, set to 2x expected number of Fragments
+    frag_conn.set_by_val<int>("capacity", all_enabled_det_streams.size() * 2);
 
-        frag_conn.set_by_val<std::string>("data_type", descriptor->get_data_type());
-
-        // Override capacity, set to 2x expected number of Fragments
-        frag_conn.set_by_val<int>("capacity", all_enabled_det_streams.size() * 2);
-        frag_conn.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
-
-        auto serviceObj = descriptor->get_associated_service()->config_object();
-        frag_conn.set_obj("associated_service", &serviceObj);
-        fragOutObjs.push_back(frag_conn);
-      } // If network rule has TriggerDecision type of data
-    }   // Loop over Apps network rules
-  }     // loop over Session specific Apps
+    auto serviceObj = descriptor->get_associated_service()->config_object();
+    frag_conn.set_obj("associated_service", &serviceObj);
+    fragOutObjs.push_back(frag_conn);
+  }    
 
   // Add output queueus of data requests and Fragments
   std::vector<const conffwk::ConfigObject*> fa_output_objs;
@@ -426,13 +439,13 @@ ReadoutApplication::generate_modules(const confmodel::Session* session) const
     fa_output_objs.push_back(&q->config_object());
   }
 
+  frag_aggr.set_obj("configuration", &aggregator_conf->config_object());
   frag_aggr.set_objs("inputs", { &fa_net_obj, &frag_queue_obj });
   frag_aggr.set_objs("outputs", fa_output_objs);
-
   modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(frag_aggr.UID()));
 
-  return modules;
+  obj_fac.update_modules(modules);
 }
 
-} // namespace appmodel  
+} // namespace appmodel
 } // namespace dunedaq

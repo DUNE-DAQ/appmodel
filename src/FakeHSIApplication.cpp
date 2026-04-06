@@ -10,6 +10,7 @@
 
 
 #include "ConfigObjectFactory.hpp"
+#include "appmodel/ConfigurationHelper.hpp"
 #include "appmodel/FakeHSIApplication.hpp"
 #include "appmodel/FakeHSIEventGeneratorModule.hpp"
 #include "appmodel/FakeHSIEventGeneratorConf.hpp"
@@ -17,7 +18,6 @@
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
 #include "appmodel/QueueDescriptor.hpp"
-#include "appmodel/DFApplication.hpp"
 #include "appmodel/DataHandlerModule.hpp"
 #include "appmodel/DataHandlerConf.hpp"
 #include "appmodel/SourceIDConf.hpp"
@@ -33,14 +33,11 @@
 #include <string>
 #include <vector>
 
-using namespace dunedaq;
-using namespace dunedaq::appmodel;
-
 namespace dunedaq {
 namespace appmodel {
 
-std::vector<const confmodel::DaqModule*>
-FakeHSIApplication::generate_modules(const confmodel::Session* session) const
+void
+FakeHSIApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> helper) const
 {
   std::vector<const confmodel::DaqModule*> modules;
 
@@ -119,24 +116,11 @@ FakeHSIApplication::generate_modules(const confmodel::Session* session) const
 
   // Process special Network rules!
   // Looking for Fragment rules from DFAppplications in current Session
-  auto sessionApps = session->enabled_applications();
   std::vector<conffwk::ConfigObject> fragOutObjs;
-  for (auto app : sessionApps) {
-    auto dfapp = app->cast<appmodel::DFApplication>();
-    if (dfapp == nullptr)
-      continue;
-
-    auto dfNRules = dfapp->get_network_rules();
-    for (auto rule : dfNRules) {
-      auto descriptor = rule->get_descriptor();
-      auto data_type = descriptor->get_data_type();
-      if (data_type == "Fragment") {
-        conffwk::ConfigObject frag_conn =
-          obj_fac.create_net_obj(descriptor, dfapp->UID());
-        fragOutObjs.push_back(frag_conn);
-      } // If network rule has TriggerDecision type of data
-    }   // Loop over Apps network rules
-  }     // loop over Session specific Apps
+  for (auto [uid, descriptor]:
+         helper->get_netdescriptors("Fragment", "DFApplication")) {
+    fragOutObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
+  }    
 
   // start building the list of outputs
   std::vector<const conffwk::ConfigObject*> fh_output_objs;
@@ -173,7 +157,7 @@ FakeHSIApplication::generate_modules(const confmodel::Session* session) const
 
   modules.push_back(obj_fac.get_dal<FakeHSIEventGeneratorModule>(genuid));
 
-  return modules;
+  obj_fac.update_modules(modules);
 }
  
 } // namespace appmodel  

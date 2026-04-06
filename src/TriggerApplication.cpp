@@ -9,13 +9,13 @@
  */
 
 
+#include "appmodel/ConfigurationHelper.hpp"
 #include "conffwk/Configuration.hpp"
 
 #include "confmodel/Connection.hpp"
 #include "confmodel/NetworkConnection.hpp"
 #include "confmodel/ResourceSet.hpp"
 #include "confmodel/Service.hpp"
-#include "confmodel/Session.hpp"
 
 #include "ConfigObjectFactory.hpp"
 #include "appmodel/DataSubscriberModule.hpp"
@@ -34,7 +34,6 @@
 #include "appmodel/SourceIDConf.hpp"
 
 #include "appmodel/TriggerApplication.hpp"
-#include "appmodel/DFApplication.hpp"
 #include "appmodel/appmodelIssues.hpp"
 
 #include "logging/Logging.hpp"
@@ -72,8 +71,8 @@ create_network_connection(std::string uid,
 }
 
 
-std::vector<const confmodel::DaqModule*>
-TriggerApplication::generate_modules(const confmodel::Session* session) const
+void
+TriggerApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> helper) const
 {
 
   std::vector<const confmodel::DaqModule*> modules;
@@ -144,28 +143,11 @@ TriggerApplication::generate_modules(const confmodel::Session* session) const
   }
 
   // Process special Network rules!
-  // Looking for Fragment rules from DFAppplications in current Session
-  auto sessionApps = session->enabled_applications();
   std::vector<conffwk::ConfigObject> fragOutObjs;
-  for (auto app : sessionApps) {
-    auto dfapp = app->cast<appmodel::DFApplication>();
-    if (dfapp == nullptr)
-      continue;
-
-    auto dfNRules = dfapp->get_network_rules();
-    for (auto rule : dfNRules) {
-      auto descriptor = rule->get_descriptor();
-      auto data_type = descriptor->get_data_type();
-      if (data_type == "Fragment") {
-        // std::string dreqNetUid(descriptor->get_uid_base() + )
-        auto frag_conn = obj_fac.create_net_obj(descriptor, dfapp->UID());
-
-        fragOutObjs.push_back(frag_conn);
-      } // If network rule has TriggerDecision type of data
-    }   // Loop over Apps network rules
-  }     // loop over Session specific Apps
-
-
+  for (auto [uid, descriptor]:
+         helper->get_netdescriptors("Fragment", "DFApplication")) {
+    fragOutObjs.push_back(obj_fac.create_net_obj(descriptor, uid));
+  }
   if ( req_net_desc== nullptr) {
       throw (BadConf(ERS_HERE, "No network descriptor given to receive request and send data was set"));
   }
@@ -239,7 +221,8 @@ TriggerApplication::generate_modules(const confmodel::Session* session) const
 
   modules.push_back(obj_fac.get_dal<DataSubscriberModule>(reader_uid));
 
-  return modules;
+
+  obj_fac.update_modules(modules);
 }
  
 } // namespace appmodel  

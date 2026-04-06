@@ -10,7 +10,7 @@
 
 
 #include "ConfigObjectFactory.hpp"
-#include "appmodel/DFApplication.hpp"
+#include "appmodel/ConfigurationHelper.hpp"
 #include "appmodel/DFOApplication.hpp"
 #include "appmodel/DFOConf.hpp"
 #include "appmodel/DFOModule.hpp"
@@ -19,7 +19,7 @@
 #include "appmodel/QueueConnectionRule.hpp"
 #include "appmodel/QueueDescriptor.hpp"
 #include "appmodel/appmodelIssues.hpp"
-#include "conffwk/Configuration.hpp"
+
 #include "confmodel/Connection.hpp"
 #include "confmodel/NetworkConnection.hpp"
 #include "confmodel/Service.hpp"
@@ -32,8 +32,8 @@
 namespace dunedaq {
 namespace appmodel {
 
-std::vector<const confmodel::DaqModule*>
-DFOApplication::generate_modules(const confmodel::Session* session) const
+void
+DFOApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> helper) const
 {
   std::vector<const confmodel::DaqModule*> modules;
 
@@ -90,23 +90,11 @@ DFOApplication::generate_modules(const confmodel::Session* session) const
   }
 
   // Process special Network rules!
-  // Looking for DataRequest rules from ReadoutAppplications in current Session
-  auto sessionApps = session->enabled_applications();
   std::vector<conffwk::ConfigObject> tdOutObjs;
-  for (auto app : sessionApps) {
-    auto dfapp = app->cast<appmodel::DFApplication>();
-    if (dfapp == nullptr)
-      continue;
-
-    auto dfNRules = dfapp->get_network_rules();
-    for (auto rule : dfNRules) {
-      auto descriptor = rule->get_descriptor();
-      auto data_type = descriptor->get_data_type();
-      if (data_type == "TriggerDecision") {
-        tdOutObjs.emplace_back(obj_fac.create_net_obj(descriptor, dfapp->UID()));
-      } // If network rule has TriggerDecision type of data
-    }   // Loop over Apps network rules
-  }     // loop over Session specific Apps
+  for (auto [uid, descriptor]:
+         helper->get_netdescriptors("TriggerDecision", "DFApplication")) {
+    tdOutObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
+  }
 
   for (auto& tdOut : tdOutObjs) {
     output_conns.push_back(&tdOut);
@@ -118,7 +106,7 @@ DFOApplication::generate_modules(const confmodel::Session* session) const
   // Add to our list of modules to return
   modules.push_back(obj_fac.get_dal<DFOModule>(dfoUid));
 
-  return modules;
+  obj_fac.update_modules(modules);
 }
 
 } // namespace appmodel  
