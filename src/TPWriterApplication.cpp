@@ -20,7 +20,6 @@
 #include "appmodel/TPStreamWriterConf.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
-#include "appmodel/ReadoutApplication.hpp"
 #include "appmodel/SourceIDConf.hpp"
 #include "appmodel/appmodelIssues.hpp"
 #include "logging/Logging.hpp"
@@ -34,7 +33,7 @@ namespace dunedaq {
 namespace appmodel {
 
 void
-TPStreamWriterApplication::generate_modules(const confmodel::Session* /*session*/) const
+TPStreamWriterApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> /*helper*/) const
 {
   std::vector<const confmodel::DaqModule*> modules;
 

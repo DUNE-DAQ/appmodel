@@ -31,7 +31,7 @@ namespace dunedaq {
 namespace appmodel {
 
 void
-SNBBookkeeperApplication::generate_modules(const confmodel::Session* /*session*/) const
+SNBBookkeeperApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> /*helper*/) const
 {
   ConfigObjectFactory obj_fac(this);
 

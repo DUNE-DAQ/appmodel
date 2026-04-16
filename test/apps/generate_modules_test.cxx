@@ -16,6 +16,7 @@
 #include "confmodel/DaqModule.hpp"
 #include "confmodel/Session.hpp"
 
+#include "appmodel/ConfigurationHelper.hpp"
 #include "appmodel/DFApplication.hpp"
 #include "appmodel/DFOApplication.hpp"
 #include "appmodel/MLTApplication.hpp"
@@ -34,6 +35,7 @@
 
 #include <string>
 using namespace dunedaq;
+using namespace dunedaq::appmodel;
 
 int
 main(int argc, char* argv[])
@@ -72,9 +74,11 @@ main(int argc, char* argv[])
       return 0;
     }
 
+    auto helper = std::make_shared<ConfigurationHelper>(session);
     try {
-      daqapp->generate_modules(session);
-    } catch (appmodel::BadConf& exc) {
+      daqapp->generate_modules(helper);
+    }
+    catch (appmodel::BadConf& exc) {
       std::cout << "Caught BadConf exception: " << exc << std::endl;
       exit(-1);
     }

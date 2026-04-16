@@ -9,7 +9,6 @@
  */
 
 #include "ConfigObjectFactory.hpp"
-#include "appmodel/DFApplication.hpp"
 #include "appmodel/NP02ReadoutApplication.hpp"
 #include "conffwk/Configuration.hpp"
 #include "confmodel/DetDataReceiver.hpp"
@@ -71,7 +70,7 @@ namespace appmodel {
 
 //-----------------------------------------------------------------------------
 void
-NP02ReadoutApplication::generate_modules(const confmodel::Session* session) const
+NP02ReadoutApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> helper) const
 {
 
   TLOG_DEBUG(6) << "Generating modules for application " << this->UID();
@@ -188,7 +187,7 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
     uint16_t receiver_numa = 0;
 
     // Are we sure?
-    if (d2d_conn->is_disabled(*session)) {
+    if (helper->is_disabled(d2d_conn)) {
       TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
       continue;
     }
@@ -239,7 +238,7 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
     for (auto stream : d2d_conn->streams()) {
 
       // Are we sure?
-      if (stream->is_disabled(*session)) {
+      if (helper->is_disabled(stream)) {
         TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
         continue;
       }
@@ -437,32 +436,21 @@ NP02ReadoutApplication::generate_modules(const confmodel::Session* session) cons
 
   // Process special Network rules!
   // Looking for Fragment rules from DFAppplications in current Session
-  auto sessionApps = session->enabled_applications();
   std::vector<conffwk::ConfigObject> fragOutObjs;
-  for (auto app : sessionApps) {
-    auto dfapp = app->cast<appmodel::DFApplication>();
-    if (dfapp == nullptr)
-      continue;
+  for (auto [uid, descriptor]:
+         helper->get_netdescriptors("Fragment", "DFApplication")) {
+    std::string dreqNetUid(descriptor->get_uid_base() + uid);
+    auto frag_conn = obj_fac.create("NetworkConnection", dreqNetUid);
 
-    auto dfNRules = dfapp->get_network_rules();
-    for (auto rule : dfNRules) {
-      auto descriptor = rule->get_descriptor();
-      auto data_type = descriptor->get_data_type();
-      if (data_type == "Fragment") {
-        std::string dreqNetUid(descriptor->get_uid_base() + dfapp->UID());
-        // conffwk::ConfigObject frag_conn;
-        // config->create(dbfile, "NetworkConnection", dreqNetUid, frag_conn);
-        auto frag_conn = obj_fac.create("NetworkConnection", dreqNetUid);
+    frag_conn.set_by_val<std::string>("data_type", descriptor->get_data_type());
+    frag_conn.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
+    // Override capacity, set to 2x expected number of Fragments
+    frag_conn.set_by_val<int>("capacity", all_enabled_det_streams.size() * 2);
 
-        frag_conn.set_by_val<std::string>("data_type", descriptor->get_data_type());
-        frag_conn.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
-
-        auto serviceObj = descriptor->get_associated_service()->config_object();
-        frag_conn.set_obj("associated_service", &serviceObj);
-        fragOutObjs.push_back(frag_conn);
-      } // If network rule has TriggerDecision type of data
-    }   // Loop over Apps network rules
-  }     // loop over Session specific Apps
+    auto serviceObj = descriptor->get_associated_service()->config_object();
+    frag_conn.set_obj("associated_service", &serviceObj);
+    fragOutObjs.push_back(frag_conn);
+  }    
 
   // Add output queueus of data requests and Fragments
   std::vector<const conffwk::ConfigObject*> fa_output_objs;

@@ -38,7 +38,7 @@ TDECrateApplication::contained_resources() const {
 }
 
 void
-TDECrateApplication::generate_modules(const confmodel::Session* session) const
+TDECrateApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> helper) const
 {
   ConfigObjectFactory obj_fac(this);
 
@@ -48,7 +48,7 @@ TDECrateApplication::generate_modules(const confmodel::Session* session) const
 
   for (auto d2d_conn : get_detector_connections()) {
         // Are we sure?
-    if (d2d_conn->is_disabled(*session)) {
+    if (helper->is_disabled(d2d_conn)) {
       TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
       continue;
     }
@@ -65,7 +65,7 @@ TDECrateApplication::generate_modules(const confmodel::Session* session) const
     // Loop over senders
     for (const auto* sender : det_senders) {
 
-      if ( sender->is_disabled(*session) ) {
+      if ( helper->is_disabled(sender) ) {
         TLOG() << "Skipping disabled sender: " << sender->UID();
         continue;
       }

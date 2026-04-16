@@ -26,7 +26,18 @@ namespace dunedaq {
         "Method '" << method_name << "' was called but is not implemented in this class",
         ((std::string)method_name))
 
-}
+
+  ERS_DECLARE_ISSUE(appmodel,
+                    NotSmart,
+                    "Object is not a SmartDaqApplication: " << obj,
+                    ((std::string)obj))
+
+  ERS_DECLARE_ISSUE(appmodel,
+                    BadD2d,
+                    "Contained object is not a DetectorToDaqConnection: " << obj,
+                    ((std::string)obj))
+
+} // namespace dunedaq
 
 
 #endif // APPDALISSUES_HPP
