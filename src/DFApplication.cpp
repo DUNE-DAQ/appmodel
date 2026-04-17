@@ -123,7 +123,7 @@ DFApplication::object_tags() const {
   auto host = get_runs_on()->get_runs_on()->UID();
   for (auto writer : get_data_writers()) {
     auto path = writer->get_data_store_params()->get_directory_path();
-    tags.insert("storage:"+host+":"+path);
+    tags.insert(fmt::format("storage:{}:{}", host, path));
   }
   return tags;
 }
