@@ -9,6 +9,7 @@
  */
 
 
+#include "appmodel/ConfigurationHelper.hpp"
 #include "ConfigObjectFactory.hpp"
 #include "appmodel/DTSHSIApplication.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
@@ -34,8 +35,9 @@
 namespace dunedaq {
 namespace appmodel {
 
-std::vector<const confmodel::DaqModule*>
-DTSHSIApplication::generate_modules(const confmodel::Session* /*session*/) const
+
+void
+DTSHSIApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> /*helper*/) const
 {
   ConfigObjectFactory obj_fac(this);
   
@@ -129,7 +131,7 @@ DTSHSIApplication::generate_modules(const confmodel::Session* /*session*/) const
 
   modules.push_back(obj_fac.get_dal<HSIReadout>(genuid));
 
-  return modules;
+  obj_fac.update_modules(modules);
 }
  
 } // namespace appmodel  

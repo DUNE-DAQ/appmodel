@@ -31,8 +31,8 @@
 namespace dunedaq {
 namespace appmodel {
 
-std::vector<const confmodel::DaqModule*> 
-HSIEventToTCApplication::generate_modules(const confmodel::Session* /*session*/) const
+void
+HSIEventToTCApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> /*helper*/) const
 {
 
   ConfigObjectFactory obj_fac(this);
@@ -78,7 +78,7 @@ HSIEventToTCApplication::generate_modules(const confmodel::Session* /*session*/)
   // Add to our list of modules to return
   modules.push_back(obj_fac.get_dal<DataSubscriberModule>(hstcUid));
 
-  return modules;
+  obj_fac.update_modules(modules);
 }
  
 } // namespace appmodel  

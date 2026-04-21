@@ -1,4 +1,4 @@
-from ._daq_appmodel_py import *
+from ._daq_appmodel_dal_py import *
 
 __all__= ['generate_modules']
 
@@ -7,7 +7,7 @@ class UnknownGeneratorException(Exception):
 
 def generate_modules(confdb, app, session):
     
-    mods = smart_dap_application_generate_modules(confdb._obj, app.id, session.id)
+    mods = smart_daq_application_generate_modules(confdb._obj, app.id, session.id)
 
     return [confdb.get_dal(m.class_name, m.id) for m in mods]
 

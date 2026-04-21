@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="ASCII"?>
+
+<!-- oks-schema version 2.2 -->
+
+
+<!DOCTYPE oks-schema [
+  <!ELEMENT oks-schema (info, (include)?, (comments)?, (class)+)>
+  <!ELEMENT info EMPTY>
+  <!ATTLIST info
+      name CDATA #IMPLIED
+      type CDATA #IMPLIED
+      num-of-items CDATA #REQUIRED
+      oks-format CDATA #FIXED "schema"
+      oks-version CDATA #REQUIRED
+      created-by CDATA #IMPLIED
+      created-on CDATA #IMPLIED
+      creation-time CDATA #IMPLIED
+      last-modified-by CDATA #IMPLIED
+      last-modified-on CDATA #IMPLIED
+      last-modification-time CDATA #IMPLIED
+  >
+  <!ELEMENT include (file)+>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+      path CDATA #REQUIRED
+  >
+  <!ELEMENT comments (comment)+>
+  <!ELEMENT comment EMPTY>
+  <!ATTLIST comment
+      creation-time CDATA #REQUIRED
+      created-by CDATA #REQUIRED
+      created-on CDATA #REQUIRED
+      author CDATA #REQUIRED
+      text CDATA #REQUIRED
+  >
+  <!ELEMENT class (superclass | attribute | relationship | method)*>
+  <!ATTLIST class
+      name CDATA #REQUIRED
+      description CDATA ""
+      is-abstract (yes|no) "no"
+  >
+  <!ELEMENT superclass EMPTY>
+  <!ATTLIST superclass name CDATA #REQUIRED>
+  <!ELEMENT attribute EMPTY>
+  <!ATTLIST attribute
+      name CDATA #REQUIRED
+      description CDATA ""
+      type (bool|s8|u8|s16|u16|s32|u32|s64|u64|float|double|date|time|string|uid|enum|class) #REQUIRED
+      range CDATA ""
+      format (dec|hex|oct) "dec"
+      is-multi-value (yes|no) "no"
+      init-value CDATA ""
+      is-not-null (yes|no) "no"
+      ordered (yes|no) "no"
+  >
+  <!ELEMENT relationship EMPTY>
+  <!ATTLIST relationship
+      name CDATA #REQUIRED
+      description CDATA ""
+      class-type CDATA #REQUIRED
+      low-cc (zero|one) #REQUIRED
+      high-cc (one|many) #REQUIRED
+      is-composite (yes|no) #REQUIRED
+      is-exclusive (yes|no) #REQUIRED
+      is-dependent (yes|no) #REQUIRED
+      ordered (yes|no) "no"
+  >
+  <!ELEMENT method (method-implementation*)>
+  <!ATTLIST method
+      name CDATA #REQUIRED
+      description CDATA ""
+  >
+  <!ELEMENT method-implementation EMPTY>
+  <!ATTLIST method-implementation
+      language CDATA #REQUIRED
+      prototype CDATA #REQUIRED
+      body CDATA ""
+  >
+]>
+
+<oks-schema>
+
+<info name="" type="" num-of-items="23" oks-format="schema" oks-version="862f2957270" created-by="nfiuza" created-on="np04-srv-019.cern.ch" creation-time="20260121T111115" last-modified-by="nfiuza" last-modified-on="np04-srv-019.cern.ch" last-modification-time="20260121T124152"/>
+
+<include>
+ <file path="schema/confmodel/dunedaq.schema.xml"/>
+ <file path="schema/appmodel/application.schema.xml"/>
+</include>
+
+
+ <class name="CIBApplication" description="Application that controls the CIB">
+  <superclass name="SmartDaqApplication"/>
+  <superclass name="ResourceSetDisableAND"/>
+  <relationship name="generator" class-type="CIBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="board" class-type="CIBoardConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="link_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+
+  <!-- generating methods -->
+  <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
+   <method-implementation language="c++" prototype="void generate_modules(std::shared_ptr&lt;appmodel::ConfigurationHelper&gt;) const override" body=""/>
+  </method>
+
+  <method name="contained_resources" description="">
+   <method-implementation language="c++" prototype="virtual std::vector&lt;const Resource*&gt; contained_resources() const override" body=""/>
+  </method>
+ </class>
+
+ <!-- This is kind of a class on its own. This will store the HSI event data into a local dump -->
+ <class name="CIBCalibrationStream" description="Configuration of the calibration stream">
+  <attribute name="output_directory" type="string" is-not-null="yes"/>
+  <attribute name="update_period_s" type="u16" is-not-null="yes"/>
+ </class>
+
+ <!-- Configuration of the generator instance, i.e., the receiver on dunedaq that will then communicate with the CIB -->
+ <!-- This is passed to CIBModule to be parsed and then establish the connection to the CIB -->
+ <class name="CIBConf" description="Configuration of the connection *to* the CIB">
+  <attribute name="cib_host" description="IP address of the board" type="string" is-not-null="yes"/>
+  <attribute name="cib_port" description="Port where the CIB is listening to" type="u16" is-not-null="yes"/>
+  <attribute name="connection_timeout_ms" description="Connection timeout" type="u16" is-not-null="yes"/>
+  <attribute name="trigger_bit" description="Trigger bit that this particular instance is associated with" type="u32" is-not-null="yes"/>
+  <relationship name="calibration_stream" class-type="CIBCalibrationStream" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="cib_trigger" class-type="CIBTrigger" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="trigger_report" class-type="CIBTriggerReport" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+
+ </class>
+
+
+ <!-- This represents the configuration sent **to** the CIB : needs to be updated with the runtime information of where the receiver is-->
+ <class name="CIBoardConf" description="Configuration of the CIB board itself">
+  <superclass name="Resource"/>
+  <attribute name="receiver_host" type="string" init-value="localhost" is-not-null="yes"/>
+  <attribute name="receiver_port" type="u16" init-value="8993" is-not-null="yes"/>
+  <relationship name="geo_id" class-type="GeoId" low-cc="one" high-cc="one" is-composite="no" is-exclusive="yes" is-dependent="no"/>
+  <method name="get_cib_json" description="create the json configuration for the board">
+  <method-implementation language="C++" prototype="nlohmann::json get_cib_json(const dunedaq::confmodel::Session&amp; session, std::optional&lt;std::string&gt; socket_host = std::nullopt, std::optional&lt;uint16_t&gt; socket_port = std::nullopt ) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;#include &lt;optional&gt;&#xA;END_HEADER_PROLOGUE"/>
+  </method>
+ </class>
+
+ <class name="CIBModule" description="Top level configuration object for the CIBModule">
+  <superclass name="DaqModule"/>
+  
+  <relationship name="configuration" class-type="CIBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="board" class-type="CIBoardConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="yes"/>
+ </class>
+
+ <class name="CIBTriggerReport">
+  <attribute name="directory" type="string" is-not-null="yes"/>
+ </class>
+
+  <class name="CIBTrigger" description="Configuration of the CIB trigger">
+  <attribute name="trigger_id" type="string" is-not-null="yes"/>
+  <attribute name="trigger_bit" type="string" is-not-null="yes"/>
+  <attribute name="description" type="string" is-not-null="yes"/>
+  </class>
+
+</oks-schema>

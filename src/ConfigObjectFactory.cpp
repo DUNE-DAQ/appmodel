@@ -1,23 +1,14 @@
 
 #include "ConfigObjectFactory.hpp"
+#include "confmodel/Service.hpp"
+#include "oks/file.hpp"
+
+#include <fmt/core.h> // Replace with std::format when we switch to a newer compiler?
 
 namespace dunedaq {
 namespace appmodel {
 
-ConfigObjectFactory::ConfigObjectFactory(conffwk::Configuration* config,
-        const std::string& dbfile,
-        const std::string& app_uid)
-    : m_config(config),
-    m_dbfile(dbfile),
-    m_app_uid(app_uid) {
-
-    //FIXME: remove this hacky hack
-    oks::OksFile::set_nolock_mode(true);
-}
-
-
-
-ConfigObjectFactory::ConfigObjectFactory(const conffwk::DalObject* parent) :
+ConfigObjectFactory::ConfigObjectFactory(const SmartDaqApplication* parent) :
     m_config(&parent->configuration()),
     m_dbfile(parent->config_object().contained_in()),
     m_app_uid(parent->UID()) {
@@ -31,7 +22,7 @@ ConfigObjectFactory::~ConfigObjectFactory() {
     oks::OksFile::set_nolock_mode(false);
 }
 
-conffwk::ConfigObject 
+conffwk::ConfigObject
 ConfigObjectFactory::create(const std::string& class_name,
                                      const std::string& id) const {
     conffwk::ConfigObject cfg_obj;
@@ -67,12 +58,24 @@ ConfigObjectFactory::create_queue_sid_obj(const QueueDescriptor* qdesc, uint32_t
 }
 
 //---
-conffwk::ConfigObject 
+conffwk::ConfigObject
 ConfigObjectFactory::create_queue_sid_obj(const QueueDescriptor* qdesc,
                                      const confmodel::DetectorStream* stream) const {
 return create_queue_sid_obj(qdesc, stream->get_source_id());
 }
 
+//---
+conffwk::ConfigObject
+ConfigObjectFactory::create_callback_sid_obj(const DataMoveCallbackDescriptor* cdesc, uint32_t src_id) const
+{
+  std::string rdc_uid(fmt::format("{}{}", cdesc->get_uid_base(), src_id));
+  auto rdc_obj = create("DataMoveCallbackConf", rdc_uid);
+
+  rdc_obj.set_by_val<std::string>("data_type", cdesc->get_data_type());
+  rdc_obj.set_by_val<uint32_t>("source_id", src_id);
+
+  return rdc_obj;
+}
 //---
 
 /**
@@ -93,6 +96,7 @@ ConfigObjectFactory::create_net_obj(const NetworkConnectionDescriptor* ndesc,
 
     net_obj.set_by_val<std::string>("data_type", ndesc->get_data_type());
     net_obj.set_by_val<std::string>("connection_type", ndesc->get_connection_type());
+    net_obj.set_by_val<uint32_t>("capacity", ndesc->get_capacity());
     net_obj.set_obj("associated_service", &svc_obj);
 
     return net_obj;
