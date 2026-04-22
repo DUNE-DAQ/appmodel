@@ -118,7 +118,7 @@
   <attribute name="scale_divisor_plane2" description="Running sum scale divisor for plane 2." type="u8" init-value="1" is-not-null="yes"/>
  </class>
 
- <class name="AVXThresholdProcessor" description="TPG threshold signal processor. Filters the input signal by passing values that are above threshold and suppresing otherwise.">
+ <class name="AVXThresholdProcessor" description="TPG threshold signal processor. Filters the input signal by passing values that are above threshold and suppressing otherwise.">
   <superclass name="ProcessingStep"/>
   <attribute name="plane0" description="Threshold for plane 0." type="s16" init-value="100" is-not-null="yes"/>
   <attribute name="plane1" description="Threshold for plane 1." type="s16" init-value="100" is-not-null="yes"/>
