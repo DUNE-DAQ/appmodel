@@ -120,9 +120,9 @@
 
  <class name="AVXThresholdProcessor" description="TPG threshold signal processor. Filters the input signal by passing values that are above threshold and suppresing otherwise.">
   <superclass name="ProcessingStep"/>
-  <attribute name="plane0" description="Threshold for plane 0." type="u16" init-value="100" is-not-null="yes"/>
-  <attribute name="plane1" description="Threshold for plane 1." type="u16" init-value="100" is-not-null="yes"/>
-  <attribute name="plane2" description="Threshold for plane 2." type="u16" init-value="100" is-not-null="yes"/>
+  <attribute name="plane0" description="Threshold for plane 0." type="s16" init-value="100" is-not-null="yes"/>
+  <attribute name="plane1" description="Threshold for plane 1." type="s16" init-value="100" is-not-null="yes"/>
+  <attribute name="plane2" description="Threshold for plane 2." type="s16" init-value="100" is-not-null="yes"/>
  </class>
 
  <class name="DataSubscriberModule">
