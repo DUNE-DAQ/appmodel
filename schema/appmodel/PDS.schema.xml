@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="11" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20250818T145108"/>
+<info name="" type="" num-of-items="14" oks-format="schema" oks-version="862f2957270" created-by="mroda" created-on="theta.ph.liv.ac.uk" creation-time="20241011T123346" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20260319T165326"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -93,7 +93,7 @@
  <class name="DaphneApplication">
   <superclass name="SmartDaqApplication"/>
   <superclass name="ResourceSetDisableAND"/>
-  <relationship name="configuration" class-type="DaphneConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="configuration" description="Deferred configuration to be loaded by DaphneControllerModule" class-type="DeferredConfig" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="detector_connections" description="List of detector components controlled by this application" class-type="DetectorToDaqConnection" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="hermes_module_conf" class-type="HermesModuleConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
@@ -104,15 +104,16 @@
   </method>
  </class>
 
- <class name="DaphneConf" description="Top entry for the configuraiton of a single daphne board">
-  <attribute name="timeout_ms" description="timeout used for the board operations" type="u16" range="1..60000" init-value="1000" is-not-null="yes"/>
-  <attribute name="time_reset" description="If True, it performs the time reset at configuration. If False, that is skipped" type="bool" init-value="True" is-not-null="yes"/>
+ <class name="DaphneBoard">
   <relationship name="default_v2_settings" description="Value to be used during scrap" class-type="DaphneV2BoardConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="default_v3_settings" description="Value to be used during scrap" class-type="DaphneV2BoardConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="boards" class-type="DaphneMapEntry" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="default_v3_settings" class-type="DaphneV2BoardConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <method name="get_timeout" description="get the interval casted in ms">
-   <method-implementation language="C++" prototype="std::chrono::milliseconds get_timeout() const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &lt;chrono&gt;&#xA;END_HEADER_PROLOGUE&#xA;&#xA;return std::chrono::milliseconds(get_timeout_ms());"/>
-  </method>
+ </class>
+
+ <class name="DaphneControllerModule">
+  <superclass name="DaqModule"/>
+  <attribute name="daphne_id" description="Id of DaphneBoardConf to be read from run time included configuration file." type="string" is-not-null="yes"/>
+  <relationship name="daphne_conf" class-type="DeferredConfig" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="DaphneMapEntry">
@@ -150,6 +151,8 @@
   <attribute name="slot_id" type="u16" range="0..15" is-not-null="yes"/>
   <attribute name="crate_id" type="u16" range="0..1023" is-not-null="yes"/>
   <attribute name="detector_id" type="u16" range="0..63" is-not-null="yes"/>
+  <attribute name="timeout_ms" description="timeout used for the board operations" type="u16" range="1..60000" init-value="1000" is-not-null="yes"/>
+  <attribute name="time_reset" description="If True, it performs the time reset at configuration. If False, that is skipped" type="bool" init-value="true" is-not-null="yes"/>
   <relationship name="active_channels" class-type="DaphneV2Channel" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="active_afes" class-type="DaphneV2AFE" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="default_channel" class-type="DaphneV2Channel" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -166,6 +169,9 @@
   <method name="is_afe_used" description="check if an AFE is used">
    <method-implementation language="c++" prototype="bool is_afe_used(size_t ch) const" body=""/>
   </method>
+  <method name="timeout" description="get the interval cast into std::chrono::milliseconds">
+   <method-implementation language="c++" prototype="std::chrono::milliseconds timeout() const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &lt;chrono&gt;&#xA;END_HEADER_PROLOGUE&#xA;&#xA;return std::chrono::milliseconds(get_timeout_ms());"/>
+  </method>
  </class>
 
  <class name="DaphneV2Channel">
@@ -176,17 +182,7 @@
   <attribute name="stream_id" description="In Daphne v3 we might need to link a channel to a specific link ID, and this is the hook for the operation" type="s8" init-value="-1" is-not-null="yes"/>
  </class>
 
- <class name="DaphneControllerModule">
-  <superclass name="DaqModule"/>
-  <relationship name="daphne_conf" class-type="DaphneConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="board_conf" class-type="DaphneV2BoardConf" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
- </class>
-
  <class name="DaphneV2ControllerModule">
-  <superclass name="DaphneControllerModule"/>
- </class>
-
- <class name="DaphneV3ControllerModule">
   <superclass name="DaphneControllerModule"/>
  </class>
 
@@ -206,6 +202,10 @@
   <method name="get_reg51" description="create registry 51 from the configuration">
    <method-implementation language="c++" prototype="uint16_t get_reg51() const" body=""/>
   </method>
+ </class>
+
+ <class name="DaphneV3ControllerModule">
+  <superclass name="DaphneControllerModule"/>
  </class>
 
  <class name="SSPLEDCalibModule" description="SSP LED Calib DAQ Module configuration">

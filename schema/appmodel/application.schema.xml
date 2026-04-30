@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="69" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20260203T131505"/>
+<info name="" type="" num-of-items="70" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="gjc" last-modified-on="latitude" last-modification-time="20260319T120221"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -172,6 +172,16 @@
   <relationship name="module_configuration" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
+ <class name="DataMoveCallbackConf">
+  <attribute name="source_id" type="u32" init-value="0" is-not-null="yes"/>
+  <attribute name="data_type" description="Name of the output data type. Should be defined via a call to DUNE_DAQ_TYPESTRING" type="string" init-value="WIBEthFrame"/>
+ </class>
+
+ <class name="DataMoveCallbackDescriptor">
+  <attribute name="uid_base" description="Base for callback UID string. May be combined with a source id" type="string" is-not-null="yes"/>
+  <attribute name="data_type" description="string identifying type of data passed as a callback parameter" type="string" is-not-null="yes"/>
+ </class>
+
  <class name="DataProcessor">
   <attribute name="queue_sizes" type="u32" init-value="10000"/>
   <attribute name="thread_names_prefix" type="string" init-value="postproc-"/>
@@ -228,6 +238,11 @@
   <superclass name="DaqModule"/>
   <attribute name="writer_identifier" type="string"/>
   <relationship name="configuration" class-type="DataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="DeferredConfig">
+  <attribute name="configuration_file" description="Additional configuration file to be included at run time to provide detailed configuration of the daphne board" type="string" is-not-null="yes"/>
+  <attribute name="entry_uid" description="UID of the object to be loaded from the deferred configuration file" type="string" is-not-null="yes"/>
  </class>
 
  <class name="FakeDataApplication">
@@ -404,16 +419,6 @@
   <attribute name="queue_type" description="Type of queue" type="enum" range="kUnknown,kStdDeQueue,kFollySPSCQueue,kFollyMPMCQueue" init-value="kFollySPSCQueue" is-not-null="yes"/>
   <attribute name="capacity" type="u32" init-value="100" is-not-null="yes"/>
   <attribute name="data_type" description="string identifying type of data transferred through this queue" type="string" is-not-null="yes"/>
- </class>
-
- <class name="DataMoveCallbackConf">
-  <attribute name="source_id" type="u32" init-value="0" is-not-null="yes"/>
-  <attribute name="data_type" description="Name of the output data type. Should be defined via a call to DUNE_DAQ_TYPESTRING" type="string" init-value="WIBEthFrame"/>
- </class>
-
- <class name="DataMoveCallbackDescriptor">
-  <attribute name="uid_base" description="Base for callback UID string. May be combined with a source id" type="string" is-not-null="yes"/>
-  <attribute name="data_type" description="string identifying type of data passed as a callback parameter" type="string" is-not-null="yes"/>
  </class>
 
  <class name="ReadoutApplication">
