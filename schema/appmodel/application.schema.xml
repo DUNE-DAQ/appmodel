@@ -80,22 +80,21 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="69" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20260203T131505"/>
+<info name="" type="" num-of-items="72" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="dergonul" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20260319T161203"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
 </include>
 
 
- <class name="CRTReaderApplication">
+ <class name="CRTFrameBuilderApplication">
   <superclass name="ResourceSetDisableAND"/>
   <superclass name="SmartDaqApplication"/>
   <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
-  <relationship name="data_writers" class-type="SocketDataWriterConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="data_reader" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="detector_frame_builder" class-type="DetectorFrameBuilderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="data_writer" class-type="SocketDataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="detector_connections" class-type="DetectorToDaqConnection" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="callback_desc" class-type="DataMoveCallbackDescriptor" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <method name="generate_modules" description="Generate daq module dal objects for streams of the CRTReaderApplication on the fly">
+  <method name="generate_modules" description="Generate daq module dal objects for streams of the CRTFrameBuilderApplication on the fly">
    <method-implementation language="c++" prototype="void generate_modules(std::shared_ptr&lt;appmodel::ConfigurationHelper&gt;) const override" body=""/>
   </method>
   <method name="contained_resources" description="">
@@ -191,6 +190,16 @@
   <relationship name="connections" class-type="DetectorToDaqConnection" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="no" is-dependent="no"/>
   <relationship name="raw_data_callbacks" description="Configurations for raw data callbacks" class-type="DataMoveCallbackConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
+
+ <class name="DetectorFrameBuilderConf">
+  <attribute name="template_for" description="OKS class of the DetectorFrameBuilderModule that this config is a template for" type="class" init-value="DetectorFrameBuilderModule" is-not-null="yes"/>
+ </class>
+
+ <class name="DetectorFrameBuilderModule" is-abstract="yes">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="DetectorFrameBuilderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="connection" class-type="DetectorToDaqConnection" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class> 
 
  <class name="DataRecorderConf">
   <attribute name="output_file" type="string"/>
@@ -405,8 +414,8 @@
   <attribute name="capacity" type="u32" init-value="100" is-not-null="yes"/>
   <attribute name="data_type" description="string identifying type of data transferred through this queue" type="string" is-not-null="yes"/>
  </class>
-
- <class name="DataMoveCallbackConf">
+ 
+  <class name="DataMoveCallbackConf">
   <attribute name="source_id" type="u32" init-value="0" is-not-null="yes"/>
   <attribute name="data_type" description="Name of the output data type. Should be defined via a call to DUNE_DAQ_TYPESTRING" type="string" init-value="WIBEthFrame"/>
  </class>
@@ -527,8 +536,11 @@
  <class name="SocketDataWriterModule">
   <superclass name="DaqModule"/>
   <relationship name="configuration" class-type="SocketDataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
-  <relationship name="connections" class-type="NetworkDetectorToDaqConnection" low-cc="one" high-cc="many" is-composite="yes" is-exclusive="no" is-dependent="no"/>
-  <relationship name="raw_data_callback" description="Configuration for raw data callback" class-type="DataMoveCallbackConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="connection" class-type="SocketDetectorToDaqConnection" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="SocketDetectorToDaqConnection">
+  <superclass name="NetworkDetectorToDaqConnection"/>
  </class>
 
  <class name="SourceIDConf">
