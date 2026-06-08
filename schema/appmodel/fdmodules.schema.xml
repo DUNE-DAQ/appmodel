@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="33" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20251104T211957"/>
+<info name="" type="" num-of-items="32" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="dergonul" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20260319T162022"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -88,24 +88,24 @@
 </include>
 
 
- <class name="CRTBernReaderConf">
-  <superclass name="DataReaderConf"/>
+ <class name="CRTBernFrameBuilderConf">
+  <superclass name="CRTFrameBuilderConf"/>
  </class>
 
- <class name="CRTBernReaderModule">
-  <superclass name="DataReaderModule"/>
+ <class name="CRTBernFrameBuilderModule">
+  <superclass name="DetectorFrameBuilderModule"/>
  </class>
 
- <class name="CRTGrenobleReaderConf">
-  <superclass name="DataReaderConf"/>
+ <class name="CRTGrenobleFrameBuilderConf">
+  <superclass name="CRTFrameBuilderConf"/>
  </class>
 
- <class name="CRTGrenobleReaderModule">
-  <superclass name="DataReaderModule"/>
+ <class name="CRTGrenobleFrameBuilderModule">
+  <superclass name="DetectorFrameBuilderModule"/>
  </class>
 
- <class name="CRTReaderConf">
-  <superclass name="DataReaderConf"/>
+ <class name="CRTFrameBuilderConf">
+  <superclass name="DetectorFrameBuilderConf"/>
  </class>
 
  <class name="DPDKPortConfiguration">
@@ -151,10 +151,6 @@
 
  <class name="FakeDataSender">
   <superclass name="NWDetDataSender"/>
- </class>
-
- <class name="FakeSocketWriterModule">
-  <superclass name="SocketDataWriterModule"/>
  </class>
 
  <class name="FelixCardControllerModule">
@@ -245,8 +241,6 @@
 
  <class name="SocketReaderConf">
   <superclass name="DataReaderConf"/>
-  <attribute name="socket_type" description="Socket type" type="enum" range="TCP,UDP" init-value="UDP" is-not-null="yes"/>
-  <attribute name="local_ip" description="Local IP address" type="string" init-value="127.0.0.1" is-not-null="yes"/>
  </class>
 
  <class name="SocketReaderModule">
@@ -259,8 +253,6 @@
 
  <class name="SocketWriterConf">
   <superclass name="SocketDataWriterConf"/>
-  <attribute name="socket_type" description="Socket type" type="enum" range="TCP,UDP" init-value="UDP" is-not-null="yes"/>
-  <attribute name="remote_ip" description="Remote IP address" type="string" init-value="127.0.0.1" is-not-null="yes"/>
  </class>
 
  <class name="SocketWriterModule">
