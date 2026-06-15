@@ -571,6 +571,10 @@
   <method name="generate_modules" description="Generate dal objects for streams of thie ReadoutApplication on the fly">
    <method-implementation language="c++" prototype="void generate_modules(std::shared_ptr&lt;appmodel::ConfigurationHelper&gt;) const override" body=""/>
   </method>
+  <method name="is_disabled" description="Generate dal objects for streams of thie ReadoutApplication on the fly">
+   <method-implementation language="c++" prototype="bool is_disabled(const dunedaq::confmodel::ResourceTree&amp; session) const" body=""/>
+  </method>
+  
  </class>
 
  <class name="TPStreamWriterConf">

@@ -13,14 +13,15 @@
 #include "conffwk/Configuration.hpp"
 #include "oks/kernel.hpp"
 #include "confmodel/Connection.hpp"
-#include "confmodel/Service.hpp"
 #include "confmodel/NetworkConnection.hpp"
+#include "appmodel/ReadoutApplication.hpp"
+#include "confmodel/Service.hpp"
+#include "appmodel/SourceIDConf.hpp"
 #include "appmodel/TPStreamWriterApplication.hpp"
 #include "appmodel/TPStreamWriterModule.hpp"
 #include "appmodel/TPStreamWriterConf.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
-#include "appmodel/SourceIDConf.hpp"
 #include "appmodel/appmodelIssues.hpp"
 #include "logging/Logging.hpp"
 
@@ -79,5 +80,40 @@ TPStreamWriterApplication::generate_modules(std::shared_ptr<appmodel::Configurat
   obj_fac.update_modules(modules);
 }
  
+bool TPStreamWriterApplication::is_disabled(const dunedaq::confmodel::ResourceTree& holder) const {
+  /* Disabled if:
+    1. I am explicitly disabled
+    2. All ReadoutApplications are disabled
+    3. TPGeneration is disabled in all readout applications
+  */
+
+  // First we can just check if the application itself is disabled
+  if (!holder.disabled_components().is_enabled(this)){
+    return true;
+  }
+
+  // Now for the tricky bit, we need to loop over the connections
+
+  for(auto& rule : get_network_rules()){
+    /// HACK (minor): We assume TPs will always contain this exact rule
+    if(rule->UID()!="tpset-net-rule"){continue;}
+
+    // We now loop over the parents
+    for(auto parent : configuration().referenced_by(*rule)){
+
+      // Safer than blindly casting to ReadoutApplication (RA)
+      if(!parent->castable("ReadoutApplication")) continue;
+      auto casted = parent->cast<appmodel::ReadoutApplication>();
+
+      /// If the RA is disabled then so is its TP
+      if(casted->is_disabled(holder)){continue;}
+      // If the TP is enabled on ANY RA then we're enabled
+      if(casted->get_tp_generation_enabled()){return false;}
+    }
+  }
+
+  return true;
+}
+
 } // namespace appmodel  
 } // namespace dunedaq
