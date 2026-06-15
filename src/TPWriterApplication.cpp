@@ -81,11 +81,10 @@ TPStreamWriterApplication::generate_modules(std::shared_ptr<appmodel::Configurat
 }
  
 bool TPStreamWriterApplication::is_disabled(const dunedaq::confmodel::ResourceTree& holder) const {
-  /* Disabled if:
-    1. I am explicitly disabled
-    2. All ReadoutApplications are disabled
-    3. TPGeneration is disabled in all readout applications
-  */
+  // Disabled if:
+  //  1. I am explicitly disabled
+  //  2. All ReadoutApplications are disabled
+  //  3. TPGeneration is disabled in all readout applications
 
   // First we can just check if the application itself is disabled
   if (!holder.disabled_components().is_enabled(this)){
@@ -96,7 +95,8 @@ bool TPStreamWriterApplication::is_disabled(const dunedaq::confmodel::ResourceTr
 
   for(auto& rule : get_network_rules()){
     /// HACK (minor): We assume TPs will always contain this exact rule
-    if(rule->UID()!="tpset-net-rule"){continue;}
+    auto data_type = rule->get_descriptor()->get_data_type();
+    if (data_type != "TPSet") continue;
 
     // We now loop over the parents
     for(auto parent : configuration().referenced_by(*rule)){
