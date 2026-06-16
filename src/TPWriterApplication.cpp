@@ -80,14 +80,14 @@ TPStreamWriterApplication::generate_modules(std::shared_ptr<appmodel::Configurat
   obj_fac.update_modules(modules);
 }
  
-bool TPStreamWriterApplication::is_disabled(const dunedaq::confmodel::ResourceTree& holder) const {
+bool TPStreamWriterApplication::compute_disabled_state(const std::set<std::string>& disabled_resources) const {
   // Disabled if:
   //  1. I am explicitly disabled
   //  2. All ReadoutApplications are disabled
   //  3. TPGeneration is disabled in all readout applications
 
   // First we can just check if the application itself is disabled
-  if (!holder.disabled_components().is_enabled(this)){
+  if (disabled_resources.contains(UID())) {
     return true;
   }
 
@@ -102,13 +102,20 @@ bool TPStreamWriterApplication::is_disabled(const dunedaq::confmodel::ResourceTr
     for(auto parent : configuration().referenced_by(*rule)){
 
       // Safer than blindly casting to ReadoutApplication (RA)
-      if(!parent->castable("ReadoutApplication")) continue;
       auto casted = parent->cast<appmodel::ReadoutApplication>();
+      if(!casted){
+        continue;
+      }
 
       /// If the RA is disabled then so is its TP
-      if(casted->is_disabled(holder)){continue;}
+      if(disabled_resources.contains(casted->UID())){
+        continue;
+      }
+      
       // If the TP is enabled on ANY RA then we're enabled
-      if(casted->get_tp_generation_enabled()){return false;}
+      if(casted->get_tp_generation_enabled()){
+        return false;
+      }
     }
   }
 
