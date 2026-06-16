@@ -94,26 +94,25 @@ bool TPStreamWriterApplication::compute_disabled_state(const std::set<std::strin
   // Now for the tricky bit, we need to loop over the connections
 
   for(auto& rule : get_network_rules()){
-    /// HACK (minor): We assume TPs will always contain this exact rule
+    /// HACK (minor): We assume TPs will always contain this exact datatype
     auto data_type = rule->get_descriptor()->get_data_type();
     if (data_type != "TPSet") continue;
 
     // We now loop over the parents
     for(auto parent : configuration().referenced_by(*rule)){
 
-      // Safer than blindly casting to ReadoutApplication (RA)
-      auto casted = parent->cast<appmodel::ReadoutApplication>();
-      if(!casted){
+      auto readout = parent->cast<appmodel::ReadoutApplication>();
+      if(!readout){
         continue;
       }
 
       /// If the RA is disabled then so is its TP
-      if(disabled_resources.contains(casted->UID())){
+      if(disabled_resources.contains(readout->UID())){
         continue;
       }
       
       // If the TP is enabled on ANY RA then we're enabled
-      if(casted->get_tp_generation_enabled()){
+      if(readout->get_tp_generation_enabled()){
         return false;
       }
     }
