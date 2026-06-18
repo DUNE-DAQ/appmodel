@@ -237,13 +237,20 @@ ReadoutApplication::generate_modules(std::shared_ptr<ConfigurationHelper> helper
 
     // Here I want to resolve the type of connection (network, felix, or?)
     // Rules of engagement: if the receiver interface is network or felix, the receivers should be castable to the counterpart
-    if (reader_class == "DPDKReaderModule" || reader_class == "SocketReaderModule") {
+    if (reader_class == "DPDKReaderModule") {
       if (!d2d_conn->castable("NetworkDetectorToDaqConnection")) {
         throw(BadConf(ERS_HERE, fmt::format("{} requires NetworkDetectorToDaqConnection, found {} of class {}", reader_class, d2d_conn->UID(), d2d_conn->class_name())));
       }
-      if ((reader_class == "DPDKReaderModule" && !det_receiver->cast<appmodel::DPDKReceiver>()) ||
-          (reader_class == "SocketReaderModule" && !det_receiver->cast<appmodel::SocketReceiver>())) {
+      if (!det_receiver->cast<appmodel::DPDKReceiver>()) {
         throw(BadConf(ERS_HERE, fmt::format("{} requires NWDetDataReceiver, found {} of class {}", reader_class, det_receiver->UID(), det_receiver->class_name())));
+      }
+    }
+    else if (reader_class == "SocketReaderModule") {
+      if (!d2d_conn->castable("SocketDetectorToDaqConnection")) {
+        throw(BadConf(ERS_HERE, fmt::format("{} requires SocketDetectorToDaqConnection, found {} of class {}", reader_class, d2d_conn->UID(), d2d_conn->class_name())));
+      }   
+      if (!det_receiver->cast<appmodel::SocketReceiver>()) {
+        throw(BadConf(ERS_HERE, fmt::format("{} requires SocketReceiver, found {} of class {}", reader_class, det_receiver->UID(), det_receiver->class_name())));
       }
     }
     else if (reader_class == "FelixReaderModule") {
