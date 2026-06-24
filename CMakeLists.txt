@@ -56,4 +56,8 @@ daq_add_application(print_detailed_config_info print_detailed_config_info.cxx
  TEST LINK_LIBRARIES appmodel_dal confmodel::confmodel conffwk::conffwk
  logging::logging)
 
+##############################################################################
+# unit tests
+daq_add_unit_test( disabled_test   LINK_LIBRARIES appmodel_dal confmodel::confmodel )
+
 daq_install()
