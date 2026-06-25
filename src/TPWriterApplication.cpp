@@ -80,100 +80,54 @@ TPStreamWriterApplication::generate_modules(std::shared_ptr<appmodel::Configurat
   obj_fac.update_modules(modules);
 }
  
-// bool TPStreamWriterApplication::compute_disabled_state(const std::set<std::string>& disabled_resources) const {
-//   // Disabled if:
-//   //  1. I am explicitly disabled
-//   //  2. All ReadoutApplications are disabled
-//   //  3. TPGeneration is disabled in all readout applications
-//   TLOG()<<"Computing disabled state for "<<this->UID();
-
-//   // First we can just check if the application itself is disabled
-//   if (disabled_resources.contains(UID())) {
-//     return true;
-//   }
-
-//   // Now for the tricky bit, we need to loop over the connections
-//   for(auto& rule : get_network_rules()){
-//     /// HACK (minor): We assume TPs will always contain this exact datatype
-//     auto data_type = rule->get_descriptor()->get_data_type();
-//     if (data_type != "TPSet") continue;
-
-//     // We now loop over the parents
-//     for(auto parent : configuration().referenced_by(*rule)){
-
-//       auto readout = parent->cast<appmodel::ReadoutApplication>();
-//       if(!readout){
-//         continue;
-//       }
-
-//       // Check if readout is actually used by the configuration!
-//       if(configuration().referenced_by(*readout).empty()){
-//         TLOG()<<"NO REFERENCES";
-//         continue;
-//       }
-
-//       /// If the RA is disabled then so is its TP
-//       if(readout->compute_disabled_state(disabled_resources)){
-//         continue;
-//       }
-      
-//       // If the TP is enabled on ANY RA then we're enabled
-//       if(readout->get_tp_generation_enabled()){
-//         TLOG()<<readout->UID()<<" is enabled and has TPG enabled";
-//         return false;
-//       }
-//     }
-//   }
-
-//   return true;
-// }
-
-bool TPStreamWriterApplication::is_disabled(const dunedaq::confmodel::ResourceTree& holder) const {
+bool TPStreamWriterApplication::compute_disabled_state(const std::set<std::string>& disabled_resources) const {
   // Disabled if:
   //  1. I am explicitly disabled
   //  2. All ReadoutApplications are disabled
   //  3. TPGeneration is disabled in all readout applications
 
   // First we can just check if the application itself is disabled
-  if (!holder.disabled_components().is_enabled(this)){
+  if (disabled_resources.contains(UID())) {
     return true;
   }
-  
+
+  // Now for the tricky bit, we need to loop over the connections
   for(auto& rule : get_network_rules()){
-    /// HACK (minor): We assume TPs will always contain this exact rule
+    /// HACK (minor): We assume TPs will always contain this exact datatype
     auto data_type = rule->get_descriptor()->get_data_type();
+
     if (data_type != "TPSet"){
       continue;
     }
 
+  
     // We now loop over the parents
-    for (auto parent : configuration().referenced_by(*rule, "network_rules", false, false, false, 0)) {
-      // Safer than blindly casting to ReadoutApplication (RA)
+    for (auto parent : configuration().referenced_by(*rule, "network_rules", false, false, false, 0)){
+
       auto readout = parent->cast<appmodel::ReadoutApplication>();
       if(!readout){
         continue;
       }
 
       // Check if readout is actually used by the configuration!
-      if(configuration().referenced_by(*readout).empty()){
+      if(configuration().referenced_by(*readout, "*", false, false, false, 0).empty()){
         continue;
       }
 
-      
       /// If the RA is disabled then so is its TP
-      if(readout->cast<confmodel::Resource>()->is_disabled(holder)){
+      if(readout->compute_disabled_state(disabled_resources)){
         continue;
       }
+      
       // If the TP is enabled on ANY RA then we're enabled
       if(readout->get_tp_generation_enabled()){
+        TLOG()<<"Found "<<readout->UID()<<" with TPG enabled";
         return false;
       }
-
     }
   }
+
   return true;
 }
-
-
-} // namespace appmodel  
-} // namespace dunedaq
+}
+}
