@@ -332,7 +332,7 @@
   <superclass name="TAAlgorithm"/>
   <attribute name="channel_map_name" description="Channel map for TA algorithm" type="string" init-value="PD2VDTPCChannelMap" is-not-null="yes"/>
   <attribute name="adc_threshold_induction" description="Threshold for the SADC sum on induction planes" type="u32" init-value="12000000" is-not-null="yes"/>
-  <attribute name="bdt_threshold" description="BDT score threshold. Must be a float between 0 and 1." type="float" init-value="0.999" is-not-null="yes"/>
+  <attribute name="bdt_threshold" description="BDT score threshold. Must be a float between 0 and 1." type="float" range="0..1" init-value="0.999" is-not-null="yes"/>
  </class>
 
  <class name="TCAlgorithm" description="Base class for TC algorithms">
