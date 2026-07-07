@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="72" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="biery" last-modified-on="daq.fnal.gov" last-modification-time="20260707T134648"/>
+<info name="" type="" num-of-items="74" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="biery" last-modified-on="daq.fnal.gov" last-modification-time="20260707T200625"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -237,6 +237,15 @@
   <superclass name="DaqModule"/>
   <attribute name="writer_identifier" type="string"/>
   <relationship name="configuration" class-type="DataWriterConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="DelayManagerConf">
+  <relationship name="delays" class-type="DelaySpec" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="DelaySpec">
+  <attribute name="delay_name" description="The context-specific name for a particular delay value" type="string" is-not-null="yes"/>
+  <attribute name="delay_usec" description="The duration of the delay, in micro-seconds" type="u32" init-value="0" is-not-null="yes"/>
  </class>
 
  <class name="DetectorFrameBuilderConf">
@@ -524,6 +533,7 @@
   <relationship name="source_id" class-type="SourceIDConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="queue_rules" class-type="QueueConnectionRule" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="network_rules" class-type="NetworkConnectionRule" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="delay_manager_conf" class-type="DelayManagerConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="">
    <method-implementation language="c++" prototype="virtual void generate_modules(std::shared_ptr&lt;appmodel::ConfigurationHelper&gt;) const = 0" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;appmodel/ConfigurationHelper.hpp&quot;&#xA;END_HEADER_PROLOGUE"/>
   </method>
