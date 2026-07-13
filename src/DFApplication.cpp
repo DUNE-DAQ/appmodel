@@ -37,7 +37,7 @@
 namespace dunedaq {
 namespace appmodel {
 
-    
+
 static inline void
 fill_sourceid_object(const ConfigObjectFactory& obj_fac,
                      const conffwk::ConfigObject* netConn,
@@ -266,13 +266,13 @@ DFApplication::generate_modules(
     if (processed_apps.contains(uid)) {
       continue;
     }
- 
+
     for ( const auto & [uid, rel_sources] :
 	  helper->get_all_app_source_ids(ctb_type) ) {
       for ( auto [rel, id] : rel_sources ) {
 	std::string local_uid = uid;
 	local_uid += rel.find("LLT")!=std::string::npos ? "_LLT" : "_HLT";
-       
+
 	dreqNetObjs.emplace_back(obj_fac.create_net_obj(descriptor, local_uid));
 	sidObjs.push_back(std::make_shared<conffwk::ConfigObject>(id->config_object()));
 
@@ -280,18 +280,18 @@ DFApplication::generate_modules(
 	sidNetObjs.emplace_back(obj_fac.create("SourceIDToNetworkConnection", sidToNetUid));
 	sidNetObjs.back().set_objs("source_ids", {sidObjs.back().get()});
 	sidNetObjs.back().set_obj("netconn", &dreqNetObjs.back());
-	
+
       } // loop on relational sources
-  
+
       processed_apps.insert(uid);
-    } // loop over CTB apps 
+    } // loop over CTB apps
   } // loop over descriptors for the CTB apps
 
   auto app_sources = helper->get_app_source_ids();
   // Now look at all Smart apps that are not Readout, FakeData or DF
   for (auto [uid, descriptor]: helper->get_netdescriptors("DataRequest")) {
 
-    
+
     if (processed_apps.contains(uid)) {
       continue;
     }
@@ -342,7 +342,6 @@ DFApplication::generate_modules(
   trbObj.set_obj("configuration", &trbConfObj);
   trbObj.set_objs("inputs", trbInputObjs);
   trbObj.set_objs("outputs", trbOutputObjs);
-  trbObj.set_obj("trigger_record_output", &trQueueObj);
   trbObj.set_objs("request_connections", trbSidNetObjs);
   // Push TRB Module Object from confdb
   modules.push_back(obj_fac.get_dal<TRBModule>(trbUid));
@@ -373,5 +372,5 @@ DFApplication::generate_modules(
   obj_fac.update_modules(modules);
 }
 
-} // namespace appmodel  
+} // namespace appmodel
 } // namespace dunedaq
