@@ -8,12 +8,14 @@
  * received with this code.
  */
 
+#include "appmodel/DFApplication.hpp"
 #include "ConfigObjectFactory.hpp"
 #include "appmodel/ConfigurationHelper.hpp"
-#include "appmodel/DFApplication.hpp"
 #include "appmodel/DataStoreConf.hpp"
 #include "appmodel/DataWriterConf.hpp"
 #include "appmodel/DataWriterModule.hpp"
+#include "appmodel/DataflowStatusModule.hpp"
+#include "appmodel/DataflowStatusModuleConf.hpp"
 #include "appmodel/FilenameParams.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
@@ -36,7 +38,6 @@
 
 namespace dunedaq {
 namespace appmodel {
-
 
 static inline void
 fill_sourceid_object(const ConfigObjectFactory& obj_fac,
@@ -75,7 +76,6 @@ fill_sourceid_object(const ConfigObjectFactory& obj_fac,
   sidNetObj.set_objs("source_ids", source_id_objs);
 }
 
-
 inline void
 fill_replay_sourceid_object(const ConfigObjectFactory& obj_fac,
                             const std::string& uid,
@@ -98,8 +98,7 @@ fill_replay_sourceid_object(const ConfigObjectFactory& obj_fac,
 
     // set Network connections
     std::string dreqNetUid(uid + ext);
-    netConn->emplace_back(
-      obj_fac.create_net_obj(descriptor, dreqNetUid));
+    netConn->emplace_back(obj_fac.create_net_obj(descriptor, dreqNetUid));
     netConn->back().set_by_val<std::string>("data_type", descriptor->get_data_type());
     netConn->back().set_by_val<std::string>("connection_type", descriptor->get_connection_type());
     auto serviceObj = descriptor->get_associated_service()->config_object();
@@ -107,8 +106,7 @@ fill_replay_sourceid_object(const ConfigObjectFactory& obj_fac,
 
     // set SourceID to Network connections
     std::string sidToNetUid(uid + ext + "-sids");
-    sidNetObj->emplace_back(
-      obj_fac.create("SourceIDToNetworkConnection", sidToNetUid));
+    sidNetObj->emplace_back(obj_fac.create("SourceIDToNetworkConnection", sidToNetUid));
     sidNetObj->back().set_obj("netconn", &netConn->back());
 
     // set SourceID objs
@@ -117,11 +115,9 @@ fill_replay_sourceid_object(const ConfigObjectFactory& obj_fac,
   }
 }
 
-
-
 void
-DFApplication::generate_modules(
-  std::shared_ptr<appmodel::ConfigurationHelper> helper) const {
+DFApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> helper) const
+{
 
   ConfigObjectFactory obj_fac(this);
 
@@ -131,31 +127,60 @@ DFApplication::generate_modules(
   // Prepare TRB output objects
   std::vector<const conffwk::ConfigObject*> trbInputObjs;
   std::vector<const conffwk::ConfigObject*> trbOutputObjs;
+  std::vector<const conffwk::ConfigObject*> dfsInputObjs;
+  std::vector<const conffwk::ConfigObject*> dfsOutputObjs;
   std::vector<const conffwk::ConfigObject*> trbSidNetObjs;
 
   // -- First, we process expected Queue and Network connections and create their objects.
 
   // Process the queue rules looking for the TriggerRecord queue between TRB and DataWriterModule
   const QueueDescriptor* trQDesc = nullptr;
+  const QueueDescriptor* tdQDesc = nullptr;
+  const QueueDescriptor* trbcQDesc = nullptr;
+  const QueueDescriptor* tokenQDesc = nullptr;
   for (auto rule : get_queue_rules()) {
     auto destination_class = rule->get_destination_class();
+    if (destination_class == "TRBModule") {
+      tdQDesc = rule->get_descriptor();
+    }
     if (destination_class == "DataWriterModule") {
       trQDesc = rule->get_descriptor();
     }
+    if (destination_class == "DataflowStatusModule") {
+      auto descriptor = rule->get_descriptor();
+      if (descriptor->get_data_type() == "TriggerDecisionToken") {
+        tokenQDesc = descriptor;
+      } else if (descriptor->get_data_type() == "TRBCompletion") {
+        trbcQDesc = descriptor;
+      }
+    }
+  }
+  if (tdQDesc == nullptr) { // BadConf if no descriptor between DataflowStatus and TRB
+    throw(BadConf(ERS_HERE, "Could not find queue descriptor rule for TriggerDecisions!"));
   }
   if (trQDesc == nullptr) { // BadConf if no descriptor between TRB and DataWriterModule
     throw(BadConf(ERS_HERE, "Could not find queue descriptor rule for TriggerRecords!"));
   }
+  if (tokenQDesc == nullptr) { // BadConf if no descriptor between DataWriterModule and DataflowStatus
+    throw(BadConf(ERS_HERE, "Could not find queue descriptor rule for TriggerDecisionTokens!"));
+  }
+  if (trbcQDesc == nullptr) { // BadConf if no descriptor between TRB and DataflowStatus
+    throw(BadConf(ERS_HERE, "Could not find queue descriptor rule for TRBCompletions!"));
+  }
   // Create queue connection config object
   auto trQueueObj = obj_fac.create_queue_obj(trQDesc, UID());
+  auto tdQueueObj = obj_fac.create_queue_obj(tdQDesc, UID());
+  auto trbcQueueObj = obj_fac.create_queue_obj(trbcQDesc, UID());
+  auto tokenQueueObj = obj_fac.create_queue_obj(tokenQDesc, UID());
 
   // Place trigger record queue object into vector of output objs of TRB module
   trbOutputObjs.push_back(&trQueueObj);
+  trbOutputObjs.push_back(&trbcQueueObj);
 
   // Process the network rules looking for the Fragments and TriggerDecision inputs for TRB
   const NetworkConnectionDescriptor* fragNetDesc = nullptr;
   const NetworkConnectionDescriptor* trigdecNetDesc = nullptr;
-  const NetworkConnectionDescriptor* tokenNetDesc = nullptr;
+  const NetworkConnectionDescriptor* statusReqNetDesc = nullptr;
   const NetworkConnectionDescriptor* trmonReqNetDesc = nullptr;
   const NetworkConnectionDescriptor* trmonTRNetDesc = nullptr;
   for (auto rule : get_network_rules()) {
@@ -165,30 +190,30 @@ DFApplication::generate_modules(
       fragNetDesc = rule->get_descriptor();
     } else if (data_type == "TriggerDecision") {
       trigdecNetDesc = rule->get_descriptor();
-    } else if (data_type == "TriggerDecisionToken") {
-      tokenNetDesc = rule->get_descriptor();
     } else if (data_type == "TRMonRequest") {
       trmonReqNetDesc = rule->get_descriptor();
     } else if (data_type == "TriggerRecord") {
       trmonTRNetDesc = rule->get_descriptor();
+    } else if (data_type == "DataflowStatusRequest") {
+      statusReqNetDesc = rule->get_descriptor();
     }
   }
   if (fragNetDesc == nullptr) { // BadConf if no descriptor for Fragments into TRB
     throw(BadConf(ERS_HERE, "Could not find network descriptor rule for input Fragments!"));
   }
-  if (trigdecNetDesc == nullptr) { // BadCond if no descriptor for TriggerDecisions into TRB
+  if (trigdecNetDesc == nullptr) { // BadConf if no descriptor for TriggerDecisions into TRB
     throw(BadConf(ERS_HERE, "Could not find network descriptor rule for input TriggerDecisions!"));
   }
-  if (tokenNetDesc == nullptr) { // BadCond if no descriptor for Tokens out of DataWriterModule
-    throw(BadConf(ERS_HERE, "Could not find network descriptor rule for output TriggerDecisionTokens!"));
+  if (statusReqNetDesc == nullptr) { // BadConf if no descriptor for DataflowStatusRequest output
+    throw(BadConf(ERS_HERE, "Could not find network descriptor rule for output DataflowStatusRequests!"));
   }
   if (get_source_id() == nullptr) {
     throw(BadConf(ERS_HERE, "Could not retrieve SourceIDConf"));
   }
   // Create network connection config object
   auto fragNetObj = obj_fac.create_net_obj(fragNetDesc, UID());
-  auto trigdecNetObj =  obj_fac.create_net_obj(trigdecNetDesc, UID());
-  auto tokenNetObj = obj_fac.create_net_obj(tokenNetDesc, "");
+  auto trigdecNetObj = obj_fac.create_net_obj(trigdecNetDesc, UID());
+  auto statusReqNetObj = obj_fac.create_net_obj(statusReqNetDesc, UID());
   conffwk::ConfigObject trmonReqNetObj;
   conffwk::ConfigObject trmonTRNetObj;
   if (trmonReqNetDesc != nullptr) {
@@ -204,47 +229,30 @@ DFApplication::generate_modules(
   std::vector<conffwk::ConfigObject> sidNetObjs;
   std::vector<std::shared_ptr<conffwk::ConfigObject>> sidObjs;
   std::set<std::string> processed_apps;
-  for (auto uid: helper->get_app_uids("DFApplication")) {
+  for (auto uid : helper->get_app_uids("DFApplication")) {
     processed_apps.insert(uid);
   }
 
   auto stream_src_ids = helper->get_stream_source_ids();
   auto tp_src_ids = helper->get_tp_source_ids();
-  for (auto [uid, descriptor]:
-         helper->get_netdescriptors("DataRequest", "ReadoutApplication")) {
-	  dreqNetObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
+  for (auto [uid, descriptor] : helper->get_netdescriptors("DataRequest", "ReadoutApplication")) {
+    dreqNetObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
 
     std::string sidToNetUid(descriptor->get_uid_base() + uid + "-sids");
     sidNetObjs.emplace_back(obj_fac.create("SourceIDToNetworkConnection", sidToNetUid));
 
-    fill_sourceid_object(obj_fac,
-                         &dreqNetObjs.back(),
-                         uid,
-                         stream_src_ids.at(uid),
-                         tp_src_ids.at(uid),
-                         sidNetObjs.back(),
-                         sidObjs);
+    fill_sourceid_object(
+      obj_fac, &dreqNetObjs.back(), uid, stream_src_ids.at(uid), tp_src_ids.at(uid), sidNetObjs.back(), sidObjs);
     processed_apps.insert(uid);
   }
 
-  for (auto [uid, descriptor]:
-         helper->get_netdescriptors("DataRequest", "TPReplayApplication")) {
-    fill_replay_sourceid_object(obj_fac,
-                                uid,
-                                tp_src_ids.at(uid),
-                                &dreqNetObjs,
-                                &sidNetObjs,
-                                descriptor,
-                                sidObjs);
+  for (auto [uid, descriptor] : helper->get_netdescriptors("DataRequest", "TPReplayApplication")) {
+    fill_replay_sourceid_object(obj_fac, uid, tp_src_ids.at(uid), &dreqNetObjs, &sidNetObjs, descriptor, sidObjs);
     processed_apps.insert(uid);
   }
 
-
-
-
-  for (auto [uid, descriptor]:
-         helper->get_netdescriptors("DataRequest", "FakeDataApplication")) {
-	  dreqNetObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
+  for (auto [uid, descriptor] : helper->get_netdescriptors("DataRequest", "FakeDataApplication")) {
+    dreqNetObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
 
     std::string sidToNetUid(descriptor->get_uid_base() + uid + "-sids");
     sidNetObjs.emplace_back(obj_fac.create("SourceIDToNetworkConnection", sidToNetUid));
@@ -261,25 +269,24 @@ DFApplication::generate_modules(
 
   // now we treat the CTB which has 2 connections related to source IDs
   const auto ctb_type = "CTBApplication";
-  for (auto [uid, descriptor]: helper->get_netdescriptors("DataRequest", ctb_type)) {
+  for (auto [uid, descriptor] : helper->get_netdescriptors("DataRequest", ctb_type)) {
 
     if (processed_apps.contains(uid)) {
       continue;
     }
 
-    for ( const auto & [uid, rel_sources] :
-	  helper->get_all_app_source_ids(ctb_type) ) {
-      for ( auto [rel, id] : rel_sources ) {
-	std::string local_uid = uid;
-	local_uid += rel.find("LLT")!=std::string::npos ? "_LLT" : "_HLT";
+    for (const auto& [uid, rel_sources] : helper->get_all_app_source_ids(ctb_type)) {
+      for (auto [rel, id] : rel_sources) {
+        std::string local_uid = uid;
+        local_uid += rel.find("LLT") != std::string::npos ? "_LLT" : "_HLT";
 
-	dreqNetObjs.emplace_back(obj_fac.create_net_obj(descriptor, local_uid));
-	sidObjs.push_back(std::make_shared<conffwk::ConfigObject>(id->config_object()));
+        dreqNetObjs.emplace_back(obj_fac.create_net_obj(descriptor, local_uid));
+        sidObjs.push_back(std::make_shared<conffwk::ConfigObject>(id->config_object()));
 
-	std::string sidToNetUid(descriptor->get_uid_base() + local_uid);
-	sidNetObjs.emplace_back(obj_fac.create("SourceIDToNetworkConnection", sidToNetUid));
-	sidNetObjs.back().set_objs("source_ids", {sidObjs.back().get()});
-	sidNetObjs.back().set_obj("netconn", &dreqNetObjs.back());
+        std::string sidToNetUid(descriptor->get_uid_base() + local_uid);
+        sidNetObjs.emplace_back(obj_fac.create("SourceIDToNetworkConnection", sidToNetUid));
+        sidNetObjs.back().set_objs("source_ids", { sidObjs.back().get() });
+        sidNetObjs.back().set_obj("netconn", &dreqNetObjs.back());
 
       } // loop on relational sources
 
@@ -289,8 +296,7 @@ DFApplication::generate_modules(
 
   auto app_sources = helper->get_app_source_ids();
   // Now look at all Smart apps that are not Readout, FakeData or DF
-  for (auto [uid, descriptor]: helper->get_netdescriptors("DataRequest")) {
-
+  for (auto [uid, descriptor] : helper->get_netdescriptors("DataRequest")) {
 
     if (processed_apps.contains(uid)) {
       continue;
@@ -298,18 +304,16 @@ DFApplication::generate_modules(
     if (app_sources.contains(uid)) {
       dreqNetObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
 
-      sidObjs.push_back(std::make_shared<conffwk::ConfigObject>(
-                          app_sources.at(uid)->config_object()));
+      sidObjs.push_back(std::make_shared<conffwk::ConfigObject>(app_sources.at(uid)->config_object()));
 
       std::string sidToNetUid(descriptor->get_uid_base() + uid + "-sids");
       sidNetObjs.emplace_back(obj_fac.create("SourceIDToNetworkConnection", sidToNetUid));
-      sidNetObjs.back().set_objs("source_ids", {sidObjs.back().get()});
+      sidNetObjs.back().set_objs("source_ids", { sidObjs.back().get() });
       sidNetObjs.back().set_obj("netconn", &dreqNetObjs.back());
 
       processed_apps.insert(uid);
     }
   }
-
 
   // Get pointers to objects here, after vector has been filled so they don't move on us
   for (auto& obj : dreqNetObjs) {
@@ -329,7 +333,7 @@ DFApplication::generate_modules(
   }
   auto trbConfObj = trbConf->config_object();
   trbConfObj.set_by_val<uint32_t>("source_id", get_source_id()->get_sid());
-  trbInputObjs = { &trigdecNetObj, &fragNetObj };
+  trbInputObjs = { &tdQueueObj, &fragNetObj };
   if (trmonReqNetDesc != nullptr) {
     trbInputObjs.push_back(&trmonReqNetObj);
   }
@@ -363,11 +367,38 @@ DFApplication::generate_modules(
     dwrObj.set_by_val("writer_identifier", fmt::format("{}_dw_{}", UID(), dw_idx));
     dwrObj.set_obj("configuration", &dwrConfObj);
     dwrObj.set_objs("inputs", { &trQueueObj });
-    dwrObj.set_objs("outputs", { &tokenNetObj });
+    dwrObj.set_objs("outputs", { &tokenQueueObj });
     // Push DataWriterModule Module Object from confdb
     modules.push_back(obj_fac.get_dal<DataWriterModule>(dwrUid));
     ++dw_idx;
   }
+
+  // Get DataflowStatusModule Config Object
+  auto dfsConf = get_dfs();
+  if (dfsConf == nullptr) {
+    throw(BadConf(ERS_HERE, "No DataflowStatusModule configuration given"));
+  }
+
+  std::vector<conffwk::ConfigObject> dfsOutputs;
+  for (auto [uid, descriptor] : helper->get_netdescriptors("DataflowStatus", "DFOApplication")) {
+    dfsOutputs.push_back(obj_fac.create_net_obj(descriptor, uid));
+  }
+
+  for (auto& dfsOut : dfsOutputs) {
+    dfsOutputObjs.push_back(&dfsOut);
+  }
+
+  auto dfsConfObj = dfsConf->config_object();
+  dfsInputObjs = { &trigdecNetObj, &statusReqNetObj, &trbcQueueObj, &tokenQueueObj };
+  dfsOutputObjs.push_back(&tdQueueObj);
+  // Prepare TRB Module Object and assign its Config Object.
+  std::string dfsUid(UID() + "-dfs");
+  conffwk::ConfigObject dfsObj = obj_fac.create("DataflowStatusModule", dfsUid);
+  dfsObj.set_obj("configuration", &dfsConfObj);
+  dfsObj.set_objs("inputs", dfsInputObjs);
+  dfsObj.set_objs("outputs", dfsOutputObjs);
+  // Push TRB Module Object from confdb
+  modules.push_back(obj_fac.get_dal<DataflowStatusModule>(dfsUid));
 
   obj_fac.update_modules(modules);
 }

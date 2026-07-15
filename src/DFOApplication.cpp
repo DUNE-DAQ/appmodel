@@ -8,10 +8,9 @@
  * received with this code.
  */
 
-
+#include "appmodel/DFOApplication.hpp"
 #include "ConfigObjectFactory.hpp"
 #include "appmodel/ConfigurationHelper.hpp"
-#include "appmodel/DFOApplication.hpp"
 #include "appmodel/DFOConf.hpp"
 #include "appmodel/DFOModule.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
@@ -39,7 +38,6 @@ DFOApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
 
   ConfigObjectFactory obj_fac(this);
 
-
   std::string dfoUid("DFO-" + UID());
   TLOG_DEBUG(7) << "creating OKS configuration object for DFOModule class ";
   auto dfoObj = obj_fac.create("DFOModule", dfoUid);
@@ -55,7 +53,8 @@ DFOApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
   std::vector<const conffwk::ConfigObject*> input_conns;
   conffwk::ConfigObject tdInObj;
   conffwk::ConfigObject busyOutObj;
-  conffwk::ConfigObject tokenInObj;
+  conffwk::ConfigObject statusInObj;
+  conffwk::ConfigObject statusReqOutObj;
 
   for (auto rule : get_network_rules()) {
     auto endpoint_class = rule->get_endpoint_class();
@@ -68,14 +67,14 @@ DFOApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
         tdInObj = connObj;
         input_conns.push_back(&tdInObj);
       }
-    } else if (descriptor->get_data_type() == "TriggerDecisionToken") {
-      tokenInObj = connObj;
-      input_conns.push_back(&tokenInObj);
-    }
-
-    else if (descriptor->get_data_type() == "TriggerInhibit") {
+    } else if (descriptor->get_data_type() == "TriggerInhibit") {
       busyOutObj = connObj;
       output_conns.push_back(&busyOutObj);
+    } else if (descriptor->get_data_type() == "DataflowStatus") {
+      if (endpoint_class == "DFOModule") {
+        statusInObj = obj_fac.create_net_obj(descriptor, UID());
+        input_conns.push_back(&statusInObj);
+      }
     }
   }
 
@@ -85,14 +84,13 @@ DFOApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
   if (busyOutObj == nullptr) {
     throw(BadConf(ERS_HERE, "No TriggerInhibit output connection descriptor given"));
   }
-  if (tokenInObj == nullptr) {
-    throw(BadConf(ERS_HERE, "No TriggerDecisionToken input connection descriptor given"));
-  }
 
   // Process special Network rules!
   std::vector<conffwk::ConfigObject> tdOutObjs;
-  for (auto [uid, descriptor]:
-         helper->get_netdescriptors("TriggerDecision", "DFApplication")) {
+  for (auto [uid, descriptor] : helper->get_netdescriptors("TriggerDecision", "DFApplication")) {
+    tdOutObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
+  }
+  for (auto [uid, descriptor] : helper->get_netdescriptors("DataflowStatusRequest", "DFApplication")) {
     tdOutObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
   }
 
@@ -109,5 +107,5 @@ DFOApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
   obj_fac.update_modules(modules);
 }
 
-} // namespace appmodel  
+} // namespace appmodel
 } // namespace dunedaq
