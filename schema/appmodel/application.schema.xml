@@ -225,6 +225,11 @@
   <relationship name="filename_params" class-type="FilenameParams" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
+ <class name="DataStoreConfTestDeriv">
+  <superclass name="DataStoreConf"/>
+  <attribute name="derivval" type="s32"/>
+ </class>
+
  <class name="DataWriterConf">
   <attribute name="data_storage_prescale" type="s32" init-value="1" is-not-null="yes"/>
   <attribute name="min_write_retry_time_ms" type="s32" init-value="0" is-not-null="yes"/>
