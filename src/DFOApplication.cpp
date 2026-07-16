@@ -84,6 +84,9 @@ DFOApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
   if (busyOutObj == nullptr) {
     throw(BadConf(ERS_HERE, "No TriggerInhibit output connection descriptor given"));
   }
+  if (statusInObj == nullptr) {
+    throw(BadConf(ERS_HERE, "No DataflowStatus input connection descriptor given"));
+  }
 
   // Process special Network rules!
   std::vector<conffwk::ConfigObject> tdOutObjs;

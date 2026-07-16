@@ -204,8 +204,8 @@ DFApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> h
   if (trigdecNetDesc == nullptr) { // BadConf if no descriptor for TriggerDecisions into TRB
     throw(BadConf(ERS_HERE, "Could not find network descriptor rule for input TriggerDecisions!"));
   }
-  if (statusReqNetDesc == nullptr) { // BadConf if no descriptor for DataflowStatusRequest output
-    throw(BadConf(ERS_HERE, "Could not find network descriptor rule for output DataflowStatusRequests!"));
+  if (statusReqNetDesc == nullptr) { // BadConf if no descriptor for DataflowStatusRequest input
+    throw(BadConf(ERS_HERE, "Could not find network descriptor rule for input DataflowStatusRequests!"));
   }
   if (get_source_id() == nullptr) {
     throw(BadConf(ERS_HERE, "Could not retrieve SourceIDConf"));
