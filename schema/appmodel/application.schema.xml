@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="74" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20260715T204228"/>
+<info name="" type="" num-of-items="74" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20260716T144235"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -120,6 +120,7 @@
 
  <class name="DFOApplication">
   <superclass name="SmartDaqApplication"/>
+  <superclass name="Resource"/>
   <relationship name="dfo" class-type="DFOConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
    <method-implementation language="c++" prototype="void generate_modules(std::shared_ptr&lt;appmodel::ConfigurationHelper&gt;) const override" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;appmodel/ConfigurationHelper.hpp&quot;&#xA;END_HEADER_PROLOGUE"/>
