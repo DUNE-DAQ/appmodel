@@ -33,6 +33,7 @@
 
 #include "appmodel/SourceIDConf.hpp"
 
+#include "appmodel/ReadoutApplication.hpp"
 #include "appmodel/TriggerApplication.hpp"
 #include "appmodel/appmodelIssues.hpp"
 
