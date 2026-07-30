@@ -10,7 +10,7 @@
 
 #include "boost/test/unit_test.hpp"
 
-#include "../src/ConfigObjectFactory.hpp"
+#include "../src/ConfigObjectFactory.hpp"  // NOLINT
 #include "appmodel/DataMoveCallbackConf.hpp"
 #include "appmodel/DFOApplication.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
@@ -22,7 +22,7 @@
 #include <list>
 #include <string>
 #include <thread>
-
+#include <vector>
 
 using namespace dunedaq;
 using namespace dunedaq::appmodel;
