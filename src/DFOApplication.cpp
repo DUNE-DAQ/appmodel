@@ -60,15 +60,13 @@ DFOApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
     auto endpoint_class = rule->get_endpoint_class();
     auto descriptor = rule->get_descriptor();
 
-    auto connObj = obj_fac.create_net_obj(descriptor, "");
-
     if (descriptor->get_data_type() == "TriggerDecision") {
       if (endpoint_class == "DFOModule") {
-        tdInObj = connObj;
+        tdInObj = obj_fac.create_net_obj(descriptor, UID());
         input_conns.push_back(&tdInObj);
       }
     } else if (descriptor->get_data_type() == "TriggerInhibit") {
-      busyOutObj = connObj;
+      busyOutObj = obj_fac.create_net_obj(descriptor, "");
       output_conns.push_back(&busyOutObj);
     } else if (descriptor->get_data_type() == "DataflowStatus") {
       if (endpoint_class == "DFOModule") {

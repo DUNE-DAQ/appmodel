@@ -101,7 +101,6 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
   const NetworkConnectionDescriptor* req_net_desc = nullptr;
   const NetworkConnectionDescriptor* tc_net_desc = nullptr;
   const NetworkConnectionDescriptor* ti_net_desc = nullptr;
-  const NetworkConnectionDescriptor* td_net_desc = nullptr;
   const NetworkConnectionDescriptor* timesync_net_desc = nullptr;
 
   for (auto rule : get_network_rules()) {
@@ -110,9 +109,6 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
     // Network connections for the MLT
     if (data_type == "TriggerInhibit") {
       ti_net_desc = rule->get_descriptor();
-    }
-    if (data_type == "TriggerDecision") {
-      td_net_desc = rule->get_descriptor();
     }
     if (data_type == "TriggerCandidate") {
       tc_net_desc = rule->get_descriptor();
@@ -127,9 +123,6 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
     TLOG_DEBUG(3) << "Endpoint class (currently not used in for networkconnections): data_type: " << data_type;
   }
 
-  if (!td_net_desc) {
-    throw(BadConf(ERS_HERE, "No MLT network connection for the output TriggerDecision given"));
-  }
   if (!ti_net_desc) {
     throw(BadConf(ERS_HERE, "No MLT network connection for the output TriggerInhibit given"));
   }
@@ -146,10 +139,6 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
 
   conffwk::ConfigObject tc_net_obj =
     obj_fac.create_net_obj(tc_net_desc, ".*");
-
-  // Network connection for output TriggerDecision
-  conffwk::ConfigObject td_net_obj =
-    obj_fac.create_net_obj(td_net_desc, "");
 
   // Network conection for the input Data Requests
   conffwk::ConfigObject dr_net_obj =
@@ -237,7 +226,7 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
       sourceIds.push_back(tcSourceIdConf);
     }
   }
-  
+
   for (auto app_class: {"TriggerApplication", "FakeHSIApplication",
 			"DTSHSIApplication", "CIBApplication"}) {
     for (auto [uid, src_id]: helper->get_app_source_ids(app_class)) {
@@ -249,9 +238,9 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
       tcSourceIdConf->set_by_val<std::string>("subsystem", src_id->get_subsystem());
       sourceIds.push_back(tcSourceIdConf);
 
-    }    
-  }  
- 
+    }
+  }
+
   // Get mandatory links
   std::vector<const conffwk::ConfigObject*> mandatory_sids;
   const TCDataProcessor* tc_dp = tch_conf->get_data_processor()->cast<TCDataProcessor>();
@@ -260,7 +249,7 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
       mandatory_sids.push_back(&m->config_object());
     }
   }
-  
+
   /**************************************************************
    * Create the TC handler
    **************************************************************/
@@ -298,7 +287,7 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
   for (auto [uid, descriptor]:
          helper->get_netdescriptors("Fragment", "DFApplication")) {
     fragOutObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
-  }    
+  }
 
   // build up the full list of outputs
   std::vector<const conffwk::ConfigObject*> ti_output_objs;
@@ -329,15 +318,24 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
    * Instantiate the MLTModule module
    **************************************************************/
 
+  std::vector<conffwk::ConfigObject> tdOutObjs;
+  for (auto [uid, descriptor] : helper->get_netdescriptors("TriggerDecision", "DFOApplication")) {
+    tdOutObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
+  }
+
+  std::vector<const conffwk::ConfigObject*> output_conns;
+  for (auto& tdOut : tdOutObjs) {
+    output_conns.push_back(&tdOut);
+  }
   conffwk::ConfigObject mlt_obj = obj_fac.create(mlt_conf->get_template_for(),
                                                  mlt_conf->UID());
   mlt_obj.set_obj("configuration", &(mlt_conf->config_object()));
   mlt_obj.set_objs("inputs", { &output_queue_obj, &ti_net_obj });
-  mlt_obj.set_objs("outputs", { &td_net_obj });
+  mlt_obj.set_objs("outputs", output_conns);
   modules.push_back(obj_fac.get_dal<MLTModule>(mlt_conf->UID()));
 
   obj_fac.update_modules(modules);
 }
- 
-} // namespace appmodel  
+
+} // namespace appmodel
 } // namespace dunedaq
