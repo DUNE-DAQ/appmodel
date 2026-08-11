@@ -212,11 +212,11 @@ NP02ReadoutApplication::generate_modules(std::shared_ptr<appmodel::Configuration
     // Rules of engagement: if the receiver interface is network or felix, the receivers should be castable to the counterpart
     bool requires_dpdk = (reader_class == "DPDKReaderModule" || reader_class == "FDFakeReaderModule");
 
-
     if (reader_class == "DPDKReaderModule" || reader_class == "SocketReaderModule" || reader_class == "FDFakeReaderModule") {
       if ((requires_dpdk && !det_receiver->cast<appmodel::DPDKReceiver>()) || // SSB: Note here, we are intrinsically locking FakeCard readout to only emulate DPDK data reception. Given NP02ReadoutApplication is intended for TDE readout at NP02, assuming this is OK.
           (reader_class == "SocketReaderModule" && !det_receiver->cast<appmodel::SocketReceiver>())) {
-        throw(BadConf(ERS_HERE, fmt::format("{} requires NWDetDataReceiver, found {} of class {}", reader_class, det_receiver->UID(), det_receiver->class_name())));
+        std::string required_class = requires_dpdk ? "DPDKReceiver" : "SocketReceiver";
+        throw(BadConf(ERS_HERE, fmt::format("{} requires {}, found {} of class {}", reader_class, required_class, det_receiver->UID(), det_receiver->class_name())));
       }
 
       // SSB: Note that here you need to include FDFakeCardReader as well, because emulated readout needs some way to map NUMA to streams
