@@ -474,8 +474,8 @@ NP02ReadoutApplication::generate_modules(std::shared_ptr<appmodel::Configuration
   modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(frag_aggr.UID()));
 
   obj_fac.update_modules(modules);
-}
+} // NOLINT
 
 
-}
-}
+} // namespace appmodel
+} // namespace dunedaq
