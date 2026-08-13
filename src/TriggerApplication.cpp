@@ -33,6 +33,7 @@
 
 #include "appmodel/SourceIDConf.hpp"
 
+#include "appmodel/ReadoutApplication.hpp"
 #include "appmodel/TriggerApplication.hpp"
 #include "appmodel/appmodelIssues.hpp"
 
@@ -223,6 +224,56 @@ TriggerApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelp
 
 
   obj_fac.update_modules(modules);
+}
+
+bool TriggerApplication::compute_disabled_state(const std::set<std::string>& disabled_resources) const {
+  // Disabled if:
+  //  1. I am explicitly disabled
+  //  2. All ReadoutApplications are disabled
+  //  3. TAGeneration is disabled in all readout applications related to this application by the network rules
+
+  // First we can just check if the application itself is disabled
+  if ( Resource::compute_disabled_state(disabled_resources) ) {
+    return true;
+  }
+
+  // Now for the tricky bit, we need to loop over the connections
+  for(auto& rule : get_network_rules()){
+    /// HACK (minor): We assume TPs will always contain this exact datatype
+    auto data_type = rule->get_descriptor()->get_data_type();
+
+    if (data_type != "TriggerActivity"){
+      continue;
+    }
+
+      // We now loop over the object using the same descriptor.
+    for (auto parent : configuration().referenced_by(*rule, "network_rules", false, false, false, 0)){
+
+      auto readout = parent->cast<appmodel::ReadoutApplication>();
+      if(!readout){
+        continue;
+      }
+
+      // Check if readout is actually used by the configuration!
+      if(configuration().referenced_by(*readout, "*", false, false, false, 0).empty()){
+        continue;
+      }
+
+      /// If the RA is disabled then so is its TP
+      if(readout->compute_disabled_state(disabled_resources)){
+        continue;
+      }
+      
+      // If the TA is enabled on ANY RA then we're enabled
+      // Here we are assuming consistency is enforced by the readout application itself. If TA is enabled, TP should be enabled too.
+      if(readout->get_ta_generation_enabled()){
+        TLOG()<<"Found "<<readout->UID()<<" with TA enabled";
+        return false;
+      }
+    }
+  }
+
+  return true;
 }
  
 } // namespace appmodel  

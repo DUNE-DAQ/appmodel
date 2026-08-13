@@ -13,14 +13,15 @@
 #include "conffwk/Configuration.hpp"
 #include "oks/kernel.hpp"
 #include "confmodel/Connection.hpp"
-#include "confmodel/Service.hpp"
 #include "confmodel/NetworkConnection.hpp"
+#include "appmodel/ReadoutApplication.hpp"
+#include "confmodel/Service.hpp"
+#include "appmodel/SourceIDConf.hpp"
 #include "appmodel/TPStreamWriterApplication.hpp"
 #include "appmodel/TPStreamWriterModule.hpp"
 #include "appmodel/TPStreamWriterConf.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
-#include "appmodel/SourceIDConf.hpp"
 #include "appmodel/appmodelIssues.hpp"
 #include "logging/Logging.hpp"
 
@@ -79,5 +80,54 @@ TPStreamWriterApplication::generate_modules(std::shared_ptr<appmodel::Configurat
   obj_fac.update_modules(modules);
 }
  
-} // namespace appmodel  
-} // namespace dunedaq
+bool TPStreamWriterApplication::compute_disabled_state(const std::set<std::string>& disabled_resources) const {
+  // Disabled if:
+  //  1. I am explicitly disabled
+  //  2. All ReadoutApplications are disabled
+  //  3. TPGeneration is disabled in all readout applications
+
+  // First we can just check if the application itself is disabled
+  if (disabled_resources.contains(UID())) {
+    return true;
+  }
+
+  // Now for the tricky bit, we need to loop over the connections
+  for(auto& rule : get_network_rules()){
+    /// HACK (minor): We assume TPs will always contain this exact datatype
+    auto data_type = rule->get_descriptor()->get_data_type();
+
+    if (data_type != "TPSet"){
+      continue;
+    }
+
+  
+    // We now loop over the parents
+    for (auto parent : configuration().referenced_by(*rule, "network_rules", false, false, false, 0)){
+
+      auto readout = parent->cast<appmodel::ReadoutApplication>();
+      if(!readout){
+        continue;
+      }
+
+      // Check if readout is actually used by the configuration!
+      if(configuration().referenced_by(*readout, "*", false, false, false, 0).empty()){
+        continue;
+      }
+
+      /// If the RA is disabled then so is its TP
+      if(readout->compute_disabled_state(disabled_resources)){
+        continue;
+      }
+      
+      // If the TP is enabled on ANY RA then we're enabled
+      if(readout->get_tp_generation_enabled()){
+        TLOG()<<"Found "<<readout->UID()<<" with TPG enabled";
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+}
+}

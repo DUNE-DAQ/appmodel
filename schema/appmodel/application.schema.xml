@@ -571,6 +571,12 @@
   <method name="generate_modules" description="Generate dal objects for streams of thie ReadoutApplication on the fly">
    <method-implementation language="c++" prototype="void generate_modules(std::shared_ptr&lt;appmodel::ConfigurationHelper&gt;) const override" body=""/>
   </method>
+  <method name="compute_disabled_state" description="Custom implementation of method for TPStreamWriterApplication.">
+   <method-implementation language="c++" prototype="bool compute_disabled_state(const std::set&lt;std::string&gt;&amp; disabled) const override final" body=""/>
+  </method>
+  <!-- <method name="is_disabled" description="Method to be called from user code to determine if this Resource is disabled in the current configuration.">
+   <method-implementation language="c++" prototype="bool is_disabled(const dunedaq::confmodel::ResourceTree&amp; session) const final" body=""/>
+  </method> -->
  </class>
 
  <class name="TPStreamWriterConf">
