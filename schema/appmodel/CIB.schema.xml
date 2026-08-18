@@ -90,7 +90,7 @@
 
  <class name="CIBApplication" description="Application that controls the CIB">
   <superclass name="SmartDaqApplication"/>
-  <superclass name="ResourceSetDisableAND"/>
+  <superclass name="ExcludableEntitySetAND"/>
   <relationship name="generator" class-type="CIBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="board" class-type="CIBoardConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="link_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>

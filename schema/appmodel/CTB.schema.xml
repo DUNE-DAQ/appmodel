@@ -90,7 +90,7 @@
 
  <class name="CTBApplication" description="Application that controls the CTB">
   <superclass name="SmartDaqApplication"/>
-  <superclass name="ResourceSetDisableAND"/>
+  <superclass name="ExcludableEntitySetAND"/>
   <relationship name="generator" class-type="CTBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="board" class-type="CTBoardConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="link_handler" class-type="DataHandlerConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -143,7 +143,7 @@
  </class>
 
  <class name="CTBMisc">
-  <superclass name="ResourceSetDisableAND"/>
+  <superclass name="ExcludableEntitySetAND"/>
   <attribute name="ch_status" type="bool" init-value="0" is-not-null="yes"/>
   <relationship name="pulser" class-type="CTBPulser" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="timing" class-type="CTBTiming" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
@@ -256,7 +256,7 @@
  </class>
 
  <class name="CTBoardConf">
-  <superclass name="ResourceSetDisableAND"/>
+  <superclass name="ExcludableEntitySetAND"/>
   <relationship name="sockets" class-type="CTBSockets" low-cc="one" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
   <relationship name="beam" class-type="CTBSubsystem" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="CRT" class-type="CTBCRTSubsystem" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>

@@ -92,7 +92,7 @@
 
  <class name="DaphneApplication">
   <superclass name="SmartDaqApplication"/>
-  <superclass name="ResourceSetDisableAND"/>
+  <superclass name="ExcludableEntitySetAND"/>
   <relationship name="configuration" class-type="DaphneConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="detector_connections" description="List of detector components controlled by this application" class-type="DetectorToDaqConnection" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="hermes_module_conf" class-type="HermesModuleConf" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
