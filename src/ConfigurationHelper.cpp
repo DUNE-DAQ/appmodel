@@ -84,7 +84,7 @@ std::map<std::string,std::vector<uint32_t>> ConfigurationHelper::get_stream_sour
     auto ro_app = app->cast<appmodel::ReadoutApplication>();
     if (ro_app != nullptr) {
       std::vector<uint32_t> streams;
-      for (auto res: ro_app->contained_resources()) {
+      for (auto res: ro_app->contained_excludable_entities()) {
         if (!res->is_disabled(*m_session)) {
           auto d2d = res->cast<confmodel::DetectorToDaqConnection>();
           if (d2d == nullptr) {
@@ -103,7 +103,7 @@ std::map<std::string,std::vector<uint32_t>> ConfigurationHelper::get_stream_sour
       auto fake_app = app->cast<appmodel::FakeDataApplication>();
       if (fake_app != nullptr) {
         std::vector<uint32_t> streams;
-        for (auto res: fake_app->contained_resources()) {
+        for (auto res: fake_app->contained_excludable_entities()) {
           if (!res->is_disabled(*m_session)) {
             auto fdpc = res->cast<appmodel::FakeDataProdConf>();
             if (fdpc != nullptr && !fdpc->is_disabled(*m_session)) {

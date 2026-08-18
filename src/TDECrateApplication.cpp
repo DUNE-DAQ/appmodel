@@ -33,7 +33,7 @@ namespace dunedaq {
 namespace appmodel {
 
 std::vector<const confmodel::Resource*>
-TDECrateApplication::contained_resources() const {
+TDECrateApplication::contained_excludable_entities() const {
   return to_resources(get_detector_connections());
 }
 

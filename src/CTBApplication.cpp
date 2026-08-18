@@ -58,7 +58,7 @@ using namespace dunedaq;
 using namespace dunedaq::appmodel;
 
 std::vector<const confmodel::Resource*>
-CTBApplication::contained_resources() const {
+CTBApplication::contained_excludable_entities() const {
   std::vector<const confmodel::Resource*> resources;
   resources.push_back(dynamic_cast<const confmodel::Resource*>(get_board()));
   return resources;
@@ -209,7 +209,7 @@ CTBApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
 
 
 std::vector<const confmodel::Resource*>
-CTBoardConf::contained_resources() const {
+CTBoardConf::contained_excludable_entities() const {
   std::vector<const confmodel::Resource*> resources;
   resources.push_back(get_misc());
 
@@ -290,7 +290,7 @@ nlohmann::json CTBoardConf::get_ctb_json(const dunedaq::confmodel::Session& sess
 
 }
 
-std::vector<const confmodel::Resource*> CTBMisc::contained_resources() const {
+std::vector<const confmodel::Resource*> CTBMisc::contained_excludable_entities() const {
   return std::vector<const confmodel::Resource*>{ get_randomtrigger_1(), get_randomtrigger_2() };
 }
 

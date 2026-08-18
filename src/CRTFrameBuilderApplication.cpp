@@ -38,7 +38,7 @@
 namespace dunedaq::appmodel {
 
 std::vector<const confmodel::Resource*>
-CRTFrameBuilderApplication::contained_resources() const {
+CRTFrameBuilderApplication::contained_excludable_entities() const {
   return to_resources(get_detector_connections());
 }
 

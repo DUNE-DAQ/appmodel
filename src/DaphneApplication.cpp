@@ -50,7 +50,7 @@
 namespace dunedaq::appmodel {
   
 std::vector<const confmodel::Resource*>
-DaphneApplication::contained_resources() const {
+DaphneApplication::contained_excludable_entities() const {
   return to_resources(get_detector_connections());
 }
 
@@ -89,7 +89,7 @@ DaphneApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelpe
     // get the readout groups and the interfaces and streams therein; 1 reaout group corresponds to 1 data reader module
 
     // Redundant? Schema forbids 0 connections
-    if (d2d_conn->contained_resources().empty()) {
+    if (d2d_conn->contained_excludable_entities().empty()) {
       throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain senders or receivers"));
     }
 

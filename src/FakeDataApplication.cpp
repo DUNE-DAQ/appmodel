@@ -43,7 +43,7 @@ namespace appmodel {
 //-----------------------------------------------------------------------------
 
 std::vector<const confmodel::Resource*>
-FakeDataApplication::contained_resources() const {
+FakeDataApplication::contained_excludable_entities() const {
   return to_resources(get_producers());
 }
 

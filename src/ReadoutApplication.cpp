@@ -72,7 +72,7 @@ namespace appmodel {
 //-----------------------------------------------------------------------------
 
 std::vector<const confmodel::Resource*>
-ReadoutApplication::contained_resources() const {
+ReadoutApplication::contained_excludable_entities() const {
   return to_resources(get_detector_connections());
 }
 

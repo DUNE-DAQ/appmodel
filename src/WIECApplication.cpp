@@ -42,7 +42,7 @@ namespace appmodel {
 //-----------------------------------------------------------------------------
 
 std::vector<const confmodel::Resource*>
-WIECApplication::contained_resources() const {
+WIECApplication::contained_excludable_entities() const {
   return to_resources(get_detector_connections());
 }
 
@@ -71,7 +71,7 @@ WIECApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper>
     TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn->UID();
 
     // Is this check necessary?
-    if (d2d_conn->contained_resources().empty()) {
+    if (d2d_conn->contained_excludable_entities().empty()) {
       throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain senders or receivers"));
     }
 

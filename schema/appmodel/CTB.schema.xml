@@ -101,8 +101,8 @@
   <method name="get_sources" description="The CTB HSI has two sources, one for HLT and one for LLT. &#xA;This methods gets the right information in a way that makes easy to loop over the information">
    <method-implementation language="C++" prototype="std::vector&lt;std::pair&lt;std::string, const appmodel::SourceIDConf*&gt;&gt; get_sources() const" body="return {{ &quot;HLT&quot;,  get_source_id() }, &#xA;             { &quot;LLT&quot;, get_LLT_source() }};"/>
   </method>
-  <method name="contained_resources" description="">
-   <method-implementation language="c++" prototype="virtual std::vector&lt;const Resource*&gt; contained_resources() const override" body=""/>
+  <method name="contained_excludable_entities" description="">
+   <method-implementation language="c++" prototype="virtual std::vector&lt;const Resource*&gt; contained_excludable_entities() const override" body=""/>
   </method>
  </class>
 
@@ -152,8 +152,8 @@
   <method name="get_ctb_json" description="">
    <method-implementation language="C++" prototype="nlohmann::json get_ctb_json(const dunedaq::confmodel::Session&amp; session) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;END_HEADER_PROLOGUE"/>
   </method>
-  <method name="contained_resources" description="">
-   <method-implementation language="c++" prototype="virtual std::vector&lt;const Resource*&gt; contained_resources() const override" body=""/>
+  <method name="contained_excludable_entities" description="">
+   <method-implementation language="c++" prototype="virtual std::vector&lt;const Resource*&gt; contained_excludable_entities() const override" body=""/>
   </method>
  </class>
 
@@ -269,8 +269,8 @@
   <method name="get_ctb_json" description="create the json configuration for the board">
    <method-implementation language="C++" prototype="nlohmann::json get_ctb_json(const dunedaq::confmodel::Session&amp; session, std::optional&lt;std::string&gt; socket_host = std::nullopt ) const" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;nlohmann/json.hpp&quot;&#xA;#include &lt;optional&gt;&#xA;END_HEADER_PROLOGUE"/>
   </method>
-  <method name="contained_resources" description="">
-   <method-implementation language="c++" prototype="virtual std::vector&lt;const Resource*&gt; contained_resources() const override" body=""/>
+  <method name="contained_excludable_entities" description="">
+   <method-implementation language="c++" prototype="virtual std::vector&lt;const Resource*&gt; contained_excludable_entities() const override" body=""/>
   </method>
  </class>
 
