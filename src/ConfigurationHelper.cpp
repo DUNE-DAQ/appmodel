@@ -37,7 +37,7 @@ ConfigurationHelper::get_netdescriptors(
   const std::string& app_class) {
     std::vector<std::pair<std::string, const appmodel::NetworkConnectionDescriptor*>>
       result;
-    for (auto app: m_session->enabled_applications()) {
+    for (auto app: m_session->included_applications()) {
       if (app_class.empty() || app->castable(app_class)) {
         auto smart_app = app->cast<appmodel::SmartDaqApplication>();
         if (smart_app == nullptr) {
@@ -61,7 +61,7 @@ std::vector<const confmodel::Service*> ConfigurationHelper::get_services(
   std::string data_type)
 {
   std::vector<const confmodel::Service*> result;
-  for (auto app: m_session->enabled_applications()) {
+  for (auto app: m_session->included_applications()) {
     if (app->castable(app_class)) {
       auto smart_app = app->cast<appmodel::SmartDaqApplication>();
       if (smart_app == nullptr) {
@@ -80,7 +80,7 @@ std::vector<const confmodel::Service*> ConfigurationHelper::get_services(
 
 std::map<std::string,std::vector<uint32_t>> ConfigurationHelper::get_stream_source_ids() {
   std::map<std::string,std::vector<uint32_t>> result;
-  for (auto app: m_session->enabled_applications()) {
+  for (auto app: m_session->included_applications()) {
     auto ro_app = app->cast<appmodel::ReadoutApplication>();
     if (ro_app != nullptr) {
       std::vector<uint32_t> streams;
@@ -121,7 +121,7 @@ std::map<std::string,std::vector<uint32_t>> ConfigurationHelper::get_stream_sour
 std::map<std::string, std::vector<const SourceIDConf*>>
 ConfigurationHelper::get_tp_source_ids(){
   std::map<std::string, std::vector<const SourceIDConf*>> result;
-  for (auto app: m_session->enabled_applications()) {
+  for (auto app: m_session->included_applications()) {
     auto ro_app = app->cast<appmodel::ReadoutApplication>();
     if (ro_app != nullptr) {
       if (ro_app->get_tp_generation_enabled()) {
@@ -142,7 +142,7 @@ ConfigurationHelper::get_tp_source_ids(){
 std::vector<std::string> ConfigurationHelper::get_app_uids(
   std::string app_class){
   std::vector<std::string> result;
-  for (auto app: m_session->enabled_applications()) {
+  for (auto app: m_session->included_applications()) {
     if (app_class.empty() || app->castable(app_class)) {
       result.push_back(app->UID());
     }
@@ -153,7 +153,7 @@ std::vector<std::string> ConfigurationHelper::get_app_uids(
 std::map<std::string, const SourceIDConf*>
 ConfigurationHelper::get_app_source_ids(std::string app_class) {
   std::map<std::string, const SourceIDConf*> result;
-  for (auto app: m_session->enabled_applications()) {
+  for (auto app: m_session->included_applications()) {
     if (app_class.empty() || app->castable(app_class)) {
       auto smart_app = app->cast<SmartDaqApplication>();
       if (smart_app != nullptr && smart_app->get_source_id() != nullptr) {
@@ -168,7 +168,7 @@ ConfigurationHelper::get_app_source_ids(std::string app_class) {
 std::map<std::string, std::map<std::string, const SourceIDConf*>>
 ConfigurationHelper::get_all_app_source_ids(std::string app_class) {
   std::map<std::string, std::map<std::string, const SourceIDConf*>> result;
-  for (auto app: m_session->enabled_applications()) {
+  for (auto app: m_session->included_applications()) {
     if (app_class.empty() || app->castable(app_class)) {
       auto class_info = app->configuration().get_class_info(app->class_name());
       auto obj = app->config_object();
