@@ -320,7 +320,7 @@ nlohmann::json CTBTrigger::get_ctb_json(const dunedaq::confmodel::Session& sessi
 
   auto json = this -> to_json(false, true);
   static std::string enable_tag = "enable";
-  if ( this -> is_disabled(session) ) {
+  if ( this -> is_excluded(session) ) {
     json[enable_tag] = false;
   }
   else {

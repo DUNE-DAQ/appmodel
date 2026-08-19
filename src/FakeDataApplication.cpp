@@ -105,8 +105,8 @@ FakeDataApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHel
 
   // Create a FakeDataProdModule for each stream of this Readout Group
   for (auto fdpConf : get_producers()) {
-    if (helper->is_disabled(fdpConf)) {
-      TLOG_DEBUG(7) << "Ignoring disabled FakeDataProdConf " << fdpConf->UID();
+    if (helper->is_excluded(fdpConf)) {
+      TLOG_DEBUG(7) << "Ignoring excluded FakeDataProdConf " << fdpConf->UID();
       continue;
     }
 

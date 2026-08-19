@@ -69,8 +69,8 @@ main(int argc, char* argv[])
     std::cout << appName << " is of class " << daqapp->class_name() << std::endl;
 
     auto res = daqapp->cast<confmodel::Resource>();
-    if (res && res->is_disabled(*session)) {
-      std::cout << "Application " << appName << " is disabled" << std::endl;
+    if (res && res->is_excluded(*session)) {
+      std::cout << "Application " << appName << " is excluded" << std::endl;
       return 0;
     }
 

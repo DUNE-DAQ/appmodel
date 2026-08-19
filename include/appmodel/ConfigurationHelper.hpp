@@ -124,21 +124,21 @@ namespace dunedaq::appmodel {
     get_all_app_source_ids(std::string app_class="");
 
 
-    /// @brief Check the enabled state of the given item
+    /// @brief Check the include/exclude state of the given item
     ///
     /// @param item  The item to be checked.
     ///
-    /// @returns True if the object is not disabled
-    inline bool is_enabled(const conffwk::DalObject* item) {
-      return !is_disabled(item);
+    /// @returns True if the object is included
+    inline bool is_included(const conffwk::DalObject* item) {
+      return !is_excluded(item);
     }
 
-    /// @brief Check the enabled state of the given item
+    /// @brief Check the include/exclude state of the given item
     ///
     /// @param item  The item to be checked.
     ///
-    /// @returns True if the object is disabled
-    bool is_disabled(const conffwk::DalObject* item);
+    /// @returns True if the object is excluded
+    bool is_excluded(const conffwk::DalObject* item);
 
   private:
     const confmodel::Session* m_session;

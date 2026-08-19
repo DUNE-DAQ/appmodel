@@ -94,8 +94,8 @@ void
     auto d2d_conn_uid = d2d_conn->UID();
 
     // Are we sure?
-    if (helper->is_disabled(d2d_conn)) {
-      TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn_uid;
+    if (helper->is_excluded(d2d_conn)) {
+      TLOG_DEBUG(7) << "Ignoring excluded DetectorToDaqConnection " << d2d_conn_uid;
       continue;
     }
 
@@ -109,27 +109,27 @@ void
     for (auto sender : d2d_conn->senders()) {
       
       // Are we sure?
-      if (helper->is_disabled(sender)) {
-        TLOG_DEBUG(7) << "Ignoring disabled DataSender " << sender->UID();
+      if (helper->is_excluded(sender)) {
+        TLOG_DEBUG(7) << "Ignoring excluded DataSender " << sender->UID();
         continue;
       }
 
       
-      bool has_enabled_det_stream = false;
+      bool has_included_det_stream = false;
       // Loop over streams
       for (auto stream : sender->get_streams()) {
         
         // Are we sure?
-        if (helper->is_disabled(stream)) {
-          TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
+        if (helper->is_excluded(stream)) {
+          TLOG_DEBUG(7) << "Ignoring excluded DetectorStream " << stream->UID();
           continue;
         }
 
-        has_enabled_det_stream = true;
+        has_included_det_stream = true;
         break;
       }
       
-      if (!has_enabled_det_stream) {
+      if (!has_included_det_stream) {
         continue;
       }
 

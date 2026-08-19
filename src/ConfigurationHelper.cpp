@@ -85,13 +85,13 @@ std::map<std::string,std::vector<uint32_t>> ConfigurationHelper::get_stream_sour
     if (ro_app != nullptr) {
       std::vector<uint32_t> streams;
       for (auto res: ro_app->contained_excludable_entities()) {
-        if (!res->is_disabled(*m_session)) {
+        if (!res->is_excluded(*m_session)) {
           auto d2d = res->cast<confmodel::DetectorToDaqConnection>();
           if (d2d == nullptr) {
             throw (BadD2d(ERS_HERE, app->full_name(), res->full_name()));
           }
           for (auto stream: d2d->streams()) {
-            if (!stream->is_disabled(*m_session)) {
+            if (!stream->is_excluded(*m_session)) {
               streams.push_back(stream->get_source_id());
             }
           }
@@ -104,9 +104,9 @@ std::map<std::string,std::vector<uint32_t>> ConfigurationHelper::get_stream_sour
       if (fake_app != nullptr) {
         std::vector<uint32_t> streams;
         for (auto res: fake_app->contained_excludable_entities()) {
-          if (!res->is_disabled(*m_session)) {
+          if (!res->is_excluded(*m_session)) {
             auto fdpc = res->cast<appmodel::FakeDataProdConf>();
-            if (fdpc != nullptr && !fdpc->is_disabled(*m_session)) {
+            if (fdpc != nullptr && !fdpc->is_excluded(*m_session)) {
               streams.push_back(fdpc->get_source_id());
             }
           }
@@ -194,10 +194,10 @@ ConfigurationHelper::get_all_app_source_ids(std::string app_class) {
   return result;
 }
 
-bool ConfigurationHelper::is_disabled(const conffwk::DalObject* item) {
+bool ConfigurationHelper::is_excluded(const conffwk::DalObject* item) {
   auto res = item->cast<confmodel::Resource>();
   if (res == nullptr) {
     return false;
   }
-  return res->is_disabled(*m_session);
+  return res->is_excluded(*m_session);
 }
