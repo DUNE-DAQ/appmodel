@@ -89,15 +89,15 @@
  </rel>
 </obj>
 
-<obj class="ALink" id="DPDKPortConfiguration-2-ProcessingResource-via-used_lcores">
+<obj class="ALink" id="DPDKPortConfiguration-2-HostCores-via-used_lcores">
  <attr name="Name" type="string" val="used_lcores"/>
  <rel name="From" class="Class" id="DPDKPortConfiguration"/>
- <rel name="To" class="Class" id="ProcessingResource"/>
+ <rel name="To" class="Class" id="HostCores"/>
  <rel name="Points">
-  <ref class="Point" id="1 DPDKPortConfiguration-2-ProcessingResource-via-used_lcores"/>
-  <ref class="Point" id="2 DPDKPortConfiguration-2-ProcessingResource-via-used_lcores"/>
-  <ref class="Point" id="3 DPDKPortConfiguration-2-ProcessingResource-via-used_lcores"/>
-  <ref class="Point" id="4 DPDKPortConfiguration-2-ProcessingResource-via-used_lcores"/>
+  <ref class="Point" id="1 DPDKPortConfiguration-2-HostCores-via-used_lcores"/>
+  <ref class="Point" id="2 DPDKPortConfiguration-2-HostCores-via-used_lcores"/>
+  <ref class="Point" id="3 DPDKPortConfiguration-2-HostCores-via-used_lcores"/>
+  <ref class="Point" id="4 DPDKPortConfiguration-2-HostCores-via-used_lcores"/>
  </rel>
 </obj>
 
@@ -207,7 +207,7 @@
  <attr name="y" type="s16" val="168"/>
 </obj>
 
-<obj class="Class" id="ProcessingResource">
+<obj class="Class" id="HostCores">
  <attr name="x" type="s16" val="227"/>
  <attr name="y" type="s16" val="318"/>
 </obj>
@@ -326,7 +326,7 @@
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 DPDK_NICInterfaceConfiguration-2-ProcessingResource-via-used_lcores">
+<obj class="Point" id="1 DPDK_NICInterfaceConfiguration-2-HostCores-via-used_lcores">
  <attr name="x" type="s16" val="188"/>
  <attr name="y" type="s16" val="159"/>
 </obj>
@@ -400,7 +400,7 @@
  <attr name="y" type="s16" val="504"/>
 </obj>
 
-<obj class="Point" id="2 DPDKPortConfiguration-2-ProcessingResource-via-used_lcores">
+<obj class="Point" id="2 DPDKPortConfiguration-2-HostCores-via-used_lcores">
  <attr name="x" type="s16" val="188"/>
  <attr name="y" type="s16" val="363"/>
 </obj>
@@ -474,7 +474,7 @@
  <attr name="y" type="s16" val="504"/>
 </obj>
 
-<obj class="Point" id="3 DPDKPortConfiguration-2-ProcessingResource-via-used_lcores">
+<obj class="Point" id="3 DPDKPortConfiguration-2-HostCores-via-used_lcores">
  <attr name="x" type="s16" val="32"/>
  <attr name="y" type="s16" val="363"/>
 </obj>
@@ -549,7 +549,7 @@
  <attr name="y" type="s16" val="12"/>
 </obj>
 
-<obj class="Point" id="4 DPDKPortConfiguration-2-ProcessingResource-via-used_lcores">
+<obj class="Point" id="4 DPDKPortConfiguration-2-HostCores-via-used_lcores">
  <attr name="x" type="s16" val="32"/>
  <attr name="y" type="s16" val="12"/>
 </obj>

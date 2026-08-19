@@ -466,8 +466,8 @@
  <class name="RoHwConfig">
   <relationship name="io_device" description="Device handling input from the fron-end electronics" class-type="NetworkDevice" low-cc="zero" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
   <relationship name="snb_storage" class-type="StorageDevice" low-cc="zero" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
-  <relationship name="recv_processor" class-type="ProcessingResource" low-cc="zero" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
-  <relationship name="hitFindingProc" class-type="ProcessingResource" low-cc="zero" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
+  <relationship name="recv_processor" class-type="HostCores" low-cc="zero" high-cc="one" is-composite="yes" is-exclusive="yes" is-dependent="yes"/>
+  <relationship name="hitFindingProc" class-type="HostCores" low-cc="zero" high-cc="one" is-composite="yes" is-exclusive="no" is-dependent="yes"/>
  </class>
 
  <class name="SNBBookkeeperApplication">

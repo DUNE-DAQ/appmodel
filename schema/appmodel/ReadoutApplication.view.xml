@@ -341,27 +341,27 @@
  </rel>
 </obj>
 
-<obj class="ALink" id="RoHwConfig-2-ProcessingResource-via-hitFindingProc">
+<obj class="ALink" id="RoHwConfig-2-HostCores-via-hitFindingProc">
  <attr name="Name" type="string" val="hitFindingProc"/>
  <rel name="From" class="Class" id="RoHwConfig"/>
- <rel name="To" class="Class" id="ProcessingResource"/>
+ <rel name="To" class="Class" id="HostCores"/>
  <rel name="Points">
-  <ref class="Point" id="1 RoHwConfig-2-ProcessingResource-via-hitFindingProc"/>
-  <ref class="Point" id="2 RoHwConfig-2-ProcessingResource-via-hitFindingProc"/>
-  <ref class="Point" id="3 RoHwConfig-2-ProcessingResource-via-hitFindingProc"/>
-  <ref class="Point" id="4 RoHwConfig-2-ProcessingResource-via-hitFindingProc"/>
+  <ref class="Point" id="1 RoHwConfig-2-HostCores-via-hitFindingProc"/>
+  <ref class="Point" id="2 RoHwConfig-2-HostCores-via-hitFindingProc"/>
+  <ref class="Point" id="3 RoHwConfig-2-HostCores-via-hitFindingProc"/>
+  <ref class="Point" id="4 RoHwConfig-2-HostCores-via-hitFindingProc"/>
  </rel>
 </obj>
 
-<obj class="ALink" id="RoHwConfig-2-ProcessingResource-via-recv_processor">
+<obj class="ALink" id="RoHwConfig-2-HostCores-via-recv_processor">
  <attr name="Name" type="string" val="recv_processor"/>
  <rel name="From" class="Class" id="RoHwConfig"/>
- <rel name="To" class="Class" id="ProcessingResource"/>
+ <rel name="To" class="Class" id="HostCores"/>
  <rel name="Points">
-  <ref class="Point" id="1 RoHwConfig-2-ProcessingResource-via-recv_processor"/>
-  <ref class="Point" id="2 RoHwConfig-2-ProcessingResource-via-recv_processor"/>
-  <ref class="Point" id="3 RoHwConfig-2-ProcessingResource-via-recv_processor"/>
-  <ref class="Point" id="4 RoHwConfig-2-ProcessingResource-via-recv_processor"/>
+  <ref class="Point" id="1 RoHwConfig-2-HostCores-via-recv_processor"/>
+  <ref class="Point" id="2 RoHwConfig-2-HostCores-via-recv_processor"/>
+  <ref class="Point" id="3 RoHwConfig-2-HostCores-via-recv_processor"/>
+  <ref class="Point" id="4 RoHwConfig-2-HostCores-via-recv_processor"/>
  </rel>
 </obj>
 
@@ -491,7 +491,7 @@
  <attr name="y" type="s16" val="712"/>
 </obj>
 
-<obj class="Class" id="ProcessingResource">
+<obj class="Class" id="HostCores">
  <attr name="x" type="s16" val="186"/>
  <attr name="y" type="s16" val="762"/>
 </obj>
@@ -658,14 +658,14 @@
  </rel>
 </obj>
 
-<obj class="GLink" id="HostComponent-2-ProcessingResource">
+<obj class="GLink" id="HostComponent-2-HostCores">
  <rel name="From" class="Class" id="HostComponent"/>
- <rel name="To" class="Class" id="ProcessingResource"/>
+ <rel name="To" class="Class" id="HostCores"/>
  <rel name="Points">
-  <ref class="Point" id="1 HostComponent-2-ProcessingResource"/>
-  <ref class="Point" id="2 HostComponent-2-ProcessingResource"/>
-  <ref class="Point" id="3 HostComponent-2-ProcessingResource"/>
-  <ref class="Point" id="4 HostComponent-2-ProcessingResource"/>
+  <ref class="Point" id="1 HostComponent-2-HostCores"/>
+  <ref class="Point" id="2 HostComponent-2-HostCores"/>
+  <ref class="Point" id="3 HostComponent-2-HostCores"/>
+  <ref class="Point" id="4 HostComponent-2-HostCores"/>
  </rel>
 </obj>
 
@@ -865,7 +865,7 @@
  <attr name="y" type="s16" val="38"/>
 </obj>
 
-<obj class="Point" id="1 HostComponent-2-ProcessingResource">
+<obj class="Point" id="1 HostComponent-2-HostCores">
  <attr name="x" type="s16" val="43"/>
  <attr name="y" type="s16" val="38"/>
 </obj>
@@ -995,12 +995,12 @@
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 RoHwConfig-2-ProcessingResource-via-hitFindingProc">
+<obj class="Point" id="1 RoHwConfig-2-HostCores-via-hitFindingProc">
  <attr name="x" type="s16" val="38"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 RoHwConfig-2-ProcessingResource-via-recv_processor">
+<obj class="Point" id="1 RoHwConfig-2-HostCores-via-recv_processor">
  <attr name="x" type="s16" val="8"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
@@ -1100,7 +1100,7 @@
  <attr name="y" type="s16" val="700"/>
 </obj>
 
-<obj class="Point" id="2 HostComponent-2-ProcessingResource">
+<obj class="Point" id="2 HostComponent-2-HostCores">
  <attr name="x" type="s16" val="43"/>
  <attr name="y" type="s16" val="704"/>
 </obj>
@@ -1230,12 +1230,12 @@
  <attr name="y" type="s16" val="720"/>
 </obj>
 
-<obj class="Point" id="2 RoHwConfig-2-ProcessingResource-via-hitFindingProc">
+<obj class="Point" id="2 RoHwConfig-2-HostCores-via-hitFindingProc">
  <attr name="x" type="s16" val="38"/>
  <attr name="y" type="s16" val="804"/>
 </obj>
 
-<obj class="Point" id="2 RoHwConfig-2-ProcessingResource-via-recv_processor">
+<obj class="Point" id="2 RoHwConfig-2-HostCores-via-recv_processor">
  <attr name="x" type="s16" val="8"/>
  <attr name="y" type="s16" val="778"/>
 </obj>
@@ -1335,7 +1335,7 @@
  <attr name="y" type="s16" val="700"/>
 </obj>
 
-<obj class="Point" id="3 HostComponent-2-ProcessingResource">
+<obj class="Point" id="3 HostComponent-2-HostCores">
  <attr name="x" type="s16" val="19"/>
  <attr name="y" type="s16" val="704"/>
 </obj>
@@ -1464,12 +1464,12 @@
  <attr name="y" type="s16" val="720"/>
 </obj>
 
-<obj class="Point" id="3 RoHwConfig-2-ProcessingResource-via-hitFindingProc">
+<obj class="Point" id="3 RoHwConfig-2-HostCores-via-hitFindingProc">
  <attr name="x" type="s16" val="128"/>
  <attr name="y" type="s16" val="804"/>
 </obj>
 
-<obj class="Point" id="3 RoHwConfig-2-ProcessingResource-via-recv_processor">
+<obj class="Point" id="3 RoHwConfig-2-HostCores-via-recv_processor">
  <attr name="x" type="s16" val="98"/>
  <attr name="y" type="s16" val="778"/>
 </obj>
@@ -1569,7 +1569,7 @@
  <attr name="y" type="s16" val="8"/>
 </obj>
 
-<obj class="Point" id="4 HostComponent-2-ProcessingResource">
+<obj class="Point" id="4 HostComponent-2-HostCores">
  <attr name="x" type="s16" val="19"/>
  <attr name="y" type="s16" val="12"/>
 </obj>
@@ -1698,12 +1698,12 @@
  <attr name="y" type="s16" val="8"/>
 </obj>
 
-<obj class="Point" id="4 RoHwConfig-2-ProcessingResource-via-hitFindingProc">
+<obj class="Point" id="4 RoHwConfig-2-HostCores-via-hitFindingProc">
  <attr name="x" type="s16" val="128"/>
  <attr name="y" type="s16" val="12"/>
 </obj>
 
-<obj class="Point" id="4 RoHwConfig-2-ProcessingResource-via-recv_processor">
+<obj class="Point" id="4 RoHwConfig-2-HostCores-via-recv_processor">
  <attr name="x" type="s16" val="98"/>
  <attr name="y" type="s16" val="12"/>
 </obj>
