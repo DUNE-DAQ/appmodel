@@ -89,15 +89,15 @@
  </rel>
 </obj>
 
-<obj class="ALink" id="DaqModule-2-HostComponent-via-used_resources">
- <attr name="Name" type="string" val="used_resources"/>
+<obj class="ALink" id="DaqModule-2-HostComponent-via-used_host_components">
+ <attr name="Name" type="string" val="used_host_components"/>
  <rel name="From" class="Class" id="DaqModule"/>
  <rel name="To" class="Class" id="HostComponent"/>
  <rel name="Points">
-  <ref class="Point" id="1 DaqModule-2-HostComponent-via-used_resources"/>
-  <ref class="Point" id="2 DaqModule-2-HostComponent-via-used_resources"/>
-  <ref class="Point" id="3 DaqModule-2-HostComponent-via-used_resources"/>
-  <ref class="Point" id="4 DaqModule-2-HostComponent-via-used_resources"/>
+  <ref class="Point" id="1 DaqModule-2-HostComponent-via-used_host_components"/>
+  <ref class="Point" id="2 DaqModule-2-HostComponent-via-used_host_components"/>
+  <ref class="Point" id="3 DaqModule-2-HostComponent-via-used_host_components"/>
+  <ref class="Point" id="4 DaqModule-2-HostComponent-via-used_host_components"/>
  </rel>
 </obj>
 
@@ -820,7 +820,7 @@
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 DaqModule-2-HostComponent-via-used_resources">
+<obj class="Point" id="1 DaqModule-2-HostComponent-via-used_host_components">
  <attr name="x" type="s16" val="60"/>
  <attr name="y" type="s16" val="32"/>
 </obj>
@@ -1055,7 +1055,7 @@
  <attr name="y" type="s16" val="270"/>
 </obj>
 
-<obj class="Point" id="2 DaqModule-2-HostComponent-via-used_resources">
+<obj class="Point" id="2 DaqModule-2-HostComponent-via-used_host_components">
  <attr name="x" type="s16" val="60"/>
  <attr name="y" type="s16" val="268"/>
 </obj>
@@ -1290,7 +1290,7 @@
  <attr name="y" type="s16" val="270"/>
 </obj>
 
-<obj class="Point" id="3 DaqModule-2-HostComponent-via-used_resources">
+<obj class="Point" id="3 DaqModule-2-HostComponent-via-used_host_components">
  <attr name="x" type="s16" val="20"/>
  <attr name="y" type="s16" val="268"/>
 </obj>
@@ -1524,7 +1524,7 @@
  <attr name="y" type="s16" val="8"/>
 </obj>
 
-<obj class="Point" id="4 DaqModule-2-HostComponent-via-used_resources">
+<obj class="Point" id="4 DaqModule-2-HostComponent-via-used_host_components">
  <attr name="x" type="s16" val="20"/>
  <attr name="y" type="s16" val="12"/>
 </obj>
