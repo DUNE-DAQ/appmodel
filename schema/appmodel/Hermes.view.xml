@@ -125,15 +125,15 @@
  </rel>
 </obj>
 
-<obj class="ALink" id="ExcludableEntitySet-2-ResourceBase-via-contains">
+<obj class="ALink" id="ExcludableEntitySet-2-ExcludableEntityBase-via-contains">
  <attr name="Name" type="string" val="contains"/>
  <rel name="From" class="Class" id="ExcludableEntitySet"/>
- <rel name="To" class="Class" id="ResourceBase"/>
+ <rel name="To" class="Class" id="ExcludableEntityBase"/>
  <rel name="Points">
-  <ref class="Point" id="1 ExcludableEntitySet-2-ResourceBase-via-contains"/>
-  <ref class="Point" id="2 ExcludableEntitySet-2-ResourceBase-via-contains"/>
-  <ref class="Point" id="3 ExcludableEntitySet-2-ResourceBase-via-contains"/>
-  <ref class="Point" id="4 ExcludableEntitySet-2-ResourceBase-via-contains"/>
+  <ref class="Point" id="1 ExcludableEntitySet-2-ExcludableEntityBase-via-contains"/>
+  <ref class="Point" id="2 ExcludableEntitySet-2-ExcludableEntityBase-via-contains"/>
+  <ref class="Point" id="3 ExcludableEntitySet-2-ExcludableEntityBase-via-contains"/>
+  <ref class="Point" id="4 ExcludableEntitySet-2-ExcludableEntityBase-via-contains"/>
  </rel>
 </obj>
 
@@ -206,12 +206,12 @@
  <attr name="y" type="s16" val="4"/>
 </obj>
 
-<obj class="Class" id="Resource">
+<obj class="Class" id="ExcludableEntity">
  <attr name="x" type="s16" val="656"/>
  <attr name="y" type="s16" val="220"/>
 </obj>
 
-<obj class="Class" id="ResourceBase">
+<obj class="Class" id="ExcludableEntityBase">
  <attr name="x" type="s16" val="637"/>
  <attr name="y" type="s16" val="153"/>
 </obj>
@@ -269,36 +269,36 @@
  </rel>
 </obj>
 
-<obj class="GLink" id="Resource-2-DetectorStream">
- <rel name="From" class="Class" id="Resource"/>
+<obj class="GLink" id="ExcludableEntity-2-DetectorStream">
+ <rel name="From" class="Class" id="ExcludableEntity"/>
  <rel name="To" class="Class" id="DetectorStream"/>
  <rel name="Points">
-  <ref class="Point" id="1 Resource-2-DetectorStream"/>
-  <ref class="Point" id="2 Resource-2-DetectorStream"/>
-  <ref class="Point" id="3 Resource-2-DetectorStream"/>
-  <ref class="Point" id="4 Resource-2-DetectorStream"/>
+  <ref class="Point" id="1 ExcludableEntity-2-DetectorStream"/>
+  <ref class="Point" id="2 ExcludableEntity-2-DetectorStream"/>
+  <ref class="Point" id="3 ExcludableEntity-2-DetectorStream"/>
+  <ref class="Point" id="4 ExcludableEntity-2-DetectorStream"/>
  </rel>
 </obj>
 
-<obj class="GLink" id="ResourceBase-2-Resource">
- <rel name="From" class="Class" id="ResourceBase"/>
- <rel name="To" class="Class" id="Resource"/>
+<obj class="GLink" id="ExcludableEntityBase-2-ExcludableEntity">
+ <rel name="From" class="Class" id="ExcludableEntityBase"/>
+ <rel name="To" class="Class" id="ExcludableEntity"/>
  <rel name="Points">
-  <ref class="Point" id="1 ResourceBase-2-Resource"/>
-  <ref class="Point" id="2 ResourceBase-2-Resource"/>
-  <ref class="Point" id="3 ResourceBase-2-Resource"/>
-  <ref class="Point" id="4 ResourceBase-2-Resource"/>
+  <ref class="Point" id="1 ExcludableEntityBase-2-ExcludableEntity"/>
+  <ref class="Point" id="2 ExcludableEntityBase-2-ExcludableEntity"/>
+  <ref class="Point" id="3 ExcludableEntityBase-2-ExcludableEntity"/>
+  <ref class="Point" id="4 ExcludableEntityBase-2-ExcludableEntity"/>
  </rel>
 </obj>
 
-<obj class="GLink" id="ResourceBase-2-ExcludableEntitySet">
- <rel name="From" class="Class" id="ResourceBase"/>
+<obj class="GLink" id="ExcludableEntityBase-2-ExcludableEntitySet">
+ <rel name="From" class="Class" id="ExcludableEntityBase"/>
  <rel name="To" class="Class" id="ExcludableEntitySet"/>
  <rel name="Points">
-  <ref class="Point" id="1 ResourceBase-2-ExcludableEntitySet"/>
-  <ref class="Point" id="2 ResourceBase-2-ExcludableEntitySet"/>
-  <ref class="Point" id="3 ResourceBase-2-ExcludableEntitySet"/>
-  <ref class="Point" id="4 ResourceBase-2-ExcludableEntitySet"/>
+  <ref class="Point" id="1 ExcludableEntityBase-2-ExcludableEntitySet"/>
+  <ref class="Point" id="2 ExcludableEntityBase-2-ExcludableEntitySet"/>
+  <ref class="Point" id="3 ExcludableEntityBase-2-ExcludableEntitySet"/>
+  <ref class="Point" id="4 ExcludableEntityBase-2-ExcludableEntitySet"/>
  </rel>
 </obj>
 
@@ -375,22 +375,22 @@
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 Resource-2-DetectorStream">
+<obj class="Point" id="1 ExcludableEntity-2-DetectorStream">
  <attr name="x" type="s16" val="47"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 ResourceBase-2-Resource">
+<obj class="Point" id="1 ExcludableEntityBase-2-ExcludableEntity">
  <attr name="x" type="s16" val="68"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 ResourceBase-2-ExcludableEntitySet">
+<obj class="Point" id="1 ExcludableEntityBase-2-ExcludableEntitySet">
  <attr name="x" type="s16" val="68"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 ExcludableEntitySet-2-ResourceBase-via-contains">
+<obj class="Point" id="1 ExcludableEntitySet-2-ExcludableEntityBase-via-contains">
  <attr name="x" type="s16" val="60"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
@@ -459,22 +459,22 @@
  <attr name="y" type="s16" val="88"/>
 </obj>
 
-<obj class="Point" id="2 Resource-2-DetectorStream">
+<obj class="Point" id="2 ExcludableEntity-2-DetectorStream">
  <attr name="x" type="s16" val="47"/>
  <attr name="y" type="s16" val="233"/>
 </obj>
 
-<obj class="Point" id="2 ResourceBase-2-Resource">
+<obj class="Point" id="2 ExcludableEntityBase-2-ExcludableEntity">
  <attr name="x" type="s16" val="68"/>
  <attr name="y" type="s16" val="172"/>
 </obj>
 
-<obj class="Point" id="2 ResourceBase-2-ExcludableEntitySet">
+<obj class="Point" id="2 ExcludableEntityBase-2-ExcludableEntitySet">
  <attr name="x" type="s16" val="68"/>
  <attr name="y" type="s16" val="37"/>
 </obj>
 
-<obj class="Point" id="2 ExcludableEntitySet-2-ResourceBase-via-contains">
+<obj class="Point" id="2 ExcludableEntitySet-2-ExcludableEntityBase-via-contains">
  <attr name="x" type="s16" val="60"/>
  <attr name="y" type="s16" val="74"/>
 </obj>
@@ -542,22 +542,22 @@
  <attr name="y" type="s16" val="88"/>
 </obj>
 
-<obj class="Point" id="3 Resource-2-DetectorStream">
+<obj class="Point" id="3 ExcludableEntity-2-DetectorStream">
  <attr name="x" type="s16" val="23"/>
  <attr name="y" type="s16" val="233"/>
 </obj>
 
-<obj class="Point" id="3 ResourceBase-2-Resource">
+<obj class="Point" id="3 ExcludableEntityBase-2-ExcludableEntity">
  <attr name="x" type="s16" val="15"/>
  <attr name="y" type="s16" val="172"/>
 </obj>
 
-<obj class="Point" id="3 ResourceBase-2-ExcludableEntitySet">
+<obj class="Point" id="3 ExcludableEntityBase-2-ExcludableEntitySet">
  <attr name="x" type="s16" val="20"/>
  <attr name="y" type="s16" val="37"/>
 </obj>
 
-<obj class="Point" id="3 ExcludableEntitySet-2-ResourceBase-via-contains">
+<obj class="Point" id="3 ExcludableEntitySet-2-ExcludableEntityBase-via-contains">
  <attr name="x" type="s16" val="22"/>
  <attr name="y" type="s16" val="74"/>
 </obj>
@@ -626,22 +626,22 @@
  <attr name="y" type="s16" val="30"/>
 </obj>
 
-<obj class="Point" id="4 Resource-2-DetectorStream">
+<obj class="Point" id="4 ExcludableEntity-2-DetectorStream">
  <attr name="x" type="s16" val="23"/>
  <attr name="y" type="s16" val="12"/>
 </obj>
 
-<obj class="Point" id="4 ResourceBase-2-Resource">
+<obj class="Point" id="4 ExcludableEntityBase-2-ExcludableEntity">
  <attr name="x" type="s16" val="15"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
 
-<obj class="Point" id="4 ResourceBase-2-ExcludableEntitySet">
+<obj class="Point" id="4 ExcludableEntityBase-2-ExcludableEntitySet">
  <attr name="x" type="s16" val="20"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
 
-<obj class="Point" id="4 ExcludableEntitySet-2-ResourceBase-via-contains">
+<obj class="Point" id="4 ExcludableEntitySet-2-ExcludableEntityBase-via-contains">
  <attr name="x" type="s16" val="22"/>
  <attr name="y" type="s16" val="8"/>
 </obj>

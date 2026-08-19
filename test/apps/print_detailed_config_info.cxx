@@ -170,7 +170,7 @@ main(int argc, char* argv[])
     if (daqapp) {
       std::cout << appName << " is of class " << daqapp->class_name() << std::endl;
 
-      auto res = daqapp->cast<confmodel::Resource>();
+      auto res = daqapp->cast<confmodel::ExcludableEntity>();
       if (res && res->is_excluded(*session)) {
         std::cout << "Application " << appName << " is excluded" << std::endl;
         continue;

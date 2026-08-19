@@ -24,7 +24,7 @@
 #include "confmodel/DetectorToDaqConnection.hpp"
 #include "confmodel/NetworkConnection.hpp"
 #include "confmodel/Queue.hpp"
-#include "confmodel/Resource.hpp"
+#include "confmodel/ExcludableEntity.hpp"
 #include "confmodel/Service.hpp"
 #include "confmodel/Session.hpp"
 
@@ -195,7 +195,7 @@ ConfigurationHelper::get_all_app_source_ids(std::string app_class) {
 }
 
 bool ConfigurationHelper::is_excluded(const conffwk::DalObject* item) {
-  auto res = item->cast<confmodel::Resource>();
+  auto res = item->cast<confmodel::ExcludableEntity>();
   if (res == nullptr) {
     return false;
   }

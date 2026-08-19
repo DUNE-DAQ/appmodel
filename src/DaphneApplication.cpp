@@ -49,7 +49,7 @@
 
 namespace dunedaq::appmodel {
   
-std::vector<const confmodel::Resource*>
+std::vector<const confmodel::ExcludableEntity*>
 DaphneApplication::contained_excludable_entities() const {
   return to_resources(get_detector_connections());
 }
@@ -79,7 +79,7 @@ DaphneApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelpe
   
   for (auto d2d_conn : get_detector_connections()) {
 
-    // A Resource can be disabled and still its application can be enabled because the application can have multile resources, so we need to check which resources are enabled
+    // A ExcludableEntity can be disabled and still its application can be enabled because the application can have multile resources, so we need to check which resources are enabled
     if (helper->is_excluded(d2d_conn)) {
       TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
       continue;
