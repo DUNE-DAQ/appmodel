@@ -335,7 +335,7 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
   modules.push_back(obj_fac.get_dal<MLTModule>(mlt_conf->UID()));
 
   obj_fac.update_modules(modules);
-}
+} // NOLINT(readability/fn_size)
 
 } // namespace appmodel
 } // namespace dunedaq
