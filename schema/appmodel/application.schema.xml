@@ -105,11 +105,15 @@
  <class name="DFApplication">
   <superclass name="SmartDaqApplication"/>
   <superclass name="Resource"/>
+  <superclass name="ManagedObject"/>
   <relationship name="trb" description="Configuration of the TRB to be generated my get_modules()" class-type="TRBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="data_writers" class-type="DataWriterConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="uses" class-type="DFHWConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate DaqModule dal objects for streams of the application on the fly">
    <method-implementation language="c++" prototype="void generate_modules(std::shared_ptr&lt;appmodel::ConfigurationHelper&gt;) const override" body="BEGIN_HEADER_PROLOGUE&#xA;#include &quot;appmodel/ConfigurationHelper.hpp&quot;&#xA;END_HEADER_PROLOGUE"/>
+  </method>
+  <method name="object_tags" description="">
+   <method-implementation language="c++" prototype="std::set&lt;std::string&gt; object_tags() const override" body=""/>
   </method>
  </class>
 
