@@ -1,5 +1,6 @@
 
 #include "ConfigObjectFactory.hpp"
+#include "appmodel/appmodelIssues.hpp"
 #include "confmodel/Service.hpp"
 #include "oks/file.hpp"
 
@@ -33,6 +34,9 @@ ConfigObjectFactory::create(const std::string& class_name,
 //---
 conffwk::ConfigObject
 ConfigObjectFactory::create_queue_obj(const QueueDescriptor* qdesc, std::string uid) const {
+    if (qdesc == nullptr) {
+        throw (BadConf(ERS_HERE, "QueueDescriptor pointer is null"));
+    }
 
     std::string queue_uid(qdesc->get_uid_base() + uid);
     auto queue_obj = create("Queue", queue_uid);
@@ -46,6 +50,10 @@ ConfigObjectFactory::create_queue_obj(const QueueDescriptor* qdesc, std::string 
 //---
 conffwk::ConfigObject
 ConfigObjectFactory::create_queue_sid_obj(const QueueDescriptor* qdesc, uint32_t src_id) const {
+    if (qdesc == nullptr) {
+        throw (BadConf(ERS_HERE, "QueueDescriptor pointer is null"));
+    }
+
     std::string queue_uid(fmt::format("{}{}", qdesc->get_uid_base(), src_id));
     auto queue_obj = create("QueueWithSourceId", queue_uid);
 
@@ -68,6 +76,9 @@ return create_queue_sid_obj(qdesc, stream->get_source_id());
 conffwk::ConfigObject
 ConfigObjectFactory::create_callback_sid_obj(const DataMoveCallbackDescriptor* cdesc, uint32_t src_id) const
 {
+  if (cdesc == nullptr) {
+    throw (BadConf(ERS_HERE, "DataMoveCallbackDescriptor pointer is null"));
+  }
   std::string rdc_uid(fmt::format("{}{}", cdesc->get_uid_base(), src_id));
   auto rdc_obj = create("DataMoveCallbackConf", rdc_uid);
 
@@ -89,7 +100,9 @@ ConfigObjectFactory::create_callback_sid_obj(const DataMoveCallbackDescriptor* c
 conffwk::ConfigObject
 ConfigObjectFactory::create_net_obj(const NetworkConnectionDescriptor* ndesc,
          std::string app_uid) const {
-
+    if (ndesc == nullptr) {
+        throw (BadConf(ERS_HERE, "NetworkConnectionDescriptor pointer is null"));
+    }
     auto svc_obj = ndesc->get_associated_service()->config_object();
     std::string net_id = ndesc->get_uid_base() + app_uid;
     auto net_obj = create("NetworkConnection", net_id);
