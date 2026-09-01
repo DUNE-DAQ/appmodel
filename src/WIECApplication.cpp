@@ -104,6 +104,18 @@ WIECApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper>
 
     for( const auto& [ctrlhost, senders] : ctrlhost_sender_map ) {
 
+      bool any_sender_enabled = false;
+      for ( const auto* sender : senders ) {
+        if ( helper->is_enabled(sender) ) {
+          any_sender_enabled = true;
+          break;
+        }
+      }
+      if ( !any_sender_enabled ) {
+        TLOG_DEBUG(6) << "All senders for control host " << ctrlhost << " are disabled, skipping WIB/Hermes module generation";
+        continue;
+      }
+
       // Create WIBModule
       if ( this->get_wib_module_conf() ) {
 
