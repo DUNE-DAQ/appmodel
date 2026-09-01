@@ -88,15 +88,14 @@ WIECApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper>
     // Loop over senders
     for (const auto* sender : det_senders) {
 
-      if (helper->is_disabled(sender)) {
-        TLOG() << "Skipping disabled sender: " << sender->UID();
-        continue;
-      }
-      
       // Check the sender type, must me a HermesSender
       const auto* hrms_sender = sender->cast<appmodel::HermesDataSender>();
       if (!hrms_sender ) {
         throw(BadConf(ERS_HERE, fmt::format("DataSender {} is not a appmodel::HermesDataSender", sender->UID())));
+      }
+
+      if (helper->is_disabled(sender)) {
+        TLOG_DEBUG(6) << "Sender " << sender->UID() << " is disabled, keeping it as a firmware link for Hermes conf";
       }
 
       ctrlhost_sender_map[hrms_sender->get_control_host()].push_back(hrms_sender);
@@ -119,9 +118,7 @@ WIECApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper>
 
             // std::cout << std::format("stream {} -> femb {}", stream_id, femb_id) << std::endl;
 
-            // Enable the femb if any of the associated streams is enabld
-            // Senders in this senders list should be enabled, but better safe than sorry.
-            enable_fembs[femb_id] |= helper->is_enabled(det_stream);
+            enable_fembs[femb_id] |= (helper->is_enabled(sender) && helper->is_enabled(det_stream));
           }
         }
         std::string wib_uid = fmt::format("wib-ctrl-{}-{}", this->UID(), ctrlhost);
