@@ -17,7 +17,7 @@
 #include "confmodel/Connection.hpp"
 #include "confmodel/NetworkConnection.hpp"
 // #include "confmodel/ReadoutGroup.hpp"
-#include "confmodel/ResourceSet.hpp"
+#include "confmodel/ExcludableEntitySet.hpp"
 #include "confmodel/Service.hpp"
 
 #include "appmodel/FakeDataApplication.hpp"
@@ -42,8 +42,8 @@ namespace appmodel {
 
 //-----------------------------------------------------------------------------
 
-std::vector<const confmodel::Resource*>
-FakeDataApplication::contained_resources() const {
+std::vector<const confmodel::ExcludableEntity*>
+FakeDataApplication::contained_excludable_entities() const {
   return to_resources(get_producers());
 }
 
@@ -105,8 +105,8 @@ FakeDataApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHel
 
   // Create a FakeDataProdModule for each stream of this Readout Group
   for (auto fdpConf : get_producers()) {
-    if (helper->is_disabled(fdpConf)) {
-      TLOG_DEBUG(7) << "Ignoring disabled FakeDataProdConf " << fdpConf->UID();
+    if (helper->is_excluded(fdpConf)) {
+      TLOG_DEBUG(7) << "Ignoring excluded FakeDataProdConf " << fdpConf->UID();
       continue;
     }
 

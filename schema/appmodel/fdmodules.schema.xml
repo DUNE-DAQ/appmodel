@@ -119,7 +119,7 @@
   <attribute name="burst_size" type="u32" init-value="2048" is-not-null="yes"/>
   <attribute name="lcore_sleep_us" type="u32" init-value="10" is-not-null="yes"/>
   <attribute name="source_to_rx_queue_multiplexing" description="Indicates how many source streams are put onto one rx queue" type="s16" init-value="1" is-not-null="yes"/>
-  <relationship name="used_lcores" description="associates CPUs to the data reception workload." class-type="ProcessingResource" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="used_lcores" description="associates CPUs to the data reception workload." class-type="HostCores" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="DPDKReaderConf">

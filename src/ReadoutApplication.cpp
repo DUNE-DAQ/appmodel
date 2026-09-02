@@ -33,7 +33,7 @@
 #include "confmodel/Connection.hpp"
 #include "confmodel/GeoId.hpp"
 #include "confmodel/NetworkConnection.hpp"
-#include "confmodel/ResourceSet.hpp"
+#include "confmodel/ExcludableEntitySet.hpp"
 #include "confmodel/Service.hpp"
 
 #include "appmodel/SourceIDConf.hpp"
@@ -71,8 +71,8 @@ namespace appmodel {
 
 //-----------------------------------------------------------------------------
 
-std::vector<const confmodel::Resource*>
-ReadoutApplication::contained_resources() const {
+std::vector<const confmodel::ExcludableEntity*>
+ReadoutApplication::contained_excludable_entities() const {
   return to_resources(get_detector_connections());
 }
 
@@ -200,8 +200,8 @@ ReadoutApplication::generate_modules(std::shared_ptr<ConfigurationHelper> helper
   uint16_t conn_idx = 0;
 
   for (auto d2d_conn : get_detector_connections()) {
-    if (helper->is_disabled(d2d_conn)) {
-      TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
+    if (helper->is_excluded(d2d_conn)) {
+      TLOG_DEBUG(7) << "Ignoring excluded DetectorToDaqConnection " << d2d_conn->UID();
       continue;
     }
 
@@ -225,8 +225,8 @@ ReadoutApplication::generate_modules(std::shared_ptr<ConfigurationHelper> helper
     for (auto stream : d2d_conn->streams()) {
 
       // Are we sure?
-      if (helper->is_disabled(stream)) {
-        TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
+      if (helper->is_excluded(stream)) {
+        TLOG_DEBUG(7) << "Ignoring excluded DetectorStream " << stream->UID();
         continue;
       }
 
