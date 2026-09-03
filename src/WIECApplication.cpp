@@ -95,7 +95,7 @@ WIECApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper>
     // Loop over senders to create the map of control hosts to senders. 
     for (const auto* sender : det_senders) {
 
-     // Check the sender type, must me a HermesSender
+      // Check the sender type, must me a HermesSender
       const auto* hrms_sender = sender->cast<appmodel::HermesDataSender>();
       if (!hrms_sender ) {
         throw(BadConf(ERS_HERE, fmt::format("DataSender {} is not a appmodel::HermesDataSender", sender->UID())));
