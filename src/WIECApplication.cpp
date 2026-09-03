@@ -87,15 +87,15 @@ WIECApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper>
   
     // Note on how to exclude the senders.
     // The hardware interface requires that all the physical links be configured, even if not used for a run.
-    // Consequently, at the configuration level, we shoud never remove senders from a detector to daq connection.
+    // Consequently, at the configuration level, we should never remove senders from a detector to daq connection.
     // At most, we should exclude them at the level of the session.
-    // For the same reason, in this code, we create a map of control hosts to senders, wthout checking if the senders are excluded.
-    // Once the map is created, if all the senders associated to a control hosts are excluded, then we skip the creation of a hermes controller.
+    // For the same reason, in this code, we create a map of control hosts to senders, without checking if the senders are excluded.
+    // Once the map is created, if all the senders associated to a control hosts are excluded, then we skip the creation of all related modules.
     
     // Loop over senders to create the map of control hosts to senders. 
     for (const auto* sender : det_senders) {
 
-      // Check the sender type, must me a HermesSender
+      // Check the sender type, must be a HermesSender
       const auto* hrms_sender = sender->cast<appmodel::HermesDataSender>();
       if (!hrms_sender ) {
         throw(BadConf(ERS_HERE, fmt::format("DataSender {} is not a appmodel::HermesDataSender", sender->UID())));
@@ -108,16 +108,16 @@ WIECApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper>
     for( const auto& [ctrlhost, senders] : ctrlhost_sender_map ) {
 
       // If all senders for this control host are excluded, skip creating related modules.
-      // Of course the opposite logic is faseter: check if any sender is included.
+      // Of course the opposite logic is faster: check if any sender is included.
       bool any_included = false;
       for ( const auto* sender : senders ){
-        if ( !helper->is_excluded(sender) ) {
+        if ( helper->is_included(sender) ) {
           any_included = true;
           break;
         }
       }
       if (!any_included) {
-        TLOG_DEBUG(6) << "Skipping control host " << ctrlhost << " with all senders excluded.";
+        TLOG_DEBUG(6) << "Skipping control host " << ctrlhost << " whose senders are all excluded.";
         continue;
       }
 
@@ -135,8 +135,7 @@ WIECApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper>
 
             // std::cout << std::format("stream {} -> femb {}", stream_id, femb_id) << std::endl;
 
-            // Enable the femb if any of the associated streams is enabld
-            // Senders in this senders list should be enabled, but better safe than sorry.
+            // Enable the femb if any of the associated streams is enabled
             enable_fembs[femb_id] |= helper->is_included(det_stream);
           } // loop over streams
         } // loop over senders for this control host
@@ -162,7 +161,7 @@ WIECApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper>
 
         std::vector< const conffwk::ConfigObject * > links_obj; 
         for ( const auto* sndr : senders ){
-          // Note that it is OK that some of these senderes might be excluded
+          // Note that it is OK that some of these senders might be excluded
           // The hardware interface in HermesModule requires that all links be configured, even if not used for a run
           links_obj.push_back(&sndr->config_object());
         }
