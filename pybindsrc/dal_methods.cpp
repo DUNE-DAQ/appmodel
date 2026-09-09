@@ -46,13 +46,6 @@ namespace dunedaq::appmodel::python {
     return mods;
   }
 
-  std::vector<std::string> smart_daq_application_construct_commandline_parameters(const conffwk::Configuration& db,
-                                                                                  const std::string& session_id,
-                                                                                  const std::string& app_id) {
-    const auto* app = const_cast<conffwk::Configuration&>(db).get<dunedaq::appmodel::SmartDaqApplication>(app_id);
-    const auto* session = const_cast<conffwk::Configuration&>(db).get<dunedaq::confmodel::Session>(session_id);
-    return app->construct_commandline_parameters(db, session);
-  }
 
 void
 register_dal_methods(py::module& m)
@@ -64,7 +57,6 @@ register_dal_methods(py::module& m)
     ;
 
   m.def("smart_daq_application_generate_modules", &smart_daq_application_generate_modules, "Generate DaqModules");
-  m.def("smart_daq_application_construct_commandline_parameters", &smart_daq_application_construct_commandline_parameters, "Get a version of the command line agruments parsed");
 }
 
 } // namespace dunedaq::appmodel::python

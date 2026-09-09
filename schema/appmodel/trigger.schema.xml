@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="57" oks-format="schema" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231211T133151" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20251111T225403"/>
+<info name="" type="" num-of-items="58" oks-format="schema" oks-version="862f2957270" created-by="asztuc" created-on="np04-srv-019.cern.ch" creation-time="20231211T133151" last-modified-by="eflumerf" last-modified-on="ironvirt9.mshome.net" last-modification-time="20251111T225403"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -118,11 +118,11 @@
   <attribute name="scale_divisor_plane2" description="Running sum scale divisor for plane 2." type="u8" init-value="1" is-not-null="yes"/>
  </class>
 
- <class name="AVXThresholdProcessor" description="TPG threshold signal processor. Filters the input signal by passing values that are above threshold and suppresing otherwise.">
+ <class name="AVXThresholdProcessor" description="TPG threshold signal processor. Filters the input signal by passing values that are above threshold and suppressing otherwise.">
   <superclass name="ProcessingStep"/>
-  <attribute name="plane0" description="Threshold for plane 0." type="u16" init-value="100" is-not-null="yes"/>
-  <attribute name="plane1" description="Threshold for plane 1." type="u16" init-value="100" is-not-null="yes"/>
-  <attribute name="plane2" description="Threshold for plane 2." type="u16" init-value="100" is-not-null="yes"/>
+  <attribute name="plane0" description="Threshold for plane 0." type="s16" init-value="100" is-not-null="yes"/>
+  <attribute name="plane1" description="Threshold for plane 1." type="s16" init-value="100" is-not-null="yes"/>
+  <attribute name="plane2" description="Threshold for plane 2." type="s16" init-value="100" is-not-null="yes"/>
  </class>
 
  <class name="DataSubscriberModule">
@@ -326,6 +326,13 @@
 
  <class name="TAMakerPrescaleAlgorithm">
   <superclass name="TAAlgorithm"/>
+ </class>
+ 
+ <class name="TAMakerProtoDUNEBSMWindowAlgorithm">
+  <superclass name="TAAlgorithm"/>
+  <attribute name="channel_map_name" description="Channel map for TA algorithm" type="string" init-value="PD2VDTPCChannelMap" is-not-null="yes"/>
+  <attribute name="adc_threshold_induction" description="Threshold for the SADC sum on induction planes" type="u32" init-value="12000000" is-not-null="yes"/>
+  <attribute name="bdt_threshold" description="BDT score threshold. Must be a float between 0 and 1." type="float" range="0..1" init-value="0.999" is-not-null="yes"/>
  </class>
 
  <class name="TCAlgorithm" description="Base class for TC algorithms">
