@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(appmodel VERSION 6.0.0)
+project(appmodel VERSION 6.1.0)
 
 find_package(daq-cmake REQUIRED)
 

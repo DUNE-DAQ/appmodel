@@ -14,7 +14,6 @@
 
 #include "confmodel/Connection.hpp"
 #include "confmodel/NetworkConnection.hpp"
-#include "confmodel/ResourceSet.hpp"
 #include "confmodel/Service.hpp"
 
 #include "ConfigObjectFactory.hpp"
