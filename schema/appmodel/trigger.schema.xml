@@ -155,7 +155,7 @@
  </class>
 
  <class name="HSIEventToTCApplication">
-  <superclass name="Resource"/>
+  <superclass name="ExcludableEntity"/>
   <superclass name="SmartDaqApplication"/>
   <relationship name="hsevent_to_tc_conf" class-type="HSI2TCTranslatorConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <method name="generate_modules" description="Generate daq module dal objects for HSIEventToTCApplication on the fly">
@@ -468,7 +468,7 @@
 
  <class name="TriggerApplication">
   <superclass name="SmartDaqApplication"/>
-  <superclass name="Resource"/>
+  <superclass name="ExcludableEntity"/>
   <attribute name="application_name" type="string" init-value="daq_application" is-not-null="yes"/>
   <attribute name="tx_generation_disabled" description="Disable TA/TC generation as a post-processing task -- only to be done by the experts for e.g. TP performance studies" type="bool" init-value="false"/>
   <relationship name="data_subscriber" class-type="DataReaderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>

@@ -32,8 +32,8 @@
 namespace dunedaq {
 namespace appmodel {
 
-std::vector<const confmodel::Resource*>
-TDECrateApplication::contained_resources() const {
+std::vector<const confmodel::ExcludableEntity*>
+TDECrateApplication::contained_excludable_entities() const {
   return to_resources(get_detector_connections());
 }
 
@@ -48,8 +48,8 @@ TDECrateApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHel
 
   for (auto d2d_conn : get_detector_connections()) {
         // Are we sure?
-    if (helper->is_disabled(d2d_conn)) {
-      TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
+    if (helper->is_excluded(d2d_conn)) {
+      TLOG_DEBUG(7) << "Ignoring excluded DetectorToDaqConnection " << d2d_conn->UID();
       continue;
     }
 
@@ -65,8 +65,8 @@ TDECrateApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHel
     // Loop over senders
     for (const auto* sender : det_senders) {
 
-      if ( helper->is_disabled(sender) ) {
-        TLOG() << "Skipping disabled sender: " << sender->UID();
+      if ( helper->is_excluded(sender) ) {
+        TLOG() << "Skipping excluded sender: " << sender->UID();
         continue;
       }
       

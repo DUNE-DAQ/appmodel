@@ -41,10 +41,10 @@
 using namespace dunedaq;
 using namespace dunedaq::appmodel;
 
-std::vector<const confmodel::Resource*>
-CIBApplication::contained_resources() const {
-  std::vector<const confmodel::Resource*> resources;
-  resources.push_back(dynamic_cast<const confmodel::Resource *>(get_board())); // NOLINT(runtime/rtti)
+std::vector<const confmodel::ExcludableEntity*>
+CIBApplication::contained_excludable_entities() const {
+  std::vector<const confmodel::ExcludableEntity*> resources;
+  resources.push_back(dynamic_cast<const confmodel::ExcludableEntity *>(get_board())); // NOLINT(runtime/rtti)
   return resources;
 }
 
