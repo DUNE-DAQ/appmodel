@@ -89,15 +89,15 @@
  </rel>
 </obj>
 
-<obj class="ALink" id="DPDKPortConfiguration-2-ProcessingResource-via-used_lcores">
+<obj class="ALink" id="DPDKPortConfiguration-2-HostCores-via-used_lcores">
  <attr name="Name" type="string" val="used_lcores"/>
  <rel name="From" class="Class" id="DPDKPortConfiguration"/>
- <rel name="To" class="Class" id="ProcessingResource"/>
+ <rel name="To" class="Class" id="HostCores"/>
  <rel name="Points">
-  <ref class="Point" id="1 DPDKPortConfiguration-2-ProcessingResource-via-used_lcores"/>
-  <ref class="Point" id="2 DPDKPortConfiguration-2-ProcessingResource-via-used_lcores"/>
-  <ref class="Point" id="3 DPDKPortConfiguration-2-ProcessingResource-via-used_lcores"/>
-  <ref class="Point" id="4 DPDKPortConfiguration-2-ProcessingResource-via-used_lcores"/>
+  <ref class="Point" id="1 DPDKPortConfiguration-2-HostCores-via-used_lcores"/>
+  <ref class="Point" id="2 DPDKPortConfiguration-2-HostCores-via-used_lcores"/>
+  <ref class="Point" id="3 DPDKPortConfiguration-2-HostCores-via-used_lcores"/>
+  <ref class="Point" id="4 DPDKPortConfiguration-2-HostCores-via-used_lcores"/>
  </rel>
 </obj>
 
@@ -113,15 +113,15 @@
  </rel>
 </obj>
 
-<obj class="ALink" id="DataReaderModule-2-Resource-via-interfaces">
+<obj class="ALink" id="DataReaderModule-2-ExcludableEntity-via-interfaces">
  <attr name="Name" type="string" val="interfaces"/>
  <rel name="From" class="Class" id="DataReaderModule"/>
- <rel name="To" class="Class" id="Resource"/>
+ <rel name="To" class="Class" id="ExcludableEntity"/>
  <rel name="Points">
-  <ref class="Point" id="1 DataReaderModule-2-Resource-via-interfaces"/>
-  <ref class="Point" id="2 DataReaderModule-2-Resource-via-interfaces"/>
-  <ref class="Point" id="3 DataReaderModule-2-Resource-via-interfaces"/>
-  <ref class="Point" id="4 DataReaderModule-2-Resource-via-interfaces"/>
+  <ref class="Point" id="1 DataReaderModule-2-ExcludableEntity-via-interfaces"/>
+  <ref class="Point" id="2 DataReaderModule-2-ExcludableEntity-via-interfaces"/>
+  <ref class="Point" id="3 DataReaderModule-2-ExcludableEntity-via-interfaces"/>
+  <ref class="Point" id="4 DataReaderModule-2-ExcludableEntity-via-interfaces"/>
  </rel>
 </obj>
 
@@ -207,12 +207,12 @@
  <attr name="y" type="s16" val="168"/>
 </obj>
 
-<obj class="Class" id="ProcessingResource">
+<obj class="Class" id="HostCores">
  <attr name="x" type="s16" val="227"/>
  <attr name="y" type="s16" val="318"/>
 </obj>
 
-<obj class="Class" id="Resource">
+<obj class="Class" id="ExcludableEntity">
  <attr name="x" type="s16" val="797"/>
  <attr name="y" type="s16" val="12"/>
 </obj>
@@ -305,14 +305,14 @@
  </rel>
 </obj>
 
-<obj class="GLink" id="Resource-2-DetDataReceiver">
- <rel name="From" class="Class" id="Resource"/>
+<obj class="GLink" id="ExcludableEntity-2-DetDataReceiver">
+ <rel name="From" class="Class" id="ExcludableEntity"/>
  <rel name="To" class="Class" id="DetDataReceiver"/>
  <rel name="Points">
-  <ref class="Point" id="1 Resource-2-DetDataReceiver"/>
-  <ref class="Point" id="2 Resource-2-DetDataReceiver"/>
-  <ref class="Point" id="3 Resource-2-DetDataReceiver"/>
-  <ref class="Point" id="4 Resource-2-DetDataReceiver"/>
+  <ref class="Point" id="1 ExcludableEntity-2-DetDataReceiver"/>
+  <ref class="Point" id="2 ExcludableEntity-2-DetDataReceiver"/>
+  <ref class="Point" id="3 ExcludableEntity-2-DetDataReceiver"/>
+  <ref class="Point" id="4 ExcludableEntity-2-DetDataReceiver"/>
  </rel>
 </obj>
 
@@ -326,7 +326,7 @@
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 DPDK_NICInterfaceConfiguration-2-ProcessingResource-via-used_lcores">
+<obj class="Point" id="1 DPDK_NICInterfaceConfiguration-2-HostCores-via-used_lcores">
  <attr name="x" type="s16" val="188"/>
  <attr name="y" type="s16" val="159"/>
 </obj>
@@ -345,7 +345,7 @@
  <attr name="y" type="s16" val="24"/>
 </obj>
 
-<obj class="Point" id="1 DataReaderModule-2-Resource-via-interfaces">
+<obj class="Point" id="1 DataReaderModule-2-ExcludableEntity-via-interfaces">
  <attr name="x" type="s16" val="57"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
@@ -385,7 +385,7 @@
  <attr name="y" type="s16" val="92"/>
 </obj>
 
-<obj class="Point" id="1 Resource-2-DetDataReceiver">
+<obj class="Point" id="1 ExcludableEntity-2-DetDataReceiver">
  <attr name="x" type="s16" val="47"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
@@ -400,7 +400,7 @@
  <attr name="y" type="s16" val="504"/>
 </obj>
 
-<obj class="Point" id="2 DPDKPortConfiguration-2-ProcessingResource-via-used_lcores">
+<obj class="Point" id="2 DPDKPortConfiguration-2-HostCores-via-used_lcores">
  <attr name="x" type="s16" val="188"/>
  <attr name="y" type="s16" val="363"/>
 </obj>
@@ -419,7 +419,7 @@
  <attr name="y" type="s16" val="23"/>
 </obj>
 
-<obj class="Point" id="2 DataReaderModule-2-Resource-via-interfaces">
+<obj class="Point" id="2 DataReaderModule-2-ExcludableEntity-via-interfaces">
  <attr name="x" type="s16" val="57"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
@@ -459,7 +459,7 @@
  <attr name="y" type="s16" val="218"/>
 </obj>
 
-<obj class="Point" id="2 Resource-2-DetDataReceiver">
+<obj class="Point" id="2 ExcludableEntity-2-DetDataReceiver">
  <attr name="x" type="s16" val="47"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
@@ -474,7 +474,7 @@
  <attr name="y" type="s16" val="504"/>
 </obj>
 
-<obj class="Point" id="3 DPDKPortConfiguration-2-ProcessingResource-via-used_lcores">
+<obj class="Point" id="3 DPDKPortConfiguration-2-HostCores-via-used_lcores">
  <attr name="x" type="s16" val="32"/>
  <attr name="y" type="s16" val="363"/>
 </obj>
@@ -494,7 +494,7 @@
  <attr name="y" type="s16" val="23"/>
 </obj>
 
-<obj class="Point" id="3 DataReaderModule-2-Resource-via-interfaces">
+<obj class="Point" id="3 DataReaderModule-2-ExcludableEntity-via-interfaces">
  <attr name="x" type="s16" val="15"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
@@ -534,7 +534,7 @@
  <attr name="y" type="s16" val="218"/>
 </obj>
 
-<obj class="Point" id="3 Resource-2-DetDataReceiver">
+<obj class="Point" id="3 ExcludableEntity-2-DetDataReceiver">
  <attr name="x" type="s16" val="26"/>
  <attr name="y" type="s16" val="24"/>
 </obj>
@@ -549,7 +549,7 @@
  <attr name="y" type="s16" val="12"/>
 </obj>
 
-<obj class="Point" id="4 DPDKPortConfiguration-2-ProcessingResource-via-used_lcores">
+<obj class="Point" id="4 DPDKPortConfiguration-2-HostCores-via-used_lcores">
  <attr name="x" type="s16" val="32"/>
  <attr name="y" type="s16" val="12"/>
 </obj>
@@ -569,7 +569,7 @@
  <attr name="y" type="s16" val="8"/>
 </obj>
 
-<obj class="Point" id="4 DataReaderModule-2-Resource-via-interfaces">
+<obj class="Point" id="4 DataReaderModule-2-ExcludableEntity-via-interfaces">
  <attr name="x" type="s16" val="15"/>
  <attr name="y" type="s16" val="8"/>
 </obj>
@@ -609,7 +609,7 @@
  <attr name="y" type="s16" val="12"/>
 </obj>
 
-<obj class="Point" id="4 Resource-2-DetDataReceiver">
+<obj class="Point" id="4 ExcludableEntity-2-DetDataReceiver">
  <attr name="x" type="s16" val="26"/>
  <attr name="y" type="s16" val="8"/>
 </obj>

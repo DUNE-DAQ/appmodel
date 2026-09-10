@@ -41,8 +41,8 @@ namespace appmodel {
 
 //-----------------------------------------------------------------------------
 
-std::vector<const confmodel::Resource*>
-WIECApplication::contained_resources() const {
+std::vector<const confmodel::ExcludableEntity*>
+WIECApplication::contained_excludable_entities() const {
   return to_resources(get_detector_connections());
 }
 
@@ -63,15 +63,15 @@ WIECApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper>
   for (auto d2d_conn : get_detector_connections()) {
 
     // Are we sure?
-    if (helper->is_disabled(d2d_conn)) {
-      TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
+    if (helper->is_excluded(d2d_conn)) {
+      TLOG_DEBUG(7) << "Ignoring excluded DetectorToDaqConnection " << d2d_conn->UID();
       continue;
     }
 
     TLOG_DEBUG(6) << "Processing DetectorToDaqConnection " << d2d_conn->UID();
 
     // Is this check necessary?
-    if (d2d_conn->contained_resources().empty()) {
+    if (d2d_conn->contained_excludable_entities().empty()) {
       throw(BadConf(ERS_HERE, "DetectorToDaqConnection does not contain senders or receivers"));
     }
 
@@ -88,8 +88,8 @@ WIECApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper>
     // Loop over senders
     for (const auto* sender : det_senders) {
 
-      if (helper->is_disabled(sender)) {
-        TLOG() << "Skipping disabled sender: " << sender->UID();
+      if (helper->is_excluded(sender)) {
+        TLOG() << "Skipping excluded sender: " << sender->UID();
         continue;
       }
       
@@ -121,7 +121,7 @@ WIECApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper>
 
             // Enable the femb if any of the associated streams is enabld
             // Senders in this senders list should be enabled, but better safe than sorry.
-            enable_fembs[femb_id] |= helper->is_enabled(det_stream);
+            enable_fembs[femb_id] |= helper->is_included(det_stream);
           }
         }
         std::string wib_uid = fmt::format("wib-ctrl-{}-{}", this->UID(), ctrlhost);

@@ -31,7 +31,7 @@
 #include "confmodel/DetectorToDaqConnection.hpp"
 #include "confmodel/GeoId.hpp"
 #include "confmodel/NetworkConnection.hpp"
-#include "confmodel/ResourceSet.hpp"
+#include "confmodel/ExcludableEntitySet.hpp"
 #include "confmodel/Service.hpp"
 
 #include "appmodel/SourceIDConf.hpp"
@@ -187,8 +187,8 @@ NP02ReadoutApplication::generate_modules(std::shared_ptr<appmodel::Configuration
     uint16_t receiver_numa = 0;
 
     // Are we sure?
-    if (helper->is_disabled(d2d_conn)) {
-      TLOG_DEBUG(7) << "Ignoring disabled DetectorToDaqConnection " << d2d_conn->UID();
+    if (helper->is_excluded(d2d_conn)) {
+      TLOG_DEBUG(7) << "Ignoring excluded DetectorToDaqConnection " << d2d_conn->UID();
       continue;
     }
 
@@ -243,8 +243,8 @@ NP02ReadoutApplication::generate_modules(std::shared_ptr<appmodel::Configuration
     for (auto stream : d2d_conn->streams()) {
 
       // Are we sure?
-      if (helper->is_disabled(stream)) {
-        TLOG_DEBUG(7) << "Ignoring disabled DetectorStream " << stream->UID();
+      if (helper->is_excluded(stream)) {
+        TLOG_DEBUG(7) << "Ignoring excluded DetectorStream " << stream->UID();
         continue;
       }
 

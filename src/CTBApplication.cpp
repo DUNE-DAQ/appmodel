@@ -57,10 +57,10 @@
 using namespace dunedaq;
 using namespace dunedaq::appmodel;
 
-std::vector<const confmodel::Resource*>
-CTBApplication::contained_resources() const {
-  std::vector<const confmodel::Resource*> resources;
-  resources.push_back(dynamic_cast<const confmodel::Resource*>(get_board()));
+std::vector<const confmodel::ExcludableEntity*>
+CTBApplication::contained_excludable_entities() const {
+  std::vector<const confmodel::ExcludableEntity*> resources;
+  resources.push_back(dynamic_cast<const confmodel::ExcludableEntity*>(get_board()));
   return resources;
 }
 
@@ -208,9 +208,9 @@ CTBApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
 
 
 
-std::vector<const confmodel::Resource*>
-CTBoardConf::contained_resources() const {
-  std::vector<const confmodel::Resource*> resources;
+std::vector<const confmodel::ExcludableEntity*>
+CTBoardConf::contained_excludable_entities() const {
+  std::vector<const confmodel::ExcludableEntity*> resources;
   resources.push_back(get_misc());
 
   auto hlts = get_HLTs();
@@ -290,8 +290,8 @@ nlohmann::json CTBoardConf::get_ctb_json(const dunedaq::confmodel::Session& sess
 
 }
 
-std::vector<const confmodel::Resource*> CTBMisc::contained_resources() const {
-  return std::vector<const confmodel::Resource*>{ get_randomtrigger_1(), get_randomtrigger_2() };
+std::vector<const confmodel::ExcludableEntity*> CTBMisc::contained_excludable_entities() const {
+  return std::vector<const confmodel::ExcludableEntity*>{ get_randomtrigger_1(), get_randomtrigger_2() };
 }
 
 
@@ -320,7 +320,7 @@ nlohmann::json CTBTrigger::get_ctb_json(const dunedaq::confmodel::Session& sessi
 
   auto json = this -> to_json(false, true);
   static std::string enable_tag = "enable";
-  if ( this -> is_disabled(session) ) {
+  if ( this -> is_excluded(session) ) {
     json[enable_tag] = false;
   }
   else {
