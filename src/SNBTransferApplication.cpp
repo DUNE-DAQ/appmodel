@@ -8,14 +8,14 @@
  * received with this code.
  */
 
-#include "ConfigObjectFactory.hpp"
 #include "appmodel/SNBTransferApplication.hpp"
-#include "appmodel/SNBTransferConf.hpp"
-#include "appmodel/SNBFileTransfer.hpp"
+#include "ConfigObjectFactory.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
 #include "appmodel/QueueDescriptor.hpp"
+#include "appmodel/SNBFileTransfer.hpp"
+#include "appmodel/SNBTransferConf.hpp"
 #include "appmodel/appmodelIssues.hpp"
 #include "conffwk/Configuration.hpp"
 #include "confmodel/Connection.hpp"

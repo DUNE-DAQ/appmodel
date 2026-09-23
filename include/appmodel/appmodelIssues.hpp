@@ -6,38 +6,28 @@
 #include "logging/Logging.hpp" // NOTE: if ISSUES ARE DECLARED BEFORE include logging/Logging.hpp, TLOG_DEBUG<<issue wont work.
 
 namespace dunedaq {
-  ERS_DECLARE_ISSUE(appmodel, BadConf, what, ((std::string)what))
-  ERS_DECLARE_ISSUE(appmodel, BadStreamConf,
-                    "Failed to cast stream parameters " << id << " to " << stype,
-                    ((std::string)id) ((std::string)stype))
+ERS_DECLARE_ISSUE(appmodel, BadConf, what, ((std::string)what))
+ERS_DECLARE_ISSUE(appmodel,
+                  BadStreamConf,
+                  "Failed to cast stream parameters " << id << " to " << stype,
+                  ((std::string)id)((std::string)stype))
 
-  ERS_DECLARE_ISSUE(appmodel,
-        MissingDaphne,
-        "Daphne configuration has no board " << id,
-        ((std::string)id))
+ERS_DECLARE_ISSUE(appmodel, MissingDaphne, "Daphne configuration has no board " << id, ((std::string)id))
 
-  ERS_DECLARE_ISSUE(appmodel,
-		    MissingAFE,
-		    "Board " << board << "uses afe " << afe << "but it's not available",
-		    ((std::string)board)((std::size_t)afe))
-  
-  ERS_DECLARE_ISSUE(appmodel,
-        UnimplementedMethodCalled,
-        "Method '" << method_name << "' was called but is not implemented in this class",
-        ((std::string)method_name))
+ERS_DECLARE_ISSUE(appmodel,
+                  MissingAFE,
+                  "Board " << board << "uses afe " << afe << "but it's not available",
+                  ((std::string)board)((std::size_t)afe))
 
+ERS_DECLARE_ISSUE(appmodel,
+                  UnimplementedMethodCalled,
+                  "Method '" << method_name << "' was called but is not implemented in this class",
+                  ((std::string)method_name))
 
-  ERS_DECLARE_ISSUE(appmodel,
-                    NotSmart,
-                    "Object is not a SmartDaqApplication: " << obj,
-                    ((std::string)obj))
+ERS_DECLARE_ISSUE(appmodel, NotSmart, "Object is not a SmartDaqApplication: " << obj, ((std::string)obj))
 
-  ERS_DECLARE_ISSUE(appmodel,
-                    BadD2d,
-                    "Contained object is not a DetectorToDaqConnection: " << obj,
-                    ((std::string)obj))
+ERS_DECLARE_ISSUE(appmodel, BadD2d, "Contained object is not a DetectorToDaqConnection: " << obj, ((std::string)obj))
 
 } // namespace dunedaq
-
 
 #endif // APPDALISSUES_HPP

@@ -8,26 +8,25 @@
  * received with this code.
  */
 
-
 #include "ConfigObjectFactory.hpp"
-#include "conffwk/Configuration.hpp"
-#include "oks/kernel.hpp"
-#include "confmodel/Connection.hpp"
-#include "confmodel/Service.hpp"
-#include "confmodel/NetworkConnection.hpp"
-#include "appmodel/TPStreamWriterApplication.hpp"
-#include "appmodel/TPStreamWriterModule.hpp"
-#include "appmodel/TPStreamWriterConf.hpp"
-#include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
+#include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/SourceIDConf.hpp"
+#include "appmodel/TPStreamWriterApplication.hpp"
+#include "appmodel/TPStreamWriterConf.hpp"
+#include "appmodel/TPStreamWriterModule.hpp"
 #include "appmodel/appmodelIssues.hpp"
+#include "conffwk/Configuration.hpp"
+#include "confmodel/Connection.hpp"
+#include "confmodel/NetworkConnection.hpp"
+#include "confmodel/Service.hpp"
 #include "logging/Logging.hpp"
+#include "oks/kernel.hpp"
 
+#include <fmt/core.h>
+#include <iostream>
 #include <string>
 #include <vector>
-#include <iostream>
-#include <fmt/core.h>
 
 namespace dunedaq {
 namespace appmodel {
@@ -39,10 +38,9 @@ TPStreamWriterApplication::generate_modules(std::shared_ptr<appmodel::Configurat
 
   ConfigObjectFactory obj_fac(this);
 
-
   auto tpwriterConf = get_tp_writer();
   if (tpwriterConf == 0) {
-    throw (BadConf(ERS_HERE, "No TPStreamWriterModule configuration given"));
+    throw(BadConf(ERS_HERE, "No TPStreamWriterModule configuration given"));
   }
   auto tpwriterConfObj = tpwriterConf->config_object();
 
@@ -54,30 +52,29 @@ TPStreamWriterApplication::generate_modules(std::shared_ptr<appmodel::Configurat
       tset_in_net_desc = rule->get_descriptor();
     }
   }
-  if ( tset_in_net_desc== nullptr) {
-      throw (BadConf(ERS_HERE, "No network descriptor given to receive TPSets"));
+  if (tset_in_net_desc == nullptr) {
+    throw(BadConf(ERS_HERE, "No network descriptor given to receive TPSets"));
   }
   // Create Network Connection
   conffwk::ConfigObject tset_in_net_obj = obj_fac.create_net_obj(tset_in_net_desc, ".*");
 
-
   auto source_id = get_source_id();
   if (source_id == nullptr) {
-    throw(BadConf(ERS_HERE, "No SourceIDConf given to TPWriterApplication!"));  
+    throw(BadConf(ERS_HERE, "No SourceIDConf given to TPWriterApplication!"));
   }
 
   uint tpw_idx = 0;
-  std::string tpwrUid("tpwriter-"+std::to_string(source_id->get_sid()));
+  std::string tpwrUid("tpwriter-" + std::to_string(source_id->get_sid()));
   conffwk::ConfigObject tpwrObj = obj_fac.create("TPStreamWriterModule", tpwrUid);
   tpwrObj.set_by_val<uint32_t>("source_id", source_id->get_sid());
   tpwrObj.set_by_val("writer_identifier", fmt::format("{}_tpw_{}", UID(), tpw_idx));
   tpwrObj.set_obj("configuration", &tpwriterConf->config_object());
-  tpwrObj.set_objs("inputs", {&tset_in_net_obj} );
+  tpwrObj.set_objs("inputs", { &tset_in_net_obj });
 
   modules.push_back(obj_fac.get_dal<TPStreamWriterModule>(tpwrUid));
 
   obj_fac.update_modules(modules);
 }
- 
-} // namespace appmodel  
+
+} // namespace appmodel
 } // namespace dunedaq
