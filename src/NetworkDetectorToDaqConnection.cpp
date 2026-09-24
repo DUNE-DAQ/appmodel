@@ -14,26 +14,29 @@
 #include "confmodel/DetDataReceiver.hpp"
 #include "confmodel/DetDataSender.hpp"
 
+#include <vector>
+
 namespace dunedaq::appmodel {
 
-std::vector<const dunedaq::confmodel::DetDataSender*> 
-NetworkDetectorToDaqConnection::senders() const {
+std::vector<const dunedaq::confmodel::DetDataSender*>
+NetworkDetectorToDaqConnection::senders() const
+{
   std::vector<const dunedaq::confmodel::DetDataSender*> senders;
-   if (m_net_senders.empty()) {
+  if (m_net_senders.empty()) {
     std::lock_guard scoped_lock(m_mutex);
     check_init();
   }
-  for (auto sender: m_net_senders) {
-    senders.push_back(
-      dynamic_cast<const dunedaq::confmodel::DetDataSender*>(sender));
+  for (auto sender : m_net_senders) {
+    senders.push_back(dynamic_cast<const dunedaq::confmodel::DetDataSender*>(sender)); // NOLINT
   }
   TLOG_DEBUG(6) << "Found " << senders.size() << " senders\n";
   return senders;
 }
 
 const confmodel::DetDataReceiver*
-NetworkDetectorToDaqConnection::receiver() const {
-   if (m_net_senders.empty()) {
+NetworkDetectorToDaqConnection::receiver() const
+{
+  if (m_net_senders.empty()) {
     std::lock_guard scoped_lock(m_mutex);
     check_init();
   }

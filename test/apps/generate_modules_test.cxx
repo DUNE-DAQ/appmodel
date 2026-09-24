@@ -27,13 +27,15 @@
 #include "appmodel/TriggerApplication.hpp"
 
 #include "appmodel/DataHandlerModule.hpp"
-#include "appmodel/DataReaderModule.hpp"
 #include "appmodel/DataMoveCallbackConf.hpp"
+#include "appmodel/DataReaderModule.hpp"
 #include "appmodel/SocketDataWriterModule.hpp"
 
 #include "appmodel/appmodelIssues.hpp"
 
+#include <memory>
 #include <string>
+
 using namespace dunedaq;
 using namespace dunedaq::appmodel;
 
@@ -41,71 +43,71 @@ int
 main(int argc, char* argv[])
 {
   if (argc < 4) {
-    std::cout << "Usage: " << argv[0] << " <session> <smart-app> <database-file>\n";
+    std::cout << "Usage: " << argv[0] << " <session> <smart-app> <database-file>\n"; // NOLINT
     return 0;
   }
 
-  std::string sessionName(argv[1]);
-  std::string appName(argv[2]);
-  std::string dbfile(argv[3]);
+  std::string sessionName(argv[1]); // NOLINT
+  std::string appName(argv[2]);     // NOLINT
+  std::string dbfile(argv[3]);      // NOLINT
 
-  logging::Logging::setup("test", "generate_module");
+  assert(sessionName != "");
+  logging::Logging::setup(sessionName, "generate_module");
 
-  conffwk::Configuration* confdb;
+  conffwk::Configuration* confdb = nullptr;
   try {
     confdb = new conffwk::Configuration("oksconflibs:" + dbfile);
   } catch (conffwk::Generic& exc) {
-    std::cout << "Failed to load OKS database: " << exc << std::endl;
+    std::cout << "Failed to load OKS database: " << exc << std::endl; // NOLINT(runtime/output_format)
     return 0;
   }
 
   auto session = confdb->get<confmodel::Session>(sessionName);
   if (session == nullptr) {
-    std::cout << "Failed to get Session " << sessionName << " from database\n";
+    std::cout << "Failed to get Session " << sessionName << " from database\n"; // NOLINT(runtime/output_format)
     return 0;
   }
   auto daqapp = confdb->get<appmodel::SmartDaqApplication>(appName);
   if (daqapp) {
-    std::cout << appName << " is of class " << daqapp->class_name() << std::endl;
+    std::cout << appName << " is of class " << daqapp->class_name() << std::endl; // NOLINT(runtime/output_format)
 
     auto res = daqapp->cast<confmodel::ExcludableEntity>();
     if (res && res->is_excluded(*session)) {
-      std::cout << "Application " << appName << " is excluded" << std::endl;
+      std::cout << "Application " << appName << " is excluded" << std::endl; // NOLINT(runtime/output_format)
       return 0;
     }
 
     auto helper = std::make_shared<ConfigurationHelper>(session);
     try {
       daqapp->generate_modules(helper);
-    }
-    catch (appmodel::BadConf& exc) {
-      std::cout << "Caught BadConf exception: " << exc << std::endl;
+    } catch (appmodel::BadConf& exc) {
+      std::cout << "Caught BadConf exception: " << exc << std::endl; // NOLINT(runtime/output_format)
       exit(-1);
     }
 
     auto modules = daqapp->get_modules();
-    std::cout << "Generated " << modules.size() << " modules" << std::endl;
+    std::cout << "Generated " << modules.size() << " modules" << std::endl; // NOLINT(runtime/output_format)
     for (auto daq_module : modules) {
-      std::cout << "module " << daq_module->UID() << std::endl;
+      std::cout << "module " << daq_module->UID() << std::endl; // NOLINT(runtime/output_format)
       daq_module->config_object().print_ref(std::cout, *confdb, "  ");
-      std::cout << " input objects " << std::endl;
+      std::cout << " input objects " << std::endl; // NOLINT(runtime/output_format)
       for (auto input : daq_module->get_inputs()) {
         auto iObj = input->config_object();
-        iObj.print_ref(std::cout, *confdb, "    ");
+        iObj.print_ref(std::cout, *confdb, "    "); // NOLINT(runtime/output_format)
       }
-      std::cout << " output objects " << std::endl;
+      std::cout << " output objects " << std::endl; // NOLINT(runtime/output_format)
       for (auto output : daq_module->get_outputs()) {
         auto oObj = output->config_object();
-        oObj.print_ref(std::cout, *confdb, "    ");
+        oObj.print_ref(std::cout, *confdb, "    "); // NOLINT(runtime/output_format)
       }
 
       auto reader_module = daq_module->cast<appmodel::DataReaderModule>();
       if (reader_module != nullptr) {
         auto callback_confs = reader_module->get_raw_data_callbacks();
-        std::cout << " callback confs " << std::endl;
+        std::cout << " callback confs " << std::endl; // NOLINT(runtime/output_format)
         for (auto* callback_conf : callback_confs) {
           auto cbObj = callback_conf->config_object();
-          cbObj.print_ref(std::cout, *confdb, "    ");
+          cbObj.print_ref(std::cout, *confdb, "    "); // NOLINT(runtime/output_format)
         }
       }
 
@@ -114,14 +116,14 @@ main(int argc, char* argv[])
         auto callback_conf = handler_module->get_raw_data_callback();
         if (callback_conf != nullptr) {
           auto cbObj = callback_conf->config_object();
-          cbObj.print_ref(std::cout, *confdb, "    ");
+          cbObj.print_ref(std::cout, *confdb, "    "); // NOLINT(runtime/output_format)
         }
       }
 
-      std::cout << std::endl;
+      std::cout << std::endl; // NOLINT(runtime/output_format)
     }
   } else {
-    std::cout << "Failed to get SmartDaqApplication " << appName << " from database\n";
+    std::cout << "Failed to get SmartDaqApplication " << appName << " from database\n"; // NOLINT(runtime/output_format)
     return 0;
   }
 }

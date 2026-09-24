@@ -8,9 +8,9 @@
  * received with this code.
  */
 
+#include "appmodel/DFApplication.hpp"
 #include "ConfigObjectFactory.hpp"
 #include "appmodel/ConfigurationHelper.hpp"
-#include "appmodel/DFApplication.hpp"
 #include "appmodel/DataStoreConf.hpp"
 #include "appmodel/DataWriterConf.hpp"
 #include "appmodel/DataWriterModule.hpp"
@@ -31,18 +31,18 @@
 #include "oks/kernel.hpp"
 
 #include <fmt/core.h>
+#include <memory>
+#include <set>
 #include <string>
 #include <vector>
 
-namespace dunedaq {
-namespace appmodel {
+namespace dunedaq::appmodel {
 
-    
 static inline void
 fill_sourceid_object(const ConfigObjectFactory& obj_fac,
                      const conffwk::ConfigObject* netConn,
                      const std::string& uid,
-                     const std::vector<uint32_t>& stream_source_ids,
+                     const std::vector<uint32_t>& stream_source_ids, // NOLINT(build/unsigned)
                      const std::vector<const SourceIDConf*>& tp_source_ids,
                      conffwk::ConfigObject& sidNetObj,
                      std::vector<std::shared_ptr<conffwk::ConfigObject>> sidObjs)
@@ -54,7 +54,7 @@ fill_sourceid_object(const ConfigObjectFactory& obj_fac,
   for (auto& source_id : stream_source_ids) {
     std::string streamSidUid(uid + "SourceIDConf" + std::to_string(source_id));
     auto stream_sid_obj = std::make_shared<conffwk::ConfigObject>(obj_fac.create("SourceIDConf", streamSidUid));
-    stream_sid_obj->set_by_val<uint32_t>("sid", source_id);
+    stream_sid_obj->set_by_val<uint32_t>("sid", source_id); // NOLINT(build/unsigned)
     stream_sid_obj->set_by_val<std::string>("subsystem", "Detector_Readout");
     sidObjs.push_back(stream_sid_obj);
     source_id_objs.push_back(sidObjs.back().get());
@@ -64,17 +64,9 @@ fill_sourceid_object(const ConfigObjectFactory& obj_fac,
     sidObjs.push_back(std::make_shared<conffwk::ConfigObject>(tp_sid->config_object()));
     source_id_objs.push_back(sidObjs.back().get());
   }
-  /*
-  std::string trgSidUid(roapp->UID() + "TRGSourceIDConf" + std::to_string(roapp->get_tp_source_id()));
-  auto trig_sid_obj = std::make_shared<conffwk::ConfigObject>(obj_fac.create("SourceIDConf", trgSidUid));
-  trig_sid_obj->set_by_val<uint32_t>("sid", roapp->get_tp_source_id());
-  trig_sid_obj->set_by_val<std::string>("subsystem", "Trigger");
-  source_id_objs.push_back(sidObjs.back().get());
-  */
 
   sidNetObj.set_objs("source_ids", source_id_objs);
 }
-
 
 inline void
 fill_replay_sourceid_object(const ConfigObjectFactory& obj_fac,
@@ -98,8 +90,7 @@ fill_replay_sourceid_object(const ConfigObjectFactory& obj_fac,
 
     // set Network connections
     std::string dreqNetUid(uid + ext);
-    netConn->emplace_back(
-      obj_fac.create_net_obj(descriptor, dreqNetUid));
+    netConn->emplace_back(obj_fac.create_net_obj(descriptor, dreqNetUid));
     netConn->back().set_by_val<std::string>("data_type", descriptor->get_data_type());
     netConn->back().set_by_val<std::string>("connection_type", descriptor->get_connection_type());
     auto serviceObj = descriptor->get_associated_service()->config_object();
@@ -107,8 +98,7 @@ fill_replay_sourceid_object(const ConfigObjectFactory& obj_fac,
 
     // set SourceID to Network connections
     std::string sidToNetUid(uid + ext + "-sids");
-    sidNetObj->emplace_back(
-      obj_fac.create("SourceIDToNetworkConnection", sidToNetUid));
+    sidNetObj->emplace_back(obj_fac.create("SourceIDToNetworkConnection", sidToNetUid));
     sidNetObj->back().set_obj("netconn", &netConn->back());
 
     // set SourceID objs
@@ -117,11 +107,9 @@ fill_replay_sourceid_object(const ConfigObjectFactory& obj_fac,
   }
 }
 
-
-
 void
-DFApplication::generate_modules(
-  std::shared_ptr<appmodel::ConfigurationHelper> helper) const {
+DFApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> helper) const
+{
 
   ConfigObjectFactory obj_fac(this);
 
@@ -187,7 +175,7 @@ DFApplication::generate_modules(
   }
   // Create network connection config object
   auto fragNetObj = obj_fac.create_net_obj(fragNetDesc, UID());
-  auto trigdecNetObj =  obj_fac.create_net_obj(trigdecNetDesc, UID());
+  auto trigdecNetObj = obj_fac.create_net_obj(trigdecNetDesc, UID());
   auto tokenNetObj = obj_fac.create_net_obj(tokenNetDesc, "");
   conffwk::ConfigObject trmonReqNetObj;
   conffwk::ConfigObject trmonTRNetObj;
@@ -204,47 +192,30 @@ DFApplication::generate_modules(
   std::vector<conffwk::ConfigObject> sidNetObjs;
   std::vector<std::shared_ptr<conffwk::ConfigObject>> sidObjs;
   std::set<std::string> processed_apps;
-  for (auto uid: helper->get_app_uids("DFApplication")) {
+  for (auto const& uid : helper->get_app_uids("DFApplication")) {
     processed_apps.insert(uid);
   }
 
   auto stream_src_ids = helper->get_stream_source_ids();
   auto tp_src_ids = helper->get_tp_source_ids();
-  for (auto [uid, descriptor]:
-         helper->get_netdescriptors("DataRequest", "ReadoutApplication")) {
-	  dreqNetObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
+  for (auto const& [uid, descriptor] : helper->get_netdescriptors("DataRequest", "ReadoutApplication")) {
+    dreqNetObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
 
     std::string sidToNetUid(descriptor->get_uid_base() + uid + "-sids");
     sidNetObjs.emplace_back(obj_fac.create("SourceIDToNetworkConnection", sidToNetUid));
 
-    fill_sourceid_object(obj_fac,
-                         &dreqNetObjs.back(),
-                         uid,
-                         stream_src_ids.at(uid),
-                         tp_src_ids.at(uid),
-                         sidNetObjs.back(),
-                         sidObjs);
+    fill_sourceid_object(
+      obj_fac, &dreqNetObjs.back(), uid, stream_src_ids.at(uid), tp_src_ids.at(uid), sidNetObjs.back(), sidObjs);
     processed_apps.insert(uid);
   }
 
-  for (auto [uid, descriptor]:
-         helper->get_netdescriptors("DataRequest", "TPReplayApplication")) {
-    fill_replay_sourceid_object(obj_fac,
-                                uid,
-                                tp_src_ids.at(uid),
-                                &dreqNetObjs,
-                                &sidNetObjs,
-                                descriptor,
-                                sidObjs);
+  for (auto const& [uid, descriptor] : helper->get_netdescriptors("DataRequest", "TPReplayApplication")) {
+    fill_replay_sourceid_object(obj_fac, uid, tp_src_ids.at(uid), &dreqNetObjs, &sidNetObjs, descriptor, sidObjs);
     processed_apps.insert(uid);
   }
 
-
-
-
-  for (auto [uid, descriptor]:
-         helper->get_netdescriptors("DataRequest", "FakeDataApplication")) {
-	  dreqNetObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
+  for (auto const& [uid, descriptor] : helper->get_netdescriptors("DataRequest", "FakeDataApplication")) {
+    dreqNetObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
 
     std::string sidToNetUid(descriptor->get_uid_base() + uid + "-sids");
     sidNetObjs.emplace_back(obj_fac.create("SourceIDToNetworkConnection", sidToNetUid));
@@ -261,62 +232,58 @@ DFApplication::generate_modules(
 
   // now we treat the CTB which has 2 connections related to source IDs
   const auto ctb_type = "CTBApplication";
-  for (auto [uid, descriptor]: helper->get_netdescriptors("DataRequest", ctb_type)) {
+  for (auto const& [uid, descriptor] : helper->get_netdescriptors("DataRequest", ctb_type)) {
 
     if (processed_apps.contains(uid)) {
       continue;
     }
- 
-    for ( const auto & [uid, rel_sources] :
-	  helper->get_all_app_source_ids(ctb_type) ) {
-      for ( auto [rel, id] : rel_sources ) {
-	std::string local_uid = uid;
-	local_uid += rel.find("LLT")!=std::string::npos ? "_LLT" : "_HLT";
-       
-	dreqNetObjs.emplace_back(obj_fac.create_net_obj(descriptor, local_uid));
-	sidObjs.push_back(std::make_shared<conffwk::ConfigObject>(id->config_object()));
 
-	std::string sidToNetUid(descriptor->get_uid_base() + local_uid);
-	sidNetObjs.emplace_back(obj_fac.create("SourceIDToNetworkConnection", sidToNetUid));
-	sidNetObjs.back().set_objs("source_ids", {sidObjs.back().get()});
-	sidNetObjs.back().set_obj("netconn", &dreqNetObjs.back());
-	
+    for (auto const& [uid, rel_sources] : helper->get_all_app_source_ids(ctb_type)) {
+      for (auto const& [rel, id] : rel_sources) {
+        std::string local_uid = uid;
+        local_uid += rel.find("LLT") != std::string::npos ? "_LLT" : "_HLT";
+
+        dreqNetObjs.emplace_back(obj_fac.create_net_obj(descriptor, local_uid));
+        sidObjs.push_back(std::make_shared<conffwk::ConfigObject>(id->config_object()));
+
+        std::string sidToNetUid(descriptor->get_uid_base() + local_uid);
+        sidNetObjs.emplace_back(obj_fac.create("SourceIDToNetworkConnection", sidToNetUid));
+        sidNetObjs.back().set_objs("source_ids", { sidObjs.back().get() });
+        sidNetObjs.back().set_obj("netconn", &dreqNetObjs.back());
+
       } // loop on relational sources
-  
+
       processed_apps.insert(uid);
-    } // loop over CTB apps 
+    } // loop over CTB apps
   } // loop over descriptors for the CTB apps
 
   auto app_sources = helper->get_app_source_ids();
   // Now look at all Smart apps that are not Readout, FakeData or DF
-  for (auto [uid, descriptor]: helper->get_netdescriptors("DataRequest")) {
+  for (auto const& [uid, descriptor] : helper->get_netdescriptors("DataRequest")) {
 
-    
     if (processed_apps.contains(uid)) {
       continue;
     }
     if (app_sources.contains(uid)) {
       dreqNetObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
 
-      sidObjs.push_back(std::make_shared<conffwk::ConfigObject>(
-                          app_sources.at(uid)->config_object()));
+      sidObjs.push_back(std::make_shared<conffwk::ConfigObject>(app_sources.at(uid)->config_object()));
 
       std::string sidToNetUid(descriptor->get_uid_base() + uid + "-sids");
       sidNetObjs.emplace_back(obj_fac.create("SourceIDToNetworkConnection", sidToNetUid));
-      sidNetObjs.back().set_objs("source_ids", {sidObjs.back().get()});
+      sidNetObjs.back().set_objs("source_ids", { sidObjs.back().get() });
       sidNetObjs.back().set_obj("netconn", &dreqNetObjs.back());
 
       processed_apps.insert(uid);
     }
   }
 
-
   // Get pointers to objects here, after vector has been filled so they don't move on us
   for (auto& obj : dreqNetObjs) {
-    trbOutputObjs.push_back(&obj);
+    trbOutputObjs.push_back(&obj); // NOLINT(performance-inefficient-vector-operation)
   }
   for (auto& obj : sidNetObjs) {
-    trbSidNetObjs.push_back(&obj);
+    trbSidNetObjs.push_back(&obj); // NOLINT(performance-inefficient-vector-operation)
   }
 
   // -- Second, we create the Module objects and assign their configs, with the precreated
@@ -328,7 +295,7 @@ DFApplication::generate_modules(
     throw(BadConf(ERS_HERE, "No DataWriterModule or TRB configuration given"));
   }
   auto trbConfObj = trbConf->config_object();
-  trbConfObj.set_by_val<uint32_t>("source_id", get_source_id()->get_sid());
+  trbConfObj.set_by_val<uint32_t>("source_id", get_source_id()->get_sid()); // NOLINT(build/unsigned)
   trbInputObjs = { &trigdecNetObj, &fragNetObj };
   if (trmonReqNetDesc != nullptr) {
     trbInputObjs.push_back(&trmonReqNetObj);
@@ -371,7 +338,6 @@ DFApplication::generate_modules(
   }
 
   obj_fac.update_modules(modules);
-}
+} // NOLINT(readability/fn_size)
 
-} // namespace appmodel  
-} // namespace dunedaq
+} // namespace dunedaq::appmodel

@@ -8,33 +8,32 @@
  * received with this code.
  */
 
-
+#include "appmodel/FakeHSIApplication.hpp"
 #include "ConfigObjectFactory.hpp"
 #include "appmodel/ConfigurationHelper.hpp"
-#include "appmodel/FakeHSIApplication.hpp"
-#include "appmodel/FakeHSIEventGeneratorModule.hpp"
+#include "appmodel/DataHandlerConf.hpp"
+#include "appmodel/DataHandlerModule.hpp"
 #include "appmodel/FakeHSIEventGeneratorConf.hpp"
+#include "appmodel/FakeHSIEventGeneratorModule.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
 #include "appmodel/QueueDescriptor.hpp"
-#include "appmodel/DataHandlerModule.hpp"
-#include "appmodel/DataHandlerConf.hpp"
 #include "appmodel/SourceIDConf.hpp"
 #include "appmodel/appmodelIssues.hpp"
+#include "conffwk/Configuration.hpp"
 #include "confmodel/Connection.hpp"
 #include "confmodel/NetworkConnection.hpp"
 #include "confmodel/Service.hpp"
 #include "logging/Logging.hpp"
 #include "oks/kernel.hpp"
-#include "conffwk/Configuration.hpp"
 
 #include <iostream>
+#include <memory>
 #include <string>
 #include <vector>
 
-namespace dunedaq {
-namespace appmodel {
+namespace dunedaq::appmodel {
 
 void
 FakeHSIApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> helper) const
@@ -42,7 +41,6 @@ FakeHSIApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelp
   std::vector<const confmodel::DaqModule*> modules;
 
   ConfigObjectFactory obj_fac(this);
-
 
   auto dlhConf = get_link_handler();
   auto dlhClass = dlhConf->get_template_for();
@@ -86,7 +84,7 @@ FakeHSIApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelp
   }
 
   auto rdrConf = get_generator();
-  if (rdrConf == 0) {
+  if (rdrConf == nullptr) {
     throw(BadConf(ERS_HERE, "No FakeHSIEventGeneratorModule configuration given"));
   }
   if (dlhInputQDesc == nullptr) {
@@ -105,27 +103,26 @@ FakeHSIApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelp
   }
   auto id = idconf->get_sid();
 
-  auto det_id = 1; // TODO Eric Flumerfelt <eflumerf@fnal.gov>, 08-Feb-2024: This is a magic number corresponding to kDAQ
+  auto det_id = 1; // This is a magic number corresponding to kDAQ
   std::string uid("DLH-" + std::to_string(id));
   TLOG_DEBUG(7) << "creating OKS configuration object for Data Link Handler class " << dlhClass << ", id " << id;
   conffwk::ConfigObject dlhObj = obj_fac.create(dlhClass, uid);
-  dlhObj.set_by_val<uint32_t>("source_id", id);
-  dlhObj.set_by_val<uint32_t>("detector_id", det_id);
+  dlhObj.set_by_val<uint32_t>("source_id", id);       // NOLINT(build/unsigned)
+  dlhObj.set_by_val<uint32_t>("detector_id", det_id); // NOLINT(build/unsigned)
   dlhObj.set_by_val<bool>("post_processing_enabled", false);
   dlhObj.set_obj("module_configuration", &dlhConf->config_object());
 
   // Process special Network rules!
   // Looking for Fragment rules from DFAppplications in current Session
   std::vector<conffwk::ConfigObject> fragOutObjs;
-  for (auto [uid, descriptor]:
-         helper->get_netdescriptors("Fragment", "DFApplication")) {
+  for (auto const& [uid, descriptor] : helper->get_netdescriptors("Fragment", "DFApplication")) {
     fragOutObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
-  }    
+  }
 
   // start building the list of outputs
   std::vector<const conffwk::ConfigObject*> fh_output_objs;
   for (auto& fNet : fragOutObjs) {
-    fh_output_objs.push_back(&fNet);
+    fh_output_objs.push_back(&fNet); // NOLINT(performance-inefficient-vector-operation)
   }
 
   // Time Sync network connection
@@ -144,10 +141,9 @@ FakeHSIApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelp
 
   auto hsiServiceObj = hsiNetDesc->get_associated_service()->config_object();
   conffwk::ConfigObject hsiNetObj = obj_fac.create_net_obj(hsiNetDesc, "");
-  
+
   std::string genuid("FakeHSI-" + std::to_string(id));
-  conffwk::ConfigObject fakehsiObj =
-    obj_fac.create("FakeHSIEventGeneratorModule", genuid);
+  conffwk::ConfigObject fakehsiObj = obj_fac.create("FakeHSIEventGeneratorModule", genuid);
   fakehsiObj.set_obj("configuration", &rdrConf->config_object());
   fakehsiObj.set_objs("outputs", { &queueObj, &hsiNetObj });
   if (tsNetDesc != nullptr) {
@@ -158,7 +154,6 @@ FakeHSIApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelp
   modules.push_back(obj_fac.get_dal<FakeHSIEventGeneratorModule>(genuid));
 
   obj_fac.update_modules(modules);
-}
- 
-} // namespace appmodel  
-} // namespace dunedaq
+} // NOLINT(readability/fn_size)
+
+} // namespace dunedaq::appmodel

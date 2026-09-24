@@ -7,14 +7,14 @@
  * Licensing/copyright details are in the COPYING file that you should have
  * received with this code.
  */
-#ifndef APPMODEL_INCLUDE_OBJECTFACTORY_HPP_
-#define APPMODEL_INCLUDE_OBJECTFACTORY_HPP_
+#ifndef APPMODEL_SRC_CONFIGOBJECTFACTORY_HPP_
+#define APPMODEL_SRC_CONFIGOBJECTFACTORY_HPP_
 
-#include "appmodel/appmodelIssues.hpp"
+#include "appmodel/DataMoveCallbackDescriptor.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/QueueDescriptor.hpp"
-#include "appmodel/DataMoveCallbackDescriptor.hpp"
 #include "appmodel/SmartDaqApplication.hpp"
+#include "appmodel/appmodelIssues.hpp"
 
 #include "conffwk/ConfigObject.hpp"
 #include "conffwk/Configuration.hpp"
@@ -36,28 +36,26 @@ class ConfigObjectFactory
   std::string m_app_uid;
 
 public:
-  explicit ConfigObjectFactory(const SmartDaqApplication* );
+  explicit ConfigObjectFactory(const SmartDaqApplication*);
 
   ~ConfigObjectFactory();
 
-  [[nodiscard]] conffwk::ConfigObject
-  create(const std::string& class_name, const std::string& id) const;
+  [[nodiscard]] conffwk::ConfigObject create(const std::string& class_name, const std::string& id) const;
 
   //---
-  [[nodiscard]] conffwk::ConfigObject
-  create_queue_obj(const QueueDescriptor* qdesc, std::string uid = "") const;
+  [[nodiscard]] conffwk::ConfigObject create_queue_obj(const QueueDescriptor* qdesc, std::string uid = "") const;
 
   //---
-  [[nodiscard]] conffwk::ConfigObject
-  create_queue_sid_obj(const QueueDescriptor* qdesc, uint32_t src_id) const;
+  [[nodiscard]] conffwk::ConfigObject create_queue_sid_obj(const QueueDescriptor* qdesc,
+                                                           uint32_t src_id) const; // NOLINT(build/unsigned)
 
   //---
-  [[nodiscard]] conffwk::ConfigObject
-  create_queue_sid_obj(const QueueDescriptor* qdesc, const confmodel::DetectorStream* stream) const;
+  [[nodiscard]] conffwk::ConfigObject create_queue_sid_obj(const QueueDescriptor* qdesc,
+                                                           const confmodel::DetectorStream* stream) const;
 
   //---
   [[nodiscard]] conffwk::ConfigObject create_callback_sid_obj(const DataMoveCallbackDescriptor* cdesc,
-                                                              uint32_t src_id) const;
+                                                              uint32_t src_id) const; // NOLINT(build/unsigned)
 
   /**
    * \brief Helper function that gets a network connection config
@@ -67,37 +65,36 @@ public:
    *
    * \ret OKS configuration object for the network connection
    */
-  [[nodiscard]] conffwk::ConfigObject
-  create_net_obj(const NetworkConnectionDescriptor* ndesc, std::string uid) const;
+  [[nodiscard]] conffwk::ConfigObject create_net_obj(const NetworkConnectionDescriptor* ndesc, std::string uid) const;
 
-  [[nodiscard]] conffwk::ConfigObject
-  create_net_obj(const NetworkConnectionDescriptor* ndesc) const;
+  [[nodiscard]] conffwk::ConfigObject create_net_obj(const NetworkConnectionDescriptor* ndesc) const;
 
   template<class T>
-  const T* get_dal(std::string uid) const {
+  const T* get_dal(std::string uid) const
+  {
     return m_config->get<T>(uid);
   }
 
   template<class T>
-  const T* get_dal(conffwk::ConfigObject& obj) const {
+  const T* get_dal(conffwk::ConfigObject& obj) const
+  {
     return m_config->get<T>(obj);
   }
 
-  void
-  update_modules(const std::vector<const confmodel::DaqModule*>& modules) {
+  void update_modules(const std::vector<const confmodel::DaqModule*>& modules)
+  {
     auto app = m_config->get<SmartDaqApplication>(m_app_uid);
     if (!app->get_modules().empty()) {
-      throw (BadConf(ERS_HERE,
-                     "SmartDaqApplication contains DaqModules which would be overwritten by generated DaqModules"));
+      throw(BadConf(ERS_HERE,
+                    "SmartDaqApplication contains DaqModules which would be overwritten by generated DaqModules"));
     }
     if (!modules.empty()) {
-      const_cast<SmartDaqApplication*>(app)->set_modules(modules);
-      m_config->update<SmartDaqApplication>({m_app_uid}, {}, {});
+      const_cast<SmartDaqApplication*>(app)->set_modules(modules); // NOLINT
+      m_config->update<SmartDaqApplication>({ m_app_uid }, {}, {});
     }
   }
-
 };
 
 } // namespace dunedaq::appmodel
 
-#endif // APPMODEL_INCLUDE_OBJECTFACTORY_HPP_
+#endif // APPMODEL_SRC_CONFIGOBJECTFACTORY_HPP_

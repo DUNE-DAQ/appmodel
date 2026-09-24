@@ -14,25 +14,29 @@
 #include "confmodel/DetDataReceiver.hpp"
 #include "confmodel/DetDataSender.hpp"
 
+#include <vector>
+
 namespace dunedaq::appmodel {
 
-std::vector<const dunedaq::confmodel::DetDataSender*> 
-FelixDetectorToDaqConnection::senders() const {
+std::vector<const dunedaq::confmodel::DetDataSender*>
+FelixDetectorToDaqConnection::senders() const
+{
   std::vector<const dunedaq::confmodel::DetDataSender*> senders;
-   if (m_felix_senders.empty()) {
+  if (m_felix_senders.empty()) {
     std::lock_guard scoped_lock(m_mutex);
     check_init();
   }
-  for (auto sender: m_felix_senders) {
-    senders.push_back(
-      dynamic_cast<const dunedaq::confmodel::DetDataSender*>(sender));
+  for (auto sender : m_felix_senders) {
+    // NOLINTNEXTLINE(performance-inefficient-vector-operation, runtime/rtti)
+    senders.push_back(dynamic_cast<const dunedaq::confmodel::DetDataSender*>(sender));
   }
   return senders;
 }
 
 const confmodel::DetDataReceiver*
-FelixDetectorToDaqConnection::receiver() const {
-   if (m_felix_senders.empty()) {
+FelixDetectorToDaqConnection::receiver() const
+{
+  if (m_felix_senders.empty()) {
     std::lock_guard scoped_lock(m_mutex);
     check_init();
   }
