@@ -27,8 +27,8 @@
 #include "appmodel/TriggerApplication.hpp"
 
 #include "appmodel/DataHandlerModule.hpp"
-#include "appmodel/DataReaderModule.hpp"
 #include "appmodel/DataMoveCallbackConf.hpp"
+#include "appmodel/DataReaderModule.hpp"
 #include "appmodel/SocketDataWriterModule.hpp"
 
 #include "appmodel/appmodelIssues.hpp"
@@ -77,8 +77,7 @@ main(int argc, char* argv[])
     auto helper = std::make_shared<ConfigurationHelper>(session);
     try {
       daqapp->generate_modules(helper);
-    }
-    catch (appmodel::BadConf& exc) {
+    } catch (appmodel::BadConf& exc) {
       std::cout << "Caught BadConf exception: " << exc << std::endl;
       exit(-1);
     }

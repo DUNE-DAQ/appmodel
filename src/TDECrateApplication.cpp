@@ -8,32 +8,33 @@
  * received with this code.
  */
 #include "conffwk/Configuration.hpp"
-#include "oks/kernel.hpp"
 #include "logging/Logging.hpp"
+#include "oks/kernel.hpp"
 
 #include "appmodel/NWDetDataReceiver.hpp"
-#include "confmodel/NetworkInterface.hpp"
 #include "confmodel/DetectorStream.hpp"
-#include "confmodel/GeoId.hpp"
 #include "confmodel/DetectorToDaqConnection.hpp"
+#include "confmodel/GeoId.hpp"
+#include "confmodel/NetworkInterface.hpp"
 
-#include "appmodel/appmodelIssues.hpp"
 #include "ConfigObjectFactory.hpp"
-#include "appmodel/TDECrateApplication.hpp"
-#include "appmodel/TdeAmcDetDataSender.hpp"
 #include "appmodel/TDEAMCModule.hpp"
 #include "appmodel/TDEAMCModuleConf.hpp"
+#include "appmodel/TDECrateApplication.hpp"
+#include "appmodel/TdeAmcDetDataSender.hpp"
+#include "appmodel/appmodelIssues.hpp"
 
+#include <fmt/core.h>
+#include <iostream>
 #include <string>
 #include <vector>
-#include <iostream>
-#include <fmt/core.h>
 
 namespace dunedaq {
 namespace appmodel {
 
 std::vector<const confmodel::ExcludableEntity*>
-TDECrateApplication::contained_excludable_entities() const {
+TDECrateApplication::contained_excludable_entities() const
+{
   return to_resources(get_detector_connections());
 }
 
@@ -47,7 +48,7 @@ TDECrateApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHel
   std::map<std::string, std::vector<const appmodel::TdeAmcDetDataSender*>> ctrlhost_sender_map;
 
   for (auto d2d_conn : get_detector_connections()) {
-        // Are we sure?
+    // Are we sure?
     if (helper->is_excluded(d2d_conn)) {
       TLOG_DEBUG(7) << "Ignoring excluded DetectorToDaqConnection " << d2d_conn->UID();
       continue;
@@ -65,14 +66,14 @@ TDECrateApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHel
     // Loop over senders
     for (const auto* sender : det_senders) {
 
-      if ( helper->is_excluded(sender) ) {
+      if (helper->is_excluded(sender)) {
         TLOG() << "Skipping excluded sender: " << sender->UID();
         continue;
       }
-      
+
       // Check the sender type, must me a TdeAmcDetDataSender
       const auto* tde_sender = sender->cast<appmodel::TdeAmcDetDataSender>();
-      if (!tde_sender ) {
+      if (!tde_sender) {
         throw(BadConf(ERS_HERE, fmt::format("DataSender {} is not a appmodel::TdeAmcDetDataSender", sender->UID())));
       }
 
@@ -80,19 +81,20 @@ TDECrateApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHel
     }
   }
 
-  for( const auto& [ctrlhost, senders] : ctrlhost_sender_map ) {
+  for (const auto& [ctrlhost, senders] : ctrlhost_sender_map) {
 
     // std::cout << "this->UID()='" << this->UID() << "' ctrlhost='" << ctrlhost << "'" << std::endl;
-    if ( this->get_tde_amc_module_conf() ) {
-      conffwk::ConfigObject tde_obj = obj_fac.create( "TDEAMCModule", fmt::format("tde-ctrl-{}-{}", this->UID(), ctrlhost));
+    if (this->get_tde_amc_module_conf()) {
+      conffwk::ConfigObject tde_obj =
+        obj_fac.create("TDEAMCModule", fmt::format("tde-ctrl-{}-{}", this->UID(), ctrlhost));
       // std::string tde_uid = fmt::format("tde-ctrl-{}-{}", this->UID(), ctrlhost);
       // config->create(dbfile, "TDEAMCModule", tde_uid, tde_obj);
-      tde_obj.set_obj("amc", &(senders[0]->config_object()) ); // for now just allow one AMC per module
+      tde_obj.set_obj("amc", &(senders[0]->config_object())); // for now just allow one AMC per module
       modules.push_back(obj_fac.get_dal<appmodel::TDEAMCModule>(tde_obj));
     }
   }
   obj_fac.update_modules(modules);
 }
 
-} // namespace appmodel  
+} // namespace appmodel
 } // namespace dunedaq
