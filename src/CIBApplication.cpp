@@ -125,7 +125,7 @@ CIBApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
   // ----------------------------
   // create DLH
   // ----------------------------
-  int det_id = 1;
+  int det_id = 1; // This is a magic number corresponding to kDAQ
   TLOG() << "creating OKS configuration object for CIB Data Link Handler class " << dlhClass << ", id " << id;
   std::string uid("DLH-CIB");
   conffwk::ConfigObject dlhObj = obj_fac.create(dlhClass, uid);

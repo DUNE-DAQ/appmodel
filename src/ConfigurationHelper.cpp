@@ -80,7 +80,7 @@ ConfigurationHelper::get_services(std::string app_class, std::string data_type)
 
 std::map<std::string, std::vector<uint32_t>> // NOLINT(build/unsigned)
 ConfigurationHelper::get_stream_source_ids()
-{                                                      // NOLINT(build/unsigned)
+{
   std::map<std::string, std::vector<uint32_t>> result; // NOLINT(build/unsigned)
   for (auto app : m_session->included_applications()) {
     auto ro_app = app->cast<appmodel::ReadoutApplication>();
