@@ -76,6 +76,7 @@ DaphneApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelpe
 
   // map from ctrl_host to senders
   std::map<std::string, std::vector<const appmodel::HermesDataSender*> > hermes_senders;
+  std::vector<const appmodel::HermesDataSender*> disabled_hermes_senders;
   
   for (auto d2d_conn : get_detector_connections()) {
 
@@ -140,6 +141,11 @@ DaphneApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelpe
 
       for ( const auto* nw_sender : det_senders ) {
         if ( helper->is_disabled(nw_sender) ) {
+          // Preserve firmware configuration for disabled links on active boards.
+          // They remain excluded from stream/controller selection below.
+          if (const auto* sender = nw_sender->cast<appmodel::HermesDataSender>()) {
+            disabled_hermes_senders.push_back(sender);
+          }
           TLOG() << "Skipping disabled sender: " << nw_sender->UID();
           continue;
         }
@@ -175,6 +181,14 @@ DaphneApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelpe
     } // if net_connection
 
   } // loop over det2DAQ Connections
+
+  // Do not create controllers for boards with no active senders.
+  for (const auto* sender : disabled_hermes_senders) {
+    auto active = hermes_senders.find(sender->get_control_host());
+    if (active != hermes_senders.end()) {
+      active->second.push_back(sender);
+    }
+  }
 
 
   
