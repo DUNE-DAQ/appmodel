@@ -34,11 +34,11 @@
 #include "oks/kernel.hpp"
 
 #include <fmt/core.h>
+#include <memory>
 #include <string>
 #include <vector>
 
-namespace dunedaq {
-namespace appmodel {
+namespace dunedaq::appmodel {
 
 void
 TRMonReqApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> helper) const
@@ -84,13 +84,13 @@ TRMonReqApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHel
 
   // Create network connections for all DFApplications in session
   std::vector<conffwk::ConfigObject> trmonreqNetObjs;
-  for (auto [uid, descriptor] : helper->get_netdescriptors("TRMonRequest", "DFApplication")) {
+  for (auto const& [uid, descriptor] : helper->get_netdescriptors("TRMonRequest", "DFApplication")) {
     trmonreqNetObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
   }
 
   // Get pointers to objects here, after vector has been filled so they don't move on us
   for (auto& obj : trmonreqNetObjs) {
-    trmrOutputObjs.push_back(&obj);
+    trmrOutputObjs.push_back(&obj); // NOLINT(performance-inefficient-vector-operation)
   }
 
   // -- Second, we create the Module objects and assign their configs, with the precreated
@@ -133,5 +133,4 @@ TRMonReqApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHel
   obj_fac.update_modules(modules);
 }
 
-} // namespace appmodel
-} // namespace dunedaq
+} // namespace dunedaq::appmodel

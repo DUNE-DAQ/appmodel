@@ -33,11 +33,11 @@
 
 #include "logging/Logging.hpp"
 
+#include <memory>
 #include <string>
 #include <vector>
 
-namespace dunedaq {
-namespace appmodel {
+namespace dunedaq::appmodel {
 
 //-----------------------------------------------------------------------------
 
@@ -138,7 +138,7 @@ FakeDataApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHel
 
   // Finally create Fragment Aggregator
   auto aggregator_conf = get_fragment_aggregator();
-  if (aggregator_conf == 0) {
+  if (aggregator_conf == nullptr) {
     throw(BadConf(ERS_HERE, "No FragmentAggregatorModule configuration given"));
   }
   std::string faUid("fragmentaggregator-" + UID());
@@ -151,7 +151,7 @@ FakeDataApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHel
   // Add output queueus of data requests
   std::vector<const conffwk::ConfigObject*> qObjs;
   for (auto q : faOutputQueues) {
-    qObjs.push_back(&q->config_object());
+    qObjs.push_back(&q->config_object()); // NOLINT(performance-inefficient-vector-operation)
   }
   faObj.set_obj("configuration", &aggregator_conf->config_object());
   faObj.set_objs("inputs", { &faNetObj, &faQueueObj });
@@ -162,5 +162,4 @@ FakeDataApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHel
   obj_fac.update_modules(modules);
 }
 
-} // namespace appmodel
-} // namespace dunedaq
+} // namespace dunedaq::appmodel

@@ -36,11 +36,11 @@
 
 #include "logging/Logging.hpp"
 
+#include <memory>
 #include <string>
 #include <vector>
 
-namespace dunedaq {
-namespace appmodel {
+namespace dunedaq::appmodel {
 
 /**
  * \brief Helper function that gets a network connection config
@@ -134,7 +134,7 @@ TriggerApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelp
 
   // Process special Network rules!
   std::vector<conffwk::ConfigObject> fragOutObjs;
-  for (auto [uid, descriptor] : helper->get_netdescriptors("Fragment", "DFApplication")) {
+  for (auto const& [uid, descriptor] : helper->get_netdescriptors("Fragment", "DFApplication")) {
     fragOutObjs.push_back(obj_fac.create_net_obj(descriptor, uid));
   }
   if (req_net_desc == nullptr) {
@@ -165,6 +165,7 @@ TriggerApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelp
   // build up the full list of outputs
   std::vector<const conffwk::ConfigObject*> ti_output_objs;
   for (auto& fNet : fragOutObjs) {
+    // NOLINTNEXTLINE(performance-inefficient-vector-operation)
     ti_output_objs.push_back(&fNet);
   }
   ti_output_objs.push_back(&tout_net_obj);
@@ -175,12 +176,12 @@ TriggerApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelp
   if (get_source_id() == nullptr) {
     throw(BadConf(ERS_HERE, "No source_id associated with this TriggerApplication!"));
   }
-  uint32_t source_id = get_source_id()->get_sid();
+  uint32_t source_id = get_source_id()->get_sid(); // NOLINT(build/unsigned)
   std::string ti_uid(handler_name + "-" + std::to_string(source_id));
   auto ti_obj = obj_fac.create(ti_class, ti_uid);
 
-  ti_obj.set_by_val<uint32_t>("source_id", source_id);
-  ti_obj.set_by_val<uint32_t>("detector_id", 1); // 1 == kDAQ
+  ti_obj.set_by_val<uint32_t>("source_id", source_id); // NOLINT(build/unsigned)
+  ti_obj.set_by_val<uint32_t>("detector_id", 1);       // 1 == kDAQ // NOLINT(build/unsigned)
   ti_obj.set_by_val<bool>("post_processing_enabled", !get_tx_generation_disabled());
 
   auto ti_conf_obj = ti_conf->config_object();
@@ -209,7 +210,6 @@ TriggerApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelp
   modules.push_back(obj_fac.get_dal<DataSubscriberModule>(reader_uid));
 
   obj_fac.update_modules(modules);
-}
+} // NOLINT(readability/fn_size)
 
-} // namespace appmodel
-} // namespace dunedaq
+} // namespace dunedaq::appmodel

@@ -1,12 +1,20 @@
-
+/**
+ * @file ConfigObjectFactory.cpp
+ *
+ * Imeplement a helper class for SmartDaqApplication module generators
+ *
+ * This is part of the DUNE DAQ Software Suite, copyright 2023.
+ * Licensing/copyright details are in the COPYING file that you should have
+ * received with this code.
+ */
 #include "ConfigObjectFactory.hpp"
 #include "confmodel/Service.hpp"
 #include "oks/file.hpp"
 
 #include <fmt/core.h> // Replace with std::format when we switch to a newer compiler?
+#include <string>
 
-namespace dunedaq {
-namespace appmodel {
+namespace dunedaq::appmodel {
 
 ConfigObjectFactory::ConfigObjectFactory(const SmartDaqApplication* parent)
   : m_config(&parent->configuration())
@@ -41,22 +49,22 @@ ConfigObjectFactory::create_queue_obj(const QueueDescriptor* qdesc, std::string 
   auto queue_obj = create("Queue", queue_uid);
   queue_obj.set_by_val<std::string>("data_type", qdesc->get_data_type());
   queue_obj.set_by_val<std::string>("queue_type", qdesc->get_queue_type());
-  queue_obj.set_by_val<uint32_t>("capacity", qdesc->get_capacity());
+  queue_obj.set_by_val<uint32_t>("capacity", qdesc->get_capacity()); // NOLINT(build/unsigned)
 
   return queue_obj;
 }
 
 //---
 conffwk::ConfigObject
-ConfigObjectFactory::create_queue_sid_obj(const QueueDescriptor* qdesc, uint32_t src_id) const
+ConfigObjectFactory::create_queue_sid_obj(const QueueDescriptor* qdesc, uint32_t src_id) const // NOLINT(build/unsigned)
 {
   std::string queue_uid(fmt::format("{}{}", qdesc->get_uid_base(), src_id));
   auto queue_obj = create("QueueWithSourceId", queue_uid);
 
   queue_obj.set_by_val<std::string>("data_type", qdesc->get_data_type());
   queue_obj.set_by_val<std::string>("queue_type", qdesc->get_queue_type());
-  queue_obj.set_by_val<uint32_t>("capacity", qdesc->get_capacity());
-  queue_obj.set_by_val<uint32_t>("source_id", src_id);
+  queue_obj.set_by_val<uint32_t>("capacity", qdesc->get_capacity()); // NOLINT(build/unsigned)
+  queue_obj.set_by_val<uint32_t>("source_id", src_id);               // NOLINT(build/unsigned)
 
   return queue_obj;
 }
@@ -70,13 +78,14 @@ ConfigObjectFactory::create_queue_sid_obj(const QueueDescriptor* qdesc, const co
 
 //---
 conffwk::ConfigObject
-ConfigObjectFactory::create_callback_sid_obj(const DataMoveCallbackDescriptor* cdesc, uint32_t src_id) const
+ConfigObjectFactory::create_callback_sid_obj(const DataMoveCallbackDescriptor* cdesc,
+                                             uint32_t src_id) const // NOLINT(build/unsigned)
 {
   std::string rdc_uid(fmt::format("{}{}", cdesc->get_uid_base(), src_id));
   auto rdc_obj = create("DataMoveCallbackConf", rdc_uid);
 
   rdc_obj.set_by_val<std::string>("data_type", cdesc->get_data_type());
-  rdc_obj.set_by_val<uint32_t>("source_id", src_id);
+  rdc_obj.set_by_val<uint32_t>("source_id", src_id); // NOLINT(build/unsigned)
 
   return rdc_obj;
 }
@@ -100,7 +109,7 @@ ConfigObjectFactory::create_net_obj(const NetworkConnectionDescriptor* ndesc, st
 
   net_obj.set_by_val<std::string>("data_type", ndesc->get_data_type());
   net_obj.set_by_val<std::string>("connection_type", ndesc->get_connection_type());
-  net_obj.set_by_val<uint32_t>("capacity", ndesc->get_capacity());
+  net_obj.set_by_val<uint32_t>("capacity", ndesc->get_capacity()); // NOLINT(build/unsigned)
   net_obj.set_obj("associated_service", &svc_obj);
 
   return net_obj;
@@ -112,5 +121,4 @@ ConfigObjectFactory::create_net_obj(const NetworkConnectionDescriptor* ndesc) co
   return create_net_obj(ndesc, this->m_app_uid);
 }
 
-} // namespace appmodel
-} // namespace dunedaq
+} // namespace dunedaq::appmodel

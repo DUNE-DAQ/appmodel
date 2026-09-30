@@ -34,6 +34,7 @@
 #include <bitset>
 #include <fmt/core.h>
 #include <iostream>
+#include <memory>
 #include <set>
 #include <string>
 #include <vector>
@@ -106,14 +107,14 @@ CIBApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
   // Process special Network rules!
   // Looking for Fragment rules from DFAppplications in current Session
   std::vector<conffwk::ConfigObject> fragOutObjs;
-  for (auto [uid, descriptor] : helper->get_netdescriptors("Fragment", "DFApplication")) {
+  for (auto const& [uid, descriptor] : helper->get_netdescriptors("Fragment", "DFApplication")) {
     fragOutObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
   }
 
   // start building the list of outputs
   std::vector<const conffwk::ConfigObject*> fh_output_objs;
   for (auto& fNet : fragOutObjs) {
-    fh_output_objs.push_back(&fNet);
+    fh_output_objs.push_back(&fNet); // NOLINT(performance-inefficient-vector-operation)
   }
 
   std::vector<conffwk::ConfigObject> CIB_module_outputs;
@@ -124,8 +125,7 @@ CIBApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
   // ----------------------------
   // create DLH
   // ----------------------------
-  int det_id = 1; // TODO Eric Flumerfelt <eflumerf@fnal.gov>, 08-Feb-2024: This is a magic number corresponding to kDAQ
-                  // // NOLINT(readability/todo)
+  int det_id = 1; // This is a magic number corresponding to kDAQ
   TLOG() << "creating OKS configuration object for CIB Data Link Handler class " << dlhClass << ", id " << id;
   std::string uid("DLH-CIB");
   conffwk::ConfigObject dlhObj = obj_fac.create(dlhClass, uid);
@@ -171,7 +171,7 @@ CIBApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
 
   std::vector<const conffwk::ConfigObject*> CIB_module_output_ptrs;
   for (const auto& o : CIB_module_outputs) {
-    CIB_module_output_ptrs.push_back(&o);
+    CIB_module_output_ptrs.push_back(&o); // NOLINT(performance-inefficient-vector-operation)
   }
 
   module_obj.set_objs("outputs", CIB_module_output_ptrs);
@@ -187,7 +187,7 @@ CIBApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
 nlohmann::json
 CIBoardConf::get_cib_json(const dunedaq::confmodel::Session& session,
                           std::optional<std::string> socket_host,
-                          std::optional<uint16_t> socket_port) const
+                          std::optional<uint16_t> socket_port) const // NOLINT(build/unsigned)
 {
 
   // shut up compiler!
