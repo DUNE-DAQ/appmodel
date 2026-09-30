@@ -8,7 +8,6 @@
  * received with this code.
  */
 
-
 #include "ConfigObjectFactory.hpp"
 
 #include "conffwk/Configuration.hpp"
@@ -23,8 +22,8 @@
 #include "appmodel/FakeDataApplication.hpp"
 #include "appmodel/FakeDataProdConf.hpp"
 #include "appmodel/FakeDataProdModule.hpp"
-#include "appmodel/FragmentAggregatorModule.hpp"
 #include "appmodel/FragmentAggregatorConf.hpp"
+#include "appmodel/FragmentAggregatorModule.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
@@ -43,7 +42,8 @@ namespace appmodel {
 //-----------------------------------------------------------------------------
 
 std::vector<const confmodel::ExcludableEntity*>
-FakeDataApplication::contained_excludable_entities() const {
+FakeDataApplication::contained_excludable_entities() const
+{
   return to_resources(get_producers());
 }
 
@@ -55,7 +55,6 @@ FakeDataApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHel
   std::vector<const confmodel::DaqModule*> modules;
 
   ConfigObjectFactory obj_fac(this);
-
 
   // Process the queue rules looking for inputs to our DL/TP handler modules
   const QueueDescriptor* dlhReqInputQDesc = nullptr;
@@ -129,8 +128,8 @@ FakeDataApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHel
     auto reqQueueObj = obj_fac.create_queue_sid_obj(dlhReqInputQDesc, id);
 
     // Add the requessts queue dal pointer to the outputs of the FragmentAggregatorModule
-    faOutputQueues.push_back(obj_fac.get_dal<confmodel::Connection>(
-                               dlhReqInputQDesc->get_uid_base() + std::to_string(id)));
+    faOutputQueues.push_back(
+      obj_fac.get_dal<confmodel::Connection>(dlhReqInputQDesc->get_uid_base() + std::to_string(id)));
 
     dlhObj.set_objs("inputs", { &reqQueueObj });
 
@@ -163,5 +162,5 @@ FakeDataApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHel
   obj_fac.update_modules(modules);
 }
 
-} // namespace appmodel  
+} // namespace appmodel
 } // namespace dunedaq

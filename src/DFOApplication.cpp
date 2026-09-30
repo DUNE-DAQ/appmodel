@@ -8,10 +8,9 @@
  * received with this code.
  */
 
-
+#include "appmodel/DFOApplication.hpp"
 #include "ConfigObjectFactory.hpp"
 #include "appmodel/ConfigurationHelper.hpp"
-#include "appmodel/DFOApplication.hpp"
 #include "appmodel/DFOConf.hpp"
 #include "appmodel/DFOModule.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
@@ -38,7 +37,6 @@ DFOApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
   std::vector<const confmodel::DaqModule*> modules;
 
   ConfigObjectFactory obj_fac(this);
-
 
   std::string dfoUid("DFO-" + UID());
   TLOG_DEBUG(7) << "creating OKS configuration object for DFOModule class ";
@@ -91,8 +89,7 @@ DFOApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
 
   // Process special Network rules!
   std::vector<conffwk::ConfigObject> tdOutObjs;
-  for (auto [uid, descriptor]:
-         helper->get_netdescriptors("TriggerDecision", "DFApplication")) {
+  for (auto [uid, descriptor] : helper->get_netdescriptors("TriggerDecision", "DFApplication")) {
     tdOutObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
   }
 
@@ -109,5 +106,5 @@ DFOApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
   obj_fac.update_modules(modules);
 }
 
-} // namespace appmodel  
+} // namespace appmodel
 } // namespace dunedaq

@@ -8,25 +8,24 @@
  * received with this code.
  */
 
-
-#include "appmodel/ConfigurationHelper.hpp"
-#include "ConfigObjectFactory.hpp"
 #include "appmodel/DTSHSIApplication.hpp"
+#include "ConfigObjectFactory.hpp"
+#include "appmodel/ConfigurationHelper.hpp"
+#include "appmodel/DataHandlerConf.hpp"
+#include "appmodel/DataHandlerModule.hpp"
+#include "appmodel/HSIReadout.hpp"
+#include "appmodel/HSIReadoutConf.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
 #include "appmodel/QueueDescriptor.hpp"
-#include "appmodel/DataHandlerModule.hpp"
-#include "appmodel/DataHandlerConf.hpp"
 #include "appmodel/SourceIDConf.hpp"
-#include "appmodel/HSIReadout.hpp"
-#include "appmodel/HSIReadoutConf.hpp"
 #include "appmodel/appmodelIssues.hpp"
+#include "conffwk/Configuration.hpp"
 #include "confmodel/Connection.hpp"
 #include "confmodel/NetworkConnection.hpp"
 #include "confmodel/Service.hpp"
 #include "logging/Logging.hpp"
-#include "conffwk/Configuration.hpp"
 
 #include <iostream>
 #include <string>
@@ -35,12 +34,11 @@
 namespace dunedaq {
 namespace appmodel {
 
-
 void
 DTSHSIApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> /*helper*/) const
 {
   ConfigObjectFactory obj_fac(this);
-  
+
   std::vector<const confmodel::DaqModule*> modules;
 
   auto dlhConf = get_link_handler();
@@ -97,7 +95,8 @@ DTSHSIApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelpe
   }
   auto id = idconf->get_sid();
 
-  auto det_id = 1; // TODO Eric Flumerfelt <eflumerf@fnal.gov>, 08-Feb-2024: This is a magic number corresponding to kDAQ
+  auto det_id =
+    1; // TODO Eric Flumerfelt <eflumerf@fnal.gov>, 08-Feb-2024: This is a magic number corresponding to kDAQ
   std::string uid("DLH-" + std::to_string(id));
   TLOG_DEBUG(7) << "creating OKS configuration object for Data Link Handler class " << dlhClass << ", id " << id;
   conffwk::ConfigObject dlhObj = obj_fac.create(dlhClass, uid);
@@ -115,7 +114,7 @@ DTSHSIApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelpe
   } else {
     dlhObj.set_objs("outputs", {});
   }
-  conffwk::ConfigObject queueObj = obj_fac.create_queue_sid_obj(dlhInputQDesc,id);
+  conffwk::ConfigObject queueObj = obj_fac.create_queue_sid_obj(dlhInputQDesc, id);
   conffwk::ConfigObject faNetObj = obj_fac.create_net_obj(dlhReqInputNetDesc, UID());
   dlhObj.set_objs("inputs", { &queueObj, &faNetObj });
 
@@ -123,7 +122,7 @@ DTSHSIApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelpe
 
   auto hsiServiceObj = hsiNetDesc->get_associated_service()->config_object();
   conffwk::ConfigObject hsiNetObj = obj_fac.create_net_obj(hsiNetDesc, "");
-  
+
   std::string genuid("HSI-" + std::to_string(id));
   conffwk::ConfigObject hsiObj = obj_fac.create("HSIReadout", genuid);
   hsiObj.set_obj("configuration", &rdrConf->config_object());
@@ -133,6 +132,6 @@ DTSHSIApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelpe
 
   obj_fac.update_modules(modules);
 }
- 
-} // namespace appmodel  
+
+} // namespace appmodel
 } // namespace dunedaq

@@ -8,7 +8,6 @@
  * received with this code.
  */
 
-
 #include "appmodel/ConfigurationHelper.hpp"
 #include "conffwk/Configuration.hpp"
 
@@ -17,18 +16,18 @@
 #include "confmodel/Service.hpp"
 
 #include "ConfigObjectFactory.hpp"
-#include "appmodel/DataSubscriberModule.hpp"
 #include "appmodel/DataReaderConf.hpp"
 #include "appmodel/DataRecorderConf.hpp"
+#include "appmodel/DataSubscriberModule.hpp"
 
-#include "appmodel/DataHandlerModule.hpp"
 #include "appmodel/DataHandlerConf.hpp"
+#include "appmodel/DataHandlerModule.hpp"
 
 #include "appmodel/NetworkConnectionRule.hpp"
 #include "appmodel/QueueConnectionRule.hpp"
 
-#include "appmodel/QueueDescriptor.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
+#include "appmodel/QueueDescriptor.hpp"
 
 #include "appmodel/SourceIDConf.hpp"
 
@@ -69,7 +68,6 @@ create_network_connection(std::string uid,
   return ntObj;
 }
 
-
 void
 TriggerApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> helper) const
 {
@@ -102,37 +100,30 @@ TriggerApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelp
 
     if (data_type == "DataRequest") {
       req_net_desc = rule->get_descriptor();
-    }
-    else if (data_type == "TASet" || data_type == "TCSet"){
+    } else if (data_type == "TASet" || data_type == "TCSet") {
       tset_out_net_desc = rule->get_descriptor();
-    }
-    else if (endpoint_class == "DataSubscriberModule") {
+    } else if (endpoint_class == "DataSubscriberModule") {
       if (!tin_net_desc) {
-        tin_net_desc =  rule->get_descriptor();
-      }
-      else if (rule->get_descriptor()->get_data_type() == tin_net_desc->get_data_type()) {
+        tin_net_desc = rule->get_descriptor();
+      } else if (rule->get_descriptor()->get_data_type() == tin_net_desc->get_data_type()) {
         // For now endpoint_class of DataSubscriberModule for both input and output
         // with the same data type is not possible.
-        throw (BadConf(ERS_HERE, "Have two network connections of the same data_type and the same endpoint_class"));
-      }
-      else if (tin_net_desc->get_data_type() == "TriggerActivity" &&
-          rule->get_descriptor()->get_data_type() == "TriggerCandidate") {
+        throw(BadConf(ERS_HERE, "Have two network connections of the same data_type and the same endpoint_class"));
+      } else if (tin_net_desc->get_data_type() == "TriggerActivity" &&
+                 rule->get_descriptor()->get_data_type() == "TriggerCandidate") {
         // For TA->TC
         tout_net_desc = rule->get_descriptor();
         handler_name = "tahandler";
-      }
-      else if (tin_net_desc->get_data_type() == "TriggerCandidate" &&
-          rule->get_descriptor()->get_data_type() == "TriggerActivity") {
+      } else if (tin_net_desc->get_data_type() == "TriggerCandidate" &&
+                 rule->get_descriptor()->get_data_type() == "TriggerActivity") {
         // For TA->TC if we saved TC network connection as input first...
         tout_net_desc = tin_net_desc;
         tin_net_desc = rule->get_descriptor();
         handler_name = "tahandler";
+      } else {
+        throw(BadConf(ERS_HERE, "Unexpected input & output network connection descriptors provided"));
       }
-      else {
-        throw (BadConf(ERS_HERE, "Unexpected input & output network connection descriptors provided"));
-      }
-    }
-    else if (data_type == "TriggerActivity" || data_type == "TriggerCandidate"){
+    } else if (data_type == "TriggerActivity" || data_type == "TriggerCandidate") {
       tout_net_desc = rule->get_descriptor();
       if (data_type == "TriggerActivity")
         handler_name = "tphandler";
@@ -143,21 +134,20 @@ TriggerApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelp
 
   // Process special Network rules!
   std::vector<conffwk::ConfigObject> fragOutObjs;
-  for (auto [uid, descriptor]:
-         helper->get_netdescriptors("Fragment", "DFApplication")) {
+  for (auto [uid, descriptor] : helper->get_netdescriptors("Fragment", "DFApplication")) {
     fragOutObjs.push_back(obj_fac.create_net_obj(descriptor, uid));
   }
-  if ( req_net_desc== nullptr) {
-      throw (BadConf(ERS_HERE, "No network descriptor given to receive request and send data was set"));
+  if (req_net_desc == nullptr) {
+    throw(BadConf(ERS_HERE, "No network descriptor given to receive request and send data was set"));
   }
-  if ( tin_net_desc== nullptr) {
-      throw (BadConf(ERS_HERE, "No network descriptor given to receive trigger objects"));
+  if (tin_net_desc == nullptr) {
+    throw(BadConf(ERS_HERE, "No network descriptor given to receive trigger objects"));
   }
-  if ( tout_net_desc== nullptr) {
-      throw (BadConf(ERS_HERE, "No network descriptor given to publish trigger objects"));
+  if (tout_net_desc == nullptr) {
+    throw(BadConf(ERS_HERE, "No network descriptor given to publish trigger objects"));
   }
   if (ti_inputq_desc == nullptr) {
-      throw (BadConf(ERS_HERE, "No data input queue descriptor given"));
+    throw(BadConf(ERS_HERE, "No data input queue descriptor given"));
   }
 
   auto input_queue_obj = obj_fac.create_queue_obj(ti_inputq_desc);
@@ -172,14 +162,13 @@ TriggerApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelp
     tset_out_net_obj = obj_fac.create_net_obj(tset_out_net_desc, UID());
   }
 
-
   // build up the full list of outputs
   std::vector<const conffwk::ConfigObject*> ti_output_objs;
   for (auto& fNet : fragOutObjs) {
     ti_output_objs.push_back(&fNet);
   }
   ti_output_objs.push_back(&tout_net_obj);
-  if (tset_out_net_desc!= nullptr) {
+  if (tset_out_net_desc != nullptr) {
     ti_output_objs.push_back(&tset_out_net_obj);
   }
 
@@ -196,33 +185,31 @@ TriggerApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelp
 
   auto ti_conf_obj = ti_conf->config_object();
   ti_obj.set_obj("module_configuration", &ti_conf_obj);
-  ti_obj.set_objs("inputs", {&input_queue_obj, &req_net_obj});
+  ti_obj.set_objs("inputs", { &input_queue_obj, &req_net_obj });
   ti_obj.set_objs("outputs", ti_output_objs);
   // Add to our list of modules to return
   modules.push_back(obj_fac.get_dal<DataHandlerModule>(ti_uid));
 
-
   // Now create the DataSubscriberModule object
   auto rdr_conf = get_data_subscriber();
   if (rdr_conf == nullptr) {
-    throw (BadConf(ERS_HERE, "No DataReaderModule configuration given"));
+    throw(BadConf(ERS_HERE, "No DataReaderModule configuration given"));
   }
 
   // Create a DataReaderModule
 
-  std::string reader_uid("data-reader-"+UID());
+  std::string reader_uid("data-reader-" + UID());
   std::string reader_class = rdr_conf->get_template_for();
-  TLOG_DEBUG(7) <<  "creating OKS configuration object for Data subscriber class " << reader_class;
+  TLOG_DEBUG(7) << "creating OKS configuration object for Data subscriber class " << reader_class;
   auto reader_obj = obj_fac.create(reader_class, reader_uid);
-  reader_obj.set_objs("inputs", {&tin_net_obj} );
-  reader_obj.set_objs("outputs", {&input_queue_obj} );
+  reader_obj.set_objs("inputs", { &tin_net_obj });
+  reader_obj.set_objs("outputs", { &input_queue_obj });
   reader_obj.set_obj("configuration", &rdr_conf->config_object());
 
   modules.push_back(obj_fac.get_dal<DataSubscriberModule>(reader_uid));
 
-
   obj_fac.update_modules(modules);
 }
- 
-} // namespace appmodel  
+
+} // namespace appmodel
 } // namespace dunedaq
