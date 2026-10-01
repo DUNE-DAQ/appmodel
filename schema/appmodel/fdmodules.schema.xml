@@ -121,6 +121,8 @@
   <attribute name="source_to_rx_queue_multiplexing" description="Indicates how many source streams are put onto one rx queue" type="s16" init-value="1" is-not-null="yes"/>
   <attribute name="processing_queue_batches" description="Bounded batches per RX queue and processing worker; power of two." type="u32" init-value="256" is-not-null="yes"/>
   <relationship name="processing_cores" description="Optional dedicated frame processing CPUs; empty keeps synchronous callbacks." class-type="ProcessingResource" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <attribute name="descriptor_queue_batches" type="u32" init-value="256" is-not-null="yes"/>
+  <relationship name="descriptor_cores" description="Dedicated descriptor CPUs, partitioned by channel before raw buffering." class-type="ProcessingResource" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="used_lcores" description="associates CPUs to the data reception workload." class-type="ProcessingResource" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
