@@ -84,10 +84,9 @@ TRMonReqApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHel
 
   // Create network connections for all DFApplications in session
   std::vector<conffwk::ConfigObject> trmonreqNetObjs;
-  for (auto [uid, descriptor]:
-         helper->get_netdescriptors("TRMonRequest", "DFApplication")) {
+  for (auto [uid, descriptor] : helper->get_netdescriptors("TRMonRequest", "DFApplication")) {
     trmonreqNetObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
-  }    
+  }
 
   // Get pointers to objects here, after vector has been filled so they don't move on us
   for (auto& obj : trmonreqNetObjs) {

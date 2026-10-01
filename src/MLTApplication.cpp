@@ -8,7 +8,6 @@
  * received with this code.
  */
 
-
 #include "ConfigObjectFactory.hpp"
 
 #include "appmodel/ConfigurationHelper.hpp"
@@ -17,13 +16,13 @@
 #include "confmodel/Connection.hpp"
 #include "confmodel/NetworkConnection.hpp"
 
+#include "appmodel/CIBApplication.hpp"
+#include "appmodel/CTBApplication.hpp"
 #include "appmodel/DataHandlerConf.hpp"
 #include "appmodel/DataHandlerModule.hpp"
 #include "appmodel/DataReaderConf.hpp"
 #include "appmodel/DataRecorderConf.hpp"
 #include "appmodel/DataSubscriberModule.hpp"
-#include "appmodel/CTBApplication.hpp"
-#include "appmodel/CIBApplication.hpp"
 #include "appmodel/FakeDataApplication.hpp"
 #include "appmodel/FakeDataProdConf.hpp"
 #include "appmodel/MLTApplication.hpp"
@@ -48,7 +47,6 @@
 
 namespace dunedaq {
 namespace appmodel {
-
 
 void
 MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> helper) const
@@ -134,20 +132,16 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
   }
   // Network connection for input TriggerInhibit, input TCs
 
-  conffwk::ConfigObject ti_net_obj =
-    obj_fac.create_net_obj(ti_net_desc, "");
+  conffwk::ConfigObject ti_net_obj = obj_fac.create_net_obj(ti_net_desc, "");
 
-  conffwk::ConfigObject tc_net_obj =
-    obj_fac.create_net_obj(tc_net_desc, ".*");
+  conffwk::ConfigObject tc_net_obj = obj_fac.create_net_obj(tc_net_desc, ".*");
 
   // Network conection for the input Data Requests
-  conffwk::ConfigObject dr_net_obj =
-    obj_fac.create_net_obj(req_net_desc, UID());
+  conffwk::ConfigObject dr_net_obj = obj_fac.create_net_obj(req_net_desc, UID());
 
   conffwk::ConfigObject timesync_net_obj;
   if (timesync_net_desc != nullptr) {
-    timesync_net_obj =
-      obj_fac.create_net_obj(timesync_net_desc, ".*");
+    timesync_net_obj = obj_fac.create_net_obj(timesync_net_desc, ".*");
   }
 
   /**************************************************************
@@ -158,8 +152,7 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
   std::vector<conffwk::ConfigObject> generated_tc_conns;
   generated_tc_conns.reserve(standalone_TC_maker_confs.size());
   for (auto gen_conf : standalone_TC_maker_confs) {
-    conffwk::ConfigObject gen_obj = obj_fac.create(gen_conf->get_template_for(),
-                                                   gen_conf->UID());
+    conffwk::ConfigObject gen_obj = obj_fac.create(gen_conf->get_template_for(), gen_conf->UID());
     gen_obj.set_obj("configuration", &(gen_conf->config_object()));
     if (gen_conf->get_timestamp_method() == "kTimeSync" && !timesync_net_obj.is_null()) {
       gen_obj.set_objs("inputs", { &timesync_net_obj });
@@ -195,40 +188,36 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
    **************************************************************/
 
   std::vector<const conffwk::ConfigObject*> sourceIds;
-  for (auto [uid, source_ids]: helper->get_stream_source_ids()) {
-    for (auto src_id: source_ids) {
+  for (auto [uid, source_ids] : helper->get_stream_source_ids()) {
+    for (auto src_id : source_ids) {
       // Create SourceIDConf object for the MLT
-      std::string sourceIdConfUID = "dro-mlt-stream-config-" +
-        std::to_string(src_id);
-      conffwk::ConfigObject* sourceIdConf = new conffwk::ConfigObject(
-        obj_fac.create("SourceIDConf", sourceIdConfUID));
+      std::string sourceIdConfUID = "dro-mlt-stream-config-" + std::to_string(src_id);
+      conffwk::ConfigObject* sourceIdConf = new conffwk::ConfigObject(obj_fac.create("SourceIDConf", sourceIdConfUID));
       sourceIdConf->set_by_val<uint32_t>("sid", src_id);
       // https://github.com/DUNE-DAQ/daqdataformats/blob/5b99506675a586c8a09123900e224f2371d96df9/include/daqdataformats/detail/SourceID.hxx#L108
       sourceIdConf->set_by_val<std::string>("subsystem", "Detector_Readout");
       sourceIds.push_back(sourceIdConf);
     }
   }
-  for (auto [uid, source_ids]: helper->get_tp_source_ids()) {
-    for (auto src_id: source_ids) {
+  for (auto [uid, source_ids] : helper->get_tp_source_ids()) {
+    for (auto src_id : source_ids) {
       sourceIds.push_back(&(src_id->config_object()));
     }
   }
 
   // set the CTB sources
-  for (const auto & [uid, sources]: helper->get_all_app_source_ids("CTBApplication")) {
-    for (const auto & [source_name, source_conf] : sources ) {
+  for (const auto& [uid, sources] : helper->get_all_app_source_ids("CTBApplication")) {
+    for (const auto& [source_name, source_conf] : sources) {
       auto final_name = uid;
-      final_name += source_name.find("LLT")!=std::string::npos ? "_LLT" : "_HLT";
-      auto tcSourceIdConf = new conffwk::ConfigObject(
-						      obj_fac.create("SourceIDConf", final_name));
+      final_name += source_name.find("LLT") != std::string::npos ? "_LLT" : "_HLT";
+      auto tcSourceIdConf = new conffwk::ConfigObject(obj_fac.create("SourceIDConf", final_name));
       tcSourceIdConf->set_by_val<uint32_t>("sid", source_conf->get_sid());
       tcSourceIdConf->set_by_val<std::string>("subsystem", source_conf->get_subsystem());
       sourceIds.push_back(tcSourceIdConf);
     }
   }
 
-  for (auto app_class: {"TriggerApplication", "FakeHSIApplication",
-			"DTSHSIApplication", "CIBApplication"}) {
+  for (auto app_class: {"TriggerApplication", "FakeHSIApplication",	"DTSHSIApplication", "CIBApplication"}) {
     for (auto [uid, src_id]: helper->get_app_source_ids(app_class)) {
       auto tcSourceIdConf = new conffwk::ConfigObject(
         obj_fac.create("SourceIDConf",
@@ -237,6 +226,8 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
       tcSourceIdConf->set_by_val<uint32_t>("sid", src_id->get_sid());
       tcSourceIdConf->set_by_val<std::string>("subsystem", src_id->get_subsystem());
       sourceIds.push_back(tcSourceIdConf);
+    }
+  }
 
     }
   }
@@ -284,8 +275,7 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
   // }     // loop over Session specific Apps
 
   std::vector<conffwk::ConfigObject> fragOutObjs;
-  for (auto [uid, descriptor]:
-         helper->get_netdescriptors("Fragment", "DFApplication")) {
+  for (auto [uid, descriptor] : helper->get_netdescriptors("Fragment", "DFApplication")) {
     fragOutObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
   }
 

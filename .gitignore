@@ -1,2 +1,5 @@
 .oks-lock*.txt
 .DS_Store
+
+# Clang-format
+.clang-format*
