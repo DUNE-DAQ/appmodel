@@ -217,114 +217,110 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
     }
   }
 
-  for (auto app_class: {"TriggerApplication", "FakeHSIApplication",	"DTSHSIApplication", "CIBApplication"}) {
-    for (auto [uid, src_id]: helper->get_app_source_ids(app_class)) {
-      auto tcSourceIdConf = new conffwk::ConfigObject(
-        obj_fac.create("SourceIDConf",
-                       uid + "-" + std::to_string(src_id->get_sid())
-          ));
+  for (auto app_class : { "TriggerApplication", "FakeHSIApplication", "DTSHSIApplication", "CIBApplication" }) {
+    for (auto [uid, src_id] : helper->get_app_source_ids(app_class)) {
+      auto tcSourceIdConf =
+        new conffwk::ConfigObject(obj_fac.create("SourceIDConf", uid + "-" + std::to_string(src_id->get_sid())));
       tcSourceIdConf->set_by_val<uint32_t>("sid", src_id->get_sid());
       tcSourceIdConf->set_by_val<std::string>("subsystem", src_id->get_subsystem());
       sourceIds.push_back(tcSourceIdConf);
     }
   }
+}
+}
 
-    }
+// Get mandatory links
+std::vector<const conffwk::ConfigObject*> mandatory_sids;
+const TCDataProcessor* tc_dp = tch_conf->get_data_processor()->cast<TCDataProcessor>();
+if (tc_dp != nullptr) {
+  for (auto m : tc_dp->get_mandatory_links()) {
+    mandatory_sids.push_back(&m->config_object());
   }
+}
 
-  // Get mandatory links
-  std::vector<const conffwk::ConfigObject*> mandatory_sids;
-  const TCDataProcessor* tc_dp = tch_conf->get_data_processor()->cast<TCDataProcessor>();
-  if (tc_dp != nullptr) {
-    for (auto m : tc_dp->get_mandatory_links()) {
-      mandatory_sids.push_back(&m->config_object());
-    }
-  }
+/**************************************************************
+ * Create the TC handler
+ **************************************************************/
 
-  /**************************************************************
-   * Create the TC handler
-   **************************************************************/
+// Process special Network rules!
+// Looking for Fragment rules from DFAppplications in current Session
 
-  // Process special Network rules!
-  // Looking for Fragment rules from DFAppplications in current Session
+// auto sessionApps = session->get_included_applications();
+// std::vector<conffwk::ConfigObject> fragOutObjs;
+// for (auto app : sessionApps) {
+//   auto dfapp = app->cast<appmodel::DFApplication>();
+//   if (dfapp == nullptr)
+//     continue;
 
-  // auto sessionApps = session->get_included_applications();
-  // std::vector<conffwk::ConfigObject> fragOutObjs;
-  // for (auto app : sessionApps) {
-  //   auto dfapp = app->cast<appmodel::DFApplication>();
-  //   if (dfapp == nullptr)
-  //     continue;
+//   auto dfNRules = dfapp->get_network_rules();
+//   for (auto rule : dfNRules) {
+//     auto descriptor = rule->get_descriptor();
+//     auto data_type = descriptor->get_data_type();
+//     if (data_type == "Fragment") {
+//       std::string dreqNetUid(descriptor->get_uid_base() + dfapp->UID());
+//       conffwk::ConfigObject frag_conn;
+//       confdb->create(dbfile, "NetworkConnection", dreqNetUid, frag_conn);
 
-  //   auto dfNRules = dfapp->get_network_rules();
-  //   for (auto rule : dfNRules) {
-  //     auto descriptor = rule->get_descriptor();
-  //     auto data_type = descriptor->get_data_type();
-  //     if (data_type == "Fragment") {
-  //       std::string dreqNetUid(descriptor->get_uid_base() + dfapp->UID());
-  //       conffwk::ConfigObject frag_conn;
-  //       confdb->create(dbfile, "NetworkConnection", dreqNetUid, frag_conn);
+//       frag_conn.set_by_val<std::string>("data_type", descriptor->get_data_type());
+//       frag_conn.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
 
-  //       frag_conn.set_by_val<std::string>("data_type", descriptor->get_data_type());
-  //       frag_conn.set_by_val<std::string>("connection_type", descriptor->get_connection_type());
+//       auto serviceObj = descriptor->get_associated_service()->config_object();
+//       frag_conn.set_obj("associated_service", &serviceObj);
+//       fragOutObjs.push_back(frag_conn);
+//     } // If network rule has TriggerDecision type of data
+//   }   // Loop over Apps network rules
+// }     // loop over Session specific Apps
 
-  //       auto serviceObj = descriptor->get_associated_service()->config_object();
-  //       frag_conn.set_obj("associated_service", &serviceObj);
-  //       fragOutObjs.push_back(frag_conn);
-  //     } // If network rule has TriggerDecision type of data
-  //   }   // Loop over Apps network rules
-  // }     // loop over Session specific Apps
+std::vector<conffwk::ConfigObject> fragOutObjs;
+for (auto [uid, descriptor] : helper->get_netdescriptors("Fragment", "DFApplication")) {
+  fragOutObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
+}
 
-  std::vector<conffwk::ConfigObject> fragOutObjs;
-  for (auto [uid, descriptor] : helper->get_netdescriptors("Fragment", "DFApplication")) {
-    fragOutObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
-  }
+// build up the full list of outputs
+std::vector<const conffwk::ConfigObject*> ti_output_objs;
+for (auto& fNet : fragOutObjs) {
+  ti_output_objs.push_back(&fNet);
+}
+ti_output_objs.push_back(&output_queue_obj);
 
-  // build up the full list of outputs
-  std::vector<const conffwk::ConfigObject*> ti_output_objs;
-  for (auto& fNet : fragOutObjs) {
-    ti_output_objs.push_back(&fNet);
-  }
-  ti_output_objs.push_back(&output_queue_obj);
+auto tch_conf_obj = tch_conf->config_object();
+if (get_source_id() == nullptr) {
+  throw(BadConf(ERS_HERE, "No source_id associated with this TriggerApplication!"));
+}
+uint32_t source_id = get_source_id()->get_sid();
+std::string ti_uid(handler_name + "-" + std::to_string(source_id));
+conffwk::ConfigObject ti_obj = obj_fac.create(tch_class, ti_uid);
+ti_obj.set_by_val<uint32_t>("source_id", source_id);
+ti_obj.set_by_val<uint32_t>("detector_id", 1); // 1 == kDAQ
+ti_obj.set_obj("module_configuration", &tch_conf_obj);
+ti_obj.set_objs("enabled_source_ids", sourceIds);
+ti_obj.set_objs("mandatory_source_ids", mandatory_sids);
+ti_obj.set_objs("inputs", { &input_queue_obj, &dr_net_obj });
+ti_obj.set_objs("outputs", ti_output_objs);
 
-  auto tch_conf_obj = tch_conf->config_object();
-  if (get_source_id() == nullptr) {
-    throw(BadConf(ERS_HERE, "No source_id associated with this TriggerApplication!"));
-  }
-  uint32_t source_id = get_source_id()->get_sid();
-  std::string ti_uid(handler_name + "-" + std::to_string(source_id));
-  conffwk::ConfigObject ti_obj = obj_fac.create(tch_class, ti_uid);
-  ti_obj.set_by_val<uint32_t>("source_id", source_id);
-  ti_obj.set_by_val<uint32_t>("detector_id", 1); // 1 == kDAQ
-  ti_obj.set_obj("module_configuration", &tch_conf_obj);
-  ti_obj.set_objs("enabled_source_ids", sourceIds);
-  ti_obj.set_objs("mandatory_source_ids", mandatory_sids);
-  ti_obj.set_objs("inputs", { &input_queue_obj, &dr_net_obj });
-  ti_obj.set_objs("outputs", ti_output_objs);
+// Add to our list of modules to return
+modules.push_back(obj_fac.get_dal<DataHandlerModule>(ti_uid));
 
-  // Add to our list of modules to return
-  modules.push_back(obj_fac.get_dal<DataHandlerModule>(ti_uid));
+/**************************************************************
+ * Instantiate the MLTModule module
+ **************************************************************/
 
-  /**************************************************************
-   * Instantiate the MLTModule module
-   **************************************************************/
+std::vector<conffwk::ConfigObject> tdOutObjs;
+for (auto [uid, descriptor] : helper->get_netdescriptors("TriggerDecision", "DFOApplication")) {
+  tdOutObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
+}
 
-  std::vector<conffwk::ConfigObject> tdOutObjs;
-  for (auto [uid, descriptor] : helper->get_netdescriptors("TriggerDecision", "DFOApplication")) {
-    tdOutObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
-  }
+std::vector<const conffwk::ConfigObject*> output_conns;
+for (auto& tdOut : tdOutObjs) {
+  output_conns.push_back(&tdOut);
+}
+conffwk::ConfigObject mlt_obj = obj_fac.create(mlt_conf->get_template_for(), mlt_conf->UID());
+mlt_obj.set_obj("configuration", &(mlt_conf->config_object()));
+mlt_obj.set_objs("inputs", { &output_queue_obj, &ti_net_obj });
+mlt_obj.set_objs("outputs", output_conns);
+modules.push_back(obj_fac.get_dal<MLTModule>(mlt_conf->UID()));
 
-  std::vector<const conffwk::ConfigObject*> output_conns;
-  for (auto& tdOut : tdOutObjs) {
-    output_conns.push_back(&tdOut);
-  }
-  conffwk::ConfigObject mlt_obj = obj_fac.create(mlt_conf->get_template_for(),
-                                                 mlt_conf->UID());
-  mlt_obj.set_obj("configuration", &(mlt_conf->config_object()));
-  mlt_obj.set_objs("inputs", { &output_queue_obj, &ti_net_obj });
-  mlt_obj.set_objs("outputs", output_conns);
-  modules.push_back(obj_fac.get_dal<MLTModule>(mlt_conf->UID()));
-
-  obj_fac.update_modules(modules);
+obj_fac.update_modules(modules);
 } // NOLINT(readability/fn_size)
 
 } // namespace appmodel
