@@ -14,6 +14,8 @@
 #include "confmodel/DetDataReceiver.hpp"
 #include "confmodel/DetDataSender.hpp"
 
+#include <vector>
+
 namespace dunedaq::appmodel {
 
 std::vector<const dunedaq::confmodel::DetDataSender*>
@@ -25,7 +27,7 @@ NetworkDetectorToDaqConnection::senders() const
     check_init();
   }
   for (auto sender : m_net_senders) {
-    senders.push_back(dynamic_cast<const dunedaq::confmodel::DetDataSender*>(sender));
+    senders.push_back(dynamic_cast<const dunedaq::confmodel::DetDataSender*>(sender)); // NOLINT
   }
   TLOG_DEBUG(6) << "Found " << senders.size() << " senders\n";
   return senders;

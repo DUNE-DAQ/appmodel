@@ -29,11 +29,11 @@
 #include "oks/kernel.hpp"
 
 #include <iostream>
+#include <memory>
 #include <string>
 #include <vector>
 
-namespace dunedaq {
-namespace appmodel {
+namespace dunedaq::appmodel {
 
 void
 FakeHSIApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> helper) const
@@ -84,7 +84,7 @@ FakeHSIApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelp
   }
 
   auto rdrConf = get_generator();
-  if (rdrConf == 0) {
+  if (rdrConf == nullptr) {
     throw(BadConf(ERS_HERE, "No FakeHSIEventGeneratorModule configuration given"));
   }
   if (dlhInputQDesc == nullptr) {
@@ -103,27 +103,26 @@ FakeHSIApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelp
   }
   auto id = idconf->get_sid();
 
-  auto det_id =
-    1; // TODO Eric Flumerfelt <eflumerf@fnal.gov>, 08-Feb-2024: This is a magic number corresponding to kDAQ
+  auto det_id = 1; // This is a magic number corresponding to kDAQ
   std::string uid("DLH-" + std::to_string(id));
   TLOG_DEBUG(7) << "creating OKS configuration object for Data Link Handler class " << dlhClass << ", id " << id;
   conffwk::ConfigObject dlhObj = obj_fac.create(dlhClass, uid);
-  dlhObj.set_by_val<uint32_t>("source_id", id);
-  dlhObj.set_by_val<uint32_t>("detector_id", det_id);
+  dlhObj.set_by_val<uint32_t>("source_id", id);       // NOLINT(build/unsigned)
+  dlhObj.set_by_val<uint32_t>("detector_id", det_id); // NOLINT(build/unsigned)
   dlhObj.set_by_val<bool>("post_processing_enabled", false);
   dlhObj.set_obj("module_configuration", &dlhConf->config_object());
 
   // Process special Network rules!
   // Looking for Fragment rules from DFAppplications in current Session
   std::vector<conffwk::ConfigObject> fragOutObjs;
-  for (auto [uid, descriptor] : helper->get_netdescriptors("Fragment", "DFApplication")) {
+  for (auto const& [uid, descriptor] : helper->get_netdescriptors("Fragment", "DFApplication")) {
     fragOutObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
   }
 
   // start building the list of outputs
   std::vector<const conffwk::ConfigObject*> fh_output_objs;
   for (auto& fNet : fragOutObjs) {
-    fh_output_objs.push_back(&fNet);
+    fh_output_objs.push_back(&fNet); // NOLINT(performance-inefficient-vector-operation)
   }
 
   // Time Sync network connection
@@ -155,7 +154,6 @@ FakeHSIApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelp
   modules.push_back(obj_fac.get_dal<FakeHSIEventGeneratorModule>(genuid));
 
   obj_fac.update_modules(modules);
-}
+} // NOLINT(readability/fn_size)
 
-} // namespace appmodel
-} // namespace dunedaq
+} // namespace dunedaq::appmodel

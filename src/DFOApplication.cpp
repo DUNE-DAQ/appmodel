@@ -25,11 +25,11 @@
 #include "logging/Logging.hpp"
 #include "oks/kernel.hpp"
 
+#include <memory>
 #include <string>
 #include <vector>
 
-namespace dunedaq {
-namespace appmodel {
+namespace dunedaq::appmodel {
 
 void
 DFOApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> helper) const
@@ -45,7 +45,7 @@ DFOApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
   auto dfoConf = get_dfo();
   dfoObj.set_obj("configuration", &dfoConf->config_object());
 
-  if (dfoConf == 0) {
+  if (dfoConf == nullptr) {
     throw(BadConf(ERS_HERE, "No DFOConf configuration given"));
   }
 
@@ -88,7 +88,7 @@ DFOApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
 
   // Process special Network rules!
   std::vector<conffwk::ConfigObject> tdOutObjs;
-  for (auto [uid, descriptor] : helper->get_netdescriptors("TriggerDecision", "DFApplication")) {
+  for (auto const& [uid, descriptor] : helper->get_netdescriptors("TriggerDecision", "DFApplication")) {
     tdOutObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
   }
   for (auto [uid, descriptor] : helper->get_netdescriptors("DataflowStatusRequest", "DFApplication")) {
@@ -108,5 +108,4 @@ DFOApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
   obj_fac.update_modules(modules);
 }
 
-} // namespace appmodel
-} // namespace dunedaq
+} // namespace dunedaq::appmodel
