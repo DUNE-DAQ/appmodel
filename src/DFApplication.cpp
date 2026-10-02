@@ -374,11 +374,12 @@ DFApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> h
   }
 
   std::vector<conffwk::ConfigObject> dfsOutputs;
-  for (auto [uid, descriptor] : helper->get_netdescriptors("DataflowStatus", "DFOApplication")) {
+  for (auto const& [uid, descriptor] : helper->get_netdescriptors("DataflowStatus", "DFOApplication")) {
     dfsOutputs.push_back(obj_fac.create_net_obj(descriptor, uid));
   }
 
   for (auto& dfsOut : dfsOutputs) {
+    // NOLINTNEXTLINE(performance-inefficient-vector-operation)
     dfsOutputObjs.push_back(&dfsOut);
   }
 

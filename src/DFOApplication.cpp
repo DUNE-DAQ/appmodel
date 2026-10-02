@@ -91,7 +91,7 @@ DFOApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
   for (auto const& [uid, descriptor] : helper->get_netdescriptors("TriggerDecision", "DFApplication")) {
     tdOutObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
   }
-  for (auto [uid, descriptor] : helper->get_netdescriptors("DataflowStatusRequest", "DFApplication")) {
+  for (auto const& [uid, descriptor] : helper->get_netdescriptors("DataflowStatusRequest", "DFApplication")) {
     tdOutObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
   }
 

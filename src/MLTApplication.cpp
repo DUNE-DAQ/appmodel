@@ -306,12 +306,13 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
    **************************************************************/
 
   std::vector<conffwk::ConfigObject> tdOutObjs;
-  for (auto [uid, descriptor] : helper->get_netdescriptors("TriggerDecision", "DFOApplication")) {
+  for (auto const& [uid, descriptor] : helper->get_netdescriptors("TriggerDecision", "DFOApplication")) {
     tdOutObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
   }
 
   std::vector<const conffwk::ConfigObject*> output_conns;
   for (auto& tdOut : tdOutObjs) {
+    // NOLINTNEXTLINE(performance-inefficient-vector-operation)
     output_conns.push_back(&tdOut);
   }
   conffwk::ConfigObject mlt_obj = obj_fac.create(mlt_conf->get_template_for(), mlt_conf->UID());
