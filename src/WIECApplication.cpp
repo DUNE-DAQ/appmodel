@@ -31,11 +31,12 @@
 
 #include <fmt/core.h>
 #include <iostream>
+#include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
-namespace dunedaq {
-namespace appmodel {
+namespace dunedaq::appmodel {
 
 //-----------------------------------------------------------------------------
 
@@ -124,19 +125,19 @@ WIECApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper>
       // Create WIBModule
       if (this->get_wib_module_conf()) {
 
-        bool enable_fembs[4] = { false, false, false, false };
+        std::array<bool, 4> enable_fembs = { false, false, false, false };
 
         for (const auto* sender : senders) {
           for (const auto* det_stream : sender->get_streams()) {
             // Loop over streams for this sender
             // Retrieve stream_id and calculate the femb_id
-            uint32_t stream_id = det_stream->get_geo_id()->get_stream_id();
-            uint32_t femb_id = (stream_id & 0xf) / 2 + 2 * ((stream_id >> 6) & 0xf);
+            uint32_t stream_id = det_stream->get_geo_id()->get_stream_id();          // NOLINT(build/unsigned)
+            uint32_t femb_id = (stream_id & 0xf) / 2 + 2 * ((stream_id >> 6) & 0xf); // NOLINT(build/unsigned)
 
             // std::cout << std::format("stream {} -> femb {}", stream_id, femb_id) << std::endl;
 
             // Enable the femb if any of the associated streams is enabled
-            enable_fembs[femb_id] |= helper->is_included(det_stream);
+            enable_fembs.at(femb_id) |= helper->is_included(det_stream);
           } // loop over streams
         } // loop over senders for this control host
 
@@ -148,7 +149,7 @@ WIECApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper>
                                                     ctrlhost,
                                                     this->get_wib_module_conf()->get_communication_port()));
         for (int i = 0; i < 4; ++i) {
-          wib_obj.set_by_val<bool>(fmt::format("enabled_femb{}", i), enable_fembs[i]);
+          wib_obj.set_by_val<bool>(fmt::format("enabled_femb{}", i), enable_fembs.at(i));
         }
         wib_obj.set_obj("conf", &this->get_wib_module_conf()->get_settings()->config_object());
         modules.push_back(config->get<appmodel::WIBModule>(wib_obj));
@@ -164,6 +165,7 @@ WIECApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper>
                                                        this->get_hermes_module_conf()->get_ipbus_type(),
                                                        ctrlhost,
                                                        this->get_hermes_module_conf()->get_ipbus_port()));
+        // NOLINTNEXTLINE(build/unsigned)
         hermes_obj.set_by_val<uint32_t>("timeout_ms", this->get_hermes_module_conf()->get_ipbus_timeout_ms());
         hermes_obj.set_obj("destination", &nw_receiver->get_uses()->config_object());
 
@@ -183,7 +185,6 @@ WIECApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper>
   } // loop over detector to daq connections
 
   obj_fac.update_modules(modules);
-}
+} // NOLINT(readability/fn_size)
 
-} // namespace appmodel
-} // namespace dunedaq
+} // namespace dunedaq::appmodel

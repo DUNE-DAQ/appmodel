@@ -7,8 +7,14 @@
  * Licensing/copyright details are in the COPYING file that you should have
  * received with this code.
  */
-#ifndef APPMODEL_INCLUDE_CONFIGURATIONHELPER_HPP_
-#define APPMODEL_INCLUDE_CONFIGURATIONHELPER_HPP_
+#ifndef APPMODEL_INCLUDE_APPMODEL_CONFIGURATIONHELPER_HPP_
+#define APPMODEL_INCLUDE_APPMODEL_CONFIGURATIONHELPER_HPP_
+
+#include "appmodel/NetworkConnectionDescriptor.hpp"
+#include "appmodel/SourceIDConf.hpp"
+#include "conffwk/DalObject.hpp"
+#include "confmodel/Service.hpp"
+#include "confmodel/Session.hpp"
 
 #include <cstdint>
 #include <map>
@@ -16,17 +22,7 @@
 #include <utility>
 #include <vector>
 
-namespace dunedaq::confmodel {
-class Session;
-class Service;
-} // namespace dunedaq::confmodel
-namespace dunedaq::conffwk {
-class DalObject;
-} // namespace dunedaq::conffwk
-
 namespace dunedaq::appmodel {
-class NetworkConnectionDescriptor;
-class SourceIDConf;
 
 /// Helper class to extract information from Session object without
 /// exposing the Session to user code
@@ -68,7 +64,7 @@ public:
   ///
   /// @returns A map of application uids to vectors of streams that
   ///         they contain
-  std::map<std::string, std::vector<uint32_t>> get_stream_source_ids();
+  std::map<std::string, std::vector<uint32_t>> get_stream_source_ids(); // NOLINT(build/unsigned)
 
   /// @brief Get the source ids of all the TP streams in all
   /// ReadoutApplications and TriggerApplications
@@ -134,4 +130,4 @@ private:
 
 } // namespace dunedaq::appmodel
 
-#endif // APPMODEL_INCLUDE_CONFIGURATIONHELPER_HPP_
+#endif // APPMODEL_INCLUDE_APPMODEL_CONFIGURATIONHELPER_HPP_

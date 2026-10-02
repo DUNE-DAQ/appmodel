@@ -43,6 +43,7 @@
 #include <fmt/core.h>
 #include <iostream>
 #include <map>
+#include <memory>
 #include <set>
 #include <string>
 #include <vector>
@@ -278,7 +279,7 @@ DaphneV2BoardConf::get_afe(size_t ch) const
   throw appmodel::MissingAFE(ERS_HERE, UID(), ch);
 }
 
-uint16_t
+uint16_t // NOLINT(build/unsigned)
 DaphneV2ADC::get_reg4() const
 {
 
@@ -291,7 +292,7 @@ DaphneV2ADC::get_reg4() const
   return reg4.to_ulong();
 }
 
-uint16_t
+uint16_t // NOLINT(build/unsigned)
 DaphneV2PGA::get_reg51() const
 {
 
@@ -304,7 +305,7 @@ DaphneV2PGA::get_reg51() const
   return reg51.to_ulong();
 }
 
-uint16_t
+uint16_t // NOLINT(build/unsigned)
 DaphneV2LNA::get_reg52() const
 {
 

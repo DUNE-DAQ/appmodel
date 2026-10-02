@@ -25,11 +25,11 @@
 #include "logging/Logging.hpp"
 #include "oks/kernel.hpp"
 
+#include <memory>
 #include <string>
 #include <vector>
 
-namespace dunedaq {
-namespace appmodel {
+namespace dunedaq::appmodel {
 
 void
 DFOApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> helper) const
@@ -45,7 +45,7 @@ DFOApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
   auto dfoConf = get_dfo();
   dfoObj.set_obj("configuration", &dfoConf->config_object());
 
-  if (dfoConf == 0) {
+  if (dfoConf == nullptr) {
     throw(BadConf(ERS_HERE, "No DFOConf configuration given"));
   }
 
@@ -53,27 +53,26 @@ DFOApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
   std::vector<const conffwk::ConfigObject*> input_conns;
   conffwk::ConfigObject tdInObj;
   conffwk::ConfigObject busyOutObj;
-  conffwk::ConfigObject tokenInObj;
+  conffwk::ConfigObject statusInObj;
+  conffwk::ConfigObject statusReqOutObj;
 
   for (auto rule : get_network_rules()) {
     auto endpoint_class = rule->get_endpoint_class();
     auto descriptor = rule->get_descriptor();
 
-    auto connObj = obj_fac.create_net_obj(descriptor, "");
-
     if (descriptor->get_data_type() == "TriggerDecision") {
       if (endpoint_class == "DFOModule") {
-        tdInObj = connObj;
+        tdInObj = obj_fac.create_net_obj(descriptor, UID());
         input_conns.push_back(&tdInObj);
       }
-    } else if (descriptor->get_data_type() == "TriggerDecisionToken") {
-      tokenInObj = connObj;
-      input_conns.push_back(&tokenInObj);
-    }
-
-    else if (descriptor->get_data_type() == "TriggerInhibit") {
-      busyOutObj = connObj;
+    } else if (descriptor->get_data_type() == "TriggerInhibit") {
+      busyOutObj = obj_fac.create_net_obj(descriptor, "");
       output_conns.push_back(&busyOutObj);
+    } else if (descriptor->get_data_type() == "DataflowStatus") {
+      if (endpoint_class == "DFOModule") {
+        statusInObj = obj_fac.create_net_obj(descriptor, UID());
+        input_conns.push_back(&statusInObj);
+      }
     }
   }
 
@@ -83,13 +82,16 @@ DFOApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
   if (busyOutObj == nullptr) {
     throw(BadConf(ERS_HERE, "No TriggerInhibit output connection descriptor given"));
   }
-  if (tokenInObj == nullptr) {
-    throw(BadConf(ERS_HERE, "No TriggerDecisionToken input connection descriptor given"));
+  if (statusInObj == nullptr) {
+    throw(BadConf(ERS_HERE, "No DataflowStatus input connection descriptor given"));
   }
 
   // Process special Network rules!
   std::vector<conffwk::ConfigObject> tdOutObjs;
-  for (auto [uid, descriptor] : helper->get_netdescriptors("TriggerDecision", "DFApplication")) {
+  for (auto const& [uid, descriptor] : helper->get_netdescriptors("TriggerDecision", "DFApplication")) {
+    tdOutObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
+  }
+  for (auto const& [uid, descriptor] : helper->get_netdescriptors("DataflowStatusRequest", "DFApplication")) {
     tdOutObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
   }
 
@@ -106,5 +108,4 @@ DFOApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
   obj_fac.update_modules(modules);
 }
 
-} // namespace appmodel
-} // namespace dunedaq
+} // namespace dunedaq::appmodel

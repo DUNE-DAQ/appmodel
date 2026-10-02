@@ -14,6 +14,8 @@
 #include "confmodel/DetDataReceiver.hpp"
 #include "confmodel/DetDataSender.hpp"
 
+#include <vector>
+
 namespace dunedaq::appmodel {
 
 std::vector<const dunedaq::confmodel::DetDataSender*>
@@ -25,6 +27,7 @@ FelixDetectorToDaqConnection::senders() const
     check_init();
   }
   for (auto sender : m_felix_senders) {
+    // NOLINTNEXTLINE(performance-inefficient-vector-operation, runtime/rtti)
     senders.push_back(dynamic_cast<const dunedaq::confmodel::DetDataSender*>(sender));
   }
   return senders;

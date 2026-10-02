@@ -24,11 +24,11 @@
 #include "logging/Logging.hpp"
 #include "oks/kernel.hpp"
 
+#include <memory>
 #include <string>
 #include <vector>
 
-namespace dunedaq {
-namespace appmodel {
+namespace dunedaq::appmodel {
 
 void
 HSIEventToTCApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> /*helper*/) const
@@ -45,7 +45,7 @@ HSIEventToTCApplication::generate_modules(std::shared_ptr<appmodel::Configuratio
   auto hstcConf = get_hsevent_to_tc_conf();
   hstcObj.set_obj("configuration", &hstcConf->config_object());
 
-  if (hstcConf == 0) {
+  if (hstcConf == nullptr) {
     throw(BadConf(ERS_HERE, "No HSI2TCTranslatorConf configuration given"));
   }
 
@@ -79,5 +79,4 @@ HSIEventToTCApplication::generate_modules(std::shared_ptr<appmodel::Configuratio
   obj_fac.update_modules(modules);
 }
 
-} // namespace appmodel
-} // namespace dunedaq
+} // namespace dunedaq::appmodel
