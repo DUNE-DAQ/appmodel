@@ -24,11 +24,11 @@
 #include "logging/Logging.hpp"
 #include "oks/kernel.hpp"
 
+#include <memory>
 #include <string>
 #include <vector>
 
-namespace dunedaq {
-namespace appmodel {
+namespace dunedaq::appmodel {
 
 void
 SNBBookkeeperApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> /*helper*/) const
@@ -44,7 +44,7 @@ SNBBookkeeperApplication::generate_modules(std::shared_ptr<appmodel::Configurati
   auto snbBookkeeperConf = get_snbbk();
   snbBookkeeperObj.set_obj("configuration", &snbBookkeeperConf->config_object());
 
-  if (snbBookkeeperConf == 0) {
+  if (snbBookkeeperConf == nullptr) {
     throw(BadConf(ERS_HERE, "No SNBBookkeeperConf configuration given"));
   }
 
@@ -75,5 +75,4 @@ SNBBookkeeperApplication::generate_modules(std::shared_ptr<appmodel::Configurati
   obj_fac.update_modules(modules);
 }
 
-} // namespace appmodel
-} // namespace dunedaq
+} // namespace dunedaq::appmodel

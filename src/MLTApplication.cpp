@@ -42,11 +42,11 @@
 
 #include "logging/Logging.hpp"
 
+#include <memory>
 #include <string>
 #include <vector>
 
-namespace dunedaq {
-namespace appmodel {
+namespace dunedaq::appmodel {
 
 void
 MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> helper) const
@@ -99,7 +99,6 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
   const NetworkConnectionDescriptor* req_net_desc = nullptr;
   const NetworkConnectionDescriptor* tc_net_desc = nullptr;
   const NetworkConnectionDescriptor* ti_net_desc = nullptr;
-  const NetworkConnectionDescriptor* td_net_desc = nullptr;
   const NetworkConnectionDescriptor* timesync_net_desc = nullptr;
 
   for (auto rule : get_network_rules()) {
@@ -108,9 +107,6 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
     // Network connections for the MLT
     if (data_type == "TriggerInhibit") {
       ti_net_desc = rule->get_descriptor();
-    }
-    if (data_type == "TriggerDecision") {
-      td_net_desc = rule->get_descriptor();
     }
     if (data_type == "TriggerCandidate") {
       tc_net_desc = rule->get_descriptor();
@@ -125,9 +121,6 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
     TLOG_DEBUG(3) << "Endpoint class (currently not used in for networkconnections): data_type: " << data_type;
   }
 
-  if (!td_net_desc) {
-    throw(BadConf(ERS_HERE, "No MLT network connection for the output TriggerDecision given"));
-  }
   if (!ti_net_desc) {
     throw(BadConf(ERS_HERE, "No MLT network connection for the output TriggerInhibit given"));
   }
@@ -142,9 +135,6 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
   conffwk::ConfigObject ti_net_obj = obj_fac.create_net_obj(ti_net_desc, "");
 
   conffwk::ConfigObject tc_net_obj = obj_fac.create_net_obj(tc_net_desc, ".*");
-
-  // Network connection for output TriggerDecision
-  conffwk::ConfigObject td_net_obj = obj_fac.create_net_obj(td_net_desc, "");
 
   // Network conection for the input Data Requests
   conffwk::ConfigObject dr_net_obj = obj_fac.create_net_obj(req_net_desc, UID());
@@ -198,18 +188,18 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
    **************************************************************/
 
   std::vector<const conffwk::ConfigObject*> sourceIds;
-  for (auto [uid, source_ids] : helper->get_stream_source_ids()) {
+  for (auto const& [uid, source_ids] : helper->get_stream_source_ids()) {
     for (auto src_id : source_ids) {
       // Create SourceIDConf object for the MLT
       std::string sourceIdConfUID = "dro-mlt-stream-config-" + std::to_string(src_id);
-      conffwk::ConfigObject* sourceIdConf = new conffwk::ConfigObject(obj_fac.create("SourceIDConf", sourceIdConfUID));
-      sourceIdConf->set_by_val<uint32_t>("sid", src_id);
+      auto* sourceIdConf = new conffwk::ConfigObject(obj_fac.create("SourceIDConf", sourceIdConfUID));
+      sourceIdConf->set_by_val<uint32_t>("sid", src_id); // NOLINT(build/unsigned)
       // https://github.com/DUNE-DAQ/daqdataformats/blob/5b99506675a586c8a09123900e224f2371d96df9/include/daqdataformats/detail/SourceID.hxx#L108
       sourceIdConf->set_by_val<std::string>("subsystem", "Detector_Readout");
       sourceIds.push_back(sourceIdConf);
     }
   }
-  for (auto [uid, source_ids] : helper->get_tp_source_ids()) {
+  for (auto const& [uid, source_ids] : helper->get_tp_source_ids()) {
     for (auto src_id : source_ids) {
       sourceIds.push_back(&(src_id->config_object()));
     }
@@ -221,17 +211,17 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
       auto final_name = uid;
       final_name += source_name.find("LLT") != std::string::npos ? "_LLT" : "_HLT";
       auto tcSourceIdConf = new conffwk::ConfigObject(obj_fac.create("SourceIDConf", final_name));
-      tcSourceIdConf->set_by_val<uint32_t>("sid", source_conf->get_sid());
+      tcSourceIdConf->set_by_val<uint32_t>("sid", source_conf->get_sid()); // NOLINT(build/unsigned)
       tcSourceIdConf->set_by_val<std::string>("subsystem", source_conf->get_subsystem());
       sourceIds.push_back(tcSourceIdConf);
     }
   }
 
   for (auto app_class : { "TriggerApplication", "FakeHSIApplication", "DTSHSIApplication", "CIBApplication" }) {
-    for (auto [uid, src_id] : helper->get_app_source_ids(app_class)) {
+    for (auto const& [uid, src_id] : helper->get_app_source_ids(app_class)) {
       auto tcSourceIdConf =
         new conffwk::ConfigObject(obj_fac.create("SourceIDConf", uid + "-" + std::to_string(src_id->get_sid())));
-      tcSourceIdConf->set_by_val<uint32_t>("sid", src_id->get_sid());
+      tcSourceIdConf->set_by_val<uint32_t>("sid", src_id->get_sid()); // NOLINT(build/unsigned)
       tcSourceIdConf->set_by_val<std::string>("subsystem", src_id->get_subsystem());
       sourceIds.push_back(tcSourceIdConf);
     }
@@ -280,13 +270,15 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
   // }     // loop over Session specific Apps
 
   std::vector<conffwk::ConfigObject> fragOutObjs;
-  for (auto [uid, descriptor] : helper->get_netdescriptors("Fragment", "DFApplication")) {
+  for (auto const& [uid, descriptor] : helper->get_netdescriptors("Fragment", "DFApplication")) {
+    // NOLINTNEXTLINE(performance-inefficient-vector-operation)
     fragOutObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
   }
 
   // build up the full list of outputs
   std::vector<const conffwk::ConfigObject*> ti_output_objs;
   for (auto& fNet : fragOutObjs) {
+    // NOLINTNEXTLINE(performance-inefficient-vector-operation)
     ti_output_objs.push_back(&fNet);
   }
   ti_output_objs.push_back(&output_queue_obj);
@@ -295,11 +287,11 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
   if (get_source_id() == nullptr) {
     throw(BadConf(ERS_HERE, "No source_id associated with this TriggerApplication!"));
   }
-  uint32_t source_id = get_source_id()->get_sid();
+  uint32_t source_id = get_source_id()->get_sid(); // NOLINT(build/unsigned)
   std::string ti_uid(handler_name + "-" + std::to_string(source_id));
   conffwk::ConfigObject ti_obj = obj_fac.create(tch_class, ti_uid);
-  ti_obj.set_by_val<uint32_t>("source_id", source_id);
-  ti_obj.set_by_val<uint32_t>("detector_id", 1); // 1 == kDAQ
+  ti_obj.set_by_val<uint32_t>("source_id", source_id); // NOLINT(build/unsigned)
+  ti_obj.set_by_val<uint32_t>("detector_id", 1);       // 1 == kDAQ // NOLINT(build/unsigned)
   ti_obj.set_obj("module_configuration", &tch_conf_obj);
   ti_obj.set_objs("enabled_source_ids", sourceIds);
   ti_obj.set_objs("mandatory_source_ids", mandatory_sids);
@@ -313,14 +305,23 @@ MLTApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
    * Instantiate the MLTModule module
    **************************************************************/
 
+  std::vector<conffwk::ConfigObject> tdOutObjs;
+  for (auto const& [uid, descriptor] : helper->get_netdescriptors("TriggerDecision", "DFOApplication")) {
+    tdOutObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
+  }
+
+  std::vector<const conffwk::ConfigObject*> output_conns;
+  for (auto& tdOut : tdOutObjs) {
+    // NOLINTNEXTLINE(performance-inefficient-vector-operation)
+    output_conns.push_back(&tdOut);
+  }
   conffwk::ConfigObject mlt_obj = obj_fac.create(mlt_conf->get_template_for(), mlt_conf->UID());
   mlt_obj.set_obj("configuration", &(mlt_conf->config_object()));
   mlt_obj.set_objs("inputs", { &output_queue_obj, &ti_net_obj });
-  mlt_obj.set_objs("outputs", { &td_net_obj });
+  mlt_obj.set_objs("outputs", output_conns);
   modules.push_back(obj_fac.get_dal<MLTModule>(mlt_conf->UID()));
 
   obj_fac.update_modules(modules);
-}
+} // NOLINT(readability/fn_size)
 
-} // namespace appmodel
-} // namespace dunedaq
+} // namespace dunedaq::appmodel

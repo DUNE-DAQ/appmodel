@@ -15,7 +15,10 @@
 
 #include "appmodel/SmartDaqApplication.hpp"
 
+#include <memory>
 #include <sstream>
+#include <string>
+#include <vector>
 
 namespace py = pybind11;
 
@@ -37,14 +40,14 @@ smart_daq_application_generate_modules(const conffwk::Configuration& confdb,
                                        const std::string& app_id,
                                        const std::string& session_id)
 {
-  auto app = const_cast<conffwk::Configuration&>(confdb).get<appmodel::SmartDaqApplication>(app_id);
-  auto session = const_cast<conffwk::Configuration&>(confdb).get<confmodel::Session>(session_id);
+  auto app = const_cast<conffwk::Configuration&>(confdb).get<appmodel::SmartDaqApplication>(app_id); // NOLINT
+  auto session = const_cast<conffwk::Configuration&>(confdb).get<confmodel::Session>(session_id);    // NOLINT
 
   auto helper = std::make_shared<ConfigurationHelper>(session);
   app->generate_modules(helper);
   std::vector<ObjectLocator> mods;
   for (auto mod : app->get_modules()) {
-    mods.push_back({ mod->UID(), mod->class_name() });
+    mods.emplace_back(mod->UID(), mod->class_name());
   }
   return mods;
 }

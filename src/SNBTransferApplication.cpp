@@ -24,11 +24,11 @@
 #include "logging/Logging.hpp"
 #include "oks/kernel.hpp"
 
+#include <memory>
 #include <string>
 #include <vector>
 
-namespace dunedaq {
-namespace appmodel {
+namespace dunedaq::appmodel {
 
 void
 SNBTransferApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> /*helper*/) const
@@ -44,7 +44,7 @@ SNBTransferApplication::generate_modules(std::shared_ptr<appmodel::Configuration
   auto snbTransferConf = get_snbt();
   snbTransferObj.set_obj("configuration", &snbTransferConf->config_object());
 
-  if (snbTransferConf == 0) {
+  if (snbTransferConf == nullptr) {
     throw(BadConf(ERS_HERE, "No SNBTransferConf configuration given"));
   }
 
@@ -75,5 +75,4 @@ SNBTransferApplication::generate_modules(std::shared_ptr<appmodel::Configuration
   obj_fac.update_modules(modules);
 }
 
-} // namespace appmodel
-} // namespace dunedaq
+} // namespace dunedaq::appmodel

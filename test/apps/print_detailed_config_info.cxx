@@ -29,7 +29,10 @@
 
 #include "appmodel/appmodelIssues.hpp"
 
+#include <memory>
 #include <string>
+#include <vector>
+
 using namespace dunedaq;
 using namespace dunedaq::appmodel;
 
@@ -59,7 +62,7 @@ print_member_details_if_needed(conffwk::ConfigObject& parent_config_object,
     try {
       std::vector<conffwk::ConfigObject> member_object_list;
       parent_config_object.get(member_name, member_object_list);
-      for (uint32_t idx = 0; idx < member_object_list.size(); ++idx) {
+      for (uint32_t idx = 0; idx < member_object_list.size(); ++idx) { // NOLINT(build/unsigned)
         if (!member_object_list[idx].is_null()) {
           if (member_name != "inputs" && member_name != "outputs") {
             std::ostringstream oss_name;
@@ -82,8 +85,8 @@ print_object_details(conffwk::ConfigObject& config_object_to_print,
                      std::vector<std::string>& list_of_applications)
 {
   if (object_name != "") {
-    std::cout << spaces << "-----" << std::endl;
-    std::cout << spaces << "\"" << object_name << "\" ";
+    std::cout << spaces << "-----" << std::endl;         // NOLINT(runtime/output_format)
+    std::cout << spaces << "\"" << object_name << "\" "; // NOLINT(runtime/output_format)
   }
   config_object_to_print.print_ref(std::cout, *confdb, spaces);
   dunedaq::conffwk::class_t cd = confdb->get_class_info(config_object_to_print.class_name());
@@ -94,8 +97,8 @@ print_object_details(conffwk::ConfigObject& config_object_to_print,
       std::string application_name;
       config_object_to_print.get(attr_name, application_name);
       if (application_name == "daq_application") {
-        std::cout << "Application name = " << application_name << std::endl;
-        std::cout << "Application UID = " << config_object_to_print.UID() << std::endl;
+        std::cout << "Application name = " << application_name << std::endl;            // NOLINT(runtime/output_format)
+        std::cout << "Application UID = " << config_object_to_print.UID() << std::endl; // NOLINT(runtime/output_format)
         list_of_applications.push_back(config_object_to_print.UID());
       }
     }
@@ -110,27 +113,28 @@ int
 main(int argc, char* argv[])
 {
   if (argc < 3) {
-    std::cout << "Usage: " << argv[0] << " <session> <database-file>\n";
+    std::cout << "Usage: " << argv[0] << " <session> <database-file>\n"; // NOLINT
     return 0;
   }
 
-  std::string sessionName(argv[1]);
+  std::string sessionName(argv[1]); // NOLINT
+  assert(sessionName != "" && "Session name must be specified");
 
   logging::Logging::setup(sessionName, "print_detailed_config_info");
 
-  std::string dbfile(argv[2]);
-  conffwk::Configuration* confdb;
+  std::string dbfile(argv[2]); // NOLINT
+  conffwk::Configuration* confdb = nullptr;
   std::string blah = "oksconflibs:" + dbfile;
   try {
     confdb = new conffwk::Configuration(blah);
   } catch (conffwk::Generic& exc) {
-    std::cout << "Failed to load OKS database: " << exc << std::endl;
+    std::cout << "Failed to load OKS database: " << exc << std::endl; // NOLINT(runtime/output_format)
     return 0;
   }
 
   auto session = confdb->get<confmodel::Session>(sessionName);
   if (session == nullptr) {
-    std::cout << "Failed to get Session " << sessionName << " from database\n";
+    std::cout << "Failed to get Session " << sessionName << " from database\n"; // NOLINT(runtime/output_format)
     return 0;
   }
 
@@ -138,72 +142,74 @@ main(int argc, char* argv[])
   // session->print(0, true, std::cout);
   // std::cout << "=====" << std::endl;
 
-  std::cout << "++++++++++" << std::endl;
-  std::cout << "Full-system details without module generation" << std::endl;
-  std::cout << "++++++++++" << std::endl;
-  std::cout << std::endl;
+  std::cout << "++++++++++" << std::endl;                                    // NOLINT(runtime/output_format)
+  std::cout << "Full-system details without module generation" << std::endl; // NOLINT(runtime/output_format)
+  std::cout << "++++++++++" << std::endl;                                    // NOLINT(runtime/output_format)
+  std::cout << std::endl;                                                    // NOLINT(runtime/output_format)
 
   std::vector<std::string> list_of_application_names;
   conffwk::ConfigObject session_config_object = session->config_object();
   print_object_details(session_config_object, "", confdb, "  ", list_of_application_names);
 
-  std::cout << std::endl;
-  std::cout << "++++++++++" << std::endl;
+  std::cout << std::endl;                 // NOLINT(runtime/output_format)
+  std::cout << "++++++++++" << std::endl; // NOLINT(runtime/output_format)
+                                          // NOLINTNEXTLINE(runtime/output_format)
   std::cout << "Individual application details including module generation" << std::endl;
-  std::cout << "++++++++++" << std::endl;
+  std::cout << "++++++++++" << std::endl; // NOLINT(runtime/output_format)
 
   for (size_t idx = 0; idx < list_of_application_names.size(); ++idx) {
-    std::cout << std::endl;
+    std::cout << std::endl; // NOLINT(runtime/output_format)
 
     confdb = nullptr;
     try {
       confdb = new conffwk::Configuration(blah);
     } catch (conffwk::Generic& exc) {
-      std::cout << "Failed to load OKS database: " << exc << std::endl;
+      std::cout << "Failed to load OKS database: " << exc << std::endl; // NOLINT(runtime/output_format)
       return 0;
     }
     session = confdb->get<confmodel::Session>(sessionName);
     auto helper = std::make_shared<ConfigurationHelper>(session);
 
-    std::string appName = list_of_application_names[idx];
+    const std::string& appName = list_of_application_names[idx];
     auto daqapp = confdb->get<appmodel::SmartDaqApplication>(appName);
     if (daqapp) {
-      std::cout << appName << " is of class " << daqapp->class_name() << std::endl;
+      std::cout << appName << " is of class " << daqapp->class_name() << std::endl; // NOLINT(runtime/output_format)
 
       auto res = daqapp->cast<confmodel::ExcludableEntity>();
       if (res && res->is_excluded(*session)) {
-        std::cout << "Application " << appName << " is excluded" << std::endl;
+        std::cout << "Application " << appName << " is excluded" << std::endl; // NOLINT(runtime/output_format)
         continue;
       }
 
       try {
         daqapp->generate_modules(helper);
       } catch (appmodel::BadConf& exc) {
-        std::cout << "Caught BadConf exception: " << exc << std::endl;
+        std::cout << "Caught BadConf exception: " << exc << std::endl; // NOLINT(runtime/output_format)
         exit(-1);
       }
 
       auto modules = daqapp->get_modules();
       // std::cout << "Generated " << modules.size() << " modules" << std::endl;
       for (auto module : modules) {
-        std::cout << "module " << module->UID() << std::endl;
+        std::cout << "module " << module->UID() << std::endl; // NOLINT(runtime/output_format)
         conffwk::ConfigObject module_config_object = module->config_object();
         std::vector<std::string> dummy_list;
         print_object_details(module_config_object, "", confdb, "  ", dummy_list);
-        std::cout << " input objects " << std::endl;
+        std::cout << " input objects " << std::endl; // NOLINT(runtime/output_format)
         for (auto input : module->get_inputs()) {
           auto iObj = input->config_object();
-          iObj.print_ref(std::cout, *confdb, "    ");
+          iObj.print_ref(std::cout, *confdb, "    "); // NOLINT(runtime/output_format)
         }
-        std::cout << " output objects " << std::endl;
+        std::cout << " output objects " << std::endl; // NOLINT(runtime/output_format)
         for (auto output : module->get_outputs()) {
           auto oObj = output->config_object();
-          oObj.print_ref(std::cout, *confdb, "    ");
+          oObj.print_ref(std::cout, *confdb, "    "); // NOLINT(runtime/output_format)
         }
       }
     } else {
+      // NOLINTNEXTLINE(runtime/output_format)
       std::cout << "Failed to get SmartDaqApplication " << appName << " from database\n";
       return 0;
     }
   }
-}
+} // NOLINT(readability/fn_size)

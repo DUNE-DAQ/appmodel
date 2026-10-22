@@ -49,6 +49,8 @@
 #include <bitset>
 #include <fmt/core.h>
 #include <iostream>
+#include <list>
+#include <memory>
 #include <set>
 #include <string>
 #include <vector>
@@ -60,7 +62,7 @@ std::vector<const confmodel::ExcludableEntity*>
 CTBApplication::contained_excludable_entities() const
 {
   std::vector<const confmodel::ExcludableEntity*> resources;
-  resources.push_back(dynamic_cast<const confmodel::ExcludableEntity*>(get_board()));
+  resources.push_back(dynamic_cast<const confmodel::ExcludableEntity*>(get_board())); // NOLINT(runtime/rtti)
   return resources;
 }
 
@@ -122,14 +124,15 @@ CTBApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
   // Process special Network rules!
   // Looking for Fragment rules from DFAppplications in current Session
   std::vector<conffwk::ConfigObject> fragOutObjs;
-  for (auto [uid, descriptor] : helper->get_netdescriptors("Fragment", "DFApplication")) {
-    fragOutObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
+  for (auto const& [uid, descriptor] : helper->get_netdescriptors("Fragment", "DFApplication")) {
+    fragOutObjs.emplace_back(
+      obj_fac.create_net_obj(descriptor, uid)); // NOLINT(performance-inefficient-vector-operation)
   }
 
   // start building the list of outputs
   std::vector<const conffwk::ConfigObject*> fh_output_objs;
   for (auto& fNet : fragOutObjs) {
-    fh_output_objs.push_back(&fNet);
+    fh_output_objs.push_back(&fNet); // NOLINT(performance-inefficient-vector-operation)
   }
 
   std::vector<conffwk::ConfigObject> ctb_module_outputs;
@@ -144,14 +147,13 @@ CTBApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
     // ----------------------------
     // create DLH
     // ----------------------------
-    auto det_id =
-      1; // TODO Eric Flumerfelt <eflumerf@fnal.gov>, 08-Feb-2024: This is a magic number corresponding to kDAQ
+    auto det_id = 1; // This is a magic number corresponding to kDAQ
     TLOG() << "creating OKS configuration object for " + s.first + " Data Link Handler class " << dlhClass << ", id "
            << id;
     std::string uid("DLH-" + s.first);
     conffwk::ConfigObject dlhObj = obj_fac.create(dlhClass, uid);
-    dlhObj.set_by_val<uint32_t>("source_id", id);
-    dlhObj.set_by_val<uint32_t>("detector_id", det_id);
+    dlhObj.set_by_val<uint32_t>("source_id", id);       // NOLINT(build/unsigned)
+    dlhObj.set_by_val<uint32_t>("detector_id", det_id); // NOLINT(build/unsigned)
     dlhObj.set_by_val<bool>("post_processing_enabled", false);
     dlhObj.set_obj("module_configuration", &dlhConf->config_object());
 
@@ -193,7 +195,7 @@ CTBApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
 
   std::vector<const conffwk::ConfigObject*> ctb_module_output_ptrs;
   for (const auto& o : ctb_module_outputs) {
-    ctb_module_output_ptrs.push_back(&o);
+    ctb_module_output_ptrs.push_back(&o); // NOLINT(performance-inefficient-vector-operation)
   }
 
   module_obj.set_objs("outputs", ctb_module_output_ptrs);
@@ -203,7 +205,7 @@ CTBApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> 
   modules.push_back(module);
 
   obj_fac.update_modules(modules);
-}
+} // NOLINT(readability/fn_size)
 
 std::vector<const confmodel::ExcludableEntity*>
 CTBoardConf::contained_excludable_entities() const

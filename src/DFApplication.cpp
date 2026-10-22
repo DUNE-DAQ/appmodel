@@ -14,6 +14,8 @@
 #include "appmodel/DataStoreConf.hpp"
 #include "appmodel/DataWriterConf.hpp"
 #include "appmodel/DataWriterModule.hpp"
+#include "appmodel/DataflowStatusModule.hpp"
+#include "appmodel/DataflowStatusModuleConf.hpp"
 #include "appmodel/FilenameParams.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
@@ -31,17 +33,18 @@
 #include "oks/kernel.hpp"
 
 #include <fmt/core.h>
+#include <memory>
+#include <set>
 #include <string>
 #include <vector>
 
-namespace dunedaq {
-namespace appmodel {
+namespace dunedaq::appmodel {
 
 static inline void
 fill_sourceid_object(const ConfigObjectFactory& obj_fac,
                      const conffwk::ConfigObject* netConn,
                      const std::string& uid,
-                     const std::vector<uint32_t>& stream_source_ids,
+                     const std::vector<uint32_t>& stream_source_ids, // NOLINT(build/unsigned)
                      const std::vector<const SourceIDConf*>& tp_source_ids,
                      conffwk::ConfigObject& sidNetObj,
                      std::vector<std::shared_ptr<conffwk::ConfigObject>> sidObjs)
@@ -53,7 +56,7 @@ fill_sourceid_object(const ConfigObjectFactory& obj_fac,
   for (auto& source_id : stream_source_ids) {
     std::string streamSidUid(uid + "SourceIDConf" + std::to_string(source_id));
     auto stream_sid_obj = std::make_shared<conffwk::ConfigObject>(obj_fac.create("SourceIDConf", streamSidUid));
-    stream_sid_obj->set_by_val<uint32_t>("sid", source_id);
+    stream_sid_obj->set_by_val<uint32_t>("sid", source_id); // NOLINT(build/unsigned)
     stream_sid_obj->set_by_val<std::string>("subsystem", "Detector_Readout");
     sidObjs.push_back(stream_sid_obj);
     source_id_objs.push_back(sidObjs.back().get());
@@ -63,13 +66,6 @@ fill_sourceid_object(const ConfigObjectFactory& obj_fac,
     sidObjs.push_back(std::make_shared<conffwk::ConfigObject>(tp_sid->config_object()));
     source_id_objs.push_back(sidObjs.back().get());
   }
-  /*
-  std::string trgSidUid(roapp->UID() + "TRGSourceIDConf" + std::to_string(roapp->get_tp_source_id()));
-  auto trig_sid_obj = std::make_shared<conffwk::ConfigObject>(obj_fac.create("SourceIDConf", trgSidUid));
-  trig_sid_obj->set_by_val<uint32_t>("sid", roapp->get_tp_source_id());
-  trig_sid_obj->set_by_val<std::string>("subsystem", "Trigger");
-  source_id_objs.push_back(sidObjs.back().get());
-  */
 
   sidNetObj.set_objs("source_ids", source_id_objs);
 }
@@ -125,31 +121,60 @@ DFApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> h
   // Prepare TRB output objects
   std::vector<const conffwk::ConfigObject*> trbInputObjs;
   std::vector<const conffwk::ConfigObject*> trbOutputObjs;
+  std::vector<const conffwk::ConfigObject*> dfsInputObjs;
+  std::vector<const conffwk::ConfigObject*> dfsOutputObjs;
   std::vector<const conffwk::ConfigObject*> trbSidNetObjs;
 
   // -- First, we process expected Queue and Network connections and create their objects.
 
   // Process the queue rules looking for the TriggerRecord queue between TRB and DataWriterModule
   const QueueDescriptor* trQDesc = nullptr;
+  const QueueDescriptor* tdQDesc = nullptr;
+  const QueueDescriptor* trbcQDesc = nullptr;
+  const QueueDescriptor* tokenQDesc = nullptr;
   for (auto rule : get_queue_rules()) {
     auto destination_class = rule->get_destination_class();
+    if (destination_class == "TRBModule") {
+      tdQDesc = rule->get_descriptor();
+    }
     if (destination_class == "DataWriterModule") {
       trQDesc = rule->get_descriptor();
     }
+    if (destination_class == "DataflowStatusModule") {
+      auto descriptor = rule->get_descriptor();
+      if (descriptor->get_data_type() == "TriggerDecisionToken") {
+        tokenQDesc = descriptor;
+      } else if (descriptor->get_data_type() == "TRBCompletion") {
+        trbcQDesc = descriptor;
+      }
+    }
+  }
+  if (tdQDesc == nullptr) { // BadConf if no descriptor between DataflowStatus and TRB
+    throw(BadConf(ERS_HERE, "Could not find queue descriptor rule for TriggerDecisions!"));
   }
   if (trQDesc == nullptr) { // BadConf if no descriptor between TRB and DataWriterModule
     throw(BadConf(ERS_HERE, "Could not find queue descriptor rule for TriggerRecords!"));
   }
+  if (tokenQDesc == nullptr) { // BadConf if no descriptor between DataWriterModule and DataflowStatus
+    throw(BadConf(ERS_HERE, "Could not find queue descriptor rule for TriggerDecisionTokens!"));
+  }
+  if (trbcQDesc == nullptr) { // BadConf if no descriptor between TRB and DataflowStatus
+    throw(BadConf(ERS_HERE, "Could not find queue descriptor rule for TRBCompletions!"));
+  }
   // Create queue connection config object
   auto trQueueObj = obj_fac.create_queue_obj(trQDesc, UID());
+  auto tdQueueObj = obj_fac.create_queue_obj(tdQDesc, UID());
+  auto trbcQueueObj = obj_fac.create_queue_obj(trbcQDesc, UID());
+  auto tokenQueueObj = obj_fac.create_queue_obj(tokenQDesc, UID());
 
   // Place trigger record queue object into vector of output objs of TRB module
   trbOutputObjs.push_back(&trQueueObj);
+  trbOutputObjs.push_back(&trbcQueueObj);
 
   // Process the network rules looking for the Fragments and TriggerDecision inputs for TRB
   const NetworkConnectionDescriptor* fragNetDesc = nullptr;
   const NetworkConnectionDescriptor* trigdecNetDesc = nullptr;
-  const NetworkConnectionDescriptor* tokenNetDesc = nullptr;
+  const NetworkConnectionDescriptor* statusReqNetDesc = nullptr;
   const NetworkConnectionDescriptor* trmonReqNetDesc = nullptr;
   const NetworkConnectionDescriptor* trmonTRNetDesc = nullptr;
   for (auto rule : get_network_rules()) {
@@ -159,22 +184,22 @@ DFApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> h
       fragNetDesc = rule->get_descriptor();
     } else if (data_type == "TriggerDecision") {
       trigdecNetDesc = rule->get_descriptor();
-    } else if (data_type == "TriggerDecisionToken") {
-      tokenNetDesc = rule->get_descriptor();
     } else if (data_type == "TRMonRequest") {
       trmonReqNetDesc = rule->get_descriptor();
     } else if (data_type == "TriggerRecord") {
       trmonTRNetDesc = rule->get_descriptor();
+    } else if (data_type == "DataflowStatusRequest") {
+      statusReqNetDesc = rule->get_descriptor();
     }
   }
   if (fragNetDesc == nullptr) { // BadConf if no descriptor for Fragments into TRB
     throw(BadConf(ERS_HERE, "Could not find network descriptor rule for input Fragments!"));
   }
-  if (trigdecNetDesc == nullptr) { // BadCond if no descriptor for TriggerDecisions into TRB
+  if (trigdecNetDesc == nullptr) { // BadConf if no descriptor for TriggerDecisions into TRB
     throw(BadConf(ERS_HERE, "Could not find network descriptor rule for input TriggerDecisions!"));
   }
-  if (tokenNetDesc == nullptr) { // BadCond if no descriptor for Tokens out of DataWriterModule
-    throw(BadConf(ERS_HERE, "Could not find network descriptor rule for output TriggerDecisionTokens!"));
+  if (statusReqNetDesc == nullptr) { // BadConf if no descriptor for DataflowStatusRequest input
+    throw(BadConf(ERS_HERE, "Could not find network descriptor rule for input DataflowStatusRequests!"));
   }
   if (get_source_id() == nullptr) {
     throw(BadConf(ERS_HERE, "Could not retrieve SourceIDConf"));
@@ -182,7 +207,7 @@ DFApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> h
   // Create network connection config object
   auto fragNetObj = obj_fac.create_net_obj(fragNetDesc, UID());
   auto trigdecNetObj = obj_fac.create_net_obj(trigdecNetDesc, UID());
-  auto tokenNetObj = obj_fac.create_net_obj(tokenNetDesc, "");
+  auto statusReqNetObj = obj_fac.create_net_obj(statusReqNetDesc, UID());
   conffwk::ConfigObject trmonReqNetObj;
   conffwk::ConfigObject trmonTRNetObj;
   if (trmonReqNetDesc != nullptr) {
@@ -198,13 +223,13 @@ DFApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> h
   std::vector<conffwk::ConfigObject> sidNetObjs;
   std::vector<std::shared_ptr<conffwk::ConfigObject>> sidObjs;
   std::set<std::string> processed_apps;
-  for (auto uid : helper->get_app_uids("DFApplication")) {
+  for (auto const& uid : helper->get_app_uids("DFApplication")) {
     processed_apps.insert(uid);
   }
 
   auto stream_src_ids = helper->get_stream_source_ids();
   auto tp_src_ids = helper->get_tp_source_ids();
-  for (auto [uid, descriptor] : helper->get_netdescriptors("DataRequest", "ReadoutApplication")) {
+  for (auto const& [uid, descriptor] : helper->get_netdescriptors("DataRequest", "ReadoutApplication")) {
     dreqNetObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
 
     std::string sidToNetUid(descriptor->get_uid_base() + uid + "-sids");
@@ -215,12 +240,12 @@ DFApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> h
     processed_apps.insert(uid);
   }
 
-  for (auto [uid, descriptor] : helper->get_netdescriptors("DataRequest", "TPReplayApplication")) {
+  for (auto const& [uid, descriptor] : helper->get_netdescriptors("DataRequest", "TPReplayApplication")) {
     fill_replay_sourceid_object(obj_fac, uid, tp_src_ids.at(uid), &dreqNetObjs, &sidNetObjs, descriptor, sidObjs);
     processed_apps.insert(uid);
   }
 
-  for (auto [uid, descriptor] : helper->get_netdescriptors("DataRequest", "FakeDataApplication")) {
+  for (auto const& [uid, descriptor] : helper->get_netdescriptors("DataRequest", "FakeDataApplication")) {
     dreqNetObjs.emplace_back(obj_fac.create_net_obj(descriptor, uid));
 
     std::string sidToNetUid(descriptor->get_uid_base() + uid + "-sids");
@@ -238,14 +263,14 @@ DFApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> h
 
   // now we treat the CTB which has 2 connections related to source IDs
   const auto ctb_type = "CTBApplication";
-  for (auto [uid, descriptor] : helper->get_netdescriptors("DataRequest", ctb_type)) {
+  for (auto const& [uid, descriptor] : helper->get_netdescriptors("DataRequest", ctb_type)) {
 
     if (processed_apps.contains(uid)) {
       continue;
     }
 
-    for (const auto& [uid, rel_sources] : helper->get_all_app_source_ids(ctb_type)) {
-      for (auto [rel, id] : rel_sources) {
+    for (auto const& [uid, rel_sources] : helper->get_all_app_source_ids(ctb_type)) {
+      for (auto const& [rel, id] : rel_sources) {
         std::string local_uid = uid;
         local_uid += rel.find("LLT") != std::string::npos ? "_LLT" : "_HLT";
 
@@ -265,7 +290,7 @@ DFApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> h
 
   auto app_sources = helper->get_app_source_ids();
   // Now look at all Smart apps that are not Readout, FakeData or DF
-  for (auto [uid, descriptor] : helper->get_netdescriptors("DataRequest")) {
+  for (auto const& [uid, descriptor] : helper->get_netdescriptors("DataRequest")) {
 
     if (processed_apps.contains(uid)) {
       continue;
@@ -286,10 +311,10 @@ DFApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> h
 
   // Get pointers to objects here, after vector has been filled so they don't move on us
   for (auto& obj : dreqNetObjs) {
-    trbOutputObjs.push_back(&obj);
+    trbOutputObjs.push_back(&obj); // NOLINT(performance-inefficient-vector-operation)
   }
   for (auto& obj : sidNetObjs) {
-    trbSidNetObjs.push_back(&obj);
+    trbSidNetObjs.push_back(&obj); // NOLINT(performance-inefficient-vector-operation)
   }
 
   // -- Second, we create the Module objects and assign their configs, with the precreated
@@ -301,8 +326,8 @@ DFApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> h
     throw(BadConf(ERS_HERE, "No DataWriterModule or TRB configuration given"));
   }
   auto trbConfObj = trbConf->config_object();
-  trbConfObj.set_by_val<uint32_t>("source_id", get_source_id()->get_sid());
-  trbInputObjs = { &trigdecNetObj, &fragNetObj };
+  trbConfObj.set_by_val<uint32_t>("source_id", get_source_id()->get_sid()); // NOLINT(build/unsigned)
+  trbInputObjs = { &tdQueueObj, &fragNetObj };
   if (trmonReqNetDesc != nullptr) {
     trbInputObjs.push_back(&trmonReqNetObj);
   }
@@ -315,7 +340,6 @@ DFApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> h
   trbObj.set_obj("configuration", &trbConfObj);
   trbObj.set_objs("inputs", trbInputObjs);
   trbObj.set_objs("outputs", trbOutputObjs);
-  trbObj.set_obj("trigger_record_output", &trQueueObj);
   trbObj.set_objs("request_connections", trbSidNetObjs);
   // Push TRB Module Object from confdb
   modules.push_back(obj_fac.get_dal<TRBModule>(trbUid));
@@ -337,14 +361,41 @@ DFApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> h
     dwrObj.set_by_val("writer_identifier", fmt::format("{}_dw_{}", UID(), dw_idx));
     dwrObj.set_obj("configuration", &dwrConfObj);
     dwrObj.set_objs("inputs", { &trQueueObj });
-    dwrObj.set_objs("outputs", { &tokenNetObj });
+    dwrObj.set_objs("outputs", { &tokenQueueObj });
     // Push DataWriterModule Module Object from confdb
     modules.push_back(obj_fac.get_dal<DataWriterModule>(dwrUid));
     ++dw_idx;
   }
 
-  obj_fac.update_modules(modules);
-}
+  // Get DataflowStatusModule Config Object
+  auto dfsConf = get_dfs();
+  if (dfsConf == nullptr) {
+    throw(BadConf(ERS_HERE, "No DataflowStatusModule configuration given"));
+  }
 
-} // namespace appmodel
-} // namespace dunedaq
+  std::vector<conffwk::ConfigObject> dfsOutputs;
+  for (auto const& [uid, descriptor] : helper->get_netdescriptors("DataflowStatus", "DFOApplication")) {
+    dfsOutputs.push_back(obj_fac.create_net_obj(descriptor, uid));
+  }
+
+  for (auto& dfsOut : dfsOutputs) {
+    // NOLINTNEXTLINE(performance-inefficient-vector-operation)
+    dfsOutputObjs.push_back(&dfsOut);
+  }
+
+  auto dfsConfObj = dfsConf->config_object();
+  dfsInputObjs = { &trigdecNetObj, &statusReqNetObj, &trbcQueueObj, &tokenQueueObj };
+  dfsOutputObjs.push_back(&tdQueueObj);
+  // Prepare TRB Module Object and assign its Config Object.
+  std::string dfsUid(UID() + "-dfs");
+  conffwk::ConfigObject dfsObj = obj_fac.create("DataflowStatusModule", dfsUid);
+  dfsObj.set_obj("configuration", &dfsConfObj);
+  dfsObj.set_objs("inputs", dfsInputObjs);
+  dfsObj.set_objs("outputs", dfsOutputObjs);
+  // Push TRB Module Object from confdb
+  modules.push_back(obj_fac.get_dal<DataflowStatusModule>(dfsUid));
+
+  obj_fac.update_modules(modules);
+} // NOLINT(readability/fn_size)
+
+} // namespace dunedaq::appmodel

@@ -26,11 +26,12 @@
 
 #include <fmt/core.h>
 #include <iostream>
+#include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
-namespace dunedaq {
-namespace appmodel {
+namespace dunedaq::appmodel {
 
 std::vector<const confmodel::ExcludableEntity*>
 TDECrateApplication::contained_excludable_entities() const
@@ -96,5 +97,4 @@ TDECrateApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHel
   obj_fac.update_modules(modules);
 }
 
-} // namespace appmodel
-} // namespace dunedaq
+} // namespace dunedaq::appmodel

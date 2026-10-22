@@ -28,6 +28,11 @@
 #include "confmodel/Service.hpp"
 #include "confmodel/Session.hpp"
 
+#include <map>
+#include <string>
+#include <utility>
+#include <vector>
+
 using namespace dunedaq;
 using namespace dunedaq::appmodel;
 
@@ -45,7 +50,7 @@ ConfigurationHelper::get_netdescriptors(const std::string& data_type, const std:
       for (auto rule : smart_app->get_network_rules()) {
         auto desc = rule->get_descriptor();
         if (desc->get_data_type() == data_type) {
-          result.emplace_back(std::pair{ app->UID(), desc });
+          result.emplace_back(app->UID(), desc);
         }
       }
     }
@@ -73,14 +78,14 @@ ConfigurationHelper::get_services(std::string app_class, std::string data_type)
   return result;
 }
 
-std::map<std::string, std::vector<uint32_t>>
+std::map<std::string, std::vector<uint32_t>> // NOLINT(build/unsigned)
 ConfigurationHelper::get_stream_source_ids()
 {
-  std::map<std::string, std::vector<uint32_t>> result;
+  std::map<std::string, std::vector<uint32_t>> result; // NOLINT(build/unsigned)
   for (auto app : m_session->included_applications()) {
     auto ro_app = app->cast<appmodel::ReadoutApplication>();
     if (ro_app != nullptr) {
-      std::vector<uint32_t> streams;
+      std::vector<uint32_t> streams; // NOLINT(build/unsigned)
       for (auto res : ro_app->contained_excludable_entities()) {
         if (!res->is_excluded(*m_session)) {
           auto d2d = res->cast<confmodel::DetectorToDaqConnection>();
@@ -98,7 +103,7 @@ ConfigurationHelper::get_stream_source_ids()
     } else {
       auto fake_app = app->cast<appmodel::FakeDataApplication>();
       if (fake_app != nullptr) {
-        std::vector<uint32_t> streams;
+        std::vector<uint32_t> streams; // NOLINT(build/unsigned)
         for (auto res : fake_app->contained_excludable_entities()) {
           if (!res->is_excluded(*m_session)) {
             auto fdpc = res->cast<appmodel::FakeDataProdConf>();
@@ -170,7 +175,7 @@ ConfigurationHelper::get_all_app_source_ids(std::string app_class)
     if (app_class.empty() || app->castable(app_class)) {
       auto class_info = app->configuration().get_class_info(app->class_name());
       auto obj = app->config_object();
-      for (auto rel : class_info.p_relationships) {
+      for (auto const& rel : class_info.p_relationships) {
         if (rel.p_type == "SourceIDConf") {
           if (rel.p_cardinality == dunedaq::conffwk::cardinality_t::zero_or_one ||
               rel.p_cardinality == dunedaq::conffwk::cardinality_t::only_one) {

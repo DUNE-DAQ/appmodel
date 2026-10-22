@@ -35,12 +35,12 @@
 #include "logging/Logging.hpp"
 
 #include <iomanip>
+#include <memory>
 #include <set>
 #include <string>
 #include <vector>
 
-namespace dunedaq {
-namespace appmodel {
+namespace dunedaq::appmodel {
 
 void
 TPReplayApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> /*helper*/) const
@@ -68,7 +68,7 @@ TPReplayApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHel
   /**************************************************************
    * Get total planes from config
    **************************************************************/
-  const int total_planes = tprm_conf->get_total_planes();
+  const int total_planes = static_cast<int>(tprm_conf->get_total_planes());
 
   /**************************************************************
    * Extract # of filtered planes
@@ -106,8 +106,8 @@ TPReplayApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHel
     std::string tp_uid = "tphandler-tpreplay-" + std::to_string(i + 1);
     TPHs_uids.push_back(tp_uid);
     auto tph_obj = obj_fac.create(tph_class, tp_uid);
-    tph_obj.set_by_val<uint32_t>("source_id", tpsrc_ids[i]->get_sid());
-    tph_obj.set_by_val<uint32_t>("detector_id", 1); // 1 == kDAQ
+    tph_obj.set_by_val<uint32_t>("source_id", tpsrc_ids[i]->get_sid()); // NOLINT(build/unsigned)
+    tph_obj.set_by_val<uint32_t>("detector_id", 1);                     // 1 == kDAQ // NOLINT(build/unsigned)
     tph_obj.set_by_val<bool>("post_processing_enabled", true);
     tph_obj.set_obj("module_configuration", &tph_conf_obj);
     TPHs.push_back(tph_obj);
@@ -120,7 +120,7 @@ TPReplayApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHel
   const QueueDescriptor* tp_inputq_desc = nullptr;
 
   for (const auto& rule : get_queue_rules()) {
-    auto destination_class = rule->get_destination_class();
+    auto const& destination_class = rule->get_destination_class();
     auto data_type = rule->get_descriptor()->get_data_type();
     if (destination_class == "TriggerDataHandlerModule" && data_type == "TriggerPrimitiveVector") {
       tp_inputq_desc = rule->get_descriptor();
@@ -145,7 +145,6 @@ TPReplayApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHel
   const NetworkConnectionDescriptor* dr_net_desc = nullptr;
 
   for (const auto& rule : get_network_rules()) {
-    auto endpoint_class = rule->get_endpoint_class();
     auto data_type = rule->get_descriptor()->get_data_type();
     if (data_type == "TriggerActivity") {
       ta_net_desc = rule->get_descriptor();
@@ -189,7 +188,7 @@ TPReplayApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHel
   // Convert TP_queues to a vector of raw pointers
   std::vector<const conffwk::ConfigObject*> raw_tp_queues;
   for (const auto& tp_queue : TP_queues) {
-    raw_tp_queues.push_back(&tp_queue);
+    raw_tp_queues.push_back(&tp_queue); // NOLINT(performance-inefficient-vector-operation)
   }
   tpm_obj.set_objs("outputs", raw_tp_queues);
 
@@ -208,7 +207,6 @@ TPReplayApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHel
   }
 
   obj_fac.update_modules(modules);
-}
+} // NOLINT(readability/fn_size)
 
-} // namespace appmodel
-} // namespace dunedaq
+} // namespace dunedaq::appmodel

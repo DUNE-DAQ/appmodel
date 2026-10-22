@@ -25,11 +25,11 @@
 
 #include <fmt/core.h>
 #include <iostream>
+#include <memory>
 #include <string>
 #include <vector>
 
-namespace dunedaq {
-namespace appmodel {
+namespace dunedaq::appmodel {
 
 void
 TPStreamWriterApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> /*helper*/) const
@@ -39,7 +39,7 @@ TPStreamWriterApplication::generate_modules(std::shared_ptr<appmodel::Configurat
   ConfigObjectFactory obj_fac(this);
 
   auto tpwriterConf = get_tp_writer();
-  if (tpwriterConf == 0) {
+  if (tpwriterConf == nullptr) {
     throw(BadConf(ERS_HERE, "No TPStreamWriterModule configuration given"));
   }
   auto tpwriterConfObj = tpwriterConf->config_object();
@@ -66,7 +66,7 @@ TPStreamWriterApplication::generate_modules(std::shared_ptr<appmodel::Configurat
   uint tpw_idx = 0;
   std::string tpwrUid("tpwriter-" + std::to_string(source_id->get_sid()));
   conffwk::ConfigObject tpwrObj = obj_fac.create("TPStreamWriterModule", tpwrUid);
-  tpwrObj.set_by_val<uint32_t>("source_id", source_id->get_sid());
+  tpwrObj.set_by_val<uint32_t>("source_id", source_id->get_sid()); // NOLINT(build/unsigned)
   tpwrObj.set_by_val("writer_identifier", fmt::format("{}_tpw_{}", UID(), tpw_idx));
   tpwrObj.set_obj("configuration", &tpwriterConf->config_object());
   tpwrObj.set_objs("inputs", { &tset_in_net_obj });
@@ -76,5 +76,4 @@ TPStreamWriterApplication::generate_modules(std::shared_ptr<appmodel::Configurat
   obj_fac.update_modules(modules);
 }
 
-} // namespace appmodel
-} // namespace dunedaq
+} // namespace dunedaq::appmodel

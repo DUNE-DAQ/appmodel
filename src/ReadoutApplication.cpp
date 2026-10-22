@@ -56,14 +56,15 @@
 #include "logging/Logging.hpp"
 #include <fmt/core.h>
 
+#include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
 // using namespace dunedaq;
 // using namespace dunedaq::appmodel;
 
-namespace dunedaq {
-namespace appmodel {
+namespace dunedaq::appmodel {
 
 //-----------------------------------------------------------------------------
 
@@ -88,7 +89,7 @@ ReadoutApplication::generate_modules(std::shared_ptr<ConfigurationHelper> helper
 
   // Data reader
   auto reader_conf = get_data_reader();
-  if (reader_conf == 0) {
+  if (reader_conf == nullptr) {
     throw(BadConf(ERS_HERE, "No DataReaderModule configuration given"));
   }
   std::string reader_class = reader_conf->get_template_for();
@@ -194,10 +195,10 @@ ReadoutApplication::generate_modules(std::shared_ptr<ConfigurationHelper> helper
 
   // Collect all streams
   std::vector<const confmodel::DetectorStream*> all_enabled_det_streams;
-  std::map<uint32_t, const appmodel::DataMoveCallbackConf*> callback_confs_by_sid;
+  std::map<uint32_t, const appmodel::DataMoveCallbackConf*> callback_confs_by_sid; // NOLINT(build/unsigned)
 
   // std::vector<const conffwk::ConfigObject*> d2d_conn_objs;
-  uint16_t conn_idx = 0;
+  uint16_t conn_idx = 0; // NOLINT(build/unsigned)
 
   for (auto d2d_conn : get_detector_connections()) {
     if (helper->is_excluded(d2d_conn)) {
@@ -295,7 +296,8 @@ ReadoutApplication::generate_modules(std::shared_ptr<ConfigurationHelper> helper
 
     // Create the Data reader object
 
-    std::string reader_uid(fmt::format("datareader-{}-{}", this->UID(), std::to_string(conn_idx++)));
+    std::string reader_uid(fmt::format("datareader-{}-{}", this->UID(), std::to_string(conn_idx)));
+    conn_idx++;
     TLOG_DEBUG(6) << fmt::format(
       "creating OKS configuration object for Data reader class {} with id {}", reader_class, reader_uid);
     auto reader_obj = obj_fac.create(reader_class, reader_uid);
@@ -344,15 +346,15 @@ ReadoutApplication::generate_modules(std::shared_ptr<ConfigurationHelper> helper
       conffwk::ConfigObject tpreq_queue_obj;
       std::string tp_uid("tphandler-" + std::to_string(sid->get_sid()));
       auto tph_obj = obj_fac.create(tph_class, tp_uid);
-      tph_obj.set_by_val<uint32_t>("source_id", sid->get_sid());
-      tph_obj.set_by_val<uint32_t>("detector_id", 1); // 1 == kDAQ
+      tph_obj.set_by_val<uint32_t>("source_id", sid->get_sid()); // NOLINT(build/unsigned)
+      tph_obj.set_by_val<uint32_t>("detector_id", 1);            // 1 == kDAQ // NOLINT(build/unsigned)
       tph_obj.set_by_val<bool>("post_processing_enabled", get_ta_generation_enabled());
       tph_obj.set_obj("module_configuration", &tph_conf_obj);
 
       // Create the TPs aggregator queue (from RawData Handlers to TP handlers)
       tp_queue_obj = obj_fac.create_queue_sid_obj(tp_input_qdesc, sid->get_sid());
-      tp_queue_obj.set_by_val<uint32_t>("recv_timeout_ms", 50);
-      tp_queue_obj.set_by_val<uint32_t>("send_timeout_ms", 1);
+      tp_queue_obj.set_by_val<uint32_t>("recv_timeout_ms", 50); // NOLINT(build/unsigned)
+      tp_queue_obj.set_by_val<uint32_t>("send_timeout_ms", 1);  // NOLINT(build/unsigned)
 
       tp_queues.push_back(obj_fac.get_dal<confmodel::Connection>(tp_queue_obj.UID()));
       // Create tp data requests queue from Fragment Aggregator
@@ -376,6 +378,7 @@ ReadoutApplication::generate_modules(std::shared_ptr<ConfigurationHelper> helper
   // Add output queueus of tps
   std::vector<const conffwk::ConfigObject*> tp_queue_objs;
   for (auto q : tp_queues) {
+    // NOLINTNEXTLINE(performance-inefficient-vector-operation)
     tp_queue_objs.push_back(&q->config_object());
   }
 
@@ -387,22 +390,23 @@ ReadoutApplication::generate_modules(std::shared_ptr<ConfigurationHelper> helper
   auto emulation_mode = reader_conf->get_emulation_mode();
   for (auto ds : all_enabled_det_streams) {
 
-    uint32_t sid = ds->get_source_id();
+    uint32_t sid = ds->get_source_id(); // NOLINT(build/unsigned)
     TLOG_DEBUG(6) << fmt::format(
       "Processing stream {}, id {}, det id {}", ds->UID(), ds->get_source_id(), ds->get_geo_id()->get_detector_id());
     std::string uid(fmt::format("DLH-{}", sid));
     TLOG_DEBUG(6) << fmt::format(
       "creating OKS configuration object for Data Link Handler class {}, if {}", dlh_class, sid);
     auto dlh_obj = obj_fac.create(dlh_class, uid);
-    dlh_obj.set_by_val<uint32_t>("source_id", sid);
-    dlh_obj.set_by_val<uint32_t>("detector_id", ds->get_geo_id()->get_detector_id());
+    dlh_obj.set_by_val<uint32_t>("source_id", sid);                                   // NOLINT(build/unsigned)
+    dlh_obj.set_by_val<uint32_t>("detector_id", ds->get_geo_id()->get_detector_id()); // NOLINT(build/unsigned)
     dlh_obj.set_by_val<bool>("post_processing_enabled", get_tp_generation_enabled());
     dlh_obj.set_by_val<bool>("emulation_mode", emulation_mode);
     dlh_obj.set_obj("geo_id", &ds->get_geo_id()->config_object());
     dlh_obj.set_obj("module_configuration", &dlh_conf->config_object());
     dlh_obj.set_obj("raw_data_callback", &callback_confs_by_sid[sid]->config_object());
 
-    std::vector<const conffwk::ConfigObject*> dlh_ins, dlh_outs;
+    std::vector<const conffwk::ConfigObject*> dlh_ins;
+    std::vector<const conffwk::ConfigObject*> dlh_outs;
 
     // Create request queue
     conffwk::ConfigObject req_queue_obj = obj_fac.create_queue_sid_obj(dlh_reqinput_qdesc, ds);
@@ -430,7 +434,7 @@ ReadoutApplication::generate_modules(std::shared_ptr<ConfigurationHelper> helper
 
   // Finally create Fragment Aggregator
   auto aggregator_conf = get_fragment_aggregator();
-  if (aggregator_conf == 0) {
+  if (aggregator_conf == nullptr) {
     throw(BadConf(ERS_HERE, "No FragmentAggregatorModule configuration given"));
   }
   std::string faUid("fragmentaggregator-" + UID());
@@ -442,7 +446,7 @@ ReadoutApplication::generate_modules(std::shared_ptr<ConfigurationHelper> helper
   // Process special Network rules!
   // Looking for Fragment rules from DFAppplications in current Session
   std::vector<conffwk::ConfigObject> fragOutObjs;
-  for (auto [uid, descriptor] : helper->get_netdescriptors("Fragment", "DFApplication")) {
+  for (auto const& [uid, descriptor] : helper->get_netdescriptors("Fragment", "DFApplication")) {
     std::string dreqNetUid(descriptor->get_uid_base() + uid);
     auto frag_conn = obj_fac.create("NetworkConnection", dreqNetUid);
 
@@ -459,6 +463,7 @@ ReadoutApplication::generate_modules(std::shared_ptr<ConfigurationHelper> helper
   // Add output queueus of data requests and Fragments
   std::vector<const conffwk::ConfigObject*> fa_output_objs;
   for (auto& fNet : fragOutObjs) {
+    // NOLINTNEXTLINE(performance-inefficient-vector-operation)
     fa_output_objs.push_back(&fNet);
   }
 
@@ -472,7 +477,6 @@ ReadoutApplication::generate_modules(std::shared_ptr<ConfigurationHelper> helper
   modules.push_back(obj_fac.get_dal<confmodel::DaqModule>(frag_aggr.UID()));
 
   obj_fac.update_modules(modules);
-}
+} // NOLINT(readability/fn_size)
 
-} // namespace appmodel
-} // namespace dunedaq
+} // namespace dunedaq::appmodel
