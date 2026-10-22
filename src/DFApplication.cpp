@@ -14,6 +14,8 @@
 #include "appmodel/DataStoreConf.hpp"
 #include "appmodel/DataWriterConf.hpp"
 #include "appmodel/DataWriterModule.hpp"
+#include "appmodel/DataflowStatusModule.hpp"
+#include "appmodel/DataflowStatusModuleConf.hpp"
 #include "appmodel/FilenameParams.hpp"
 #include "appmodel/NetworkConnectionDescriptor.hpp"
 #include "appmodel/NetworkConnectionRule.hpp"
@@ -119,31 +121,60 @@ DFApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> h
   // Prepare TRB output objects
   std::vector<const conffwk::ConfigObject*> trbInputObjs;
   std::vector<const conffwk::ConfigObject*> trbOutputObjs;
+  std::vector<const conffwk::ConfigObject*> dfsInputObjs;
+  std::vector<const conffwk::ConfigObject*> dfsOutputObjs;
   std::vector<const conffwk::ConfigObject*> trbSidNetObjs;
 
   // -- First, we process expected Queue and Network connections and create their objects.
 
   // Process the queue rules looking for the TriggerRecord queue between TRB and DataWriterModule
   const QueueDescriptor* trQDesc = nullptr;
+  const QueueDescriptor* tdQDesc = nullptr;
+  const QueueDescriptor* trbcQDesc = nullptr;
+  const QueueDescriptor* tokenQDesc = nullptr;
   for (auto rule : get_queue_rules()) {
     auto destination_class = rule->get_destination_class();
+    if (destination_class == "TRBModule") {
+      tdQDesc = rule->get_descriptor();
+    }
     if (destination_class == "DataWriterModule") {
       trQDesc = rule->get_descriptor();
     }
+    if (destination_class == "DataflowStatusModule") {
+      auto descriptor = rule->get_descriptor();
+      if (descriptor->get_data_type() == "TriggerDecisionToken") {
+        tokenQDesc = descriptor;
+      } else if (descriptor->get_data_type() == "TRBCompletion") {
+        trbcQDesc = descriptor;
+      }
+    }
+  }
+  if (tdQDesc == nullptr) { // BadConf if no descriptor between DataflowStatus and TRB
+    throw(BadConf(ERS_HERE, "Could not find queue descriptor rule for TriggerDecisions!"));
   }
   if (trQDesc == nullptr) { // BadConf if no descriptor between TRB and DataWriterModule
     throw(BadConf(ERS_HERE, "Could not find queue descriptor rule for TriggerRecords!"));
   }
+  if (tokenQDesc == nullptr) { // BadConf if no descriptor between DataWriterModule and DataflowStatus
+    throw(BadConf(ERS_HERE, "Could not find queue descriptor rule for TriggerDecisionTokens!"));
+  }
+  if (trbcQDesc == nullptr) { // BadConf if no descriptor between TRB and DataflowStatus
+    throw(BadConf(ERS_HERE, "Could not find queue descriptor rule for TRBCompletions!"));
+  }
   // Create queue connection config object
   auto trQueueObj = obj_fac.create_queue_obj(trQDesc, UID());
+  auto tdQueueObj = obj_fac.create_queue_obj(tdQDesc, UID());
+  auto trbcQueueObj = obj_fac.create_queue_obj(trbcQDesc, UID());
+  auto tokenQueueObj = obj_fac.create_queue_obj(tokenQDesc, UID());
 
   // Place trigger record queue object into vector of output objs of TRB module
   trbOutputObjs.push_back(&trQueueObj);
+  trbOutputObjs.push_back(&trbcQueueObj);
 
   // Process the network rules looking for the Fragments and TriggerDecision inputs for TRB
   const NetworkConnectionDescriptor* fragNetDesc = nullptr;
   const NetworkConnectionDescriptor* trigdecNetDesc = nullptr;
-  const NetworkConnectionDescriptor* tokenNetDesc = nullptr;
+  const NetworkConnectionDescriptor* statusReqNetDesc = nullptr;
   const NetworkConnectionDescriptor* trmonReqNetDesc = nullptr;
   const NetworkConnectionDescriptor* trmonTRNetDesc = nullptr;
   for (auto rule : get_network_rules()) {
@@ -153,22 +184,22 @@ DFApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> h
       fragNetDesc = rule->get_descriptor();
     } else if (data_type == "TriggerDecision") {
       trigdecNetDesc = rule->get_descriptor();
-    } else if (data_type == "TriggerDecisionToken") {
-      tokenNetDesc = rule->get_descriptor();
     } else if (data_type == "TRMonRequest") {
       trmonReqNetDesc = rule->get_descriptor();
     } else if (data_type == "TriggerRecord") {
       trmonTRNetDesc = rule->get_descriptor();
+    } else if (data_type == "DataflowStatusRequest") {
+      statusReqNetDesc = rule->get_descriptor();
     }
   }
   if (fragNetDesc == nullptr) { // BadConf if no descriptor for Fragments into TRB
     throw(BadConf(ERS_HERE, "Could not find network descriptor rule for input Fragments!"));
   }
-  if (trigdecNetDesc == nullptr) { // BadCond if no descriptor for TriggerDecisions into TRB
+  if (trigdecNetDesc == nullptr) { // BadConf if no descriptor for TriggerDecisions into TRB
     throw(BadConf(ERS_HERE, "Could not find network descriptor rule for input TriggerDecisions!"));
   }
-  if (tokenNetDesc == nullptr) { // BadCond if no descriptor for Tokens out of DataWriterModule
-    throw(BadConf(ERS_HERE, "Could not find network descriptor rule for output TriggerDecisionTokens!"));
+  if (statusReqNetDesc == nullptr) { // BadConf if no descriptor for DataflowStatusRequest input
+    throw(BadConf(ERS_HERE, "Could not find network descriptor rule for input DataflowStatusRequests!"));
   }
   if (get_source_id() == nullptr) {
     throw(BadConf(ERS_HERE, "Could not retrieve SourceIDConf"));
@@ -176,7 +207,7 @@ DFApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> h
   // Create network connection config object
   auto fragNetObj = obj_fac.create_net_obj(fragNetDesc, UID());
   auto trigdecNetObj = obj_fac.create_net_obj(trigdecNetDesc, UID());
-  auto tokenNetObj = obj_fac.create_net_obj(tokenNetDesc, "");
+  auto statusReqNetObj = obj_fac.create_net_obj(statusReqNetDesc, UID());
   conffwk::ConfigObject trmonReqNetObj;
   conffwk::ConfigObject trmonTRNetObj;
   if (trmonReqNetDesc != nullptr) {
@@ -296,7 +327,7 @@ DFApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> h
   }
   auto trbConfObj = trbConf->config_object();
   trbConfObj.set_by_val<uint32_t>("source_id", get_source_id()->get_sid()); // NOLINT(build/unsigned)
-  trbInputObjs = { &trigdecNetObj, &fragNetObj };
+  trbInputObjs = { &tdQueueObj, &fragNetObj };
   if (trmonReqNetDesc != nullptr) {
     trbInputObjs.push_back(&trmonReqNetObj);
   }
@@ -309,7 +340,6 @@ DFApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> h
   trbObj.set_obj("configuration", &trbConfObj);
   trbObj.set_objs("inputs", trbInputObjs);
   trbObj.set_objs("outputs", trbOutputObjs);
-  trbObj.set_obj("trigger_record_output", &trQueueObj);
   trbObj.set_objs("request_connections", trbSidNetObjs);
   // Push TRB Module Object from confdb
   modules.push_back(obj_fac.get_dal<TRBModule>(trbUid));
@@ -331,11 +361,39 @@ DFApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> h
     dwrObj.set_by_val("writer_identifier", fmt::format("{}_dw_{}", UID(), dw_idx));
     dwrObj.set_obj("configuration", &dwrConfObj);
     dwrObj.set_objs("inputs", { &trQueueObj });
-    dwrObj.set_objs("outputs", { &tokenNetObj });
+    dwrObj.set_objs("outputs", { &tokenQueueObj });
     // Push DataWriterModule Module Object from confdb
     modules.push_back(obj_fac.get_dal<DataWriterModule>(dwrUid));
     ++dw_idx;
   }
+
+  // Get DataflowStatusModule Config Object
+  auto dfsConf = get_dfs();
+  if (dfsConf == nullptr) {
+    throw(BadConf(ERS_HERE, "No DataflowStatusModule configuration given"));
+  }
+
+  std::vector<conffwk::ConfigObject> dfsOutputs;
+  for (auto const& [uid, descriptor] : helper->get_netdescriptors("DataflowStatus", "DFOApplication")) {
+    dfsOutputs.push_back(obj_fac.create_net_obj(descriptor, uid));
+  }
+
+  for (auto& dfsOut : dfsOutputs) {
+    // NOLINTNEXTLINE(performance-inefficient-vector-operation)
+    dfsOutputObjs.push_back(&dfsOut);
+  }
+
+  auto dfsConfObj = dfsConf->config_object();
+  dfsInputObjs = { &trigdecNetObj, &statusReqNetObj, &trbcQueueObj, &tokenQueueObj };
+  dfsOutputObjs.push_back(&tdQueueObj);
+  // Prepare TRB Module Object and assign its Config Object.
+  std::string dfsUid(UID() + "-dfs");
+  conffwk::ConfigObject dfsObj = obj_fac.create("DataflowStatusModule", dfsUid);
+  dfsObj.set_obj("configuration", &dfsConfObj);
+  dfsObj.set_objs("inputs", dfsInputObjs);
+  dfsObj.set_objs("outputs", dfsOutputObjs);
+  // Push TRB Module Object from confdb
+  modules.push_back(obj_fac.get_dal<DataflowStatusModule>(dfsUid));
 
   obj_fac.update_modules(modules);
 } // NOLINT(readability/fn_size)
