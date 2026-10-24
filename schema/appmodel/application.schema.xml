@@ -226,8 +226,13 @@
   <attribute name="disable_unique_filename_suffix" type="bool" init-value="false"/>
   <attribute name="free_space_safety_factor" type="s32" init-value="0" is-not-null="yes"/>
   <attribute name="compression_level" type="u8" init-value="0" is-not-null="yes"/>
-  <relationship name="file_layout_params" class-type="HDF5FileLayoutParams" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="file_layout_params" description="DEPRECATED, HDF5-only: use HDF5DataStoreConf.hdf5_file_layout_params instead. Still used by HDF5DataStore when that is not set; to be removed in a later release." class-type="HDF5FileLayoutParams" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="filename_params" class-type="FilenameParams" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+ </class>
+
+ <class name="HDF5DataStoreConf" description="Configuration of an HDF5DataStore: the generic DataStoreConf plus the HDF5-only parameters">
+  <superclass name="DataStoreConf"/>
+  <relationship name="hdf5_file_layout_params" description="Naming of the HDF5 groups and datasets. If not set, the standard layout for the record type is used (or, during the transition, DataStoreConf.file_layout_params)." class-type="HDF5FileLayoutParams" low-cc="zero" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="DataWriterConf">
