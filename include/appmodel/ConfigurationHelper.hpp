@@ -15,6 +15,7 @@
 #include "conffwk/DalObject.hpp"
 #include "confmodel/Service.hpp"
 #include "confmodel/Session.hpp"
+#include "daqdataformats/SourceIDGeoIDMap.hpp"
 
 #include <cstdint>
 #include <map>
@@ -65,6 +66,15 @@ public:
   /// @returns A map of application uids to vectors of streams that
   ///         they contain
   std::map<std::string, std::vector<uint32_t>> get_stream_source_ids(); // NOLINT(build/unsigned)
+
+  /// @brief Get the GeoIDs of the detector streams of every ReadoutApplication in the Session,
+  /// by the SourceID that each stream's data is sent with
+  ///
+  /// Excluded DetectorToDaqConnections and DetectorStreams are skipped. Raw data files store
+  /// this map so that they can be interpreted on their own.
+  ///
+  /// @returns  A map of detector-readout SourceIDs to the GeoIDs of their streams
+  daqdataformats::SourceIDGeoIDMap get_source_id_geo_id_map();
 
   /// @brief Get the source ids of all the TP streams in all
   /// ReadoutApplications and TriggerApplications

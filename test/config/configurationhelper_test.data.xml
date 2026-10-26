@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="ASCII"?>
+
+<!-- oks-data version 2.2 -->
+
+
+<!DOCTYPE oks-data [
+  <!ELEMENT oks-data (info, (include)?, (comments)?, (obj)+)>
+  <!ELEMENT info EMPTY>
+  <!ATTLIST info
+      name CDATA #IMPLIED
+      type CDATA #IMPLIED
+      num-of-items CDATA #REQUIRED
+      oks-format CDATA #FIXED "data"
+      oks-version CDATA #REQUIRED
+      created-by CDATA #IMPLIED
+      created-on CDATA #IMPLIED
+      creation-time CDATA #IMPLIED
+      last-modified-by CDATA #IMPLIED
+      last-modified-on CDATA #IMPLIED
+      last-modification-time CDATA #IMPLIED
+  >
+  <!ELEMENT include (file)*>
+  <!ELEMENT file EMPTY>
+  <!ATTLIST file
+      path CDATA #REQUIRED
+  >
+  <!ELEMENT comments (comment)*>
+  <!ELEMENT comment EMPTY>
+  <!ATTLIST comment
+      creation-time CDATA #REQUIRED
+      created-by CDATA #REQUIRED
+      created-on CDATA #REQUIRED
+      author CDATA #REQUIRED
+      text CDATA #REQUIRED
+  >
+  <!ELEMENT obj (attr | rel)*>
+  <!ATTLIST obj
+      class CDATA #REQUIRED
+      id CDATA #REQUIRED
+  >
+  <!ELEMENT attr (data)*>
+  <!ATTLIST attr
+      name CDATA #REQUIRED
+      type (bool|s8|u8|s16|u16|s32|u32|s64|u64|float|double|date|time|string|uid|enum|class|-) "-"
+      val CDATA ""
+  >
+  <!ELEMENT data EMPTY>
+  <!ATTLIST data
+      val CDATA #REQUIRED
+  >
+  <!ELEMENT rel (ref)*>
+  <!ATTLIST rel
+      name CDATA #REQUIRED
+      class CDATA ""
+      id CDATA ""
+  >
+  <!ELEMENT ref EMPTY>
+  <!ATTLIST ref
+      class CDATA #REQUIRED
+      id CDATA #REQUIRED
+  >
+]>
+
+<oks-data>
+
+<info name="" type="" num-of-items="36" oks-format="data" oks-version="862f2957270" created-by="wketchum" created-on="" creation-time="20261026T120000" last-modified-by="wketchum" last-modified-on="" last-modification-time="20261026T120000"/>
+
+<include>
+ <file path="schema/confmodel/dunedaq.schema.xml"/>
+ <file path="schema/appmodel/application.schema.xml"/>
+ <file path="schema/appmodel/fdmodules.schema.xml"/>
+</include>
+
+<obj class="GeoId" id="geo-stream-a1">
+ <attr name="detector_id" type="u32" val="3"/>
+ <attr name="crate_id" type="u32" val="1"/>
+ <attr name="slot_id" type="u32" val="0"/>
+ <attr name="stream_id" type="u32" val="0"/>
+</obj>
+
+<obj class="DetectorStream" id="stream-a1">
+ <attr name="source_id" type="u32" val="1"/>
+ <rel name="geo_id" class="GeoId" id="geo-stream-a1"/>
+</obj>
+
+<obj class="GeoId" id="geo-stream-a2">
+ <attr name="detector_id" type="u32" val="3"/>
+ <attr name="crate_id" type="u32" val="1"/>
+ <attr name="slot_id" type="u32" val="0"/>
+ <attr name="stream_id" type="u32" val="1"/>
+</obj>
+
+<obj class="DetectorStream" id="stream-a2">
+ <attr name="source_id" type="u32" val="2"/>
+ <rel name="geo_id" class="GeoId" id="geo-stream-a2"/>
+</obj>
+
+<obj class="GeoId" id="geo-stream-a3">
+ <attr name="detector_id" type="u32" val="3"/>
+ <attr name="crate_id" type="u32" val="1"/>
+ <attr name="slot_id" type="u32" val="1"/>
+ <attr name="stream_id" type="u32" val="0"/>
+</obj>
+
+<obj class="DetectorStream" id="stream-a3">
+ <attr name="source_id" type="u32" val="2"/>
+ <rel name="geo_id" class="GeoId" id="geo-stream-a3"/>
+</obj>
+
+<obj class="GeoId" id="geo-stream-b1">
+ <attr name="detector_id" type="u32" val="10"/>
+ <attr name="crate_id" type="u32" val="2"/>
+ <attr name="slot_id" type="u32" val="0"/>
+ <attr name="stream_id" type="u32" val="0"/>
+</obj>
+
+<obj class="DetectorStream" id="stream-b1">
+ <attr name="source_id" type="u32" val="10"/>
+ <rel name="geo_id" class="GeoId" id="geo-stream-b1"/>
+</obj>
+
+<obj class="GeoId" id="geo-stream-b2">
+ <attr name="detector_id" type="u32" val="10"/>
+ <attr name="crate_id" type="u32" val="2"/>
+ <attr name="slot_id" type="u32" val="0"/>
+ <attr name="stream_id" type="u32" val="1"/>
+</obj>
+
+<obj class="DetectorStream" id="stream-b2">
+ <attr name="source_id" type="u32" val="11"/>
+ <rel name="geo_id" class="GeoId" id="geo-stream-b2"/>
+</obj>
+
+<obj class="GeoId" id="geo-stream-off">
+ <attr name="detector_id" type="u32" val="3"/>
+ <attr name="crate_id" type="u32" val="9"/>
+ <attr name="slot_id" type="u32" val="0"/>
+ <attr name="stream_id" type="u32" val="0"/>
+</obj>
+
+<obj class="DetectorStream" id="stream-off">
+ <attr name="source_id" type="u32" val="20"/>
+ <rel name="geo_id" class="GeoId" id="geo-stream-off"/>
+</obj>
+
+<obj class="FakeDataSender" id="sender-conn-a1">
+ <rel name="streams">
+  <ref class="DetectorStream" id="stream-a1"/>
+  <ref class="DetectorStream" id="stream-a2"/>
+ </rel>
+</obj>
+
+<obj class="NetworkDetectorToDaqConnection" id="conn-a1">
+ <rel name="net_senders">
+  <ref class="FakeDataSender" id="sender-conn-a1"/>
+ </rel>
+ <rel name="net_receiver" class="FakeDataReceiver" id="receiver-conn-a1"/>
+</obj>
+
+<obj class="FakeDataSender" id="sender-conn-a2">
+ <rel name="streams">
+  <ref class="DetectorStream" id="stream-a3"/>
+ </rel>
+</obj>
+
+<obj class="NetworkDetectorToDaqConnection" id="conn-a2">
+ <rel name="net_senders">
+  <ref class="FakeDataSender" id="sender-conn-a2"/>
+ </rel>
+ <rel name="net_receiver" class="FakeDataReceiver" id="receiver-conn-a2"/>
+</obj>
+
+<obj class="FakeDataSender" id="sender-conn-b1">
+ <rel name="streams">
+  <ref class="DetectorStream" id="stream-b1"/>
+ </rel>
+</obj>
+
+<obj class="NetworkDetectorToDaqConnection" id="conn-b1">
+ <rel name="net_senders">
+  <ref class="FakeDataSender" id="sender-conn-b1"/>
+ </rel>
+ <rel name="net_receiver" class="FakeDataReceiver" id="receiver-conn-b1"/>
+</obj>
+
+<obj class="FakeDataSender" id="sender-conn-b2">
+ <rel name="streams">
+  <ref class="DetectorStream" id="stream-b2"/>
+ </rel>
+</obj>
+
+<obj class="NetworkDetectorToDaqConnection" id="conn-b2">
+ <rel name="net_senders">
+  <ref class="FakeDataSender" id="sender-conn-b2"/>
+ </rel>
+ <rel name="net_receiver" class="FakeDataReceiver" id="receiver-conn-b2"/>
+</obj>
+
+<obj class="FakeDataSender" id="sender-conn-off">
+ <rel name="streams">
+  <ref class="DetectorStream" id="stream-off"/>
+ </rel>
+</obj>
+
+<obj class="NetworkDetectorToDaqConnection" id="conn-off">
+ <rel name="net_senders">
+  <ref class="FakeDataSender" id="sender-conn-off"/>
+ </rel>
+ <rel name="net_receiver" class="FakeDataReceiver" id="receiver-conn-off"/>
+</obj>
+
+<obj class="FakeDataReceiver" id="receiver-conn-a1">
+</obj>
+
+<obj class="FakeDataReceiver" id="receiver-conn-a2">
+</obj>
+
+<obj class="FakeDataReceiver" id="receiver-conn-b1">
+</obj>
+
+<obj class="FakeDataReceiver" id="receiver-conn-b2">
+</obj>
+
+<obj class="FakeDataReceiver" id="receiver-conn-off">
+</obj>
+
+<obj class="ReadoutApplication" id="ru-a">
+ <attr name="application_name" type="string" val="daq_application"/>
+ <rel name="detector_connections">
+  <ref class="NetworkDetectorToDaqConnection" id="conn-a1"/>
+  <ref class="NetworkDetectorToDaqConnection" id="conn-a2"/>
+ </rel>
+</obj>
+
+<obj class="ReadoutApplication" id="ru-b">
+ <attr name="application_name" type="string" val="daq_application"/>
+ <rel name="detector_connections">
+  <ref class="NetworkDetectorToDaqConnection" id="conn-b1"/>
+  <ref class="NetworkDetectorToDaqConnection" id="conn-b2"/>
+ </rel>
+</obj>
+
+<obj class="ReadoutApplication" id="ru-off">
+ <attr name="application_name" type="string" val="daq_application"/>
+ <rel name="detector_connections">
+  <ref class="NetworkDetectorToDaqConnection" id="conn-off"/>
+ </rel>
+</obj>
+
+<obj class="DaqApplication" id="not-readout">
+ <attr name="application_name" type="string" val="daq_application"/>
+</obj>
+
+<obj class="Segment" id="off-segment">
+ <rel name="applications">
+  <ref class="ReadoutApplication" id="ru-off"/>
+ </rel>
+</obj>
+
+<obj class="Segment" id="root-segment">
+ <rel name="segments">
+  <ref class="Segment" id="off-segment"/>
+ </rel>
+ <rel name="applications">
+  <ref class="ReadoutApplication" id="ru-a"/>
+  <ref class="ReadoutApplication" id="ru-b"/>
+  <ref class="DaqApplication" id="not-readout"/>
+ </rel>
+</obj>
+
+<obj class="Session" id="all-included">
+ <rel name="segment" class="Segment" id="root-segment"/>
+</obj>
+
+<obj class="Session" id="some-excluded">
+ <rel name="segment" class="Segment" id="root-segment"/>
+ <rel name="excluded">
+  <ref class="Segment" id="off-segment"/>
+  <ref class="NetworkDetectorToDaqConnection" id="conn-b2"/>
+  <ref class="DetectorStream" id="stream-a2"/>
+ </rel>
+</obj>
+
+<obj class="Session" id="app-excluded">
+ <rel name="segment" class="Segment" id="root-segment"/>
+ <rel name="excluded">
+  <ref class="ReadoutApplication" id="ru-b"/>
+ </rel>
+</obj>
+
+</oks-data>

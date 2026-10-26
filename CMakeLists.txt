@@ -13,6 +13,11 @@ find_package(logging REQUIRED)
 find_package(conffwk REQUIRED)
 find_package(confmodel REQUIRED)
 find_package(fmt REQUIRED)
+# REVIEW: new dependencies, used only by ConfigurationHelper::get_source_id_geo_id_map() to return
+# the format-independent SourceIDGeoIDMap. Both are header-only and depend only on Boost. Is it OK
+# for appmodel to depend on them?
+find_package(detdataformats REQUIRED)
+find_package(daqdataformats REQUIRED)
 
 find_package(Boost COMPONENTS unit_test_framework program_options REQUIRED)
 
@@ -44,7 +49,8 @@ daq_add_dal_library(application.schema.xml hermes.schema.xml fdmodules.schema.xm
 	TRMonReqApplication.cpp
 	WIECApplication.cpp
 	CIBApplication.cpp
-	LINK_LIBRARIES confmodel::confmodel conffwk::conffwk fmt::fmt logging::logging oks::oks ers::ers )
+	LINK_LIBRARIES confmodel::confmodel conffwk::conffwk fmt::fmt logging::logging oks::oks ers::ers
+	daqdataformats::daqdataformats detdataformats::detdataformats )
 
 daq_add_python_bindings(*.cpp DAL LINK_LIBRARIES confmodel::confmodel)
 
@@ -55,5 +61,8 @@ daq_add_application(generate_modules_test generate_modules_test.cxx
 daq_add_application(print_detailed_config_info print_detailed_config_info.cxx
  TEST LINK_LIBRARIES appmodel_dal confmodel::confmodel conffwk::conffwk
  logging::logging)
+
+daq_add_unit_test(ConfigurationHelper_test LINK_LIBRARIES appmodel_dal confmodel::confmodel conffwk::conffwk
+ daqdataformats::daqdataformats detdataformats::detdataformats)
 
 daq_install()

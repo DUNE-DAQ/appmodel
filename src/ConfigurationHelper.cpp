@@ -23,10 +23,16 @@
 #include "confmodel/DetectorStream.hpp"
 #include "confmodel/DetectorToDaqConnection.hpp"
 #include "confmodel/ExcludableEntity.hpp"
+#include "confmodel/GeoId.hpp"
 #include "confmodel/NetworkConnection.hpp"
 #include "confmodel/Queue.hpp"
 #include "confmodel/Service.hpp"
 #include "confmodel/Session.hpp"
+#include "daqdataformats/SourceID.hpp"
+#include "daqdataformats/SourceIDGeoIDMap.hpp"
+#include "detdataformats/DetID.hpp"
+#include "detdataformats/GeoID.hpp"
+#include "logging/Logging.hpp"
 
 #include <map>
 #include <string>
@@ -117,6 +123,48 @@ ConfigurationHelper::get_stream_source_ids()
     }
   }
   return result;
+}
+
+daqdataformats::SourceIDGeoIDMap
+ConfigurationHelper::get_source_id_geo_id_map()
+{
+  daqdataformats::SourceIDGeoIDMap geo_id_map;
+
+  // Excluding a segment or application also excludes its connections and streams, so this gives
+  // the same map as the all_applications() walk in hdf5libs' make_source_id_geo_id_map
+  for (auto app : m_session->included_applications()) {
+    auto ro_app = app->cast<appmodel::ReadoutApplication>();
+    if (ro_app == nullptr) {
+      continue;
+    }
+
+    for (auto d2d_conn : ro_app->get_detector_connections()) {
+      if (d2d_conn->is_excluded(*m_session)) {
+        TLOG_DEBUG(7) << "Ignoring excluded DetectorToDaqConnection " << d2d_conn->UID();
+        continue;
+      }
+      TLOG_DEBUG(7) << "Processing DetectorToDaqConnection " << d2d_conn->UID();
+
+      for (auto resource : d2d_conn->streams()) {
+        if (resource->is_excluded(*m_session)) {
+          TLOG_DEBUG(7) << "Ignoring excluded DetectorStream " << resource->UID();
+          continue;
+        }
+        auto stream = resource->cast<confmodel::DetectorStream>();
+        if (stream == nullptr) {
+          continue;
+        }
+        auto geo_id = stream->get_geo_id();
+        geo_id_map.add(
+          daqdataformats::SourceID(daqdataformats::SourceID::Subsystem::kDetectorReadout, stream->get_source_id()),
+          detdataformats::GeoID(static_cast<detdataformats::DetID::Subdetector>(geo_id->get_detector_id()),
+                                static_cast<uint16_t>(geo_id->get_crate_id()),    // NOLINT(build/unsigned)
+                                static_cast<uint16_t>(geo_id->get_slot_id()),     // NOLINT(build/unsigned)
+                                static_cast<uint16_t>(geo_id->get_stream_id()))); // NOLINT(build/unsigned)
+      }
+    }
+  }
+  return geo_id_map;
 }
 
 std::map<std::string, std::vector<const SourceIDConf*>>
