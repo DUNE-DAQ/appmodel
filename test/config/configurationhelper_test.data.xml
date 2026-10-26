@@ -63,7 +63,7 @@
 
 <oks-data>
 
-<info name="" type="" num-of-items="36" oks-format="data" oks-version="862f2957270" created-by="wketchum" created-on="" creation-time="20261026T120000" last-modified-by="wketchum" last-modified-on="" last-modification-time="20261026T120000"/>
+<info name="" type="" num-of-items="49" oks-format="data" oks-version="862f2957270" created-by="wketchum" created-on="" creation-time="20261026T120000" last-modified-by="wketchum" last-modified-on="" last-modification-time="20261026T120000"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -288,4 +288,77 @@
  </rel>
 </obj>
 
+<obj class="GeoId" id="geo-stream-dup">
+ <attr name="detector_id" type="u32" val="3"/>
+ <attr name="crate_id" type="u32" val="1"/>
+ <attr name="slot_id" type="u32" val="0"/>
+ <attr name="stream_id" type="u32" val="0"/>
+</obj>
+
+<obj class="DetectorStream" id="stream-dup">
+ <attr name="source_id" type="u32" val="30"/>
+ <rel name="geo_id" class="GeoId" id="geo-stream-dup"/>
+</obj>
+
+<obj class="FakeDataSender" id="sender-conn-dup">
+ <rel name="streams">
+  <ref class="DetectorStream" id="stream-dup"/>
+ </rel>
+</obj>
+
+<obj class="FakeDataReceiver" id="receiver-conn-dup">
+</obj>
+
+<obj class="NetworkDetectorToDaqConnection" id="conn-dup">
+ <rel name="net_senders">
+  <ref class="FakeDataSender" id="sender-conn-dup"/>
+ </rel>
+ <rel name="net_receiver" class="FakeDataReceiver" id="receiver-conn-dup"/>
+</obj>
+
+<obj class="GeoId" id="geo-stream-dup2">
+ <attr name="detector_id" type="u32" val="3"/>
+ <attr name="crate_id" type="u32" val="1"/>
+ <attr name="slot_id" type="u32" val="0"/>
+ <attr name="stream_id" type="u32" val="0"/>
+</obj>
+
+<obj class="DetectorStream" id="stream-dup2">
+ <attr name="source_id" type="u32" val="31"/>
+ <rel name="geo_id" class="GeoId" id="geo-stream-dup2"/>
+</obj>
+
+<obj class="FakeDataSender" id="sender-conn-dup2">
+ <rel name="streams">
+  <ref class="DetectorStream" id="stream-dup2"/>
+ </rel>
+</obj>
+
+<obj class="FakeDataReceiver" id="receiver-conn-dup2">
+</obj>
+
+<obj class="NetworkDetectorToDaqConnection" id="conn-dup2">
+ <rel name="net_senders">
+  <ref class="FakeDataSender" id="sender-conn-dup2"/>
+ </rel>
+ <rel name="net_receiver" class="FakeDataReceiver" id="receiver-conn-dup2"/>
+</obj>
+
+<obj class="ReadoutApplication" id="ru-dup">
+ <attr name="application_name" type="string" val="daq_application"/>
+ <rel name="detector_connections">
+  <ref class="NetworkDetectorToDaqConnection" id="conn-dup"/>
+  <ref class="NetworkDetectorToDaqConnection" id="conn-dup2"/>
+ </rel>
+</obj>
+
+<obj class="Segment" id="dup-segment">
+ <rel name="applications">
+  <ref class="ReadoutApplication" id="ru-dup"/>
+ </rel>
+</obj>
+
+<obj class="Session" id="duplicate-geo-id">
+ <rel name="segment" class="Segment" id="dup-segment"/>
+</obj>
 </oks-data>

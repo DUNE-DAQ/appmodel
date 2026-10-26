@@ -21,6 +21,7 @@
 #include <cstdint>
 #include <map>
 #include <set>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -105,6 +106,13 @@ BOOST_AUTO_TEST_CASE(ExcludedApplicationIsSkipped)
   auto geo_id_map = get_map("app-excluded");
   check_map(geo_id_map,
             { { 1, { geo(3, 1, 0, 0) } }, { 2, { geo(3, 1, 0, 1), geo(3, 1, 1, 0) } }, { 20, { geo(3, 9, 0, 0) } } });
+}
+
+// In session duplicate-geo-id, stream-dup (SourceID 30) and stream-dup2 (SourceID 31) have the same
+// GeoID values: a configuration error that must be caught before any data is written
+BOOST_AUTO_TEST_CASE(GeoIDWithTwoSourceIDsIsRejected)
+{
+  BOOST_REQUIRE_THROW(get_map("duplicate-geo-id"), std::invalid_argument);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

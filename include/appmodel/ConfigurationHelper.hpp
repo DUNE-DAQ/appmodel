@@ -73,6 +73,10 @@ public:
   /// Excluded DetectorToDaqConnections and DetectorStreams are skipped. Raw data files store
   /// this map so that they can be interpreted on their own.
   ///
+  /// Throws std::invalid_argument if two included streams with different SourceIDs have the same
+  /// GeoID (each GeoID must belong to one SourceID), so such a configuration fails before any
+  /// data is written.
+  ///
   /// @returns  A map of detector-readout SourceIDs to the GeoIDs of their streams
   daqdataformats::SourceIDGeoIDMap get_source_id_geo_id_map();
 
