@@ -256,6 +256,7 @@
   <attribute name="heartbeat_interval_ms" type="u32" init-value="100" is-not-null="yes"/>
   <attribute name="stop_timeout_ms" type="u32" init-value="1000" is-not-null="yes"/>
   <attribute name="td_queue_timeout_ms" type="u32" init-value="1000" is-not-null="yes"/>
+  <attribute name="pending_message_timeout_ms" type="u32" init-value="1000" is-not-null="yes"/>
   <attribute name="snapshot_history_size" type="u32" init-value="100" is-not-null="yes"/>
   <attribute name="completed_trigger_history_size" type="u32" init-value="100" is-not-null="yes"/>
  </class>
