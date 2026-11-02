@@ -621,6 +621,7 @@
 
  <class name="TRBModule">
   <superclass name="DaqModule"/>
+  <attribute name="trigger_record_output" type="string" is-not-null="yes"/>
   <relationship name="configuration" class-type="TRBConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
   <relationship name="request_connections" class-type="SourceIDToNetworkConnection" low-cc="zero" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>

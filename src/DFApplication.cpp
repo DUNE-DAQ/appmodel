@@ -338,6 +338,7 @@ DFApplication::generate_modules(std::shared_ptr<appmodel::ConfigurationHelper> h
   std::string trbUid(UID() + "-trb");
   conffwk::ConfigObject trbObj = obj_fac.create("TRBModule", trbUid);
   trbObj.set_obj("configuration", &trbConfObj);
+  trbObj.set_by_val("trigger_record_output", trQueueObj.UID());
   trbObj.set_objs("inputs", trbInputObjs);
   trbObj.set_objs("outputs", trbOutputObjs);
   trbObj.set_objs("request_connections", trbSidNetObjs);
