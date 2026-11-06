@@ -13,9 +13,7 @@ find_package(logging REQUIRED)
 find_package(conffwk REQUIRED)
 find_package(confmodel REQUIRED)
 find_package(fmt REQUIRED)
-# REVIEW: new dependencies, used only by ConfigurationHelper::get_source_id_geo_id_map() to return
-# the format-independent SourceIDGeoIDMap. Both are header-only and depend only on Boost. Is it OK
-# for appmodel to depend on them?
+# Header-only; for the SourceIDGeoIDMap that ConfigurationHelper::get_source_id_geo_id_map() returns
 find_package(detdataformats REQUIRED)
 find_package(daqdataformats REQUIRED)
 

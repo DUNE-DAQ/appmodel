@@ -71,7 +71,7 @@ check_map(const daqdataformats::SourceIDGeoIDMap& geo_id_map, const expected_t& 
   }
 }
 
-} // namespace
+} // namespace ""
 
 BOOST_AUTO_TEST_CASE(AllStreamsWhenNothingExcluded)
 {

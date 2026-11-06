@@ -34,6 +34,7 @@
 #include "detdataformats/GeoID.hpp"
 #include "logging/Logging.hpp"
 
+#include <cstdint>
 #include <map>
 #include <string>
 #include <utility>
@@ -130,8 +131,8 @@ ConfigurationHelper::get_source_id_geo_id_map()
 {
   daqdataformats::SourceIDGeoIDMap geo_id_map;
 
-  // Excluding a segment or application also excludes its connections and streams, so this gives
-  // the same map as the all_applications() walk in hdf5libs' make_source_id_geo_id_map
+  // Excluding a segment or application also excludes its connections and streams, so
+  // included_applications() is enough
   for (auto app : m_session->included_applications()) {
     auto ro_app = app->cast<appmodel::ReadoutApplication>();
     if (ro_app == nullptr) {
