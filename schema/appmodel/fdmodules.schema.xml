@@ -80,7 +80,7 @@
 
 <oks-schema>
 
-<info name="" type="" num-of-items="32" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="dergonul" last-modified-on="np04-srv-015.cern.ch" last-modification-time="20260319T162022"/>
+<info name="" type="" num-of-items="34" oks-format="schema" oks-version="862f2957270" created-by="gjc" created-on="thinkpad" creation-time="20230616T091343" last-modified-by="xinyue-uoft" last-modified-on="np04-srv-022.cern.ch" last-modification-time="20261119T192545"/>
 
 <include>
  <file path="schema/confmodel/dunedaq.schema.xml"/>
@@ -129,6 +129,27 @@
 
  <class name="DPDKReaderModule">
   <superclass name="DataReaderModule"/>
+ </class>
+
+ <class name="DPDKFakeDataSenderConf" description="NIC and tuning parameters of a DPDK WIBEth fake data sender.">
+  <attribute name="eal_args" description="Extra whitespace-separated EAL arguments appended after the generated ones." type="string" init-value="--no-telemetry" is-not-null="yes"/>
+  <attribute name="eal_lcores" description="EAL lcore list/range passed as -l (e.g. 0-2)." type="string" init-value="0-2" is-not-null="yes"/>
+  <attribute name="tx_pcie" description="PCIe address of the TX NIC port (EAL allow-list entry and port lookup key). Placeholder default; set per host." type="string" init-value="0000:00:00.0" is-not-null="yes"/>
+  <attribute name="src_port" description="UDP source port written into the packet headers." type="u16" init-value="55677" is-not-null="yes"/>
+  <attribute name="dst_port" description="UDP destination port written into the packet headers." type="u16" init-value="55678" is-not-null="yes"/>
+  <attribute name="initial_seq_id" description="First DAQEthHeader sequence number of every stream." type="u32" range="0..4095" init-value="0" is-not-null="yes"/>
+  <attribute name="defer_tx_until_enable_triggers" description="If true, frames are dropped until command enable_triggers." type="bool" init-value="0" is-not-null="yes"/>
+  <attribute name="tx_ring_size" description="TX descriptor ring size of each stream's TX queue (one TX queue per stream)." type="u32" range="1..65535" init-value="1024" is-not-null="yes"/>
+  <attribute name="num_bufs" description="Number of mbufs in each stream's TX mempool (one mempool per stream)." type="u32" range="1..1048576" init-value="2047" is-not-null="yes"/>
+  <attribute name="mbuf_cache_size" description="Per-lcore mempool cache size." type="u32" init-value="250" is-not-null="yes"/>
+  <attribute name="data_room_size" description="mbuf data room; must hold RTE_PKTMBUF_HEADROOM (128) plus one complete 7242-byte WIBEth packet and fit uint16_t." type="u32" range="7370..65535" init-value="9800" is-not-null="yes"/>
+ </class>
+
+ <class name="DPDKFakeDataSender" description="DPDK WIBEth fake data sender: wraps frames received through DataMoveCallbackRegistry in Ethernet/IPv4/UDP and transmits them on one DPDK TX port, one TX queue per stream.">
+  <superclass name="DaqModule"/>
+  <relationship name="configuration" class-type="DPDKFakeDataSenderConf" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="callbacks" description="One DataMoveCallbackConf (data_type WIBEthFrame) per emulated stream; the UID is the registry callback ID shared with the producer module." class-type="DataMoveCallbackConf" low-cc="one" high-cc="many" is-composite="no" is-exclusive="no" is-dependent="no"/>
+  <relationship name="connection" description="Detector-to-DAQ connection read by the receiver. Destination MAC and IP: mac_address and first ip_address of the net_receiver interface. Source IP of a stream: first ip_address of the sender in net_senders that lists the stream's source_id. Detector ID of a stream: detector_id of its GeoId (0..63)." class-type="NetworkDetectorToDaqConnection" low-cc="one" high-cc="one" is-composite="no" is-exclusive="no" is-dependent="no"/>
  </class>
 
  <class name="DPDKReceiver">
